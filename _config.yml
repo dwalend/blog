@@ -5,7 +5,7 @@ description: "David Walend's blog about scala and graphs."
 baseurl: ""
 url: "http://blog.walend.net"
 twitter_username: dwalend
-github_username:  dwalend
+github_username: dwalend
 
 # Build settings
 markdown: kramdown
