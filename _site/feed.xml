@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Intuitive Counter</title>
+    <description>David Walend&#39;s blog about scala and graphs.</description>
+    <link>http://blog.walend.net/</link>
+    <atom:link href="http://blog.walend.net/feed.xml" rel="self" type="application/rss+xml" />
+    <pubDate>Wed, 10 Sep 2014 16:40:35 -0400</pubDate>
+    <lastBuildDate>Wed, 10 Sep 2014 16:40:35 -0400</lastBuildDate>
+    <generator>Jekyll v2.1.1</generator>
+    
+      <item>
+        <title>Type Less and Type Later in Scala</title>
+        <description>&lt;p&gt;Graphs, Now in Scala&lt;/p&gt;
+
+&lt;p&gt;Using my old JDigraph project, I did a lot of work with, unsurprisingly, directed graphs. I experimented with immutability before it was cool. I eventually hit the limit of Java’s type system and &lt;a href=&quot;https://weblogs.java.net/blog/dwalend/archive/2007/03/wild_winds_wres.html&quot;&gt;tried to punch through it.&lt;/a&gt; I’ve been able to get a lot further with hardly any grief in Scala. Scala’s type system has what I need and its collection library suits my taste. It just worked out of the box, was fun, and (I hope) is pretty easy to explain.&lt;/p&gt;
+
+&lt;p&gt;I also found I could put off defining the specifics of a type until I was ready. Not having to predict the future perfectly from the outset is a huge win in object-oriented programming, and has really proven itself out over the last six months’ hacking. That’s something I could never do in Java.&lt;/p&gt;
+
+&lt;p&gt;A graph has a set of nodes and a set of edges. The edges define some kind of relationship between the nodes, but there are a lot of different possible rules for how those relationships work. &lt;a href=&quot;http://en.wikipedia.org/wiki/Graph_(mathematics)#Distinction_in_terms_of_the_main_definition&quot;&gt;Wikipedia lists many of them&lt;/a&gt;. &lt;/p&gt;
+
+&lt;p&gt;First I’ll show the easy parts: I’ll get to edges in a minute. A graph has a set of nodes.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;trait Graph[Node] {
+
+  def nodes:GenSet[Node]
+
+  def nodeCount:Int
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Note that I’ve only put in a parameter for the Node’s type.  &lt;/p&gt;
+
+&lt;p&gt;I can get cleaner API if I use an internal representation of the nodes, similar to Java’s &lt;a href=&quot;http://docs.oracle.com/javase/8/docs/api/java/util/Map.Entry.html&quot;&gt;Map.Entry&lt;/a&gt;. This internal representation at least needs access to the node put into the graph.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;  /**
+   * An internal representation of nodes within the graph
+   */
+  trait InnerNodeTrait {
+    def value:Node
+  }
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Here’s where things get interesting. I don’t know what the type of that internal node is going to be. However, for a given implementation of Graph all of those internal nodes will be InnerNodeType, and they are all at least InnerNodeTraits. &lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;  /**
+   * The type of InnerNodeTrait for this digraph representation
+   */
+  type InnerNodeType &amp;lt;: InnerNodeTrait
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;I’m not satisfied by the names InnerNodeTrait and InnerNodeType. Any suggestions for something better?&lt;/p&gt;
+
+&lt;p&gt;I’ll want a way to return all the internal nodes, and get the internal node for an external node. I use the InnerNodeType in these definitions.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;  /**
+   * @return InnerNode representation of all of the nodes in the graph.
+   */
+  def innerNodes:Seq[InnerNodeType]
+
+  /**
+   * @param value a node that might be in this digraph
+   * @return Some inner node if it exists in the digraph or None
+   */
+  def innerNode(value:Node):Option[InnerNodeType]
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Defining edges is next. Someone using the API will pass in edges from the outside. Once the edges are in the Graph, it’s convenient to hand back an internal representation for edges. It will eventually carry around references to inner nodes (as InnerNodeTypes.) However, I don’t really know how the nodes will be related to each other yet. Therefore I declare both an OuterEdgeType and an InnerEdgeType. I don’t define anything about them except that they exist. They’ll have something to do with Node and InnerNodeType, but I can’t say what in a way that will be useful.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;  type OuterEdgeType
+
+  type InnerEdgeType
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Any help with naming? “type OuterEdgeType” is half a step from “object MyFirstScalaCode” .&lt;/p&gt;
+
+&lt;p&gt;I know I’ll need to get back the edges, and I have just enough type information to do it.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;  /**
+   * @return A Traversable (usually something more specific) of the edges
+   */
+  def edges:GenTraversable[OuterEdgeType]
+
+  /**
+   * @return A Traversable (usually something more specific) of the edges as represented in the graph
+   */
+  def innerEdges:GenTraversable[InnerEdgeType]
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;I’ve managed to put off defining anything about edges except that edges exist, and they have an internal representation different from the external representation. The Graph class’ API has committed to very little. Sub-traits can define undirected graphs with Set2[Node] for edges. directed graphs can have edges of type (Node,Node). Hypergraphs and directed hypergraphs can use Sets. Bipartite graphs can have edges just of nodes of different classes – (Person,Job) for example. My favorite feature is that I don’t have to code up any of those variations until I’m ready to use them for something.&lt;/p&gt;
+
+&lt;p&gt;Here’s a labeled digraph example, where edges have labels:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;trait LabelDigraph[Node,Label] extends Digraph[Node] {
+
+  type OuterEdgeType = (Node,Node,Label)
+
+  type InnerEdgeType = (InnerNodeType,InnerNodeType,Label)
+
+  /**
+   * @return the label to return when no edge exists. If Label is an Option, this will be None.
+   */
+  def noEdgeExistsLabel:Label
+
+  /**
+   * @return the Edge between start and end or noEdgeExistsValue if no edge connects start to end
+   */
+  def label(start:InnerNodeType,end:InnerNodeType):Label
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;For the first release, I settled on two implementations of LabelDigraph, MatrixLabelDigraph – to support the Floyd-Warshall algorithm – and AdjacencyLabelDigraph – to support both Dijkstra’s algorithm and Brandes’ betweenness algorithm. &lt;/p&gt;
+
+&lt;p&gt;I tried to make constructing a graph very easy, by supplying companion objects with apply methods that have default arguments:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;  def apply[Node,Label](edges:GenTraversable[(Node,Node,Label)] = Seq.empty,
+                       nodes:GenSeq[Node] = Seq.empty,
+                       noEdgeExistsValue:Label = null) = {
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;So you can create a graph with a Vector of Tuple3s like this&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;  val yourGraph = AdjacencyLabelDigraph(edges = Vector((&quot;A&quot;,&quot;B&quot;,&quot;ab&quot;),(&quot;B&quot;,&quot;C&quot;,&quot;bc&quot;),(&quot;C&quot;,&quot;A&quot;,&quot;ca&quot;))
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Download it and try it out. In sbt console, it’s easy to just doodle around with graphs:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;libraryDependencies += &quot;net.walend&quot; %% &quot;scalagraphminimizer&quot; % &quot;0.1.0&quot;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Dave&lt;/p&gt;
+</description>
+        <pubDate>Wed, 10 Sep 2014 00:00:00 -0400</pubDate>
+        <link>http://blog.walend.net/2014/09/10/type-later/</link>
+        <guid isPermaLink="true">http://blog.walend.net/2014/09/10/type-later/</guid>
+        
+        
+      </item>
+    
+      <item>
+        <title>Back From the Break</title>
+        <description>&lt;p&gt;It’s been five years since my last blog post on &lt;a href=&quot;https://home.java.net/pub/au/95&quot;&gt;java.net&lt;/a&gt; – amazingly still there. &lt;/p&gt;
+
+&lt;p&gt;The world changed a bit. Oracle bought Sun. I figured out how to start Matlab clusters on AWS for MathWorks. My first daughter was born. I taught myself some Scala. I left MathWorks for ActivateNetworks – a social network analysis start-up (with more favorable intellectual property rules). My second daughter was born and is just about to start talking. My first daughter started kindergarten. I started working almost exclusively in Scala. I returned to open source work a few months ago with the first release of &lt;a href=&quot;https://github.com/dwalend/ScalaGraphMinimizer&quot;&gt;ScalaGraphMinimizer&lt;/a&gt;, and I  immediately started using it at work. &lt;/p&gt;
+
+&lt;p&gt;I miss the challenge of writing, so adding the blog back feels natural. Many others are learning Scala, so hopefully what I have to say will be of some benefit to them (you?). The blog will be fairly technical, with lots of code examples. I’ll also be dropping in my opinion of what I think works well. I’ve been learning Scala largely in isolation, so I’ll occasionally post something alien-looking. Feel especially free to call that out.&lt;/p&gt;
+
+&lt;p&gt;I’m also a proponent of explicit coding. I want the code to be so clear that people can look at it, and either agree that it is correct or be able to easily spot places where the code’s behavior deviates from their expectations. Scala’s ability to blend object and functional programming fits that well. The objects describe a narrative. Mixing in functional programming lets me create a narrative that a person might actually follow. &lt;/p&gt;
+
+&lt;p&gt;Speakers at local MeetUps and conferences continue to surprise me with their praise of Scala. They talk about how writing Scala should be fun. I’ve mostly enjoyed writing code over the years, but had never seen people talk openly about anything the way Scala’s proponents tell &lt;a href=&quot;https://www.youtube.com/watch?v=hzf3hTUKk8U&quot;&gt;how pleasant it is.&lt;/a&gt;. They even talk about &lt;a href=&quot;https://github.com/ktonga/reactive-turtle&quot;&gt;love and parenting&lt;/a&gt;. Further, the speakers at the Scala conferences are almost universally fit. Unlike so many in our profession, these people are jacked. They must have time to work out. I didn’t get it until I started doing almost all my work in Scala. I code maybe five times faster. I’ve gone from finishing just before deadlines to finishing with days or even whole weeks to spare. I use the time to polish my code, profile and speed it up, and to write extra tests. And then I get some exercise, horse around with my kids, work on open-source projects, and write a blog. &lt;/p&gt;
+</description>
+        <pubDate>Mon, 01 Sep 2014 00:00:00 -0400</pubDate>
+        <link>http://blog.walend.net/2014/09/01/back-in/</link>
+        <guid isPermaLink="true">http://blog.walend.net/2014/09/01/back-in/</guid>
+        
+        
+      </item>
+    
+  </channel>
+</rss>
