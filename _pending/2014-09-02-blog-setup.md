@@ -1,10 +1,12 @@
 ---
 layout: post
-title: Obligatory Metablog post
+title: Obligatory Metablog Post
 comments: True
 ---
 
-# Why jekyll? Isn't that Ruby?
+Everyone who writes a blog should have an entry like this, so that others can learn what worked and what didn't. My blog is hosted on GitHub, and I pretty much followed their [guide](https://pages.github.com/). 
+
+# Why jekyll? Isn't that Ruby? 
 
 I started the blog with jekyll's clean start
 
@@ -24,12 +26,15 @@ I used [Joshua Lande's blog post](http://joshualande.com/jekyll-github-pages-poo
 
 TODO fix formatting
 
-I added 
-
+I added
+ 
+    {% raw %}
     {% include comments.html %}
+    {% endraw %}
     
 to default.html . I then added a new comments.html file to _includes with these contents:
  
+    {% raw %}
     {% if page.comments %}
      <div id="disqus_thread"></div>
      <script type="text/javascript">
@@ -46,6 +51,7 @@ to default.html . I then added a new comments.html file to _includes with these 
      <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
      <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
     {% endif %}
+    {% endraw %}
 
 Note that this is exactly what Disqus suggested I should add, bracketed by the if statements Joshua recomments. To include comments in a post, I then add 
 
@@ -53,12 +59,24 @@ Note that this is exactly what Disqus suggested I should add, bracketed by the i
     
 to the metadata header in the markdown.
 
-# Formatting code in the blog that tries to do tricks with html includes dammit
+# Set up the URL with GoDaddy
 
-# Set up the URL with Godaddy
-
+Setting up forwarding from GoDaddy was pretty easy, even though they change their interface every five months. Sign in, pick the header's Domains menu, Manage Domains, walend.net, Manage, Add Subdomain blob.walend.net and www.blog.walend.net, and forward them to http://dwalend.github.io/blog/ , with masking. The masking is a pain, because I had to put in a list of keywords, for both forwarding entries, that I'll have to keep up-to-date at GoDaddy. I'll have to revisit that someday. 
 
 
 # Google Analyitics
 
-Needs URL set up
+Needs URL set up. Looks like that will be easy, so I added google_analyitics.html and put the   {% include google_analytics.html %} line in default.html
+
+Hard to tell if it is working or not without publishing the blog.
+
+# Formatting code in the blog that tries to do tricks with html includes dammit
+
+
+    {% raw %}
+    {% raw %}
+    Liquid code I don't want interpreted on the server
+    {% end raw %}
+    {% endraw %}
+
+But it's really endraw, without the space. And that's why I do mostly back-end work.
