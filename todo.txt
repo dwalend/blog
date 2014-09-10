@@ -1,0 +1,13 @@
+
+* first blog entry goes under _posts
+* other blog entries go to pending
+
+* Enable google analytics
+* Add minimal twitter plug
+
+* replace public/apple-touch-icon-precomposed.png with something better.
+* replace public/favicon.ico with something better.
+
+
+
+
