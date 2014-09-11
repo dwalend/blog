@@ -1,7 +1,7 @@
 # Site settings
-title: Intuitive Counter
+title: "Intuitive Counter: A Blog about Scala, Graphs, and Coding"
 email: david@walend.net
-description: "David Walend's blog about scala and graphs."
+description: "David Walend's blog about scala, graphs, and coding"
 baseurl: "/blog"
 url: "http://dwalend.github.io"
 twitter_username: dwalend

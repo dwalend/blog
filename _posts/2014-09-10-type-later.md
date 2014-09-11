@@ -1,14 +1,12 @@
 ---
 layout: post
-title: Type Less and Type Later in Scala
+title: Graphs, Now in Scala
 comments: True
 ---
 
-Graphs, Now in Scala
+Using my old JDigraph project, I did a lot of work with (unsurprisingly) directed graphs. I experimented with immutability before it was cool. I eventually hit the limit of Java's type system and [tried to punch through it.](https://weblogs.java.net/blog/dwalend/archive/2007/03/wild_winds_wres.html) I've been able to get a lot further with hardly any grief in Scala. Scala's type system has what I need and its collection library suits my taste. It just worked out of the box, was fun, and (I hope) is pretty easy to explain.
 
-Using my old JDigraph project, I did a lot of work with, unsurprisingly, directed graphs. I experimented with immutability before it was cool. I eventually hit the limit of Java's type system and [tried to punch through it.](https://weblogs.java.net/blog/dwalend/archive/2007/03/wild_winds_wres.html) I've been able to get a lot further with hardly any grief in Scala. Scala's type system has what I need and its collection library suits my taste. It just worked out of the box, was fun, and (I hope) is pretty easy to explain.
-
-I also found I could put off defining the specifics of a type until I was ready. Not having to predict the future perfectly from the outset is a huge win in object-oriented programming, and has really proven itself out over the last six months' hacking. That's something I could never do in Java.
+In Scala also found I could put off defining the specifics of how a graph works until I was ready to define that kind of graph. Not having to predict the future perfectly from the outset is a huge win in object-oriented programming, and has really proven itself out over the last six months' hacking. That's something I could never do in Java.
 
 A graph has a set of nodes and a set of edges. The edges define some kind of relationship between the nodes, but there are a lot of different possible rules for how those relationships work. [Wikipedia lists many of them](http://en.wikipedia.org/wiki/Graph_(mathematics)#Distinction_in_terms_of_the_main_definition). 
 
@@ -61,7 +59,7 @@ Defining edges is next. Someone using the API will pass in edges from the outsid
 
 Any help with naming? "type OuterEdgeType" is half a step from "object MyFirstScalaCode" .
 
-I know I'll need to get back the edges, and I have just enough type information to do it.
+I know I'll need to have access to the edges, and I have just enough type information to do it.
 
       /**
        * @return A Traversable (usually something more specific) of the edges
@@ -74,8 +72,10 @@ I know I'll need to get back the edges, and I have just enough type information 
       def innerEdges:GenTraversable[InnerEdgeType]
     }
 
-I've managed to put off defining anything about edges except that edges exist, and they have an internal representation different from the external representation. The Graph class' API has committed to very little. Sub-traits can define undirected graphs with Set2[Node] for edges. directed graphs can have edges of type (Node,Node). Hypergraphs and directed hypergraphs can use Sets. Bipartite graphs can have edges just of nodes of different classes -- (Person,Job) for example. My favorite feature is that I don't have to code up any of those variations until I'm ready to use them for something.
+I've managed to put off defining anything about edges except that edges exist, and they have an internal representation different from the external representation. The Graph class' API has committed to exactly as much as Wikipedia describes. Sub-traits can define edges for specialized graphs: Undirected graphs with Set2[Node] for edges. Directed graphs can have (Node,Node) tuple edges. Hypergraphs can use Sets, and directed hypergraphs can use a pair of Sets. Bipartite graphs can have edges just of nodes of different classes -- (Person,Job) for example. 
 
+My favorite feature is that I don't have to code up any of those variations until I'm ready to use them for something. I suspect (and hope) I can only find a place to use this construct (and the layered trait hierarchy that goes with it) once every few projects, but it should make a good capstone for a family of traits that builds from a very general concept. 
+ 
 Here's a labeled digraph example, where edges have labels:
 
     trait LabelDigraph[Node,Label] extends Digraph[Node] {
@@ -95,7 +95,7 @@ Here's a labeled digraph example, where edges have labels:
       def label(start:InnerNodeType,end:InnerNodeType):Label
     }
 
-For the first release, I settled on two implementations of LabelDigraph, MatrixLabelDigraph -- to support the Floyd-Warshall algorithm -- and AdjacencyLabelDigraph -- to support both Dijkstra's algorithm and Brandes' betweenness algorithm. 
+For the first release, I settled on two implementations of LabelDigraph: MatrixLabelDigraph which supports the Floyd-Warshall algorithm, and AdjacencyLabelDigraph which supports both Dijkstra's algorithm and Brandes' betweenness algorithm. 
 
 I tried to make constructing a graph very easy, by supplying companion objects with apply methods that have default arguments:
 
@@ -107,7 +107,7 @@ So you can create a graph with a Vector of Tuple3s like this
 
       val yourGraph = AdjacencyLabelDigraph(edges = Vector(("A","B","ab"),("B","C","bc"),("C","A","ca"))
 
-Download it and try it out. In sbt console, it's easy to just doodle around with graphs:
+[It's all in an open source project on GitHub](https://github.com/dwalend/ScalaGraphMinimizer). Download it and try it out. In sbt console, it's easy to just doodle around with graphs:
 
     libraryDependencies += "net.walend" %% "scalagraphminimizer" % "0.1.0"
 

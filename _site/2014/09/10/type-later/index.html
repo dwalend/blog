@@ -4,7 +4,7 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Type Less and Type Later in Scala</title>
+    <title>Graphs, Now in Scala</title>
     <meta name="viewport" content="width=device-width">
     <meta name="description" content="David Walend's blog about scala and graphs.">
     <link rel="canonical" href="http://blog.walend.net/2014/09/10/type-later/">
@@ -34,7 +34,7 @@
 
     <a class="site-title" href="/">Intuitive Counter</a>
 
-    <nav class="site-nav">
+      <nav class="site-nav">
       <a href="#" class="menu-icon">
         <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
            viewBox="0 0 18 15" enable-background="new 0 0 18 15" xml:space="preserve">
@@ -56,7 +56,6 @@
         
       </div>
     </nav>
-
   </div>
 
 </header>
@@ -67,16 +66,14 @@
       <div class="post">
 
   <header class="post-header">
-    <h1>Type Less and Type Later in Scala</h1>
+    <h1>Graphs, Now in Scala</h1>
     <p class="meta">Sep 10, 2014</p>
   </header>
 
   <article class="post-content">
-  <p>Graphs, Now in Scala</p>
+  <p>Using my old JDigraph project, I did a lot of work with (unsurprisingly) directed graphs. I experimented with immutability before it was cool. I eventually hit the limit of Java’s type system and <a href="https://weblogs.java.net/blog/dwalend/archive/2007/03/wild_winds_wres.html">tried to punch through it.</a> I’ve been able to get a lot further with hardly any grief in Scala. Scala’s type system has what I need and its collection library suits my taste. It just worked out of the box, was fun, and (I hope) is pretty easy to explain.</p>
 
-<p>Using my old JDigraph project, I did a lot of work with, unsurprisingly, directed graphs. I experimented with immutability before it was cool. I eventually hit the limit of Java’s type system and <a href="https://weblogs.java.net/blog/dwalend/archive/2007/03/wild_winds_wres.html">tried to punch through it.</a> I’ve been able to get a lot further with hardly any grief in Scala. Scala’s type system has what I need and its collection library suits my taste. It just worked out of the box, was fun, and (I hope) is pretty easy to explain.</p>
-
-<p>I also found I could put off defining the specifics of a type until I was ready. Not having to predict the future perfectly from the outset is a huge win in object-oriented programming, and has really proven itself out over the last six months’ hacking. That’s something I could never do in Java.</p>
+<p>In Scala also found I could put off defining the specifics of how a graph works until I was ready to define that kind of graph. Not having to predict the future perfectly from the outset is a huge win in object-oriented programming, and has really proven itself out over the last six months’ hacking. That’s something I could never do in Java.</p>
 
 <p>A graph has a set of nodes and a set of edges. The edges define some kind of relationship between the nodes, but there are a lot of different possible rules for how those relationships work. <a href="http://en.wikipedia.org/wiki/Graph_(mathematics)#Distinction_in_terms_of_the_main_definition">Wikipedia lists many of them</a>. </p>
 
@@ -134,7 +131,7 @@
 
 <p>Any help with naming? “type OuterEdgeType” is half a step from “object MyFirstScalaCode” .</p>
 
-<p>I know I’ll need to get back the edges, and I have just enough type information to do it.</p>
+<p>I know I’ll need to have access to the edges, and I have just enough type information to do it.</p>
 
 <pre><code>  /**
    * @return A Traversable (usually something more specific) of the edges
@@ -148,7 +145,9 @@
 }
 </code></pre>
 
-<p>I’ve managed to put off defining anything about edges except that edges exist, and they have an internal representation different from the external representation. The Graph class’ API has committed to very little. Sub-traits can define undirected graphs with Set2[Node] for edges. directed graphs can have edges of type (Node,Node). Hypergraphs and directed hypergraphs can use Sets. Bipartite graphs can have edges just of nodes of different classes – (Person,Job) for example. My favorite feature is that I don’t have to code up any of those variations until I’m ready to use them for something.</p>
+<p>I’ve managed to put off defining anything about edges except that edges exist, and they have an internal representation different from the external representation. The Graph class’ API has committed to exactly as much as Wikipedia describes. Sub-traits can define edges for specialized graphs: Undirected graphs with Set2[Node] for edges. Directed graphs can have (Node,Node) tuple edges. Hypergraphs can use Sets, and directed hypergraphs can use a pair of Sets. Bipartite graphs can have edges just of nodes of different classes – (Person,Job) for example. </p>
+
+<p>My favorite feature is that I don’t have to code up any of those variations until I’m ready to use them for something. I suspect (and hope) I can only find a place to use this construct (and the layered trait hierarchy that goes with it) once every few projects, but it should make a good capstone for a family of traits that builds from a very general concept. </p>
 
 <p>Here’s a labeled digraph example, where edges have labels:</p>
 
@@ -170,7 +169,7 @@
 }
 </code></pre>
 
-<p>For the first release, I settled on two implementations of LabelDigraph, MatrixLabelDigraph – to support the Floyd-Warshall algorithm – and AdjacencyLabelDigraph – to support both Dijkstra’s algorithm and Brandes’ betweenness algorithm. </p>
+<p>For the first release, I settled on two implementations of LabelDigraph: MatrixLabelDigraph which supports the Floyd-Warshall algorithm, and AdjacencyLabelDigraph which supports both Dijkstra’s algorithm and Brandes’ betweenness algorithm. </p>
 
 <p>I tried to make constructing a graph very easy, by supplying companion objects with apply methods that have default arguments:</p>
 
@@ -184,7 +183,7 @@
 <pre><code>  val yourGraph = AdjacencyLabelDigraph(edges = Vector(("A","B","ab"),("B","C","bc"),("C","A","ca"))
 </code></pre>
 
-<p>Download it and try it out. In sbt console, it’s easy to just doodle around with graphs:</p>
+<p><a href="https://github.com/dwalend/ScalaGraphMinimizer">It’s all in an open source project on GitHub</a>. Download it and try it out. In sbt console, it’s easy to just doodle around with graphs:</p>
 
 <pre><code>libraryDependencies += "net.walend" %% "scalagraphminimizer" % "0.1.0"
 </code></pre>
