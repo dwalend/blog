@@ -2,8 +2,8 @@
 title: Intuitive Counter
 email: david@walend.net
 description: "David Walend's blog about scala and graphs."
-baseurl: "http://dwalend.github.io"
-url: "blog"
+baseurl: "blog"
+url: "http://dwalend.github.io"
 twitter_username: dwalend
 github_username: dwalend
 
