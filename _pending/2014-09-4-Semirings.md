@@ -24,7 +24,7 @@ My biggest frustration with trying to define semirings in Java was that I had to
 
 SemiringSupport needs something to define a Label -- the things the semiring operates on, a Semiring which brings the operators, and some bits to support heaps for Dijkstra's algorithm.  
 
-Here's Semiring's declaration, embedded inside the namespace. I think it is easy to map to the corresponding passage from Cormen’s _Algorithms_, “A general framework for solving path problems in directed graphs,” 26.4 in my 1989 copy.
+Here's Semiring's declaration, embedded inside the namespace. I think it is easy to map to the corresponding passage from Cormen’s _Algorithms_, “A general framework for solving path problems in directed graphs,” 26.4 in my 1989 copy. (Cormen seems to have dropped it from later editions, but I found a good description on line in [Stoner's _An Introduction to Data Structures and Algorithms_](http://books.google.com/books?id=S-tXjl1hsUYC&pg=PA54&dq=aho+hopcroft+ullman&hl=en&sa=X&ei=Jj8aVLX1H67hsASXnoHADw&ved=0CDkQ6AEwAw#v=snippet&q=semiring&f=false).)
 
       trait Semiring {
     
@@ -46,7 +46,7 @@ Here's Semiring's declaration, embedded inside the namespace. I think it is easy
       }
     }
 
-With that in hand, a Semiring that counts nodes in a path was pretty simple. The Label is an Int. The heapKey is that Label. Existing edges in the graph have a Label of 1. The identity, I, is 0, and the annihilator, O, is Int.MaxValue. The summary operator picks the least Label. The extends method adds two Labels together. I did have to monkey around inside the extend method to avoid wrapping Ints.
+With that in hand, I made a Semiring that counts nodes in a path. The Label is an Int. The heapKey is that Label. Existing edges in the graph have a Label of 1. The identity, I, is 0, and the annihilator, O, is Int.MaxValue. The summary operator picks the least of two Labels. The extends method adds two Labels together. I did have to monkey around inside the extend method to avoid wrapping Ints. Other than that, the code is pretty simple.
 
     object FewestNodes extends SemiringSupport[Int,Int] {
     
@@ -96,7 +96,7 @@ With that in hand, a Semiring that counts nodes in a path was pretty simple. The
 
 # Algorithms in Scala Can Look Like Algorithms In Text Books Even With Complex Types
 
-Dijkstra's algorithm looks almost identical to the code from [Wikipedia](http://en.wikipedia.org/wiki/Dijkstra's_algorithm#Using_a_priority_queue):
+Even with the semiring mixed in, Dijkstra's algorithm looks almost identical to the code from [Wikipedia](http://en.wikipedia.org/wiki/Dijkstra's_algorithm#Using_a_priority_queue):
 
       def dijkstraSingleSource[Node,Label,Key](initialGraph:IndexedLabelDigraph[Node,Label],
                                                support:SemiringSupport[Label,Key])
@@ -195,7 +195,7 @@ Compare that to this eye-buringing call to Dijkstra's algorithm in JDigraph:
 																								                      LeastPathComparator,
 																								                      LeastPathSemiring<TestBean,SimpleDigraph.SimpleEdge,IndexedMutableSimpleDigraph<TestBean>>>();
 
-(Yes, the diamond operator might make this half the size. Too bad the code didn't compile in JDK7 despite being correct.)
+(Yes, the diamond operator might make this half the size. Too bad the code stopped compiling in JDK6 despite being correct.)
   
 
 # Maybe that Lance Wasn't the Right Tool for Attacking this Windmill
