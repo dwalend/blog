@@ -1,10 +1,8 @@
 ---
 layout: post
-title: Generics and Semirings and Knocking Over Windmills
+title: Generics and Semirings and Tilting Windmills
 comments: True
 ---
-
-# Generics and Semirings and Knocking Over Windmills
 
 One of the coolest things you can do with graphs is find the shortest paths between nodes. One of the coolest things you can do with those algorithms is change what "shortest" means using semirings. It's so cool it makes group theory useful. Scala's type system is rich enough to handle all that without hurting my eyes, so I did it in [ScalaGraphMinimizer](https://github.com/dwalend/ScalaGraphMinimizer). 
 
@@ -22,9 +20,9 @@ My biggest frustration with trying to define semirings in Java was that I had to
     
       def heapKeyForLabel:Label => Key
 
-SemiringSupport needs something to define a Label -- the things the semiring operates on, a Semiring which brings the operators, and some bits to support heaps for Dijkstra's algorithm.  
+SemiringSupport needs something to define the Labels the semiring operates on, a Semiring which brings the operators, and some bits to support heaps for Dijkstra's algorithm. For the labels, I'm using a similar technique that I used for (the most general class of graphs)[http://dwalend.github.io/blog/2014/09/10/graphs-in-scala/], but this time I have a type parameter, L, that helps the compiler do some work for me. 
 
-Here's Semiring's declaration, embedded inside the namespace. I think it is easy to map to the corresponding passage from Cormen’s _Algorithms_, “A general framework for solving path problems in directed graphs,” 26.4 in my 1989 copy. (Cormen seems to have dropped it from later editions, but I found a good description on line in [Stoner's _An Introduction to Data Structures and Algorithms_](http://books.google.com/books?id=S-tXjl1hsUYC&pg=PA54&dq=aho+hopcroft+ullman&hl=en&sa=X&ei=Jj8aVLX1H67hsASXnoHADw&ved=0CDkQ6AEwAw#v=snippet&q=semiring&f=false).)
+Here's Semiring's declaration, embedded inside the namespace. I think it is easy to map to the corresponding passage from Cormen’s _Algorithms_, “A general framework for solving path problems in directed graphs,” 26.4 in my 1989 copy. (Cormen seems to have dropped it from later editions, but I found an OK description on line in [Stoner's _An Introduction to Data Structures and Algorithms_](http://books.google.com/books?id=S-tXjl1hsUYC&lpg=PA54&dq=aho%20hopcroft%20ullman&pg=PA336#v=snippet&q=%22245.%20The%20algebraic%22&f=false).)
 
       trait Semiring {
     
@@ -46,7 +44,7 @@ Here's Semiring's declaration, embedded inside the namespace. I think it is easy
       }
     }
 
-With that in hand, I made a Semiring that counts nodes in a path. The Label is an Int. The heapKey is that Label. Existing edges in the graph have a Label of 1. The identity, I, is 0, and the annihilator, O, is Int.MaxValue. The summary operator picks the least of two Labels. The extends method adds two Labels together. I did have to monkey around inside the extend method to avoid wrapping Ints. Other than that, the code is pretty simple.
+With that in hand, I made a Semiring that counts nodes in a path. The Label is an Int. The heapKey is that Label. Existing edges in the graph have a Label of 1. The identity, I, is 0, and the annihilator, O, is Int.MaxValue. The summary operator picks the least of two Labels. The extends method adds two Labels together. I did have to monkey around inside the extend method to avoid wrapping Ints. Other than that, the code is simple.
 
     object FewestNodes extends SemiringSupport[Int,Int] {
     
@@ -56,7 +54,9 @@ With that in hand, I made a Semiring that counts nodes in a path. The Label is a
     
       def heapKeyForLabel = {label:Label => label}
     
-      def convertEdgeToLabel[Node, EdgeLabel](start: Node, end: Node, label: EdgeLabel): FewestNodes.Label = 1
+      def convertEdgeToLabel[Node, EdgeLabel](start: Node, 
+                                              end: Node, 
+                                              label: EdgeLabel): FewestNodes.Label = 1
     
       object FewestNodesSemiring extends Semiring {
     
@@ -94,7 +94,8 @@ With that in hand, I made a Semiring that counts nodes in a path. The Label is a
     
     }
 
-# Algorithms in Scala Can Look Like Algorithms In Text Books Even With Complex Types
+# Algorithms in Scala Can Look Like Algorithms In Text Books 
+# Even With Complex Types
 
 Even with the semiring mixed in, Dijkstra's algorithm looks almost identical to the code from [Wikipedia](http://en.wikipedia.org/wiki/Dijkstra's_algorithm#Using_a_priority_queue):
 
@@ -183,7 +184,7 @@ Best of all, Scala's compiler is able to work out what the types are without my 
     val labelEdges = Dijkstra.allPairsShortestPaths(testGraph.edges,testGraph.nodesSeq,FewestNodes,FewestNodes.convertEdgeToLabel)
 
 
-Compare that to this eye-buringing call to Dijkstra's algorithm in JDigraph:
+Compare that to this eye-burning call to Dijkstra's algorithm in JDigraph:
 
        Dijkstra<LeastPathLabel,
               IndexedMutableSimpleDigraph<TestBean>,
@@ -198,7 +199,7 @@ Compare that to this eye-buringing call to Dijkstra's algorithm in JDigraph:
 (Yes, the diamond operator might make this half the size. Too bad the code stopped compiling in JDK6 despite being correct.)
   
 
-# Maybe that Lance Wasn't the Right Tool for Attacking this Windmill
+# Maybe That Lance Wasn't the Right Tool for Attacking a Windmill
 
 I'm very happy with how the code came out this early in the project. I've been able to make something both explainable and powerful, and extend it to solve for betweenness (which deserves its own blog article). It took eight weeks of a few hours after work when family and chores left me a little time, maybe 25 hours total. The code looks just like the algorithms in the book, not an example of some vile boundary case. 
 
