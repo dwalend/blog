@@ -4,11 +4,13 @@ title: Generics and Semirings and Tilting Windmills
 comments: True
 ---
 
-One of the coolest things you can do with graphs is find the shortest paths between nodes. One of the coolest things you can do with those algorithms is change what "shortest" means using semirings. It's so cool it makes group theory useful. Scala's type system is rich enough to handle all that without hurting my eyes, so I did it in [ScalaGraphMinimizer](https://github.com/dwalend/ScalaGraphMinimizer). 
+One of the coolest things you can do with graphs is find the shortest paths between nodes. One of the coolest things you can do with those algorithms is change what "shortest" means using semirings. It's so cool it makes group theory useful. Scala's type system is rich enough to handle all that without hurting people's eyes, so I did it in [ScalaGraphMinimizer](https://github.com/dwalend/ScalaGraphMinimizer). 
 
 # Type Families and Semirings
 
-My biggest frustration with trying to define semirings in Java was that I had to carry everything around inside layered generic type specifications. There was no way to bound and encapsulate the layering. The (best-available) advice I got was to not use Java's type system that way. The only workable alternative was to cast as needed and hope it worked out at runtime. In contrast, Scala's type system handles it gracefully. Scala lets me declare a namespace of types and use those declared types where needed. Here's SemiringSupport, which is primarily about declaring types.
+My biggest frustration with trying to define semirings in Java was that I had to carry everything around inside layered generic type specifications. There was no way to bound and encapsulate the layering, so the type specifications built up and became blinding eyesores. The (best-available) advice I got was to not use Java's type system that way. The only workable alternative was to cast as needed and hope it worked out at runtime. In contrast, Scala's type system handles it gracefully. Scala lets me declare a namespace of types and use those declared types where needed. 
+
+Here's SemiringSupport, which is primarily about holding on to a set of related types.
 
     trait SemiringSupport[L,Key] {
     
@@ -20,7 +22,7 @@ My biggest frustration with trying to define semirings in Java was that I had to
     
       def heapKeyForLabel:Label => Key
 
-SemiringSupport needs something to define the Labels the semiring operates on, a Semiring which brings the operators, and some bits to support heaps for Dijkstra's algorithm. For the labels, I'm using a similar technique that I used for (the most general class of graphs)[http://dwalend.github.io/blog/2014/09/10/graphs-in-scala/], but this time I have a type parameter, L, that helps the compiler do some work for me. 
+SemiringSupport needs something to define the Labels the semiring operates on, a Semiring which brings the operators, and some bits to support heaps for Dijkstra's algorithm. For the labels, I'm using a similar technique that I used for [the most general class of graphs](http://dwalend.github.io/blog/2014/09/10/graphs-in-scala/), but this time I have a type parameter, L, that helps the compiler do some work for me. 
 
 Here's Semiring's declaration, embedded inside the namespace. I think it is easy to map to the corresponding passage from Cormen’s _Algorithms_, “A general framework for solving path problems in directed graphs,” 26.4 in my 1989 copy. (Cormen seems to have dropped it from later editions, but I found an OK description on line in [Stoner's _An Introduction to Data Structures and Algorithms_](http://books.google.com/books?id=S-tXjl1hsUYC&lpg=PA54&dq=aho%20hopcroft%20ullman&pg=PA336#v=snippet&q=%22245.%20The%20algebraic%22&f=false).)
 
@@ -199,12 +201,12 @@ Compare that to this eye-burning call to Dijkstra's algorithm in JDigraph:
 (Yes, the diamond operator might make this half the size. Too bad the code stopped compiling in JDK6 despite being correct.)
   
 
-# Maybe That Lance Wasn't the Right Tool for Attacking a Windmill
+# Maybe That Lance Wasn't the Right Tool for Attacking That Windmill
 
 I'm very happy with how the code came out this early in the project. I've been able to make something both explainable and powerful, and extend it to solve for betweenness (which deserves its own blog article). It took eight weeks of a few hours after work when family and chores left me a little time, maybe 25 hours total. The code looks just like the algorithms in the book, not an example of some vile boundary case. 
 
 Download it and try it out. In sbt, it's easy to type in a graph and try out different algorithms:
 
-    libraryDependencies += "net.walend" %% "scalagraphminimizer" % "0.1.0"
+    libraryDependencies += "net.walend" %% "scalagraphminimizer" % "0.1.1"
 
 Dave
