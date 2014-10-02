@@ -1,12 +1,12 @@
 ---
 layout: post
-title: Generics and Semirings and Tilting Windmills
+title: Generics and Semirings and Tilting at Windmills
 comments: True
 ---
 
 One of the coolest things you can do with graphs is find the shortest paths between nodes. One of the coolest things you can do with those algorithms is change what "shortest" means using semirings. It's so cool it makes group theory useful. Scala's type system is rich enough to handle all that without hurting people's eyes, so I did it in [ScalaGraphMinimizer](https://github.com/dwalend/ScalaGraphMinimizer). 
 
-# Type Families and Semirings
+## Type Families and Semirings
 
 My biggest frustration with trying to define semirings in Java was that I had to carry everything around inside layered generic type specifications. There was no way to bound and encapsulate the layering, so the type specifications built up and became blinding eyesores. The (best-available) advice I got was to not use Java's type system that way. The only workable alternative was to cast as needed and hope it worked out at runtime. In contrast, Scala's type system handles it gracefully. Scala lets me declare a namespace of types and use those declared types where needed. 
 
@@ -96,8 +96,7 @@ With that in hand, I made a Semiring that counts nodes in a path. The Label is a
     
     }
 
-# Algorithms in Scala Can Look Like Algorithms In Text Books 
-# Even With Complex Types
+## Algorithms in Scala Can Look Like Algorithms In Text Books, Even With Complex Types
 
 Even with the semiring mixed in, Dijkstra's algorithm looks almost identical to the code from [Wikipedia](http://en.wikipedia.org/wiki/Dijkstra's_algorithm#Using_a_priority_queue):
 
@@ -136,6 +135,8 @@ Even with the semiring mixed in, Dijkstra's algorithm looks almost identical to 
         //put everything back together
         labels.zipWithIndex.map(x => (source.value,initialGraph.node(x._2),x._1)).filter(x => x._3 != support.semiring.O)
       }
+
+## Specific Types (Semirings in this Case) Make the Algorithms More Powerful Without Risking Correctness
 
 Creating new semirings, like this one for finding the most probable path, is easy and kinda fun:
 
@@ -193,17 +194,17 @@ Compare that to this eye-burning call to Dijkstra's algorithm in JDigraph:
               NextStepDigraph<TestBean,LeastPathLabel,SimpleDigraph.SimpleEdge,IndexedMutableSimpleDigraph<TestBean>>,
               LeastPathComparator,
               LeastPathSemiring<TestBean,SimpleDigraph.SimpleEdge,IndexedMutableSimpleDigraph<TestBean>>> dijkstra = new Dijkstra<LeastPathLabel,
-																								                      IndexedMutableSimpleDigraph<TestBean>,
-																								                      NextStepDigraph<TestBean,LeastPathLabel,SimpleDigraph.SimpleEdge,IndexedMutableSimpleDigraph<TestBean>>,
-																								                      LeastPathComparator,
-																								                      LeastPathSemiring<TestBean,SimpleDigraph.SimpleEdge,IndexedMutableSimpleDigraph<TestBean>>>();
+                                                                                                                      IndexedMutableSimpleDigraph<TestBean>,
+                                                                                                                      NextStepDigraph<TestBean,LeastPathLabel,SimpleDigraph.SimpleEdge,IndexedMutableSimpleDigraph<TestBean>>,
+                                                                                                                      LeastPathComparator,
+                                                                                                                      LeastPathSemiring<TestBean,SimpleDigraph.SimpleEdge,IndexedMutableSimpleDigraph<TestBean>>>();
 
-(Yes, the diamond operator might make this half the size. Too bad the code stopped compiling in JDK6 despite being correct.)
+(Yes, Java's new diamond operator might make this half the size. Too bad the code stopped compiling in JDK6.)
   
 
-# Maybe That Lance Wasn't the Right Tool for Attacking That Windmill
+## Maybe That Lance Wasn't the Right Tool for Attacking That Windmill
 
-I'm very happy with how the code came out this early in the project. I've been able to make something both explainable and powerful, and extend it to solve for betweenness (which deserves its own blog article). It took eight weeks of a few hours after work when family and chores left me a little time, maybe 25 hours total. The code looks just like the algorithms in the book, not an example of some vile boundary case. 
+I'm very happy with how the code came out this early in the project. I've been able to make something both explainable and powerful, and extend it to solve for betweenness (which deserves its own blog article). It took eight weeks of a few hours after work when family and chores left me a little time, maybe just 25 hours total. The final code looks just like the algorithms in the book, not an example of some vile boundary case. 
 
 Download it and try it out. In sbt, it's easy to type in a graph and try out different algorithms:
 

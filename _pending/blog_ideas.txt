@@ -1,0 +1,19 @@
+About the project
+
+Performace
+    The right algorithm
+    @Specialized had problems
+    case was bad
+    optimized equals
+    range was bad
+    * even more optimized equals
+
+    JDK6,7,8 performance
+
+
+Test data sets
+    Stanford graph base
+    Enron
+
+
+
