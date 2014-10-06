@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Intuitive Counter</title>
-    <description>David Walend&#39;s blog about scala and graphs.</description>
-    <link>http://blog.walend.net/</link>
-    <atom:link href="http://blog.walend.net/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Wed, 10 Sep 2014 23:01:06 -0400</pubDate>
-    <lastBuildDate>Wed, 10 Sep 2014 23:01:06 -0400</lastBuildDate>
+    <title>Intuitive Counter: A Blog about Scala, Graphs, and Coding</title>
+    <description>David Walend&#39;s blog about scala, graphs, and coding</description>
+    <link>http://dwalend.github.io/blog/</link>
+    <atom:link href="http://dwalend.github.io/blog/feed.xml" rel="self" type="application/rss+xml" />
+    <pubDate>Sun, 05 Oct 2014 23:04:06 -0400</pubDate>
+    <lastBuildDate>Sun, 05 Oct 2014 23:04:06 -0400</lastBuildDate>
     <generator>Jekyll v2.1.1</generator>
     
       <item>
@@ -131,8 +131,8 @@
 &lt;p&gt;Dave&lt;/p&gt;
 </description>
         <pubDate>Wed, 10 Sep 2014 00:00:00 -0400</pubDate>
-        <link>http://blog.walend.net/2014/09/10/graphs-in-scala/</link>
-        <guid isPermaLink="true">http://blog.walend.net/2014/09/10/graphs-in-scala/</guid>
+        <link>http://dwalend.github.io/blog/2014/09/10/graphs-in-scala/</link>
+        <guid isPermaLink="true">http://dwalend.github.io/blog/2014/09/10/graphs-in-scala/</guid>
         
         
       </item>
@@ -150,8 +150,8 @@
 &lt;p&gt;Speakers at local MeetUps and conferences continue to surprise me with their praise of Scala. They talk about how writing Scala should be fun, and it usually is a blast. I’ve mostly enjoyed writing code over the years, but had never seen people talk openly about anything the way Scala’s proponents tell &lt;a href=&quot;https://www.youtube.com/watch?v=hzf3hTUKk8U&quot;&gt;how pleasant it is.&lt;/a&gt;. They even talk about &lt;a href=&quot;https://github.com/ktonga/reactive-turtle&quot;&gt;love and parenting&lt;/a&gt;. Further, the speakers at the Scala conferences and MeetUps are almost universally fit. Unlike so many in our profession, these people are jacked. They must have time to work out. I didn’t get it until I started doing almost all my work in Scala. I’ve gone from finishing just before deadlines to finishing with days or even whole weeks to spare. I use the time to polish my code, profile and speed it up, and to write extra tests. And then I get some exercise, horse around with my kids, work on open-source projects, and write a blog. &lt;/p&gt;
 </description>
         <pubDate>Mon, 01 Sep 2014 00:00:00 -0400</pubDate>
-        <link>http://blog.walend.net/2014/09/01/back-in/</link>
-        <guid isPermaLink="true">http://blog.walend.net/2014/09/01/back-in/</guid>
+        <link>http://dwalend.github.io/blog/2014/09/01/back-in/</link>
+        <guid isPermaLink="true">http://dwalend.github.io/blog/2014/09/01/back-in/</guid>
         
         
       </item>
