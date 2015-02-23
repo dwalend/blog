@@ -60,9 +60,11 @@ After fiddling around a bit I decided that I liked fiddling around. The data was
 
 I hacked in some [Slick]() code, which worked as advertised. I'd be highly critical of Slick if it had trouble with a schema of two unrelated tables. The remarkable thing about this Slick code is how unremarkable it is.
 
-## Json, Because I Don't Want a DB in my Graph Algorithms (just yet)
+## Json, Because I Don't Want a DB in my Graph Algorithms Test Code
 
-I was fiddling around in the REPL anyway, so I made my data file for the tests there. [Scala pickling]() is the future of Json in Scala (but not quite the present yet -- [no spray.io support]() for example). It uses macros everywhere, so it is very efficient and doesn't need help in the parsing. I've got the usual concerns about changing data structures, but the compiler would have to know the history of the class being unpickled to make that easy for me. I don't think anyone has solved that puzzle yet.
+Github is good at flat files. It's not that hard to pull a database out of an archive in an sbt, but I didn't want to put that flavor of complexity into the graph algorithms project. I am willing to do something uninvasive and standard if it saves some weight of code. [Scala pickling](https://github.com/scala/pickling) is the future of Json in Scala (but not quite the present yet -- [no spray.io support](https://github.com/spray/spray/issues/1002) for example). It uses macros everywhere, so it is very efficient and doesn't need help in the parsing. That's the sort of hammer I want to swing.
+
+I was fiddling around in the REPL anyway, so I made my data file for the graph algorithm tests there.
 
     import scala.pickling._
     import scala.pickling.json._
@@ -77,7 +79,31 @@ I was fiddling around in the REPL anyway, so I made my data file for the tests t
     val fileString = scala.io.Source.fromFile("results/LessEnron2000Apr.txt").mkString
     Files.write(Paths.get("results/LessEnron2000Apr.txt"), pickledEdges.value.getBytes(StandardCharsets.UTF_8))
 
-The only explicitive was pickledEdges.toString vs .value
+The only explicative was figuring out to use pickledEdges.value instead of pickledEdges.toString .
+
+## A Test of Betweenness on the Enron Data
+
+Pulling the graph back out and running Brandes' betweenness was very tidy:
+
+    "Betweenness for Enron data" should "be calculated" in {
+
+      import scala.io.Source
+      import scala.pickling._
+      import scala.pickling.json._
+
+      val support = FewestNodes
+
+      val fileContents = Source.fromURL(getClass.getResource("/Enron2000Apr.json")).mkString
+      val edges = JSONPickle(fileContents).unpickle[Seq[(String,String,Int)]]
+
+      val labelGraphAndBetweenness = Brandes.allLeastPathsAndBetweenness(edges,Seq.empty,FewestNodes,FewestNodes.convertEdgeToLabel)
+    }
+
+
+Compare with paper
+
+
+
 
 About Betweenness
 
