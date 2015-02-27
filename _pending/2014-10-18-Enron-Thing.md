@@ -99,28 +99,53 @@ Pulling the graph back out and running Brandes' betweenness was very tidy:
       val labelGraphAndBetweenness = Brandes.allLeastPathsAndBetweenness(edges,Seq.empty,FewestNodes,FewestNodes.convertEdgeToLabel)
     }
 
+## Results
 
-Compare with paper
+In the REPL via sbt test:console, I ran
 
+    scala> import scala.io.Source
+    scala> import scala.pickling._
+    scala> import scala.pickling.json._
+    scala> import net.walend.graph.SomeGraph._
+    scala> import net.walend.graph.semiring.Brandes.BrandesSteps
+    scala> import net.walend.graph.semiring
+    scala> import net.walend.graph.semiring._
+    scala> val support = FewestNodes
+    scala> val fileContents = Source.fromURL(getClass.getResource("/Enron2000Apr.json")).mkString
+    scala> val edges = JSONPickle(fileContents).unpickle[Seq[(String,String,Int)]]
+    scala> val labelGraphAndBetweenness = Brandes.allLeastPathsAndBetweenness(edges,Seq.empty,FewestNodes,FewestNodes.convertEdgeToLabel)
+    scala> val betweenness = labelGraphAndBetweenness._2
 
+And finally
 
+    scala> betweenness.to[Seq].sortBy(x => x._2)
+    java.lang.AssertionError: assertion failed: List(value _2$mcD$sp, value _2$mcD$sp, value _2$mcD$sp, value _2$mcD$sp, value _2$mcD$sp, value _2$mcD$sp, value _2$mcD$sp, value _2$mcD$sp, value _2$mcD$sp, value _2$mcD$sp)
+    	at scala.reflect.internal.Symbols$Symbol.suchThat(Symbols.scala:1916)
+    	at scala.tools.nsc.transform.SpecializeTypes$$anon$2.matchingSymbolInPrefix$1(SpecializeTypes.scala:1460)
+    	at scala.tools.nsc.transform.SpecializeTypes$$anon$2.transformSelect$1(SpecializeTypes.scala:1483)
+     ...
+     	at sbt.TrapExit$App.run(TrapExit.scala:248)
+     	at java.lang.Thread.run(Thread.java:745)
 
-About Betweenness
+     That entry seems to have slain the compiler.  Shall I replay
+     your session? I can re-run each line except the last one.
+     [y/n]
 
-And how weird betweenness is
+How civilized, but not quite what I wanted for a finale. It's only 1700 email addresses, so sortBy should be OK. A quck search lead to [a bug report vs Scala 2.11.5](https://issues.scala-lang.org/browse/SI-9099), already fixed in 2.11.6. Swicthing to 2.11.4 got through the trouble.
 
-Betweenness at Enron
+Here's a list of the people with the 10 highest betweenness values in April 2000 at Enron:
 
-Did Betweenness catch the crooks?
+    (steven.kean@enron.com,53260.58012691413)
+    (jeff.dasovich@enron.com,59156.98903661527)
+    (chris.germany@enron.com,61701.19086004503)
+    (carol.clair@enron.com,67655.27390774187)
+    (susan.scott@enron.com,76157.68561454736)
+    (sally.beck@enron.com,82040.94643046238)
+    (sara.shackleton@enron.com,89571.2341102196)
+    (vince.kaminski@enron.com,96123.70935699047)
+    (tana.jones@enron.com,110579.53312945696)
+    (mark.taylor@enron.com,111545.81230355639)
 
-From https://github.com/sirthias/parboiled2 , "Note that there is one quirk: For some reason this notation stops working if you explicitly define a companion object for your case class. You'll have to write ~> (Person(_, _)) instead."  Tell him the companion object has to extend Tuple.
+Betweenness did not do that good a job finding [the executives accused in the scandal](http://en.wikipedia.org/wiki/Enron_scandal#Trials).
 
-Asked Mathias to fix the CSV example. Thanks! But Parboiled2 can't stream . https://groups.google.com/forum/#!topic/parboiled-user/b7PH49fiFco and the thing is running out of memory on the first file.
-
-Code was really straight-forward to load the data, loads a file in about 30 seconds. But ran out of memory when I tried to groupby (sender,receiver) all 30 files at once, after about 12 minutes.
-
-Changed over to do my filtering early and all of my evaluation as late as possible.
-
-java.nio.charset.MalformedInputException: Input length = 1
-
-No data for metadata2000mar.csv , metadata2000sep.csv , metadata2001aug.csv . Deleted the files, but that wasn't the problem, so I restored them. Added "iso-8859-1" and fixed it.
+Probably the most interesting of these is Vincent Kaminski, Enron's managing director for research. [An NY Times article](http://www.nytimes.com/2006/01/29/business/businessspecial3/29profiles.html?pagewanted=all) describes him as ethical and heroic, in contrast to the other power brokers around him. "As Enron was collapsing, Mr. Kaminski helped all 50 of his former research staff members find jobs elsewhere." vince.kaminski@enron.com also sent 274 emails to himself at enron.com and 198 to himself AOL, more than any other edge in the data set.
