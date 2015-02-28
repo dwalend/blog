@@ -8,6 +8,8 @@ The testing in my [graph algorithm library](https://github.com/dwalend/ScalaGrap
 
 At ActivateNetworks we did a lot of work with social graphs; I implemented Brandes' algorithm while there. Social graphs are more sane because [people form communities of about 150 members, Dunbar's number](http://en.wikipedia.org/wiki/Dunbar%27s_number). I couldn't share our customers' data, so I pulled in part of the [Enron email corpus](http://en.wikipedia.org/wiki/Enron_Corpus) to use for tests, which I turned into a [still-very-hacky github project](https://github.com/dwalend/EnronMetaData).
 
+One thing that always bothered me at ActivateNetworks was our base-level assumption that any email meant a relationship existed. I can FewestNodes semiring in Brandes algorithm for something else, like the MostProbable semiring with cheezy normalized probability weights from dividing the number of emails between two people by the maximum number in the month. If that's radically different then I've discovered something worth bugging my old comrades about.
+
 ## The Enron Email Corpus
 
 The Justice Department seized Enron's email logs from the company and went fishing for crooks. The [Enron email corpus](http://en.wikipedia.org/wiki/Enron_Corpus) may be the largest clob of email available for research. I'll let others report [the results](http://en.wikipedia.org/wiki/Enron_scandal); they found what they were looking for. [Andrew McCallum](http://en.wikipedia.org/wiki/Andrew_McCallum) purchased a copy of it and made it available to us all. You can download the whole works from a variety of sources, including the full text of the emails. Most of them are remarkably dull, but are great fodder for a talk on (total lack of) electronic privacy.
@@ -145,6 +147,29 @@ Here's a list of the people with the 10 highest betweenness values in April 2000
     (tana.jones@enron.com,110579.53312945696)
     (mark.taylor@enron.com,111545.81230355639)
 
+Switching to the MostProbable semiring was just a matter of mapping the edges to normalized edges and rerunning Brandes'. (The most frequented edge is vince.kaminski@enron.com writing to vince.kaminski@aol.com 274 times. I'm sure there's a story behind that.)
+
+    val weightedEdges = edges.map(x => (x._1,x._2,x._3.toDouble/274))
+    val normalizedGraphAndBetweennes = Brandes.allLeastPathsAndBetweenness(edges,Seq.empty,MostProbable,MostProbable.convertEdgeToLabel)
+    val normalizedBetweenness = normalizedGraphAndBetweennes._2
+
+The 10 highest betweenness values ......, so the ActivateNetworks assumption is not that good.
+
+    (chris.germany@enron.com,72725.80682360567)
+    (steven.kean@enron.com,81287.60122108378)
+    (debra.perlingiere@enron.com,89005.54636283437)
+    (susan.scott@enron.com,90021.18526949426)
+    (sally.beck@enron.com,115103.96001437954)
+    (vince.kaminski@enron.com,119572.49086838862)
+    (tana.jones@enron.com,159331.96521970455)
+    (mark.taylor@enron.com,179964.3443774904)
+    (carol.clair@enron.com,186060.8626406191)
+    (sara.shackleton@enron.com,206970.0875042239)
+
 Betweenness did not do that good a job finding [the executives accused in the scandal](http://en.wikipedia.org/wiki/Enron_scandal#Trials). Hopefully the Louvain method will do better.
 
 Probably the most interesting of these is Vincent Kaminski, Enron's managing director for research. [An NY Times article](http://www.nytimes.com/2006/01/29/business/businessspecial3/29profiles.html?pagewanted=all) describes him as ethical, professional, and heroic, in contrast to the other power brokers around him. "As Enron was collapsing, Mr. Kaminski helped all 50 of his former research staff members find jobs elsewhere."
+
+
+
+
