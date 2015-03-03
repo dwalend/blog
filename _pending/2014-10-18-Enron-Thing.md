@@ -4,17 +4,17 @@ title: Between People at Enron
 comments: True
 ---
 
-The testing in my [graph algorithm library](https://github.com/dwalend/ScalaGraphMinimizer) up to now has all been on randomly connected graphs -- graphs with some random edges connecting nodes. To test Brandes' betweenness algorithm and (soon) the Louvain method I wanted some graph from nature. The Louvain method would be particularly bad at random graphs, and betweenness doesn't make a lot of sense.
+The tests in my [graph algorithm library](https://github.com/dwalend/ScalaGraphMinimizer) up to now have all used randomly connected graphs -- graphs with some random edges connecting nodes. To test Brandes' betweenness algorithm and (soon) the Louvain method I wanted some graph from nature. The Louvain method would be particularly bad at random graphs, and betweenness doesn't make a lot of sense.
 
 At ActivateNetworks we did a lot of work with social graphs; I implemented Brandes' algorithm while there. Social graphs are more sane because [people form communities of about 150 members, Dunbar's number](http://en.wikipedia.org/wiki/Dunbar%27s_number). I couldn't share our customers' data, so I pulled in part of the [Enron email corpus](http://en.wikipedia.org/wiki/Enron_Corpus) to use for tests, which I turned into a [still-very-hacky github project](https://github.com/dwalend/EnronMetaData).
 
-One thing that always bothered me at ActivateNetworks was our base-level assumption that any email meant a relationship existed. I can FewestNodes semiring in Brandes algorithm for something else, like the MostProbable semiring with cheezy normalized probability weights from dividing the number of emails between two people by the maximum number in the month. If that's radically different then I've discovered something worth bugging my old comrades about.
+One thing that always bothered me at ActivateNetworks was our base-level assumption that any email meant a relationship existed. I can swap the FewestNodes semiring in Brandes algorithm for something else, like the MostProbable semiring (with cheezy normalized probability weights from dividing the number of emails between two people by the maximum number in the month). If that's radically different then I've discovered something worth bugging my old comrades about.
 
 ## The Enron Email Corpus
 
-The Justice Department seized Enron's email logs from the company and went fishing for crooks. The [Enron email corpus](http://en.wikipedia.org/wiki/Enron_Corpus) may be the largest clob of email available for research. I'll let others report [the results](http://en.wikipedia.org/wiki/Enron_scandal); they found what they were looking for. [Andrew McCallum](http://en.wikipedia.org/wiki/Andrew_McCallum) purchased a copy of it and made it available to us all. You can download the whole works from a variety of sources, including the full text of the emails. Most of them are remarkably dull, but are great fodder for a talk on (total lack of) electronic privacy.
+The Justice Department seized Enron's email logs from the company and went fishing for crooks. The [Enron email corpus](http://en.wikipedia.org/wiki/Enron_Corpus) may be the largest clob of email available for research. I'll let others report [the results](http://en.wikipedia.org/wiki/Enron_scandal); they found what they were looking for. [Andrew McCallum](http://en.wikipedia.org/wiki/Andrew_McCallum) purchased a copy of it and made it available to us all. You can download the whole works from a variety of sources, including the full text of the emails. Most of them are remarkably dull, but are great fodder for a talk on (the total lack of) electronic privacy.
 
-I downloaded them from [Forever Data](http://foreverdata.org/1009/). (I could not make up that company's name in a creepy short story.) I use the email metadata only, which, for each email sent, shows who was emailing who. It's much smaller, and in an easy-to-parse CSV format. I also only used the data for April 2000 for my tests. I don't need more, and github gets cranky about [files bigger than 100 MB](https://help.github.com/articles/what-is-my-disk-quota/).
+I downloaded them from [Forever Data](http://foreverdata.org/1009/). (I could not make up that company's name for a sophomore short story class.) I use the email metadata only, which, for each email sent, shows who was emailing who. It's much smaller, and in an easy-to-parse CSV format. I also only used the data for April 2000 for my tests. I don't need more, and github gets cranky about [files bigger than 100 MB](https://help.github.com/articles/what-is-my-disk-quota/).
 
 
 ## Experience is What You Get When You Really Wanted Something Else
@@ -25,7 +25,7 @@ I'd thought parsing the CSVs would be a good way to get a little experience with
 
     object Transmission extends ((String,Int,Long,Email,Email,String,Boolean,Boolean,Boolean,String,String,String,String) => Transmission)
 
-I can't recommend trying to maintain that extends clause in a project where someone gets to add or remove columns, but the compiler will complain if you break it.
+I can't recommend trying to maintain that extends clause in a project where anyone gets to add or remove columns, but at least the compiler will complain if you break it.
 
 My parser ran out of memory. [Parboiled2 can't stream](https://groups.google.com/forum/#!topic/parboiled-user/b7PH49fiFco).
 
@@ -33,7 +33,7 @@ My parser ran out of memory. [Parboiled2 can't stream](https://groups.google.com
 
 I gave up and wrote my own CSV parser. I was a bit [intimidated at first](http://tburette.github.io/blog/2014/05/25/so-you-want-to-write-your-own-CSV-code/), but Scala kept it down to about [25 lines of uninteresting imperative code](https://github.com/dwalend/EnronMetaData/blob/master/src/main/scala/net/walend/enron/CsvParser.scala).
 
-The more interesting, more idiomatic feature of the code is that parsing any line produces either a record of someone sending an email or a description of what problem the parser encountered -- Either\[Problem,Transmission\] in Scala. The code has a lot of lines that dig out individual problems with the data.
+The more interesting, more idiomatic feature of the code is that parsing any line produces either a record of someone sending an email or a description of what problem the parser encountered -- Either\[Problem,Transmission\] in Scala. The bulk of the code is lines that dig out problems with the data.
 
       def create(fileName:String,lineNumber:Int,lineContents:Seq[String]):Either[Problem,Transmission] = {
         if (lineContents.size != 11) {
@@ -50,19 +50,19 @@ The more interesting, more idiomatic feature of the code is that parsing any lin
           else  Right(Transmission(fileName = fileName,
 
 
-This approach works amazingly well. At the end of one pass I have a large sample of clean data plus a list of problems to fix, caveat problems I've never thought about that bring down the whole works. (I really need Bill Venners' [Eastwood -- Good, Bad, or Ugly](https://thenewcircle.com/s/post/1704/comparing_functional_error_handling_in_scalaz_and_scalactic?utm_campaign=twitter_channel&utm_source=twitter&utm_medium=social&utm_content=%22Comparing%20Functional%20Error%20Handling%20in%20Scalaz%20and%20Scalactic%2C%22%20%40bvenners%27s%20talk%20from%20%40nescalas%20is%20now%20live!) , late in the talk and in an unrecorded session the next day. We couldn't figure out how to make Eastwood play nice with monadic idioms. However, Either will get us through the night.)
+This approach works amazingly well. At the end of one pass it gives me a large sample of clean data plus a list of problems to fix, caveat problems I've never thought about that bring down the whole works. (I really need Bill Venners' [Eastwood -- Good, Bad, or Ugly](https://thenewcircle.com/s/post/1704/comparing_functional_error_handling_in_scalaz_and_scalactic?utm_campaign=twitter_channel&utm_source=twitter&utm_medium=social&utm_content=%22Comparing%20Functional%20Error%20Handling%20in%20Scalaz%20and%20Scalactic%2C%22%20%40bvenners%27s%20talk%20from%20%40nescalas%20is%20now%20live!) , late in the talk and in an unrecorded session the next day. We couldn't figure out how to make Eastwood play nice with monadic idioms. However, Either will get us through the night.)
 
 The only really aggravating problem I encountered while reading in the data was "java.nio.charset.MalformedInputException: Input length = 1" , which is pretty unhelpful. Adding the iso-8859-1 encoding parameter to
 
     Source.fromFile(file,"iso-8859-1").getLines().toIterable.drop(1)
 
-fixed that.
+fixed that. Thank you, Google.
 
 ## Slick, Because I Really Just Want a SQL Database
 
-After fiddling around a bit I decided that I liked fiddling around. The data was columnar, and not terribly interrelated. What I really wanted was a database.
+After fiddling around a bit in the REPL I decided that I liked fiddling around with the data. The data was columnar, and not terribly interrelated. What I really wanted was a database.
 
-I hacked in some [Slick](http://slick.typesafe.com/) code, which worked as advertised. I'd be highly critical of Slick if it had trouble with a schema of two unrelated tables. The remarkable thing about this Slick code is how unremarkably simple it is.
+I hacked in some [Slick](http://slick.typesafe.com/) code, which worked exactly as advertised. I'd be highly critical of Slick if it had trouble with a schema of two tables. The remarkable thing about this Slick code is how unremarkably simple it is.
 
 ## Json, Because I Don't Want a DB in my Graph Algorithms Test Code
 
@@ -147,13 +147,13 @@ Here's a list of the people with the 10 highest betweenness values in April 2000
     (tana.jones@enron.com,110579.53312945696)
     (mark.taylor@enron.com,111545.81230355639)
 
-Switching to the MostProbable semiring was just a matter of mapping the edges to normalized edges and rerunning Brandes'. (The most frequented edge is vince.kaminski@enron.com writing to vince.kaminski@aol.com 274 times. I'm sure there's a story behind that.)
+Switching to the MostProbable semiring was just a matter of mapping the edges to normalized edges and rerunning Brandes'. (The most frequented sender and recipient pair in the sample is vince.kaminski@enron.com writing to vince.kaminski@aol.com 274 times. I'm sure there's an anecdote behind that.)
 
     val weightedEdges = edges.map(x => (x._1,x._2,x._3.toDouble/274))
-    val normalizedGraphAndBetweennes = Brandes.allLeastPathsAndBetweenness(edges,Seq.empty,MostProbable,MostProbable.convertEdgeToLabel)
-    val normalizedBetweenness = normalizedGraphAndBetweennes._2
+    val normalizedGraphAndBetweenness = Brandes.allLeastPathsAndBetweenness(edges,Seq.empty,MostProbable,MostProbable.convertEdgeToLabel)
+    val normalizedBetweenness = normalizedGraphAndBetweenness._2
 
-The 10 highest betweenness values ......, so the ActivateNetworks assumption is not that good.
+The nodes with the 10 highest betweenness using this probability model are not that different; debra.perlingiere@enron.com replaced jeff.dasovich@enron.com, and the other rankings moved around a bit. The ActivateNetworks assumption was fine.
 
     (chris.germany@enron.com,72725.80682360567)
     (steven.kean@enron.com,81287.60122108378)
