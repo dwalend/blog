@@ -4,7 +4,7 @@ title: Between People at Enron
 comments: True
 ---
 
-The tests in my [graph algorithm library](https://github.com/dwalend/ScalaGraphMinimizer) up to now have all used randomly connected graphs -- graphs with some random edges connecting nodes. To test Brandes' betweenness algorithm and (soon) the Louvain method I wanted some graph from nature. The Louvain method would be particularly bad at random graphs, and betweenness doesn't make a lot of sense.
+The tests in my [graph algorithm library](https://github.com/dwalend/ScalaGraphMinimizer) up to now have all used randomly connected graphs -- graphs with some random edges connecting nodes. To test Brandes' betweenness algorithm and (soon) the Louvain method I wanted some graph from nature. The Louvain method would be particularly bad at random graphs.
 
 At ActivateNetworks we did a lot of work with social graphs; I implemented Brandes' algorithm while there. Social graphs are less random because [people form communities of about 150 members, Dunbar's number](http://en.wikipedia.org/wiki/Dunbar%27s_number), and most people have active relationships with 12 people or less, mostly in that group of 150. I couldn't share our customers' data, so I pulled in part of the [Enron email corpus](http://en.wikipedia.org/wiki/Enron_Corpus) to use for tests, which I turned into a [still-very-hacky github project](https://github.com/dwalend/EnronMetaData).
 
@@ -62,7 +62,7 @@ fixed that. Thank you, Google.
 
 After fiddling around a bit in the REPL I decided that I liked fiddling around with the data. The data was columnar, and not terribly interrelated. What I really wanted was a database.
 
-I hacked in some [Slick](http://slick.typesafe.com/) code, which worked exactly as advertised. I'd be highly critical of Slick if it had trouble with a schema of two tables. The remarkable thing about this Slick code is how it worked just like the examples showed.
+I hacked in some [Slick](http://slick.typesafe.com/) code, which worked exactly as advertised. I'd be highly critical of Slick if it had trouble with a schema of two tables. The remarkable thing about this Slick code is how it worked just like the examples.
 
 ## Json, Because I Don't Want a DB in my Graph Algorithms Test Code
 
