@@ -15,5 +15,21 @@ Test data sets
     Stanford graph base
     Enron
 
+How to use case classes with custom companion objects without giving up anything.
+    See examples from the pharmaTransform code from work
 
+Controlling/replacing .par for jobs in a collection
+
+Case class companion objects
+
+Scala compiled to JavaScript
+    Followed http://www.scala-js.org/doc/tutorial.html
+    https://groups.google.com/forum/#!forum/scala-js for the strange package name error
+    Reported bug. See https://groups.google.com/forum/#!topic/scala-js/Vx6bibiC4X0 and https://github.com/scala-js/scala-js/issues/364 . Should be fixed in the 0.6 release.
+
+
+
+Why keep things simple: Ref the bit about "Always favor readability"
+
+                        https://medium.com/@jaimefjorge/studying-scala-code-style-how-twitter-and-spark-do-it-ff4005835f01
 
