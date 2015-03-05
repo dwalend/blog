@@ -6,20 +6,20 @@ comments: True
 
 The tests in my [graph algorithm library](https://github.com/dwalend/ScalaGraphMinimizer) up to now have all used randomly connected graphs -- graphs with some random edges connecting nodes. To test Brandes' betweenness algorithm and (soon) the Louvain method I wanted some graph from nature. The Louvain method would be particularly bad at random graphs, and betweenness doesn't make a lot of sense.
 
-At ActivateNetworks we did a lot of work with social graphs; I implemented Brandes' algorithm while there. Social graphs are more sane because [people form communities of about 150 members, Dunbar's number](http://en.wikipedia.org/wiki/Dunbar%27s_number). I couldn't share our customers' data, so I pulled in part of the [Enron email corpus](http://en.wikipedia.org/wiki/Enron_Corpus) to use for tests, which I turned into a [still-very-hacky github project](https://github.com/dwalend/EnronMetaData).
+At ActivateNetworks we did a lot of work with social graphs; I implemented Brandes' algorithm while there. Social graphs are less random because [people form communities of about 150 members, Dunbar's number](http://en.wikipedia.org/wiki/Dunbar%27s_number), and most people have active relationships with 12 people or less, mostly in that group of 150. I couldn't share our customers' data, so I pulled in part of the [Enron email corpus](http://en.wikipedia.org/wiki/Enron_Corpus) to use for tests, which I turned into a [still-very-hacky github project](https://github.com/dwalend/EnronMetaData).
 
-One thing that always bothered me at ActivateNetworks was our base-level assumption that any email meant a relationship existed. I can swap the FewestNodes semiring in Brandes algorithm for something else, like the MostProbable semiring (with cheezy normalized probability weights from dividing the number of emails between two people by the maximum number in the month). If that's radically different then I've discovered something worth bugging my old comrades about.
+One thing that always bothered me at ActivateNetworks was our base-level assumption that any email at all meant a relationship might exist. I can swap the FewestNodes semiring in Brandes algorithm for something else, like the MostProbable semiring (with cheezy normalized probability weights from dividing the number of emails between two people by the maximum number in the month). If that's radically different then I've discovered something worth bugging my old comrades about.
 
 ## The Enron Email Corpus
 
-The Justice Department seized Enron's email logs from the company and went fishing for crooks. The [Enron email corpus](http://en.wikipedia.org/wiki/Enron_Corpus) may be the largest clob of email available for research. I'll let others report [the results](http://en.wikipedia.org/wiki/Enron_scandal); they found what they were looking for. [Andrew McCallum](http://en.wikipedia.org/wiki/Andrew_McCallum) purchased a copy of it and made it available to us all. You can download the whole works from a variety of sources, including the full text of the emails. Most of them are remarkably dull, but are great fodder for a talk on (the total lack of) electronic privacy.
+The Justice Department seized Enron's email logs from the company and went fishing for crooks. The [Enron email corpus](http://en.wikipedia.org/wiki/Enron_Corpus) may be the largest clob of email available for research. I'll let others report [the results](http://en.wikipedia.org/wiki/Enron_scandal); they found what they were looking for. [Andrew McCallum](http://en.wikipedia.org/wiki/Andrew_McCallum) purchased a copy of it and made it available to us all. You can download the whole works from a variety of sources, including the full text of the emails. Most of them are remarkably dull, but are great fodder for a talk on (our total lack of) electronic privacy.
 
-I downloaded them from [Forever Data](http://foreverdata.org/1009/). (I could not make up that company's name for a sophomore short story class.) I use the email metadata only, which, for each email sent, shows who was emailing who. It's much smaller, and in an easy-to-parse CSV format. I also only used the data for April 2000 for my tests. I don't need more, and github gets cranky about [files bigger than 100 MB](https://help.github.com/articles/what-is-my-disk-quota/).
+I downloaded them from [Forever Data](http://foreverdata.org/1009/). (I could not make up that organization's name for a sophomore short story class.) I use the email metadata only, which, for each email sent, shows who was emailing who. It's much smaller, and in an easy-to-parse CSV format. I also only used the data for April 2000 for my tests. I don't need more, and github gets cranky about [files bigger than 100 MB](https://help.github.com/articles/what-is-my-disk-quota/).
 
 
 ## Experience is What You Get When You Really Wanted Something Else
 
-I'd thought parsing the CSVs would be a good way to get a little experience with [Parboiled](https://github.com/sirthias/parboiled2). It didn't go so well. The CSV example didn't work out of the box, but [Mathias](https://github.com/sirthias) fixed it when I asked. He then added it as an official example. I had a companion object for my Transmissions class, which [caused trouble](https://github.com/sirthias/parboiled2); "Note that there is one quirk: For some reason this notation stops working if you explicitly define a companion object for your case class. You'll have to write ~> (Person(_, _)) instead." Having the companion object extend the right Tuple13 fixed it (and possibly problems with Slick).
+I'd thought parsing the CSVs would be a good way to get a little experience with [Parboiled](https://github.com/sirthias/parboiled2). It didn't go so well. The CSV example didn't work out of the box, but [Mathias](https://github.com/sirthias) fixed it when I asked. He then added it as an official example. I had a companion object for my Transmission class, which [caused trouble](https://github.com/sirthias/parboiled2); "Note that there is one quirk: For some reason this notation stops working if you explicitly define a companion object for your case class. You'll have to write ~> (Person(_, _)) instead." Having the companion object extend the right Tuple13 fixed it (and possibly problems with Slick).
 
     import implicit.expletives
 
@@ -58,11 +58,11 @@ The only really aggravating problem I encountered while reading in the data was 
 
 fixed that. Thank you, Google.
 
-## Slick, Because I Really Just Want a SQL Database
+## Slick for Two Tables
 
 After fiddling around a bit in the REPL I decided that I liked fiddling around with the data. The data was columnar, and not terribly interrelated. What I really wanted was a database.
 
-I hacked in some [Slick](http://slick.typesafe.com/) code, which worked exactly as advertised. I'd be highly critical of Slick if it had trouble with a schema of two tables. The remarkable thing about this Slick code is how unremarkably simple it is.
+I hacked in some [Slick](http://slick.typesafe.com/) code, which worked exactly as advertised. I'd be highly critical of Slick if it had trouble with a schema of two tables. The remarkable thing about this Slick code is how it worked just like the examples showed.
 
 ## Json, Because I Don't Want a DB in my Graph Algorithms Test Code
 
@@ -132,9 +132,9 @@ And finally
      your session? I can re-run each line except the last one.
      [y/n]
 
-How civilized, but not quite what I wanted for a finale. It's only 1700 email addresses, so sortBy should be fine. A quick search lead to [a bug report vs Scala 2.11.5](https://issues.scala-lang.org/browse/SI-9099), already fixed in 2.11.6. Switching to 2.11.4 got through the trouble.
+How civilized, but not quite what I wanted for a finale. It's only 1700 email transmissions, so sortBy should be fine. A quick search lead to [a bug report vs Scala 2.11.5](https://issues.scala-lang.org/browse/SI-9099), already fixed in 2.11.6. Switching to 2.11.4 got through the trouble.
 
-Here's a list of the people with the 10 highest betweenness values in April 2000 at Enron:
+Here's a list of the addresses with the 10 highest betweenness values in April 2000 at Enron:
 
     (steven.kean@enron.com,53260.58012691413)
     (jeff.dasovich@enron.com,59156.98903661527)
@@ -153,7 +153,7 @@ Switching to the MostProbable semiring was just a matter of mapping the edges to
     val normalizedGraphAndBetweenness = Brandes.allLeastPathsAndBetweenness(edges,Seq.empty,MostProbable,MostProbable.convertEdgeToLabel)
     val normalizedBetweenness = normalizedGraphAndBetweenness._2
 
-The nodes with the 10 highest betweenness using this probability model are not that different; debra.perlingiere@enron.com replaced jeff.dasovich@enron.com, and the other rankings moved around a bit. The ActivateNetworks assumption was fine.
+The nodes with the 10 highest betweennesses using this probability model are not that different; debra.perlingiere@enron.com replaced jeff.dasovich@enron.com, and the other rankings moved around a bit. ActivateNetworks' assumption was fine.
 
     (chris.germany@enron.com,72725.80682360567)
     (steven.kean@enron.com,81287.60122108378)
