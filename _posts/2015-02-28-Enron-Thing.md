@@ -132,7 +132,7 @@ And finally
      your session? I can re-run each line except the last one.
      [y/n]
 
-How civilized, but not quite what I wanted for a finale. It's only 1700 email transmissions, so sortBy should be fine. A quick search lead to [a bug report vs Scala 2.11.5](https://issues.scala-lang.org/browse/SI-9099), already fixed in 2.11.6. Switching to 2.11.4 got through the trouble.
+How civilized, but not quite what I wanted for a finale. It's only 1700 email addresses, so sortBy should be fine. A quick search lead to [a bug report vs Scala 2.11.5](https://issues.scala-lang.org/browse/SI-9099), already fixed in 2.11.6. Switching to 2.11.4 got through the trouble.
 
 Here's a list of the addresses with the 10 highest betweenness values in April 2000 at Enron:
 
