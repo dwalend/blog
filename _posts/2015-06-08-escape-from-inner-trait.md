@@ -89,7 +89,7 @@ class OuterClass(val beyond: Beyond){
 ...
 ```
 
-Assigning a type of TopTrait to innerThing compiles past that, but can't find the inner trait's def. (This is the fix I settled on in the project code.) 
+Assigning a type of TopTrait to innerThing compiles past that, but can't find the inner trait's def. This makes sense to me and is the fix I settled for in the project code. 
 
 ```scala 
     val innerThing:TopTrait = beyond.innerThing

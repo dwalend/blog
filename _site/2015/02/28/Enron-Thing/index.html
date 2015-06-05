@@ -71,74 +71,67 @@
   </header>
 
   <article class="post-content">
-  <p>The tests in my <a href="https://github.com/dwalend/ScalaGraphMinimizer">graph algorithm library</a> up to now have all used randomly connected graphs – graphs with some random edges connecting nodes. To test Brandes’ betweenness algorithm and (soon) the Louvain method I wanted some graph from nature. The Louvain method would be particularly bad at random graphs.</p>
+  <p>The tests in my <a href="https://github.com/dwalend/ScalaGraphMinimizer">graph algorithm library</a> up to now have all used randomly connected graphs -- graphs with some random edges connecting nodes. To test Brandes&#39; betweenness algorithm and (soon) the Louvain method I wanted some graph from nature. The Louvain method would be particularly bad at random graphs.</p>
 
-<p>At ActivateNetworks we did a lot of work with social graphs; I implemented Brandes’ algorithm while there. Social graphs are less random because <a href="http://en.wikipedia.org/wiki/Dunbar%27s_number">people form communities of about 150 members, Dunbar’s number</a>, and most people have active relationships with 12 people or less, mostly in that group of 150. I couldn’t share our customers’ data, so I pulled in part of the <a href="http://en.wikipedia.org/wiki/Enron_Corpus">Enron email corpus</a> to use for tests, which I turned into a <a href="https://github.com/dwalend/EnronMetaData">still-very-hacky github project</a>.</p>
+<p>At ActivateNetworks we did a lot of work with social graphs; I implemented Brandes&#39; algorithm while there. Social graphs are less random because <a href="http://en.wikipedia.org/wiki/Dunbar%27s_number">people form communities of about 150 members, Dunbar&#39;s number</a>, and most people have active relationships with 12 people or less, mostly in that group of 150. I couldn&#39;t share our customers&#39; data, so I pulled in part of the <a href="http://en.wikipedia.org/wiki/Enron_Corpus">Enron email corpus</a> to use for tests, which I turned into a <a href="https://github.com/dwalend/EnronMetaData">still-very-hacky github project</a>.</p>
 
-<p>One thing that always bothered me at ActivateNetworks was our base-level assumption that any email at all meant a relationship might exist. I can swap the FewestNodes semiring in Brandes algorithm for something else, like the MostProbable semiring (with cheezy normalized probability weights from dividing the number of emails between two people by the maximum number in the month). If that’s radically different then I’ve discovered something worth bugging my old comrades about.</p>
+<p>One thing that always bothered me at ActivateNetworks was our base-level assumption that any email at all meant a relationship might exist. I can swap the FewestNodes semiring in Brandes algorithm for something else, like the MostProbable semiring (with cheezy normalized probability weights from dividing the number of emails between two people by the maximum number in the month). If that&#39;s radically different then I&#39;ve discovered something worth bugging my old comrades about.</p>
 
-<h2 id="the-enron-email-corpus">The Enron Email Corpus</h2>
+<h2>The Enron Email Corpus</h2>
 
-<p>The Justice Department seized Enron’s email logs from the company and went fishing for crooks. The <a href="http://en.wikipedia.org/wiki/Enron_Corpus">Enron email corpus</a> may be the largest clob of email available for research. I’ll let others report <a href="http://en.wikipedia.org/wiki/Enron_scandal">the results</a>; they found what they were looking for. <a href="http://en.wikipedia.org/wiki/Andrew_McCallum">Andrew McCallum</a> purchased a copy of it and made it available to us all. You can download the whole works from a variety of sources, including the full text of the emails. Most of them are remarkably dull, but are great fodder for a talk on (our total lack of) electronic privacy.</p>
+<p>The Justice Department seized Enron&#39;s email logs from the company and went fishing for crooks. The <a href="http://en.wikipedia.org/wiki/Enron_Corpus">Enron email corpus</a> may be the largest clob of email available for research. I&#39;ll let others report <a href="http://en.wikipedia.org/wiki/Enron_scandal">the results</a>; they found what they were looking for. <a href="http://en.wikipedia.org/wiki/Andrew_McCallum">Andrew McCallum</a> purchased a copy of it and made it available to us all. You can download the whole works from a variety of sources, including the full text of the emails. Most of them are remarkably dull, but are great fodder for a talk on (our total lack of) electronic privacy.</p>
 
-<p>I downloaded them from <a href="http://foreverdata.org/1009/">Forever Data</a>. (I could not make up that organization’s name for a sophomore short story class.) I use the email metadata only, which, for each email sent, shows who was emailing who. It’s much smaller, and in an easy-to-parse CSV format. I also only used the data for April 2000 for my tests. I don’t need more, and github gets cranky about <a href="https://help.github.com/articles/what-is-my-disk-quota/">files bigger than 100 MB</a>.</p>
+<p>I downloaded them from <a href="http://foreverdata.org/1009/">Forever Data</a>. (I could not make up that organization&#39;s name for a sophomore short story class.) I use the email metadata only, which, for each email sent, shows who was emailing who. It&#39;s much smaller, and in an easy-to-parse CSV format. I also only used the data for April 2000 for my tests. I don&#39;t need more, and github gets cranky about <a href="https://help.github.com/articles/what-is-my-disk-quota/">files bigger than 100 MB</a>.</p>
 
-<h2 id="experience-is-what-you-get-when-you-really-wanted-something-else">Experience is What You Get When You Really Wanted Something Else</h2>
+<h2>Experience is What You Get When You Really Wanted Something Else</h2>
 
-<p>I’d thought parsing the CSVs would be a good way to get a little experience with <a href="https://github.com/sirthias/parboiled2">Parboiled</a>. It didn’t go so well. The CSV example didn’t work out of the box, but <a href="https://github.com/sirthias">Mathias</a> fixed it when I asked. He then added it as an official example. I had a companion object for my Transmission class, which <a href="https://github.com/sirthias/parboiled2">caused trouble</a>; “Note that there is one quirk: For some reason this notation stops working if you explicitly define a companion object for your case class. You’ll have to write ~&gt; (Person(_, _)) instead.” Having the companion object extend the right Tuple13 fixed it (and possibly problems with Slick).</p>
-
-<pre><code>import implicit.expletives
+<p>I&#39;d thought parsing the CSVs would be a good way to get a little experience with <a href="https://github.com/sirthias/parboiled2">Parboiled</a>. It didn&#39;t go so well. The CSV example didn&#39;t work out of the box, but <a href="https://github.com/sirthias">Mathias</a> fixed it when I asked. He then added it as an official example. I had a companion object for my Transmission class, which <a href="https://github.com/sirthias/parboiled2">caused trouble</a>; &quot;Note that there is one quirk: For some reason this notation stops working if you explicitly define a companion object for your case class. You&#39;ll have to write ~&gt; (Person(_, _)) instead.&quot; Having the companion object extend the right Tuple13 fixed it (and possibly problems with Slick).</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">import implicit.expletives
 
 object Transmission extends ((String,Int,Long,Email,Email,String,Boolean,Boolean,Boolean,String,String,String,String) =&gt; Transmission)
-</code></pre>
+</code></pre></div>
+<p>I can&#39;t recommend trying to maintain that extends clause in a project where anyone gets to add or remove columns, but at least the compiler will complain if you break it.</p>
 
-<p>I can’t recommend trying to maintain that extends clause in a project where anyone gets to add or remove columns, but at least the compiler will complain if you break it.</p>
+<p>My parser ran out of memory. <a href="https://groups.google.com/forum/#!topic/parboiled-user/b7PH49fiFco">Parboiled2 can&#39;t stream</a>.</p>
 
-<p>My parser ran out of memory. <a href="https://groups.google.com/forum/#!topic/parboiled-user/b7PH49fiFco">Parboiled2 can’t stream</a>.</p>
-
-<h2 id="parsing-email-metadata">Parsing Email Metadata</h2>
+<h2>Parsing Email Metadata</h2>
 
 <p>I gave up and wrote my own CSV parser. I was a bit <a href="http://tburette.github.io/blog/2014/05/25/so-you-want-to-write-your-own-CSV-code/">intimidated at first</a>, but Scala kept it down to about <a href="https://github.com/dwalend/EnronMetaData/blob/master/src/main/scala/net/walend/enron/CsvParser.scala">25 lines of uninteresting imperative code</a>.</p>
 
-<p>The more interesting, more idiomatic feature of the code is that parsing any line produces either a record of someone sending an email or a description of what problem the parser encountered – Either[Problem,Transmission] in Scala. The bulk of the code is lines that dig out problems with the data.</p>
-
-<pre><code>  def create(fileName:String,lineNumber:Int,lineContents:Seq[String]):Either[Problem,Transmission] = {
+<p>The more interesting, more idiomatic feature of the code is that parsing any line produces either a record of someone sending an email or a description of what problem the parser encountered -- Either[Problem,Transmission] in Scala. The bulk of the code is lines that dig out problems with the data.</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">  def create(fileName:String,lineNumber:Int,lineContents:Seq[String]):Either[Problem,Transmission] = {
     if (lineContents.size != 11) {
-      if (lineContents.size &lt; 11) Left(Problem(fileName, lineNumber,Category.tooFewColumns.name, s"(${lineContents.size}) in $lineContents"))
-      else Left(Problem(fileName, lineNumber,Category.tooManyColumns.name, s"(${lineContents.size}) in $lineContents"))
+      if (lineContents.size &lt; 11) Left(Problem(fileName, lineNumber,Category.tooFewColumns.name, s&quot;(${lineContents.size}) in $lineContents&quot;))
+      else Left(Problem(fileName, lineNumber,Category.tooManyColumns.name, s&quot;(${lineContents.size}) in $lineContents&quot;))
     }
     else {
       val sender = Email(lineContents(1))
       val recipient = Email(lineContents(2))
-      if(!sender.address.contains('@')) Left(Problem(fileName,lineNumber,Category.missingAt.name,s"sender $sender"))
-      else if (!recipient.address.contains('@')) Left(Problem(fileName,lineNumber,Category.missingAt.name,s"recipient $recipient"))
+      if(!sender.address.contains(&#39;@&#39;)) Left(Problem(fileName,lineNumber,Category.missingAt.name,s&quot;sender $sender&quot;))
+      else if (!recipient.address.contains(&#39;@&#39;)) Left(Problem(fileName,lineNumber,Category.missingAt.name,s&quot;recipient $recipient&quot;))
 
-      //Finally it's OK to make a Transmission
+      //Finally it&#39;s OK to make a Transmission
       else  Right(Transmission(fileName = fileName,
-</code></pre>
+</code></pre></div>
+<p>This approach works amazingly well. At the end of one pass it gives me a large sample of clean data plus a list of problems to fix, caveat problems I&#39;ve never thought about that bring down the whole works. (I really need Bill Venners&#39; <a href="https://thenewcircle.com/s/post/1704/comparing_functional_error_handling_in_scalaz_and_scalactic?utm_campaign=twitter_channel&amp;utm_source=twitter&amp;utm_medium=social&amp;utm_content=%22Comparing%20Functional%20Error%20Handling%20in%20Scalaz%20and%20Scalactic%2C%22%20%40bvenners%27s%20talk%20from%20%40nescalas%20is%20now%20live!">Eastwood -- Good, Bad, or Ugly</a> , late in the talk and in an unrecorded session the next day. We couldn&#39;t figure out how to make Eastwood play nice with monadic idioms. However, Either will get us through the night.)</p>
 
-<p>This approach works amazingly well. At the end of one pass it gives me a large sample of clean data plus a list of problems to fix, caveat problems I’ve never thought about that bring down the whole works. (I really need Bill Venners’ <a href="https://thenewcircle.com/s/post/1704/comparing_functional_error_handling_in_scalaz_and_scalactic?utm_campaign=twitter_channel&amp;utm_source=twitter&amp;utm_medium=social&amp;utm_content=%22Comparing%20Functional%20Error%20Handling%20in%20Scalaz%20and%20Scalactic%2C%22%20%40bvenners%27s%20talk%20from%20%40nescalas%20is%20now%20live!">Eastwood – Good, Bad, or Ugly</a> , late in the talk and in an unrecorded session the next day. We couldn’t figure out how to make Eastwood play nice with monadic idioms. However, Either will get us through the night.)</p>
-
-<p>The only really aggravating problem I encountered while reading in the data was “java.nio.charset.MalformedInputException: Input length = 1” , which is pretty unhelpful. Adding the iso-8859-1 encoding parameter to</p>
-
-<pre><code>Source.fromFile(file,"iso-8859-1").getLines().toIterable.drop(1)
-</code></pre>
-
+<p>The only really aggravating problem I encountered while reading in the data was &quot;java.nio.charset.MalformedInputException: Input length = 1&quot; , which is pretty unhelpful. Adding the iso-8859-1 encoding parameter to</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">Source.fromFile(file,&quot;iso-8859-1&quot;).getLines().toIterable.drop(1)
+</code></pre></div>
 <p>fixed that. Thank you, Google.</p>
 
-<h2 id="slick-for-two-tables">Slick for Two Tables</h2>
+<h2>Slick for Two Tables</h2>
 
 <p>After fiddling around a bit in the REPL I decided that I liked fiddling around with the data. The data was columnar, and not terribly interrelated. What I really wanted was a database.</p>
 
-<p>I hacked in some <a href="http://slick.typesafe.com/">Slick</a> code, which worked exactly as advertised. I’d be highly critical of Slick if it had trouble with a schema of two tables. The remarkable thing about this Slick code is how it worked just like the examples.</p>
+<p>I hacked in some <a href="http://slick.typesafe.com/">Slick</a> code, which worked exactly as advertised. I&#39;d be highly critical of Slick if it had trouble with a schema of two tables. The remarkable thing about this Slick code is how it worked just like the examples.</p>
 
-<h2 id="json-because-i-dont-want-a-db-in-my-graph-algorithms-test-code">Json, Because I Don’t Want a DB in my Graph Algorithms Test Code</h2>
+<h2>Json, Because I Don&#39;t Want a DB in my Graph Algorithms Test Code</h2>
 
-<p>Github is good at flat files. It’s not that hard to pull a database out of an archive, but I didn’t want to put that flavor of complexity into the graph algorithms project. I am willing to do something uninvasive and standard if it saves some weight of code. <a href="https://github.com/scala/pickling">Scala pickling</a> is the future of Json in Scala (but not quite the present yet – <a href="https://github.com/spray/spray/issues/1002">no spray.io support</a> for example). It uses macros everywhere, so it is very efficient and doesn’t need help in the parsing. That’s the sort of hammer I want to swing.</p>
+<p>Github is good at flat files. It&#39;s not that hard to pull a database out of an archive, but I didn&#39;t want to put that flavor of complexity into the graph algorithms project. I am willing to do something uninvasive and standard if it saves some weight of code. <a href="https://github.com/scala/pickling">Scala pickling</a> is the future of Json in Scala (but not quite the present yet -- <a href="https://github.com/spray/spray/issues/1002">no spray.io support</a> for example). It uses macros everywhere, so it is very efficient and doesn&#39;t need help in the parsing. That&#39;s the sort of hammer I want to swing.</p>
 
 <p>I was fiddling around in the REPL anyway, so I made my data file for the graph algorithm tests there.</p>
-
-<pre><code>import scala.pickling._
+<div class="highlight"><pre><code class="language-text" data-lang="text">import scala.pickling._
 import scala.pickling.json._
 import net.walend.enron.EnronDatabase
 import java.nio.file.{Paths, Files}
@@ -147,68 +140,60 @@ import java.nio.charset.StandardCharsets
 val edges = EnronDatabase.extractTransmissionCounts
 val edgeString:String = pickledEdges.value
 JSONPickle(edgeString).unpickle[Seq[(String,String,Int)]]
-Files.write(Paths.get("results/LessEnron2000Apr.txt"), pickledEdges.toString.getBytes(StandardCharsets.UTF_8))
-val fileString = scala.io.Source.fromFile("results/LessEnron2000Apr.txt").mkString
-Files.write(Paths.get("results/LessEnron2000Apr.txt"), pickledEdges.value.getBytes(StandardCharsets.UTF_8))
-</code></pre>
-
+Files.write(Paths.get(&quot;results/LessEnron2000Apr.txt&quot;), pickledEdges.toString.getBytes(StandardCharsets.UTF_8))
+val fileString = scala.io.Source.fromFile(&quot;results/LessEnron2000Apr.txt&quot;).mkString
+Files.write(Paths.get(&quot;results/LessEnron2000Apr.txt&quot;), pickledEdges.value.getBytes(StandardCharsets.UTF_8))
+</code></pre></div>
 <p>The only explicative was figuring out to use pickledEdges.value instead of pickledEdges.toString .</p>
 
-<h2 id="a-test-of-betweenness-on-the-enron-data">A Test of Betweenness on the Enron Data</h2>
+<h2>A Test of Betweenness on the Enron Data</h2>
 
-<p>Pulling the graph back out and running Brandes’ betweenness was very tidy:</p>
-
-<pre><code>"Betweenness for Enron data" should "be calculated" in {
+<p>Pulling the graph back out and running Brandes&#39; betweenness was very tidy:</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">&quot;Betweenness for Enron data&quot; should &quot;be calculated&quot; in {
 
   import scala.io.Source
   import scala.pickling._
   import scala.pickling.json._
 
-  val fileContents = Source.fromURL(getClass.getResource("/Enron2000Apr.json")).mkString
+  val fileContents = Source.fromURL(getClass.getResource(&quot;/Enron2000Apr.json&quot;)).mkString
   val edges = JSONPickle(fileContents).unpickle[Seq[(String,String,Int)]]
 
   val labelGraphAndBetweenness = Brandes.allLeastPathsAndBetweenness(edges,Seq.empty,FewestNodes,FewestNodes.convertEdgeToLabel)
 }
-</code></pre>
-
-<h2 id="results">Results</h2>
+</code></pre></div>
+<h2>Results</h2>
 
 <p>In the REPL via sbt test:console, I ran</p>
-
-<pre><code>scala&gt; import scala.io.Source
+<div class="highlight"><pre><code class="language-text" data-lang="text">scala&gt; import scala.io.Source
 scala&gt; import scala.pickling._
 scala&gt; import scala.pickling.json._
 scala&gt; import net.walend.graph.SomeGraph._
 scala&gt; import net.walend.graph.semiring.Brandes.BrandesSteps
 scala&gt; import net.walend.graph.semiring
 scala&gt; import net.walend.graph.semiring._
-scala&gt; val fileContents = Source.fromURL(getClass.getResource("/Enron2000Apr.json")).mkString
+scala&gt; val fileContents = Source.fromURL(getClass.getResource(&quot;/Enron2000Apr.json&quot;)).mkString
 scala&gt; val edges = JSONPickle(fileContents).unpickle[Seq[(String,String,Int)]]
 scala&gt; val labelGraphAndBetweenness = Brandes.allLeastPathsAndBetweenness(edges,Seq.empty,FewestNodes,FewestNodes.convertEdgeToLabel)
 scala&gt; val betweenness = labelGraphAndBetweenness._2
-</code></pre>
-
+</code></pre></div>
 <p>And finally</p>
-
-<pre><code>scala&gt; betweenness.to[Seq].sortBy(x =&gt; x._2)
+<div class="highlight"><pre><code class="language-text" data-lang="text">scala&gt; betweenness.to[Seq].sortBy(x =&gt; x._2)
 java.lang.AssertionError: assertion failed: List(value _2$mcD$sp, value _2$mcD$sp, value _2$mcD$sp, value _2$mcD$sp, value _2$mcD$sp, value _2$mcD$sp, value _2$mcD$sp, value _2$mcD$sp, value _2$mcD$sp, value _2$mcD$sp)
-	at scala.reflect.internal.Symbols$Symbol.suchThat(Symbols.scala:1916)
-	at scala.tools.nsc.transform.SpecializeTypes$$anon$2.matchingSymbolInPrefix$1(SpecializeTypes.scala:1460)
-	at scala.tools.nsc.transform.SpecializeTypes$$anon$2.transformSelect$1(SpecializeTypes.scala:1483)
+    at scala.reflect.internal.Symbols$Symbol.suchThat(Symbols.scala:1916)
+    at scala.tools.nsc.transform.SpecializeTypes$$anon$2.matchingSymbolInPrefix$1(SpecializeTypes.scala:1460)
+    at scala.tools.nsc.transform.SpecializeTypes$$anon$2.transformSelect$1(SpecializeTypes.scala:1483)
  ...
- 	at sbt.TrapExit$App.run(TrapExit.scala:248)
- 	at java.lang.Thread.run(Thread.java:745)
+    at sbt.TrapExit$App.run(TrapExit.scala:248)
+    at java.lang.Thread.run(Thread.java:745)
 
  That entry seems to have slain the compiler.  Shall I replay
  your session? I can re-run each line except the last one.
  [y/n]
-</code></pre>
+</code></pre></div>
+<p>How civilized, but not quite what I wanted for a finale. It&#39;s only 1700 email addresses, so sortBy should be fine. A quick search lead to <a href="https://issues.scala-lang.org/browse/SI-9099">a bug report vs Scala 2.11.5</a>, already fixed in 2.11.6. Switching to 2.11.4 got through the trouble.</p>
 
-<p>How civilized, but not quite what I wanted for a finale. It’s only 1700 email addresses, so sortBy should be fine. A quick search lead to <a href="https://issues.scala-lang.org/browse/SI-9099">a bug report vs Scala 2.11.5</a>, already fixed in 2.11.6. Switching to 2.11.4 got through the trouble.</p>
-
-<p>Here’s a list of the addresses with the 10 highest betweenness values in April 2000 at Enron:</p>
-
-<pre><code>(steven.kean@enron.com,53260.58012691413)
+<p>Here&#39;s a list of the addresses with the 10 highest betweenness values in April 2000 at Enron:</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">(steven.kean@enron.com,53260.58012691413)
 (jeff.dasovich@enron.com,59156.98903661527)
 (chris.germany@enron.com,61701.19086004503)
 (carol.clair@enron.com,67655.27390774187)
@@ -218,18 +203,14 @@ java.lang.AssertionError: assertion failed: List(value _2$mcD$sp, value _2$mcD$s
 (vince.kaminski@enron.com,96123.70935699047)
 (tana.jones@enron.com,110579.53312945696)
 (mark.taylor@enron.com,111545.81230355639)
-</code></pre>
-
-<p>Switching to the MostProbable semiring was just a matter of mapping the edges to normalized edges and rerunning Brandes’. (The most frequented sender and recipient pair in the sample is vince.kaminski@enron.com writing to vince.kaminski@aol.com 274 times. I’m sure there’s an anecdote behind that.)</p>
-
-<pre><code>val weightedEdges = edges.map(x =&gt; (x._1,x._2,x._3.toDouble/274))
+</code></pre></div>
+<p>Switching to the MostProbable semiring was just a matter of mapping the edges to normalized edges and rerunning Brandes&#39;. (The most frequented sender and recipient pair in the sample is vince.kaminski@enron.com writing to vince.kaminski@aol.com 274 times. I&#39;m sure there&#39;s an anecdote behind that.)</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">val weightedEdges = edges.map(x =&gt; (x._1,x._2,x._3.toDouble/274))
 val normalizedGraphAndBetweenness = Brandes.allLeastPathsAndBetweenness(edges,Seq.empty,MostProbable,MostProbable.convertEdgeToLabel)
 val normalizedBetweenness = normalizedGraphAndBetweenness._2
-</code></pre>
-
-<p>The nodes with the 10 highest betweennesses using this probability model are not that different; debra.perlingiere@enron.com replaced jeff.dasovich@enron.com, and the other rankings moved around a bit. ActivateNetworks’ assumption was fine.</p>
-
-<pre><code>(chris.germany@enron.com,72725.80682360567)
+</code></pre></div>
+<p>The nodes with the 10 highest betweennesses using this probability model are not that different; debra.perlingiere@enron.com replaced jeff.dasovich@enron.com, and the other rankings moved around a bit. ActivateNetworks&#39; assumption was fine.</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">(chris.germany@enron.com,72725.80682360567)
 (steven.kean@enron.com,81287.60122108378)
 (debra.perlingiere@enron.com,89005.54636283437)
 (susan.scott@enron.com,90021.18526949426)
@@ -239,12 +220,10 @@ val normalizedBetweenness = normalizedGraphAndBetweenness._2
 (mark.taylor@enron.com,179964.3443774904)
 (carol.clair@enron.com,186060.8626406191)
 (sara.shackleton@enron.com,206970.0875042239)
-</code></pre>
-
+</code></pre></div>
 <p>Betweenness did not do that good a job finding <a href="http://en.wikipedia.org/wiki/Enron_scandal#Trials">the executives accused in the scandal</a>. Hopefully the Louvain method will do better.</p>
 
-<p>Probably the most interesting of these is Vincent Kaminski, Enron’s managing director for research. <a href="http://www.nytimes.com/2006/01/29/business/businessspecial3/29profiles.html?pagewanted=all">An NY Times article</a> describes him as ethical, professional, and heroic, in contrast to the other power brokers around him. “As Enron was collapsing, Mr. Kaminski helped all 50 of his former research staff members find jobs elsewhere.”</p>
-
+<p>Probably the most interesting of these is Vincent Kaminski, Enron&#39;s managing director for research. <a href="http://www.nytimes.com/2006/01/29/business/businessspecial3/29profiles.html?pagewanted=all">An NY Times article</a> describes him as ethical, professional, and heroic, in contrast to the other power brokers around him. &quot;As Enron was collapsing, Mr. Kaminski helped all 50 of his former research staff members find jobs elsewhere.&quot;</p>
 
   </article>
 

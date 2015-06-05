@@ -8,5 +8,6 @@ twitter_username: dwalend
 github_username: dwalend
 
 # Build settings
-markdown: kramdown
+#markdown: kramdown
+markdown: redcarpet
 permalink: pretty

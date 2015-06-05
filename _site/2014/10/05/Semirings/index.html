@@ -71,15 +71,14 @@
   </header>
 
   <article class="post-content">
-  <p>One of the coolest things you can do with graphs is find the shortest paths between nodes. One of the coolest things you can do with those algorithms is change what “shortest” means using semirings. It’s so cool it makes group theory useful. Scala’s type system is rich enough to handle all that without hurting people’s eyes, so I did it in <a href="https://github.com/dwalend/ScalaGraphMinimizer">ScalaGraphMinimizer</a>. </p>
+  <p>One of the coolest things you can do with graphs is find the shortest paths between nodes. One of the coolest things you can do with those algorithms is change what &quot;shortest&quot; means using semirings. It&#39;s so cool it makes group theory useful. Scala&#39;s type system is rich enough to handle all that without hurting people&#39;s eyes, so I did it in <a href="https://github.com/dwalend/ScalaGraphMinimizer">ScalaGraphMinimizer</a>. </p>
 
-<h2 id="type-families-and-semirings">Type Families and Semirings</h2>
+<h2>Type Families and Semirings</h2>
 
-<p>My biggest frustration with trying to define semirings in Java was that I had to carry everything around inside layered generic type specifications. There was no way to bound and encapsulate the layering, so the type specifications built up and became blinding eyesores. The advice I got was to not use Java’s type system that way. The only workable alternative was to cast as needed and hope it worked out at runtime. In contrast, Scala’s type system handles it gracefully. Scala lets me declare a namespace of types and use those declared types where needed. </p>
+<p>My biggest frustration with trying to define semirings in Java was that I had to carry everything around inside layered generic type specifications. There was no way to bound and encapsulate the layering, so the type specifications built up and became blinding eyesores. The advice I got was to not use Java&#39;s type system that way. The only workable alternative was to cast as needed and hope it worked out at runtime. In contrast, Scala&#39;s type system handles it gracefully. Scala lets me declare a namespace of types and use those declared types where needed. </p>
 
-<p>Here’s SemiringSupport, which is primarily about holding on to a set of related types.</p>
-
-<pre><code>trait SemiringSupport[L,Key] {
+<p>Here&#39;s SemiringSupport, which is primarily about holding on to a set of related types.</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">trait SemiringSupport[L,Key] {
 
   type Label = L
 
@@ -88,13 +87,11 @@
   def heapOrdering:HeapOrdering[Key]
 
   def heapKeyForLabel:Label =&gt; Key
-</code></pre>
+</code></pre></div>
+<p>SemiringSupport needs something to define the Labels the semiring operates on, a Semiring which brings the operators, and some bits to support heaps for Dijkstra&#39;s algorithm. For the labels, I&#39;m using a similar technique that I used for <a href="http://dwalend.github.io/blog/2014/09/10/graphs-in-scala/">the most general class of graphs</a>, but this time I have a type parameter, L, that helps the compiler do some work for me. </p>
 
-<p>SemiringSupport needs something to define the Labels the semiring operates on, a Semiring which brings the operators, and some bits to support heaps for Dijkstra’s algorithm. For the labels, I’m using a similar technique that I used for <a href="http://dwalend.github.io/blog/2014/09/10/graphs-in-scala/">the most general class of graphs</a>, but this time I have a type parameter, L, that helps the compiler do some work for me. </p>
-
-<p>Here’s Semiring’s declaration, embedded inside the namespace. I think it is easy to map to the corresponding passage from Cormen’s <em>Algorithms</em>, “A general framework for solving path problems in directed graphs,” 26.4 in my 1989 copy. (Cormen seems to have dropped it from later editions, but I found an OK description in <a href="http://books.google.com/books?id=S-tXjl1hsUYC&amp;lpg=PA54&amp;dq=aho%20hopcroft%20ullman&amp;pg=PA336#v=snippet&amp;q=%22245.%20The%20algebraic%22&amp;f=false">Stoner’s <em>An Introduction to Data Structures and Algorithms</em></a>.)</p>
-
-<pre><code>  trait Semiring {
+<p>Here&#39;s Semiring&#39;s declaration, embedded inside the namespace. I think it is easy to map to the corresponding passage from Cormen’s <em>Algorithms</em>, “A general framework for solving path problems in directed graphs,” 26.4 in my 1989 copy. (Cormen seems to have dropped it from later editions, but I found an OK description in <a href="http://books.google.com/books?id=S-tXjl1hsUYC&amp;lpg=PA54&amp;dq=aho%20hopcroft%20ullman&amp;pg=PA336#v=snippet&amp;q=%22245.%20The%20algebraic%22&amp;f=false">Stoner&#39;s <em>An Introduction to Data Structures and Algorithms</em></a>.)</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">  trait Semiring {
 
     /** identity */
     def I:Label
@@ -113,11 +110,9 @@
     }   
   }
 }
-</code></pre>
-
-<p>With that in hand, I made a Semiring that counts nodes in a path. The Label is an Int – the number of nodes in the path. The heapKey is that Label. Existing edges in the graph have a Label of 1 because you’d have to cross one edge to get from the source node to the target node. The identity, I, is 0 because you’d cross zero nodes, and the annihilator, O, is Int.MaxValue because it is an absurdly large number. The summary operator picks the least of two Labels – the shortest of two paths. The extends method adds two Labels together – adding one path to another. I did have to monkey around inside the extend method to avoid wrapping Ints while slinging around Int.MaxValues. Other than that, the code is simple.</p>
-
-<pre><code>object FewestNodes extends SemiringSupport[Int,Int] {
+</code></pre></div>
+<p>With that in hand, I made a Semiring that counts nodes in a path. The Label is an Int -- the number of nodes in the path. The heapKey is that Label. Existing edges in the graph have a Label of 1 because you&#39;d have to cross one edge to get from the source node to the target node. The identity, I, is 0 because you&#39;d cross zero nodes, and the annihilator, O, is Int.MaxValue because it is an absurdly large number. The summary operator picks the least of two Labels -- the shortest of two paths. The extends method adds two Labels together -- adding one path to another. I did have to monkey around inside the extend method to avoid wrapping Ints while slinging around Int.MaxValues. Other than that, the code is simple.</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">object FewestNodes extends SemiringSupport[Int,Int] {
 
   def semiring = FewestNodesSemiring
 
@@ -164,13 +159,11 @@
   }
 
 }
-</code></pre>
+</code></pre></div>
+<h2>Algorithms in Scala Can Look Like Algorithms In Text Books Even With Complex Types</h2>
 
-<h2 id="algorithms-in-scala-can-look-like-algorithms-in-text-books-even-with-complex-types">Algorithms in Scala Can Look Like Algorithms In Text Books Even With Complex Types</h2>
-
-<p>Even with the semiring mixed in, Dijkstra’s algorithm looks almost identical to the code from <a href="http://en.wikipedia.org/wiki/Dijkstra's_algorithm#Using_a_priority_queue">Wikipedia</a>:</p>
-
-<pre><code>  def dijkstraSingleSource[Node,Label,Key](initialGraph:IndexedLabelDigraph[Node,Label],
+<p>Even with the semiring mixed in, Dijkstra&#39;s algorithm looks almost identical to the code from <a href="http://en.wikipedia.org/wiki/Dijkstra&#x27;s_algorithm#Using_a_priority_queue">Wikipedia</a>:</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">  def dijkstraSingleSource[Node,Label,Key](initialGraph:IndexedLabelDigraph[Node,Label],
                                            support:SemiringSupport[Label,Key])
                                           (source:initialGraph.InnerNodeType):Seq[(Node,Node,Label)] = {
     //Set up an array of Labels by node index
@@ -180,8 +173,8 @@
     val heap:Heap[Key,initialGraph.InnerNodeType] = new FibonacciHeap(support.heapOrdering)
 
     val heapMembers:IndexedSeq[heap.HeapMember] = initialGraph.innerNodes.map(node =&gt; heap.insert(support.heapKeyForLabel(support.semiring.O),node))
-    
-    //Raise sourceInnerNode's to I
+
+    //Raise sourceInnerNode&#39;s to I
     labels(source.index) = support.semiring.I
     heapMembers(source.index).raiseKey(support.heapKeyForLabel(support.semiring.I))
 
@@ -205,13 +198,11 @@
     //put everything back together
     labels.zipWithIndex.map(x =&gt; (source.value,initialGraph.node(x._2),x._1)).filter(x =&gt; x._3 != support.semiring.O)
   }
-</code></pre>
-
-<h2 id="specific-types-semirings-in-this-case-make-the-algorithms-more-powerful-without-risking-correctness">Specific Types (Semirings in this Case) Make the Algorithms More Powerful Without Risking Correctness</h2>
+</code></pre></div>
+<h2>Specific Types (Semirings in this Case) Make the Algorithms More Powerful Without Risking Correctness</h2>
 
 <p>Creating new semirings, like this one for finding the most probable path, is easy and kinda fun:</p>
-
-<pre><code>object MostProbable extends SemiringSupport[Double,Double] {
+<div class="highlight"><pre><code class="language-text" data-lang="text">object MostProbable extends SemiringSupport[Double,Double] {
 
   def semiring = MostProbableSemiring
 
@@ -252,19 +243,15 @@
   object MostProbableOrdering extends HeapOrdering[Double] {
     //still not interesting 
   }
-</code></pre>
-
-<p>Best of all, Scala’s compiler is able to work out what the types are without my help</p>
-
-<pre><code>val labelEdges = Dijkstra.allPairsShortestPaths(testGraph.edges,
+</code></pre></div>
+<p>Best of all, Scala&#39;s compiler is able to work out what the types are without my help</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">val labelEdges = Dijkstra.allPairsShortestPaths(testGraph.edges,
                                                 testGraph.nodesSeq,
                                                 FewestNodes,
                                                 FewestNodes.convertEdgeToLabel)
-</code></pre>
-
-<p>Compare that to this eye-burning call to Dijkstra’s algorithm in JDigraph:</p>
-
-<pre><code>   Dijkstra&lt;LeastPathLabel,
+</code></pre></div>
+<p>Compare that to this eye-burning call to Dijkstra&#39;s algorithm in JDigraph:</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">   Dijkstra&lt;LeastPathLabel,
           IndexedMutableSimpleDigraph&lt;TestBean&gt;,
           NextStepDigraph&lt;TestBean,LeastPathLabel,SimpleDigraph.SimpleEdge,IndexedMutableSimpleDigraph&lt;TestBean&gt;&gt;,
           LeastPathComparator,
@@ -273,19 +260,16 @@
                                                                                                                   NextStepDigraph&lt;TestBean,LeastPathLabel,SimpleDigraph.SimpleEdge,IndexedMutableSimpleDigraph&lt;TestBean&gt;&gt;,
                                                                                                                   LeastPathComparator,
                                                                                                                   LeastPathSemiring&lt;TestBean,SimpleDigraph.SimpleEdge,IndexedMutableSimpleDigraph&lt;TestBean&gt;&gt;&gt;();
-</code></pre>
+</code></pre></div>
+<p>(Yes, Java&#39;s new diamond operator might make this half the size. Too bad the code stopped compiling in JDK6.)</p>
 
-<p>(Yes, Java’s new diamond operator might make this half the size. Too bad the code stopped compiling in JDK6.)</p>
+<h2>Maybe That Lance Wasn&#39;t the Right Tool for Attacking this Windmill</h2>
 
-<h2 id="maybe-that-lance-wasnt-the-right-tool-for-attacking-this-windmill">Maybe That Lance Wasn’t the Right Tool for Attacking this Windmill</h2>
+<p>I&#39;m very happy with how the code came out this early in the project. I&#39;ve been able to make something both explainable and powerful, and extend it to solve for betweenness (which deserves its own blog article). It took eight weeks of a few hours after work when family and chores left me a little time, maybe just 25 hours total. The final code looks just like the algorithms in the book, not an example of some vile boundary case. </p>
 
-<p>I’m very happy with how the code came out this early in the project. I’ve been able to make something both explainable and powerful, and extend it to solve for betweenness (which deserves its own blog article). It took eight weeks of a few hours after work when family and chores left me a little time, maybe just 25 hours total. The final code looks just like the algorithms in the book, not an example of some vile boundary case. </p>
-
-<p>Download it and try it out. In sbt, it’s easy to type in a graph and try out different algorithms:</p>
-
-<pre><code>libraryDependencies += "net.walend" %% "scalagraphminimizer" % "0.1.1"
-</code></pre>
-
+<p>Download it and try it out. In sbt, it&#39;s easy to type in a graph and try out different algorithms:</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">libraryDependencies += &quot;net.walend&quot; %% &quot;scalagraphminimizer&quot; % &quot;0.1.1&quot;
+</code></pre></div>
 <p>Dave</p>
 
   </article>

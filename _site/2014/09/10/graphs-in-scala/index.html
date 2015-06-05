@@ -71,46 +71,39 @@
   </header>
 
   <article class="post-content">
-  <p>Using my old JDigraph project, I did a lot of work with (unsurprisingly) directed graphs. I experimented with immutability before it was cool. I eventually hit the limit of Java’s type system and <a href="https://weblogs.java.net/blog/dwalend/archive/2007/03/wild_winds_wres.html">tried to punch through it.</a> I’ve been able to get a lot further with hardly any grief in Scala. Scala’s type system has what I need and its collection library suits my taste. It just worked out of the box, was fun, and (I hope) is pretty easy to explain.</p>
+  <p>Using my old JDigraph project, I did a lot of work with (unsurprisingly) directed graphs. I experimented with immutability before it was cool. I eventually hit the limit of Java&#39;s type system and <a href="https://weblogs.java.net/blog/dwalend/archive/2007/03/wild_winds_wres.html">tried to punch through it.</a> I&#39;ve been able to get a lot further with hardly any grief in Scala. Scala&#39;s type system has what I need and its collection library suits my taste. It just worked out of the box, was fun, and (I hope) is pretty easy to explain.</p>
 
-<p>In Scala also found I could put off defining the specifics of how a graph works until I was ready to define that kind of graph. Not having to predict the future perfectly from the outset is a huge win in object-oriented programming, and has really proven itself out over the last six months’ hacking. That’s something I could never do in Java.</p>
+<p>In Scala also found I could put off defining the specifics of how a graph works until I was ready to define that kind of graph. Not having to predict the future perfectly from the outset is a huge win in object-oriented programming, and has really proven itself out over the last six months&#39; hacking. That&#39;s something I could never do in Java.</p>
 
 <p>A graph has a set of nodes and a set of edges. The edges define some kind of relationship between the nodes, but there are a lot of different possible rules for how those relationships work. <a href="http://en.wikipedia.org/wiki/Graph_(mathematics)#Distinction_in_terms_of_the_main_definition">Wikipedia lists many of them</a>. </p>
 
-<p>First I’ll show the easy parts: I’ll get to edges in a minute. A graph has a set of nodes.</p>
-
-<pre><code>trait Graph[Node] {
+<p>First I&#39;ll show the easy parts: I&#39;ll get to edges in a minute. A graph has a set of nodes.</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">trait Graph[Node] {
 
   def nodes:GenSet[Node]
 
   def nodeCount:Int
-</code></pre>
+</code></pre></div>
+<p>Note that I&#39;ve only put in a parameter for the Node&#39;s type.  </p>
 
-<p>Note that I’ve only put in a parameter for the Node’s type.  </p>
-
-<p>I can get cleaner API if I use an internal representation of the nodes, similar to Java’s <a href="http://docs.oracle.com/javase/8/docs/api/java/util/Map.Entry.html">Map.Entry</a>. This internal representation at least needs access to the node put into the graph.</p>
-
-<pre><code>  /**
+<p>I can get cleaner API if I use an internal representation of the nodes, similar to Java&#39;s <a href="http://docs.oracle.com/javase/8/docs/api/java/util/Map.Entry.html">Map.Entry</a>. This internal representation at least needs access to the node put into the graph.</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">  /**
    * An internal representation of nodes within the graph
    */
   trait InnerNodeTrait {
     def value:Node
   }
-</code></pre>
-
-<p>Here’s where things get interesting. I don’t know what the type of that internal node is going to be. However, for a given implementation of Graph all of those internal nodes will be InnerNodeType, and they are all at least InnerNodeTraits. </p>
-
-<pre><code>  /**
+</code></pre></div>
+<p>Here&#39;s where things get interesting. I don&#39;t know what the type of that internal node is going to be. However, for a given implementation of Graph all of those internal nodes will be InnerNodeType, and they are all at least InnerNodeTraits. </p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">  /**
    * The type of InnerNodeTrait for this digraph representation
    */
   type InnerNodeType &lt;: InnerNodeTrait
-</code></pre>
+</code></pre></div>
+<p>I&#39;m not satisfied by the names InnerNodeTrait and InnerNodeType. Any suggestions for something better?</p>
 
-<p>I’m not satisfied by the names InnerNodeTrait and InnerNodeType. Any suggestions for something better?</p>
-
-<p>I’ll want a way to return all the internal nodes, and get the internal node for an external node. I use the InnerNodeType in these definitions.</p>
-
-<pre><code>  /**
+<p>I&#39;ll want a way to return all the internal nodes, and get the internal node for an external node. I use the InnerNodeType in these definitions.</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">  /**
    * @return InnerNode representation of all of the nodes in the graph.
    */
   def innerNodes:Seq[InnerNodeType]
@@ -120,20 +113,16 @@
    * @return Some inner node if it exists in the digraph or None
    */
   def innerNode(value:Node):Option[InnerNodeType]
-</code></pre>
-
-<p>Defining edges is next. Someone using the API will pass in edges from the outside. Once the edges are in the Graph, it’s convenient to hand back an internal representation for edges. It will eventually carry around references to inner nodes (as InnerNodeTypes.) However, I don’t really know how the nodes will be related to each other yet. Therefore I declare both an OuterEdgeType and an InnerEdgeType. I don’t define anything about them except that they exist. They’ll have something to do with Node and InnerNodeType, but I can’t say what in a way that will be useful.</p>
-
-<pre><code>  type OuterEdgeType
+</code></pre></div>
+<p>Defining edges is next. Someone using the API will pass in edges from the outside. Once the edges are in the Graph, it&#39;s convenient to hand back an internal representation for edges. It will eventually carry around references to inner nodes (as InnerNodeTypes.) However, I don&#39;t really know how the nodes will be related to each other yet. Therefore I declare both an OuterEdgeType and an InnerEdgeType. I don&#39;t define anything about them except that they exist. They&#39;ll have something to do with Node and InnerNodeType, but I can&#39;t say what in a way that will be useful.</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">  type OuterEdgeType
 
   type InnerEdgeType
-</code></pre>
+</code></pre></div>
+<p>Any help with naming? &quot;type OuterEdgeType&quot; is half a step from &quot;object MyFirstScalaCode&quot; .</p>
 
-<p>Any help with naming? “type OuterEdgeType” is half a step from “object MyFirstScalaCode” .</p>
-
-<p>I know I’ll need to have access to the edges, and I have just enough type information to do it.</p>
-
-<pre><code>  /**
+<p>I know I&#39;ll need to have access to the edges, and I have just enough type information to do it.</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">  /**
    * @return A Traversable (usually something more specific) of the edges
    */
   def edges:GenTraversable[OuterEdgeType]
@@ -143,15 +132,13 @@
    */
   def innerEdges:GenTraversable[InnerEdgeType]
 }
-</code></pre>
+</code></pre></div>
+<p>I&#39;ve managed to put off defining anything about edges except that edges exist, and they have an internal representation different from the external representation. The Graph class&#39; API has committed to exactly as much as Wikipedia describes. Sub-traits can define edges for specialized graphs: Undirected graphs with Set2[Node] for edges. Directed graphs can have (Node,Node) tuple edges. Hypergraphs can use Sets, and directed hypergraphs can use a pair of Sets. Bipartite graphs can have edges just of nodes of different classes -- (Person,Job) for example. </p>
 
-<p>I’ve managed to put off defining anything about edges except that edges exist, and they have an internal representation different from the external representation. The Graph class’ API has committed to exactly as much as Wikipedia describes. Sub-traits can define edges for specialized graphs: Undirected graphs with Set2[Node] for edges. Directed graphs can have (Node,Node) tuple edges. Hypergraphs can use Sets, and directed hypergraphs can use a pair of Sets. Bipartite graphs can have edges just of nodes of different classes – (Person,Job) for example. </p>
+<p>My favorite feature is that I don&#39;t have to code up any of those variations until I&#39;m ready to use them for something. I suspect (and hope) I can only find a place to use this construct (and the layered trait hierarchy that goes with it) once every few projects, but it should make a good capstone for a family of traits that builds from a very general concept. </p>
 
-<p>My favorite feature is that I don’t have to code up any of those variations until I’m ready to use them for something. I suspect (and hope) I can only find a place to use this construct (and the layered trait hierarchy that goes with it) once every few projects, but it should make a good capstone for a family of traits that builds from a very general concept. </p>
-
-<p>Here’s a labeled digraph example, where edges have labels:</p>
-
-<pre><code>trait LabelDigraph[Node,Label] extends Digraph[Node] {
+<p>Here&#39;s a labeled digraph example, where edges have labels:</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">trait LabelDigraph[Node,Label] extends Digraph[Node] {
 
   type OuterEdgeType = (Node,Node,Label)
 
@@ -167,27 +154,20 @@
    */
   def label(start:InnerNodeType,end:InnerNodeType):Label
 }
-</code></pre>
-
-<p>For the first release, I settled on two implementations of LabelDigraph: MatrixLabelDigraph which supports the Floyd-Warshall algorithm, and AdjacencyLabelDigraph which supports both Dijkstra’s algorithm and Brandes’ betweenness algorithm. </p>
+</code></pre></div>
+<p>For the first release, I settled on two implementations of LabelDigraph: MatrixLabelDigraph which supports the Floyd-Warshall algorithm, and AdjacencyLabelDigraph which supports both Dijkstra&#39;s algorithm and Brandes&#39; betweenness algorithm. </p>
 
 <p>I tried to make constructing a graph very easy, by supplying companion objects with apply methods that have default arguments:</p>
-
-<pre><code>  def apply[Node,Label](edges:GenTraversable[(Node,Node,Label)] = Seq.empty,
+<div class="highlight"><pre><code class="language-text" data-lang="text">  def apply[Node,Label](edges:GenTraversable[(Node,Node,Label)] = Seq.empty,
                        nodes:GenSeq[Node] = Seq.empty,
                        noEdgeExistsValue:Label = null) = {
-</code></pre>
-
+</code></pre></div>
 <p>So you can create a graph with a Vector of Tuple3s like this</p>
-
-<pre><code>  val yourGraph = AdjacencyLabelDigraph(edges = Vector(("A","B","ab"),("B","C","bc"),("C","A","ca"))
-</code></pre>
-
-<p><a href="https://github.com/dwalend/ScalaGraphMinimizer">It’s all in an open source project on GitHub</a>. Download it and try it out. In sbt console, it’s easy to just doodle around with graphs:</p>
-
-<pre><code>libraryDependencies += "net.walend" %% "scalagraphminimizer" % "0.1.0"
-</code></pre>
-
+<div class="highlight"><pre><code class="language-text" data-lang="text">  val yourGraph = AdjacencyLabelDigraph(edges = Vector((&quot;A&quot;,&quot;B&quot;,&quot;ab&quot;),(&quot;B&quot;,&quot;C&quot;,&quot;bc&quot;),(&quot;C&quot;,&quot;A&quot;,&quot;ca&quot;))
+</code></pre></div>
+<p><a href="https://github.com/dwalend/ScalaGraphMinimizer">It&#39;s all in an open source project on GitHub</a>. Download it and try it out. In sbt console, it&#39;s easy to just doodle around with graphs:</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">libraryDependencies += &quot;net.walend&quot; %% &quot;scalagraphminimizer&quot; % &quot;0.1.0&quot;
+</code></pre></div>
 <p>Dave</p>
 
   </article>

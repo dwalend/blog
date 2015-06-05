@@ -71,99 +71,86 @@
   </header>
 
   <article class="post-content">
-  <h2 id="an-inner-trait-puzzle">An Inner Trait Puzzle</h2>
+  <h2>An Inner Trait Puzzle</h2>
 
-<p>I blundered into this strange puzzle with visibility, inner traits, and inner objects while putting together code to plug <a href="https://github.com/dwalend/ScalaGraphMinimizer">Semirings into Dijkstra’s algorithm</a>. I’m not sure if the problem rates a bug report, or two, or a feature request, or is just something I don’t fully understand. I’d like to hear some advice before reporting (or not reporting) it.</p>
+<p>I blundered into this strange puzzle with visibility, inner traits, and inner objects while putting together code to plug <a href="https://github.com/dwalend/ScalaGraphMinimizer">Semirings into Dijkstra&#39;s algorithm</a>. I&#39;m not sure if the problem rates a bug report, or two, or a feature request, or is just something I don&#39;t fully understand. I&#39;d like to hear some advice before reporting (or not reporting) it.</p>
 
-<p>Find some code you can play cut/paste with in this <a href="https://gist.github.com/dwalend/464a3c69c94165f02cd4">gist</a> to see what works and what doesn’t</p>
+<p>Find some code you can play cut/paste with in this <a href="https://gist.github.com/dwalend/464a3c69c94165f02cd4">gist</a> to see what works and what doesn&#39;t</p>
 
-<p>Here’s code that illustrates the dissonance fully:</p>
+<p>Here&#39;s code that illustrates the dissonance fully:</p>
+<div class="highlight"><pre><code class="language-scala" data-lang="scala"><span class="c1">// A top-level trait defines a def</span>
+<span class="k">trait</span> <span class="nc">TopTrait</span> <span class="o">{</span>
+  <span class="k">def</span> <span class="n">topDef</span><span class="k">:</span><span class="kt">String</span>
+<span class="o">}</span>
 
-<p>```scala
-// A top-level trait defines a def
-trait TopTrait {
-  def topDef:String
-}</p>
+<span class="c1">// A trait that has an inner trait that extends TopTrait</span>
+<span class="k">trait</span> <span class="nc">BeyondTrait</span> <span class="o">{</span>
 
-<p>// A trait that has an inner trait that extends TopTrait
-trait BeyondTrait {</p>
+  <span class="k">def</span> <span class="n">innerThing</span><span class="k">:</span><span class="kt">InnerTrait</span>
 
-<p>def innerThing:InnerTrait</p>
+  <span class="k">trait</span> <span class="nc">InnerTrait</span> <span class="k">extends</span> <span class="nc">TopTrait</span><span class="o">{</span>
+    <span class="k">def</span> <span class="n">innerDef</span> <span class="k">=</span> <span class="s">&quot;innerDef&quot;</span>
+    <span class="k">def</span> <span class="n">topDef</span> <span class="k">=</span> <span class="s">&quot;topDef&quot;</span>
+  <span class="o">}</span>
+<span class="o">}</span>
 
-<p>trait InnerTrait extends TopTrait{
-    def innerDef = “innerDef”
-    def topDef = “topDef”
-  }
-}</p>
+<span class="c1">// A class that extends that more complex trait</span>
+<span class="k">class</span> <span class="nc">Beyond</span> <span class="k">extends</span> <span class="nc">BeyondTrait</span> <span class="o">{</span>
 
-<p>// A class that extends that more complex trait
-class Beyond extends BeyondTrait {</p>
+  <span class="c1">// An inner class that extends the InnerTrait, and a def that implements the more complex trait&#39;s contract</span>
+  <span class="k">override</span> <span class="k">def</span> <span class="n">innerThing</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">InnerTrait</span><span class="o">{</span>
+    <span class="k">def</span> <span class="n">beyondDef</span> <span class="k">=</span> <span class="s">&quot;innerThing from beyond&quot;</span>
+  <span class="o">}</span>
+<span class="o">}</span>
 
-<p>// An inner class that extends the InnerTrait, and a def that implements the more complex trait’s contract
-  override def innerThing = new InnerTrait{
-    def beyondDef = “innerThing from beyond”
-  }
-}</p>
+<span class="c1">// A class that uses the class that implements the complex trait</span>
+<span class="k">class</span> <span class="nc">OuterClass</span><span class="o">(</span><span class="n">beyond</span><span class="k">:</span> <span class="kt">Beyond</span><span class="o">){</span>
 
-<p>// A class that uses the class that implements the complex trait
-class OuterClass(beyond: Beyond){</p>
+  <span class="k">object</span> <span class="nc">InnerObject</span> <span class="o">{</span>
 
-<p>object InnerObject {</p>
+    <span class="c1">// this won&#39;t compile</span>
+    <span class="c1">// &quot;private value beyond escapes its defining scope as part of type OuterClass.this.beyond.InnerTrait&quot;</span>
+    <span class="c1">// the compiler won&#39;t walk up the tree to find TopTrait</span>
+    <span class="c1">// and it won&#39;t decide that it has access to the private beyond member</span>
+    <span class="k">val</span> <span class="n">innerThing</span> <span class="k">=</span> <span class="n">beyond</span><span class="o">.</span><span class="n">innerThing</span>
 
-<pre><code>// this won't compile
-// "private value beyond escapes its defining scope as part of type OuterClass.this.beyond.InnerTrait"
-// the compiler won't walk up the tree to find TopTrait
-// and it won't decide that it has access to the private beyond member
-val innerThing = beyond.innerThing
+    <span class="c1">// and innerThing won&#39;t be defined for these two vals</span>
+    <span class="k">val</span> <span class="n">topDefResult</span> <span class="k">=</span> <span class="n">innerThing</span><span class="o">.</span><span class="n">topDef</span>
 
-// and innerThing won't be defined for these two vals
-val topDefResult = innerThing.topDef
+    <span class="k">val</span> <span class="n">innerDefResult</span> <span class="k">=</span> <span class="n">innerThing</span><span class="o">.</span><span class="n">innerDef</span>
 
-val innerDefResult = innerThing.innerDef
-
-val comboResult = s"$innerDefResult and $topDefResult"   } } ```
-</code></pre>
-
+    <span class="k">val</span> <span class="n">comboResult</span> <span class="k">=</span> <span class="n">s</span><span class="s">&quot;$innerDefResult and $topDefResult&quot;</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div>
 <p>It looked like it would work; even Intellij thought it would. However, the REPL tells me: </p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash">:20: error: private value beyond escapes its defining scope as part of <span class="nb">type </span>OuterClass.this.beyond.InnerTrait
+     val <span class="nv">innerThing</span> <span class="o">=</span> beyond.innerThing
+</code></pre></div>
+<p>I&#39;d blundered into this problem while refactoring some code to better fit the Law of Demeter and make it more readable. The original code just used the outer class&#39; reference inside the inner object. It was cluttered, but it worked.</p>
+<div class="highlight"><pre><code class="language-scala" data-lang="scala"><span class="k">class</span> <span class="nc">OuterClass</span><span class="o">(</span><span class="n">beyond</span><span class="k">:</span> <span class="kt">Beyond</span><span class="o">){</span>
+<span class="o">...</span>
+  <span class="k">object</span> <span class="nc">InnerObject</span> <span class="o">{</span>
+<span class="o">...</span>
+    <span class="c1">//this works as expected</span>
+    <span class="k">val</span> <span class="n">innerDefResult</span> <span class="k">=</span> <span class="n">beyond</span><span class="o">.</span><span class="n">innerThing</span><span class="o">.</span><span class="n">innerDef</span>
 
-<p><code>bash
-:20: error: private value beyond escapes its defining scope as part of type OuterClass.this.beyond.InnerTrait
-     val innerThing = beyond.innerThing
-</code></p>
+    <span class="c1">//as does this</span>
+    <span class="k">val</span> <span class="n">topDefResult</span> <span class="k">=</span> <span class="n">beyond</span><span class="o">.</span><span class="n">innerThing</span><span class="o">.</span><span class="n">topDef</span>
+<span class="o">...</span>
+</code></pre></div>
+<p>I didn&#39;t see why this should work but my first example did not. One of the reasons I like Scala is that I get to learn something new most days, so I decided to invest an hour and learn about what is going on.</p>
 
-<p>I’d blundered into this problem while refactoring some code to better fit the Law of Demeter and make it more readable. The original code just used the outer class’ reference inside the inner object. It was cluttered, but it worked.</p>
+<p>The error message says beyond is private. Making <code>beyond</code> a public member appeases the compiler, but doesn&#39;t provide much understanding:</p>
+<div class="highlight"><pre><code class="language-scala" data-lang="scala"><span class="k">class</span> <span class="nc">OuterClass</span><span class="o">(</span><span class="k">val</span> <span class="n">beyond</span><span class="k">:</span> <span class="kt">Beyond</span><span class="o">){</span>
+<span class="o">...</span>
+</code></pre></div>
+<p>Assigning a type of TopTrait to innerThing compiles past that, but can&#39;t find the inner trait&#39;s def. This makes sense to me and is the fix I settled for in the project code. </p>
+<div class="highlight"><pre><code class="language-scala" data-lang="scala">    <span class="k">val</span> <span class="n">innerThing</span><span class="k">:</span><span class="kt">TopTrait</span> <span class="o">=</span> <span class="n">beyond</span><span class="o">.</span><span class="n">innerThing</span>
+</code></pre></div>
+<p>I think I&#39;ve tilled up two problems. First, some things - types from the outer class&#39; member variables - that should be visible inside the inner object are not. Second, the compiler is giving up inferring innerThing&#39;s type instead of discovering the publicly visible TypeTrait.</p>
 
-<p>```scala
-class OuterClass(beyond: Beyond){
-…
-  object InnerObject {
-…
-    //this works as expected
-    val innerDefResult = beyond.innerThing.innerDef</p>
-
-<pre><code>//as does this
-val topDefResult = beyond.innerThing.topDef ... ```
-</code></pre>
-
-<p>I didn’t see why this should work but my first example did not. One of the reasons I like Scala is that I get to learn something new most days, so I decided to invest an hour and learn about what is going on.</p>
-
-<p>The error message says beyond is private. Making <code>beyond</code> a public member appeases the compiler, but doesn’t provide much understanding:</p>
-
-<p><code>scala
-class OuterClass(val beyond: Beyond){
-...
-</code></p>
-
-<p>Assigning a type of TopTrait to innerThing compiles past that, but can’t find the inner trait’s def. (This is the fix I settled on in the project code.) </p>
-
-<p><code>scala 
-    val innerThing:TopTrait = beyond.innerThing
-</code></p>
-
-<p>I think I’ve tilled up two problems. First, some things - types from the outer class’ member variables - that should be visible inside the inner object are not. Second, the compiler is giving up inferring innerThing’s type instead of discovering the publicly visible TypeTrait.</p>
-
-<p>Or possibly the behavior is correct, my intuition is faulty, and there’s more for me to learn from this code. Thoughts?</p>
-
+<p>Or possibly the behavior is correct, my intuition is faulty, and there&#39;s more for me to learn from this code. Thoughts?</p>
 
   </article>
 
