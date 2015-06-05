@@ -9,5 +9,16 @@
 * replace public/favicon.ico with something better.
 
 
+Things to look up (ScalaDays SF)
+
+* TASTY -- cross-compiler for scala
+
+* Turn on lint, depreication and make warnings fatal
+
+* See Scalactic for compile-time assertions
+
+* See scala.js talk
+
+* See the Java8 in Scala talk
 
 
