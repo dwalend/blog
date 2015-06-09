@@ -75,7 +75,7 @@
 
 <p>I blundered into this strange puzzle with visibility, inner traits, and inner objects while putting together code to plug <a href="https://github.com/dwalend/ScalaGraphMinimizer">Semirings into Dijkstra&#39;s algorithm</a>. I&#39;m not sure if the problem rates a bug report, or two, or a feature request, or is just something I don&#39;t fully understand. I&#39;d like to hear some advice before reporting (or not reporting) it.</p>
 
-<p>Find some code you can play cut/paste with in this <a href="https://gist.github.com/dwalend/464a3c69c94165f02cd4">gist</a> to see what works and what doesn&#39;t</p>
+<p>Find some code you can paste into the REPL in this <a href="https://gist.github.com/dwalend/464a3c69c94165f02cd4">gist</a> to try different hacks.</p>
 
 <p>Here&#39;s code that illustrates the dissonance fully:</p>
 <div class="highlight"><pre><code class="language-scala" data-lang="scala"><span class="c1">// A top-level trait defines a def</span>
@@ -145,10 +145,10 @@
 <div class="highlight"><pre><code class="language-scala" data-lang="scala"><span class="k">class</span> <span class="nc">OuterClass</span><span class="o">(</span><span class="k">val</span> <span class="n">beyond</span><span class="k">:</span> <span class="kt">Beyond</span><span class="o">){</span>
 <span class="o">...</span>
 </code></pre></div>
-<p>Assigning a type of TopTrait to innerThing compiles past that, but can&#39;t find the inner trait&#39;s def. This makes sense to me and is the fix I settled for in the project code. </p>
+<p>Assigning a type of TopTrait to innerThing compiles past that, but the compiler can&#39;t find the inner trait&#39;s def. This seems correct to me and is the fix I settled for in the project&#39;s code. However, it doesn&#39;t explain what&#39;s going on.</p>
 <div class="highlight"><pre><code class="language-scala" data-lang="scala">    <span class="k">val</span> <span class="n">innerThing</span><span class="k">:</span><span class="kt">TopTrait</span> <span class="o">=</span> <span class="n">beyond</span><span class="o">.</span><span class="n">innerThing</span>
 </code></pre></div>
-<p>I think I&#39;ve tilled up two problems. First, some things - types from the outer class&#39; member variables - that should be visible inside the inner object are not. Second, the compiler is giving up inferring innerThing&#39;s type instead of discovering the publicly visible TypeTrait.</p>
+<p>I think I&#39;ve tilled up two problems. First, some things - types from the outer class&#39; member variables - that should be visible inside the inner object are not. Second, the compiler is giving up inferring innerThing&#39;s type instead of either using the publicly visible TypeTrait or shrugging and inferring that the type is Any.</p>
 
 <p>Or possibly the behavior is correct, my intuition is faulty, and there&#39;s more for me to learn from this code. Thoughts?</p>
 

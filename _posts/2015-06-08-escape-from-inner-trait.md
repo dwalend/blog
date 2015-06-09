@@ -7,7 +7,7 @@ comments: True
 
 I blundered into this strange puzzle with visibility, inner traits, and inner objects while putting together code to plug [Semirings into Dijkstra's algorithm](https://github.com/dwalend/ScalaGraphMinimizer). I'm not sure if the problem rates a bug report, or two, or a feature request, or is just something I don't fully understand. I'd like to hear some advice before reporting (or not reporting) it.
 
-Find some code you can play cut/paste with in this [gist](https://gist.github.com/dwalend/464a3c69c94165f02cd4) to see what works and what doesn't
+Find some code you can paste into the REPL in this [gist](https://gist.github.com/dwalend/464a3c69c94165f02cd4) to try different hacks.
 
 Here's code that illustrates the dissonance fully:
 
@@ -89,13 +89,13 @@ class OuterClass(val beyond: Beyond){
 ...
 ```
 
-Assigning a type of TopTrait to innerThing compiles past that, but can't find the inner trait's def. This makes sense to me and is the fix I settled for in the project code. 
+Assigning a type of TopTrait to innerThing compiles past that, but the compiler can't find the inner trait's def. This seems correct to me and is the fix I settled for in the project's code. However, it doesn't explain what's going on.
 
 ```scala 
     val innerThing:TopTrait = beyond.innerThing
 ```
 
-I think I've tilled up two problems. First, some things - types from the outer class' member variables - that should be visible inside the inner object are not. Second, the compiler is giving up inferring innerThing's type instead of discovering the publicly visible TypeTrait.
+I think I've tilled up two problems. First, some things - types from the outer class' member variables - that should be visible inside the inner object are not. Second, the compiler is giving up inferring innerThing's type instead of either using the publicly visible TypeTrait or shrugging and inferring that the type is Any.
 
 Or possibly the behavior is correct, my intuition is faulty, and there's more for me to learn from this code. Thoughts?
 
