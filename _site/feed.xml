@@ -5,8 +5,8 @@
     <description>David Walend&#39;s blog about scala, graphs, and coding</description>
     <link>http://dwalend.github.io/blog/</link>
     <atom:link href="http://dwalend.github.io/blog/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Mon, 22 Jun 2015 11:15:07 -0400</pubDate>
-    <lastBuildDate>Mon, 22 Jun 2015 11:15:07 -0400</lastBuildDate>
+    <pubDate>Mon, 22 Jun 2015 13:09:17 -0400</pubDate>
+    <lastBuildDate>Mon, 22 Jun 2015 13:09:17 -0400</lastBuildDate>
     <generator>Jekyll v2.5.3</generator>
     
       <item>
@@ -21,7 +21,7 @@
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-Scala&quot; data-lang=&quot;Scala&quot;&gt;    &lt;span class=&quot;k&quot;&gt;val&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;config&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;ConfigFactory&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;load&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
     &lt;span class=&quot;k&quot;&gt;val&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dbUrl&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;getString&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;database.url&amp;quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;I want to keep that simplicity. However, I also needed a good way to test with different configurations. &lt;/p&gt;
+&lt;p&gt;I want to keep that simplicity. However, I also needed a good way to test with different configurations. My day-job project, &lt;a href=&quot;http://catalyst.harvard.edu/services/shrine/&quot;&gt;Shrine&lt;/a&gt;&amp;#39;s Data Steward Web App has three different major configurations so far. &lt;/p&gt;
 
 &lt;p&gt;Specifically, I want the code to use simple structures that draw their configuration from a typesafe &lt;a href=&quot;https://github.com/typesafehub/config/blob/master/config/src/main/java/com/typesafe/config/Config.java&quot;&gt;Config&lt;/a&gt; object. I want to be able to replicate the technique shamelessly without sharing code between subprojects. Further, I do not want that Config exposed overmuch in my system&amp;#39;s API; I should be able to use Scala&amp;#39;s singleton &lt;a href=&quot;https://raseshmori.wordpress.com/2013/06/20/scala-part-4-classes-objects/&quot;&gt;&lt;code&gt;object&lt;/code&gt;s&lt;/a&gt; where I need singletons. At the day job, the configuration is unchanging once set - except for during tests. Having it front-and-center distracts from more important details. I should not have to couple my code via constructor parameters that make me wish for an aspect-oriented style. It&amp;#39;s just config after all.&lt;/p&gt;
 
@@ -35,7 +35,7 @@
 
 &lt;h3&gt;Config Parameter Objects&lt;/h3&gt;
 
-&lt;p&gt;The older code in Shrine uses config parameter objects, skipping typesafe config to test parts of the system in isolation. A maven subproject uses typesafe config to drive various abstract-factory-pattern-inspired parts to construct parts for Shrine. Testing different configurations means constructing specialized configuration helpers instead of using a simple Config. The approach definitely solves the problem, but it adds a long, twisty maze between the config files where a value is defined and the code that actually uses it. Following that path adds about five minutes to each task involving a config key-value pair. The approach seems particularly invasive because singletons that could have been Scala &lt;code&gt;object&lt;/code&gt;s have to be constructed class instances. To keep the whole works from becoming a furball the existing pattern tightly couples the Shrine system around a single instance of a ShrineConfig class. Testing more than a single subsystem is very difficult. I found myself repeating my criticisms of Spring mixed with profane mutterings about &lt;a href=&quot;http://perl.plover.com/yak/design/samples/slide004.html&quot;&gt;GLOOP&lt;/a&gt;. Someday I want to clean up that part of the code, not add to the confusion.&lt;/p&gt;
+&lt;p&gt;The older code in Shrine uses config parameter objects, skipping typesafe config, to test parts of the system in isolation. A maven subproject uses typesafe config to drive various abstract-factory-pattern-inspired parts to construct parts for Shrine. Testing different configurations means constructing specialized configuration helpers instead of using a simple Config. The approach definitely solves the problem, but it adds a long, twisty maze between the config files where a value is defined and the code that actually uses it. Following that path adds about five minutes to each task involving a config key-value pair. The approach seems particularly invasive because singletons that could have been Scala &lt;code&gt;object&lt;/code&gt;s have to be constructed class instances. The existing pattern tightly couples the Shrine system around a single instance of a ShrineConfig class to keep the whole works from becoming a furball. Testing more than a single subsystem is very difficult. I found myself repeating my criticisms of Spring mixed with profane mutterings about &lt;a href=&quot;http://perl.plover.com/yak/design/samples/slide004.html&quot;&gt;GLOOP&lt;/a&gt;. Someday I want to clean up that part of the code, not add to the confusion.&lt;/p&gt;
 
 &lt;h3&gt;A Little Custom Config Code&lt;/h3&gt;
 
