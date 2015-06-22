@@ -125,9 +125,8 @@ To change config in a test, wrap the test code in a configForBlock:
 ```Scala
   "Steward" should " accept query requests with no topic in 'just log and approve everything' mode " in {
 
-    ExampleConfigSource.configForBlock("shrine.steward.createTopicsMode", CreateTopicsMode.TopicsIgnoredJustLog.name){
-      val modeName = CreateTopicsMode.TopicsIgnoredJustLog.name
-      System.setProperty("shrine.steward.createTopicsMode", modeName)
+    ExampleConfigSource.configForBlock("shrine.steward.createTopicsMode", 
+                                        CreateTopicsMode.TopicsIgnoredJustLog.name){
 
       Post(s"/qep/requestQueryAccess/user/${researcherUserName}",InboundShrineQuery(5,"test query","Not even using a topic")) ~>
         addCredentials(qepCredentials) ~>
