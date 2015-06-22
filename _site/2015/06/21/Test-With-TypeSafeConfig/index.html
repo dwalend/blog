@@ -81,9 +81,9 @@
 <div class="highlight"><pre><code class="language-Scala" data-lang="Scala">  <span class="k">val</span> <span class="n">config</span> <span class="k">=</span> <span class="nc">ConfigFactory</span><span class="o">.</span><span class="n">load</span><span class="o">();</span>
   <span class="k">val</span> <span class="n">dbUrl</span> <span class="k">=</span> <span class="n">config</span><span class="o">.</span><span class="n">getString</span><span class="o">(</span><span class="s">&quot;database.url&quot;</span><span class="o">)</span>
 </code></pre></div>
-<p>I want to keep that simplicity. However, I also needed a good way to test with different configurations. My day-job project, <a href="http://catalyst.harvard.edu/services/shrine/">Shrine</a>&#39;s Data Steward Web App has three different major configurations so far. </p>
+<p>I want to keep that simplicity. However, I also needed a good way to test with different configurations. My day-job project, <a href="http://catalyst.harvard.edu/services/shrine/">Shrine</a>&#39;s Data Steward Web App, has three different major configurations, maybe a dozen variations. </p>
 
-<p>Specifically, I want the code to use simple structures that draw their configuration from a typesafe <a href="https://github.com/typesafehub/config/blob/master/config/src/main/java/com/typesafe/config/Config.java">Config</a> object. I want to be able to replicate the technique shamelessly without sharing code between subprojects. Further, I do not want that Config exposed overmuch in my system&#39;s API; I should be able to use Scala&#39;s singleton <a href="https://raseshmori.wordpress.com/2013/06/20/scala-part-4-classes-objects/"><code>object</code>s</a> where I need singletons. At the day job, the configuration is unchanging once set - except for during tests. Having it front-and-center distracts from more important details. I should not have to couple my code via constructor parameters that make me wish for an aspect-oriented style. It&#39;s just config after all.</p>
+<p>Specifically, I want the code to use simple structures that draw their configuration from a typesafe <a href="https://github.com/typesafehub/config/blob/master/config/src/main/java/com/typesafe/config/Config.java">Config</a> object. I want to be able to replicate the technique shamelessly without sharing code between subprojects. Further, I do not want that Config exposed in my system&#39;s Scala API; I should be able to use Scala&#39;s singleton <a href="https://raseshmori.wordpress.com/2013/06/20/scala-part-4-classes-objects/"><code>object</code>s</a> where I need singletons. At the day job, the configuration is unchanging once set - except for during tests. Having it front-and-center distracts from more important details. I should not have to couple my code via constructor parameters that make me wish for an aspect-oriented style. After all it&#39;s just config.</p>
 
 <h2>Three Compromises</h2>
 
@@ -110,15 +110,16 @@
 <span class="k">import</span> <span class="nn">com.typesafe.config.</span><span class="o">{</span><span class="nc">Config</span><span class="o">,</span> <span class="nc">ConfigFactory</span><span class="o">}</span>
 
 <span class="cm">/**</span>
-<span class="cm">Use to tweak a Config without clearing and reloading a new config (for testing).</span>
-
-<span class="cm">@author dwalend</span>
+<span class="cm"> * Use to tweak a Config without clearing and reloading a new config (for testing).</span>
+<span class="cm"> *</span>
+<span class="cm"> * @author dwalend</span>
 <span class="cm"> */</span>
 <span class="k">class</span> <span class="nc">AtomicConfigSource</span><span class="o">(</span><span class="n">baseConfig</span><span class="k">:</span><span class="kt">Config</span><span class="o">)</span> <span class="o">{</span>
   <span class="k">val</span> <span class="n">atomicConfigRef</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">AtomicReference</span><span class="o">[</span><span class="kt">Config</span><span class="o">](</span><span class="nc">ConfigFactory</span><span class="o">.</span><span class="n">empty</span><span class="o">())</span>
 
   <span class="cm">/**</span>
-<span class="cm">   * Get the atomic Config. Be sure to use defs for all config values that might be changed.</span>
+<span class="cm">   * Get the atomic Config. Be sure to use defs for all </span>
+<span class="cm">   * config values that might be changed.</span>
 <span class="cm">   */</span>
   <span class="k">def</span> <span class="n">config</span><span class="k">:</span><span class="kt">Config</span> <span class="o">=</span> <span class="n">atomicConfigRef</span><span class="o">.</span><span class="n">get</span><span class="o">().</span><span class="n">withFallback</span><span class="o">(</span><span class="n">baseConfig</span><span class="o">)</span>
 
@@ -173,6 +174,21 @@
   <span class="k">def</span> <span class="n">configForBlock</span><span class="o">[</span><span class="kt">T</span><span class="o">](</span><span class="n">key</span><span class="k">:</span><span class="kt">String</span><span class="o">,</span><span class="n">value</span><span class="k">:</span><span class="kt">AnyRef</span><span class="o">,</span><span class="n">origin</span><span class="k">:</span><span class="kt">String</span><span class="o">)(</span><span class="n">block</span><span class="k">:</span> <span class="o">=&gt;</span> <span class="n">T</span><span class="o">)</span><span class="k">:</span><span class="kt">T</span> <span class="o">=</span> 
     <span class="n">atomicConfig</span><span class="o">.</span><span class="n">configForBlock</span><span class="o">(</span><span class="n">key</span><span class="o">,</span><span class="n">value</span><span class="o">,</span><span class="n">origin</span><span class="o">)(</span><span class="n">block</span><span class="o">)</span>
 <span class="o">}</span>
+</code></pre></div>
+<p>To change config in a test, wrap the test code in a configForBlock:</p>
+<div class="highlight"><pre><code class="language-Scala" data-lang="Scala">  <span class="s">&quot;Steward&quot;</span> <span class="n">should</span> <span class="s">&quot; accept query requests with no topic in &#39;just log and approve everything&#39; mode &quot;</span> <span class="n">in</span> <span class="o">{</span>
+
+    <span class="nc">ExampleConfigSource</span><span class="o">.</span><span class="n">configForBlock</span><span class="o">(</span><span class="s">&quot;shrine.steward.createTopicsMode&quot;</span><span class="o">,</span> <span class="nc">CreateTopicsMode</span><span class="o">.</span><span class="nc">TopicsIgnoredJustLog</span><span class="o">.</span><span class="n">name</span><span class="o">){</span>
+      <span class="k">val</span> <span class="n">modeName</span> <span class="k">=</span> <span class="nc">CreateTopicsMode</span><span class="o">.</span><span class="nc">TopicsIgnoredJustLog</span><span class="o">.</span><span class="n">name</span>
+      <span class="nc">System</span><span class="o">.</span><span class="n">setProperty</span><span class="o">(</span><span class="s">&quot;shrine.steward.createTopicsMode&quot;</span><span class="o">,</span> <span class="n">modeName</span><span class="o">)</span>
+
+      <span class="nc">Post</span><span class="o">(</span><span class="n">s</span><span class="s">&quot;/qep/requestQueryAccess/user/${researcherUserName}&quot;</span><span class="o">,</span><span class="nc">InboundShrineQuery</span><span class="o">(</span><span class="mi">5</span><span class="o">,</span><span class="s">&quot;test query&quot;</span><span class="o">,</span><span class="s">&quot;Not even using a topic&quot;</span><span class="o">))</span> <span class="o">~&gt;</span>
+        <span class="n">addCredentials</span><span class="o">(</span><span class="n">qepCredentials</span><span class="o">)</span> <span class="o">~&gt;</span>
+        <span class="n">route</span> <span class="o">~&gt;</span> <span class="n">check</span> <span class="o">{</span>
+        <span class="n">assertResult</span><span class="o">(</span><span class="nc">OK</span><span class="o">)(</span><span class="n">status</span><span class="o">)</span>
+      <span class="o">}</span>
+    <span class="o">}</span>
+  <span class="o">}</span>
 </code></pre></div>
   </article>
 

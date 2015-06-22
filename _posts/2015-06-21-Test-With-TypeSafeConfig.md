@@ -17,9 +17,9 @@ TypeSafe Config code loads the config from a hierarchy of sources - primarily fi
   val dbUrl = config.getString("database.url")
 ```
 
-I want to keep that simplicity. However, I also needed a good way to test with different configurations. My day-job project, [Shrine](http://catalyst.harvard.edu/services/shrine/)'s Data Steward Web App has three different major configurations so far. 
+I want to keep that simplicity. However, I also needed a good way to test with different configurations. My day-job project, [Shrine](http://catalyst.harvard.edu/services/shrine/)'s Data Steward Web App, has three different major configurations, maybe a dozen variations. 
 
-Specifically, I want the code to use simple structures that draw their configuration from a typesafe [Config](https://github.com/typesafehub/config/blob/master/config/src/main/java/com/typesafe/config/Config.java) object. I want to be able to replicate the technique shamelessly without sharing code between subprojects. Further, I do not want that Config exposed overmuch in my system's API; I should be able to use Scala's singleton [```object```s] (https://raseshmori.wordpress.com/2013/06/20/scala-part-4-classes-objects/) where I need singletons. At the day job, the configuration is unchanging once set - except for during tests. Having it front-and-center distracts from more important details. I should not have to couple my code via constructor parameters that make me wish for an aspect-oriented style. It's just config after all.
+Specifically, I want the code to use simple structures that draw their configuration from a typesafe [Config](https://github.com/typesafehub/config/blob/master/config/src/main/java/com/typesafe/config/Config.java) object. I want to be able to replicate the technique shamelessly without sharing code between subprojects. Further, I do not want that Config exposed in my system's Scala API; I should be able to use Scala's singleton [```object```s] (https://raseshmori.wordpress.com/2013/06/20/scala-part-4-classes-objects/) where I need singletons. At the day job, the configuration is unchanging once set - except for during tests. Having it front-and-center distracts from more important details. I should not have to couple my code via constructor parameters that make me wish for an aspect-oriented style. After all it's just config.
 
 ## Three Compromises
 
@@ -51,15 +51,16 @@ import scala.util.{Failure, Success, Try}
 import com.typesafe.config.{Config, ConfigFactory}
 
 /**
-Use to tweak a Config without clearing and reloading a new config (for testing).
-
-@author dwalend
+ * Use to tweak a Config without clearing and reloading a new config (for testing).
+ *
+ * @author dwalend
  */
 class AtomicConfigSource(baseConfig:Config) {
   val atomicConfigRef = new AtomicReference[Config](ConfigFactory.empty())
  
   /**
-   * Get the atomic Config. Be sure to use defs for all config values that might be changed.
+   * Get the atomic Config. Be sure to use defs for all 
+   * config values that might be changed.
    */
   def config:Config = atomicConfigRef.get().withFallback(baseConfig)
  
@@ -117,4 +118,22 @@ object ExampleConfigSource {
   def configForBlock[T](key:String,value:AnyRef,origin:String)(block: => T):T = 
     atomicConfig.configForBlock(key,value,origin)(block)
 }
+```
+
+To change config in a test, wrap the test code in a configForBlock:
+
+```Scala
+  "Steward" should " accept query requests with no topic in 'just log and approve everything' mode " in {
+
+    ExampleConfigSource.configForBlock("shrine.steward.createTopicsMode", CreateTopicsMode.TopicsIgnoredJustLog.name){
+      val modeName = CreateTopicsMode.TopicsIgnoredJustLog.name
+      System.setProperty("shrine.steward.createTopicsMode", modeName)
+
+      Post(s"/qep/requestQueryAccess/user/${researcherUserName}",InboundShrineQuery(5,"test query","Not even using a topic")) ~>
+        addCredentials(qepCredentials) ~>
+        route ~> check {
+        assertResult(OK)(status)
+      }
+    }
+  }
 ```
