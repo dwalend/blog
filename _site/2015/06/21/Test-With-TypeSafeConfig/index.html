@@ -2,94 +2,102 @@
 
 <p>TL/DR - I found a workable compromise for testing with different configurations using <a href="https://github.com/typesafehub/config">typesafe config</a> without starting a new JVM. See this <a href="https://gist.github.com/dwalend/5a193daa24af8dbfbdc5">gist</a>.</p>
 
+<h2>Simple Structures</h2>
+
+<p>TypeSafe Config code loads the config from a hierarchy of sources - primarily files on the classpath and java.lang.System properties. I can access my system&#39;s configuration from anywhere by calling </p>
+<div class="highlight"><pre><code class="language-Scala" data-lang="Scala">    <span class="k">val</span> <span class="n">config</span> <span class="k">=</span> <span class="nc">ConfigFactory</span><span class="o">.</span><span class="n">load</span><span class="o">();</span>
+    <span class="k">val</span> <span class="n">dbUrl</span> <span class="k">=</span> <span class="n">config</span><span class="o">.</span><span class="n">getString</span><span class="o">(</span><span class="s">&quot;database.url&quot;</span><span class="o">)</span>
+</code></pre></div>
+<p>I want to keep that simplicity. However, I also needed a good way to test with different configurations. </p>
+
+<p>Specifically, I want the code to use simple structures that draw their configuration from a typesafe <a href="https://github.com/typesafehub/config/blob/master/config/src/main/java/com/typesafe/config/Config.java">Config</a> object. I want to be able to replicate the technique shamelessly without sharing code between subprojects. Further, I do not want that Config exposed overmuch in my system&#39;s API; I should be able to use Scala&#39;s singleton <a href="https://raseshmori.wordpress.com/2013/06/20/scala-part-4-classes-objects/"><code>object</code>s</a> where I need singletons. At the day job, the configuration is unchanging once set - except for during tests. Having it front-and-center distracts from more important details. I should not have to couple my code via constructor parameters that make me wish for an aspect-oriented style. It&#39;s just config after all.</p>
+
 <h2>Three Compromises</h2>
 
-<p>I needed a good way to test <a href="http://catalyst.harvard.edu/services/shrine/">Shrine</a>&#39;s Data Steward Web App with different configurations. Shrine controls its configuration via <a href="https://github.com/typesafehub/config">typesafe config</a>, which loads the config from a hierarchy of sources - primarily files on the classpath and java.lang.System properties. I thought of three options. None are perfect, but one is good enough.</p>
+<p>I thought of three options. None are perfect, but one is good enough.</p>
 
-<p>I want the code to use simple structures that draw their configuration from a typesafe <a href="https://github.com/typesafehub/config/blob/master/config/src/main/java/com/typesafe/config/Config.java">Config</a> object. I want to be able to replicate the technique shamelessly without sharing code between subprojects. Further, I did not want that Config exposed overmuch in my system&#39;s API; I should be able to use Scala&#39;s singleton <a href="https://raseshmori.wordpress.com/2013/06/20/scala-part-4-classes-objects/"><code>object</code>s</a> where I need singletons. Shrine&#39;s configuration is unchanging once set - except for during tests - so having it front-and-center distracts from more important details. I should not have to couple my code via constructor parameters that make me wish for an aspect-oriented style. It&#39;s just config after all.</p>
+<h3>Start a New Process</h3>
 
-<h2>Start a New Process</h2>
+<p>The most brute force approach is to use a different JVM process for testing each configuration. That&#39;s how I&#39;d have handled this back in the age of <a href="http://zeroturnaround.com/rebellabs/java-build-tools-part-2-a-decision-makers-comparison-of-maven-gradle-and-ant-ivy/">ant</a>. However, Shrine uses maven. Creating a new JVM process for tests is out-of-model in Shrine and possibly in any maven project. I skipped from ant to <a href="https://codeascraft.com/2014/09/30/building-a-better-build-our-transition-from-ant-to-sbt/">sbt</a>. During the age of maven I was at MathWorks where we used make. Maven feels as alien as a three-fingered glove. I don&#39;t know a tasteful way to spin up several new processes for running tests in the same maven subproject.</p>
 
-<p>The most brute force approach is to use a different JVM process for testing each configuration. That&#39;s how I&#39;d have handled this back in the age of <a href="http://zeroturnaround.com/rebellabs/java-build-tools-part-2-a-decision-makers-comparison-of-maven-gradle-and-ant-ivy/">ant</a>. However, Shrine uses maven. Creating a new JVM process for tests is out-of-model in Shrine and possibly in any maven project. (I skipped from ant to <a href="https://codeascraft.com/2014/09/30/building-a-better-build-our-transition-from-ant-to-sbt/">sbt</a>. During the age of maven I was at MathWorks where we used make. Maven feels very alien.) I don&#39;t know a tasteful way to spin up several new processes for running tests in the same maven subproject.</p>
+<h3>Config Parameter Objects</h3>
 
-<h2>Config Parameter Objects</h2>
+<p>The older code in Shrine uses config parameter objects, skipping typesafe config to test parts of the system in isolation. A maven subproject uses typesafe config to drive various abstract-factory-pattern-inspired parts to construct parts for Shrine. Testing different configurations means constructing specialized configuration helpers instead of using a simple Config. The approach definitely solves the problem, but it adds a long, twisty maze between the config files where a value is defined and the code that actually uses it. Following that path adds about five minutes to each task involving a config key-value pair. The approach seems particularly invasive because singletons that could have been Scala <code>object</code>s have to be constructed class instances. To keep the whole works from becoming a furball the existing pattern tightly couples the Shrine system around a single instance of a ShrineConfig class. Testing more than a single subsystem is very difficult. I found myself repeating my criticisms of Spring mixed with profane mutterings about <a href="http://perl.plover.com/yak/design/samples/slide004.html">GLOOP</a>. Someday I want to clean up that part of the code, not add to the confusion.</p>
 
-<p>The older code in Shrine uses config parameter objects, skipping typesafe config to test parts of the system in isolation. A maven subproject uses typesafe config to drive various abstract-factory-pattern-inspired parts to construct parts for Shrine. Testing different configurations means constructing specialized configuration helpers instead of using a simple Config. The approach definitely solves the problem, but it adds a long, twisty maze between the config files where a value is defined and the code that actually uses it. Following that path adds about five minutes to each task involving a config key-value pair. The approach seems particularly invasive because singletons that could have been <code>object</code>s have to be constructed class instances. To keep the whole works from becoming a furball the existing pattern tightly couples the Shrine system around a single instance of a ShrineConfig class. Testing more than a single subsystem is very difficult. I found myself repeating my criticisms of Spring mixed with profane mutterings about <a href="http://perl.plover.com/yak/design/samples/slide004.html">GLOOP</a>. Someday I want to clean up that part of the code, not add to the confusion.</p>
-
-<h2>A Little Custom Config Code</h2>
+<h3>A Little Custom Config Code</h3>
 
 <p>I decided to wrap typesafe config with just a little mutability and use <a href="http://blog.jessitron.com/2012/07/choices-with-def-and-val-in-scala.html">defs</a> where I need configurable values. Using defs for configurable values forces them to be reevaluated each time the owning code accesses them; there will always be a little in-memory overhead. However, any part of the system can access the Config when needed, with a key&#39;s name right next to the def that supplies the value. </p>
-<div class="highlight"><pre><code class="language-Scala" data-lang="Scala">  <span class="k">def</span> <span class="n">dbUrl</span> <span class="k">=</span> <span class="nc">ExampeConfigSource</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">getString</span><span class="o">(</span><span class="s">&quot;database.url&quot;</span><span class="o">)</span>
+<div class="highlight"><pre><code class="language-Scala" data-lang="Scala">    <span class="k">def</span> <span class="n">dbUrl</span> <span class="k">=</span> <span class="nc">ExampleConfigSource</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">getString</span><span class="o">(</span><span class="s">&quot;database.url&quot;</span><span class="o">)</span>
 </code></pre></div>
-<p>My first hack at the solution was to set and clean up system properties in a try/finally block, and use <a href="https://github.com/typesafehub/config/blob/master/config/src/main/java/com/typesafe/config/ConfigFactory.java">ConfigFactory</a>&#39;s resetCache method. The Data Steward App is a web app showing a database; I can afford considerable overhead, but it just seemed sloppy. I won&#39;t share some of the uglier code, but the progression to something clean went fine. The second hack was to put the try/finally into a higher-order function. The third step started to look less hacky; I replaced the cache flush and system properties with API to use <a href="https://github.com/typesafehub/config#merging-config-trees">Config&#39;s withFallback()</a> to get the default (cached and unchanging) Config. I put the changable Config inside an <a href="https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/atomic/package-summary.html">AtomicReference</a> for minimal concurrent safety. Finally I dressed it up in a Scala-style <a href="http://danielwestheide.com/blog/2012/12/26/the-neophytes-guide-to-scala-part-6-error-handling-with-try.html">Try/Success/Failure</a> to detect one class of possible concurrency bugs that should never happen.</p>
+<p>My first hack at the solution was to set and clean up system properties in a try/finally block, and use <a href="https://github.com/typesafehub/config/blob/master/config/src/main/java/com/typesafe/config/ConfigFactory.java">ConfigFactory</a>&#39;s resetCache method. The project is a web app showing a database; I can afford considerable overhead, but it just seemed sloppy. I won&#39;t share some of the uglier code, but the progression to something clean went fine. The second hack was to put the try/finally into a higher-order function. The third step started to look less hacky. I replaced the cache flush and system properties with API to use <a href="https://github.com/typesafehub/config#merging-config-trees">Config&#39;s withFallback()</a> to get the default (cached and unchanging) Config. I put the changeable Config inside an <a href="https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/atomic/package-summary.html">AtomicReference</a> for minimal concurrent safety. Finally I dressed it up in a Scala-style <a href="http://danielwestheide.com/blog/2012/12/26/the-neophytes-guide-to-scala-part-6-error-handling-with-try.html">Try/Success/Failure</a> . It&#39;s not fool-proof, but should be fine for running one test at a time.</p>
 
 <p>Here&#39;s what the code looks like:</p>
-<div class="highlight"><pre><code class="language-Scala" data-lang="Scala"><span class="k">import</span> <span class="nn">java.util.concurrent.atomic.AtomicReference</span>
-<span class="k">import</span> <span class="nn">scala.util.</span><span class="o">{</span><span class="nc">Failure</span><span class="o">,</span> <span class="nc">Success</span><span class="o">,</span> <span class="nc">Try</span><span class="o">}</span>
-<span class="k">import</span> <span class="nn">com.typesafe.config.</span><span class="o">{</span><span class="nc">Config</span><span class="o">,</span> <span class="nc">ConfigFactory</span><span class="o">}</span>
+<div class="highlight"><pre><code class="language-Scala" data-lang="Scala">    <span class="k">import</span> <span class="nn">java.util.concurrent.atomic.AtomicReference</span>
+    <span class="k">import</span> <span class="nn">scala.util.</span><span class="o">{</span><span class="nc">Failure</span><span class="o">,</span> <span class="nc">Success</span><span class="o">,</span> <span class="nc">Try</span><span class="o">}</span>
+    <span class="k">import</span> <span class="nn">com.typesafe.config.</span><span class="o">{</span><span class="nc">Config</span><span class="o">,</span> <span class="nc">ConfigFactory</span><span class="o">}</span>
 
-<span class="cm">/**</span>
-<span class="cm">Use to tweak a Config without clearing and reloading a new config (for testing).</span>
+    <span class="cm">/**</span>
+<span class="cm">    Use to tweak a Config without clearing and reloading a new config (for testing).</span>
 
-<span class="cm">@author dwalend</span>
-<span class="cm"> */</span>
-<span class="k">class</span> <span class="nc">AtomicConfigSource</span><span class="o">(</span><span class="n">baseConfig</span><span class="k">:</span><span class="kt">Config</span><span class="o">)</span> <span class="o">{</span>
-  <span class="k">val</span> <span class="n">atomicConfigRef</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">AtomicReference</span><span class="o">[</span><span class="kt">Config</span><span class="o">](</span><span class="nc">ConfigFactory</span><span class="o">.</span><span class="n">empty</span><span class="o">())</span>
+<span class="cm">    @author dwalend</span>
+<span class="cm">     */</span>
+    <span class="k">class</span> <span class="nc">AtomicConfigSource</span><span class="o">(</span><span class="n">baseConfig</span><span class="k">:</span><span class="kt">Config</span><span class="o">)</span> <span class="o">{</span>
+      <span class="k">val</span> <span class="n">atomicConfigRef</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">AtomicReference</span><span class="o">[</span><span class="kt">Config</span><span class="o">](</span><span class="nc">ConfigFactory</span><span class="o">.</span><span class="n">empty</span><span class="o">())</span>
 
-  <span class="cm">/**</span>
-<span class="cm">   * Get the atomic Config. Be sure to use defs for all config values that might be changed.</span>
-<span class="cm">   */</span>
-  <span class="k">def</span> <span class="n">config</span><span class="k">:</span><span class="kt">Config</span> <span class="o">=</span> <span class="n">atomicConfigRef</span><span class="o">.</span><span class="n">get</span><span class="o">().</span><span class="n">withFallback</span><span class="o">(</span><span class="n">baseConfig</span><span class="o">)</span>
+      <span class="cm">/**</span>
+<span class="cm">       * Get the atomic Config. Be sure to use defs for all config values that might be changed.</span>
+<span class="cm">       */</span>
+      <span class="k">def</span> <span class="n">config</span><span class="k">:</span><span class="kt">Config</span> <span class="o">=</span> <span class="n">atomicConfigRef</span><span class="o">.</span><span class="n">get</span><span class="o">().</span><span class="n">withFallback</span><span class="o">(</span><span class="n">baseConfig</span><span class="o">)</span>
 
-  <span class="cm">/**</span>
-<span class="cm">   * Use the config in a block of code with just one key/value replaced.</span>
-<span class="cm">   */</span>
-  <span class="k">def</span> <span class="n">configForBlock</span><span class="o">[</span><span class="kt">T</span><span class="o">](</span><span class="n">key</span><span class="k">:</span><span class="kt">String</span><span class="o">,</span><span class="n">value</span><span class="k">:</span><span class="kt">AnyRef</span><span class="o">,</span><span class="n">origin</span><span class="k">:</span><span class="kt">String</span><span class="o">)(</span><span class="n">block</span><span class="k">:</span> <span class="o">=&gt;</span> <span class="n">T</span><span class="o">)</span><span class="k">:</span><span class="kt">T</span> <span class="o">=</span> <span class="o">{</span>
-    <span class="k">val</span> <span class="n">configPairs</span> <span class="k">=</span> <span class="nc">Map</span><span class="o">(</span><span class="n">key</span> <span class="o">-&gt;</span> <span class="n">value</span><span class="o">)</span>
-    <span class="n">configForBlock</span><span class="o">(</span><span class="n">configPairs</span><span class="o">,</span><span class="n">origin</span><span class="o">)(</span><span class="n">block</span><span class="o">)</span>
-  <span class="o">}</span>
-
-  <span class="cm">/**</span>
-<span class="cm">   * Use the config in a block of code.</span>
-<span class="cm">   */</span>
-  <span class="k">def</span> <span class="n">configForBlock</span><span class="o">[</span><span class="kt">T</span><span class="o">](</span><span class="n">configPairs</span><span class="k">:</span><span class="kt">Map</span><span class="o">[</span><span class="kt">String</span>, <span class="k">_</span> <span class="k">&lt;:</span> <span class="kt">AnyRef</span><span class="o">],</span><span class="n">origin</span><span class="k">:</span><span class="kt">String</span><span class="o">)(</span><span class="n">block</span><span class="k">:</span> <span class="o">=&gt;</span> <span class="n">T</span><span class="o">)</span><span class="k">:</span><span class="kt">T</span> <span class="o">=</span> <span class="o">{</span>
-    <span class="k">import</span> <span class="nn">scala.collection.JavaConverters.mapAsJavaMapConverter</span>
-
-    <span class="k">val</span> <span class="n">configPairsJava</span><span class="k">:</span><span class="kt">java.util.Map</span><span class="o">[</span><span class="kt">String</span>, <span class="k">_</span> <span class="k">&lt;:</span> <span class="kt">AnyRef</span><span class="o">]</span> <span class="k">=</span> <span class="n">configPairs</span><span class="o">.</span><span class="n">asJava</span>
-    <span class="k">val</span> <span class="n">blockConfig</span><span class="k">:</span><span class="kt">Config</span> <span class="o">=</span> <span class="nc">ConfigFactory</span><span class="o">.</span><span class="n">parseMap</span><span class="o">(</span><span class="n">configPairsJava</span><span class="o">,</span><span class="n">origin</span><span class="o">)</span>
-    <span class="k">val</span> <span class="n">originalConfig</span><span class="k">:</span><span class="kt">Config</span> <span class="o">=</span> <span class="n">atomicConfigRef</span><span class="o">.</span><span class="n">getAndSet</span><span class="o">(</span><span class="n">blockConfig</span><span class="o">)</span>
-    <span class="k">val</span> <span class="n">tryT</span><span class="k">:</span><span class="kt">Try</span><span class="o">[</span><span class="kt">T</span><span class="o">]</span> <span class="k">=</span> <span class="nc">Try</span><span class="o">(</span><span class="n">block</span><span class="o">)</span>
-
-    <span class="k">val</span> <span class="n">ok</span> <span class="k">=</span> <span class="n">atomicConfigRef</span><span class="o">.</span><span class="n">compareAndSet</span><span class="o">(</span><span class="n">blockConfig</span><span class="o">,</span><span class="n">originalConfig</span><span class="o">)</span>
-
-    <span class="n">tryT</span> <span class="k">match</span> <span class="o">{</span>
-      <span class="k">case</span> <span class="nc">Success</span><span class="o">(</span><span class="n">t</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="o">{</span>
-        <span class="k">if</span><span class="o">(</span><span class="n">ok</span><span class="o">)</span> <span class="n">t</span>
-        <span class="k">else</span> <span class="k">throw</span> <span class="k">new</span> <span class="nc">IllegalStateException</span><span class="o">(</span>
-          <span class="n">s</span><span class="s">&quot;Expected config from ${blockConfig.origin()} to be from ${atomicConfigRef.get().origin()} instead.&quot;</span><span class="o">)</span>
+      <span class="cm">/**</span>
+<span class="cm">       * Use the config in a block of code with just one key/value replaced.</span>
+<span class="cm">       */</span>
+      <span class="k">def</span> <span class="n">configForBlock</span><span class="o">[</span><span class="kt">T</span><span class="o">](</span><span class="n">key</span><span class="k">:</span><span class="kt">String</span><span class="o">,</span><span class="n">value</span><span class="k">:</span><span class="kt">AnyRef</span><span class="o">,</span><span class="n">origin</span><span class="k">:</span><span class="kt">String</span><span class="o">)(</span><span class="n">block</span><span class="k">:</span> <span class="o">=&gt;</span> <span class="n">T</span><span class="o">)</span><span class="k">:</span><span class="kt">T</span> <span class="o">=</span> <span class="o">{</span>
+        <span class="k">val</span> <span class="n">configPairs</span> <span class="k">=</span> <span class="nc">Map</span><span class="o">(</span><span class="n">key</span> <span class="o">-&gt;</span> <span class="n">value</span><span class="o">)</span>
+        <span class="n">configForBlock</span><span class="o">(</span><span class="n">configPairs</span><span class="o">,</span><span class="n">origin</span><span class="o">)(</span><span class="n">block</span><span class="o">)</span>
       <span class="o">}</span>
-      <span class="k">case</span> <span class="nc">Failure</span><span class="o">(</span><span class="n">x</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="o">{</span>
-        <span class="k">if</span><span class="o">(</span><span class="n">ok</span><span class="o">)</span> <span class="k">throw</span> <span class="n">x</span>
-        <span class="k">else</span> <span class="k">throw</span> <span class="k">new</span> <span class="nc">IllegalStateException</span><span class="o">(</span>
-          <span class="n">s</span><span class="s">&quot;Throwable in block and expected config from ${blockConfig.origin()} to be from ${atomicConfigRef.get().origin()} instead.&quot;</span><span class="o">,</span><span class="n">x</span><span class="o">)</span>
+
+      <span class="cm">/**</span>
+<span class="cm">       * Use the config in a block of code.</span>
+<span class="cm">       */</span>
+      <span class="k">def</span> <span class="n">configForBlock</span><span class="o">[</span><span class="kt">T</span><span class="o">](</span><span class="n">configPairs</span><span class="k">:</span><span class="kt">Map</span><span class="o">[</span><span class="kt">String</span>, <span class="k">_</span> <span class="k">&lt;:</span> <span class="kt">AnyRef</span><span class="o">],</span><span class="n">origin</span><span class="k">:</span><span class="kt">String</span><span class="o">)(</span><span class="n">block</span><span class="k">:</span> <span class="o">=&gt;</span> <span class="n">T</span><span class="o">)</span><span class="k">:</span><span class="kt">T</span> <span class="o">=</span> <span class="o">{</span>
+        <span class="k">import</span> <span class="nn">scala.collection.JavaConverters.mapAsJavaMapConverter</span>
+
+        <span class="k">val</span> <span class="n">configPairsJava</span><span class="k">:</span><span class="kt">java.util.Map</span><span class="o">[</span><span class="kt">String</span>, <span class="k">_</span> <span class="k">&lt;:</span> <span class="kt">AnyRef</span><span class="o">]</span> <span class="k">=</span> <span class="n">configPairs</span><span class="o">.</span><span class="n">asJava</span>
+        <span class="k">val</span> <span class="n">blockConfig</span><span class="k">:</span><span class="kt">Config</span> <span class="o">=</span> <span class="nc">ConfigFactory</span><span class="o">.</span><span class="n">parseMap</span><span class="o">(</span><span class="n">configPairsJava</span><span class="o">,</span><span class="n">origin</span><span class="o">)</span>
+        <span class="k">val</span> <span class="n">originalConfig</span><span class="k">:</span><span class="kt">Config</span> <span class="o">=</span> <span class="n">atomicConfigRef</span><span class="o">.</span><span class="n">getAndSet</span><span class="o">(</span><span class="n">blockConfig</span><span class="o">)</span>
+        <span class="k">val</span> <span class="n">tryT</span><span class="k">:</span><span class="kt">Try</span><span class="o">[</span><span class="kt">T</span><span class="o">]</span> <span class="k">=</span> <span class="nc">Try</span><span class="o">(</span><span class="n">block</span><span class="o">)</span>
+
+        <span class="k">val</span> <span class="n">ok</span> <span class="k">=</span> <span class="n">atomicConfigRef</span><span class="o">.</span><span class="n">compareAndSet</span><span class="o">(</span><span class="n">blockConfig</span><span class="o">,</span><span class="n">originalConfig</span><span class="o">)</span>
+
+        <span class="n">tryT</span> <span class="k">match</span> <span class="o">{</span>
+          <span class="k">case</span> <span class="nc">Success</span><span class="o">(</span><span class="n">t</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="o">{</span>
+            <span class="k">if</span><span class="o">(</span><span class="n">ok</span><span class="o">)</span> <span class="n">t</span>
+            <span class="k">else</span> <span class="k">throw</span> <span class="k">new</span> <span class="nc">IllegalStateException</span><span class="o">(</span>
+              <span class="n">s</span><span class="s">&quot;Expected config from ${blockConfig.origin()} to be from ${atomicConfigRef.get().origin()} instead.&quot;</span><span class="o">)</span>
+          <span class="o">}</span>
+          <span class="k">case</span> <span class="nc">Failure</span><span class="o">(</span><span class="n">x</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="o">{</span>
+            <span class="k">if</span><span class="o">(</span><span class="n">ok</span><span class="o">)</span> <span class="k">throw</span> <span class="n">x</span>
+            <span class="k">else</span> <span class="k">throw</span> <span class="k">new</span> <span class="nc">IllegalStateException</span><span class="o">(</span>
+              <span class="n">s</span><span class="s">&quot;Throwable in block and expected config from ${blockConfig.origin()} to be from ${atomicConfigRef.get().origin()} instead.&quot;</span><span class="o">,</span><span class="n">x</span><span class="o">)</span>
+          <span class="o">}</span>
+        <span class="o">}</span>
       <span class="o">}</span>
     <span class="o">}</span>
-  <span class="o">}</span>
-<span class="o">}</span>
 </code></pre></div>
 <p>To use it, I create a Scala object to hold the config:</p>
-<div class="highlight"><pre><code class="language-Scala" data-lang="Scala"><span class="cm">/**</span>
-<span class="cm"> * A little object to let you reach your config from anywhere.</span>
-<span class="cm"> * </span>
-<span class="cm"> * @author dwalend</span>
-<span class="cm"> */</span>
-<span class="k">object</span> <span class="nc">ExampeConfigSource</span> <span class="o">{</span>
-  <span class="c1">//load from application.conf and the usual typesafe config sources</span>
-  <span class="k">val</span> <span class="n">atomicConfig</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">AtomicConfigSource</span><span class="o">(</span><span class="nc">ConfigFactory</span><span class="o">.</span><span class="n">load</span><span class="o">())</span> 
+<div class="highlight"><pre><code class="language-Scala" data-lang="Scala">    <span class="cm">/**</span>
+<span class="cm">     * A little object to let you reach your config from anywhere.</span>
+<span class="cm">     * </span>
+<span class="cm">     * @author dwalend</span>
+<span class="cm">     */</span>
+    <span class="k">object</span> <span class="nc">ExampleConfigSource</span> <span class="o">{</span>
+      <span class="c1">//load from application.conf and the usual typesafe config sources</span>
+      <span class="k">val</span> <span class="n">atomicConfig</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">AtomicConfigSource</span><span class="o">(</span><span class="nc">ConfigFactory</span><span class="o">.</span><span class="n">load</span><span class="o">())</span> 
 
-  <span class="k">def</span> <span class="n">config</span><span class="k">:</span><span class="kt">Config</span> <span class="o">=</span> <span class="n">atomicConfig</span><span class="o">.</span><span class="n">config</span>
+      <span class="k">def</span> <span class="n">config</span><span class="k">:</span><span class="kt">Config</span> <span class="o">=</span> <span class="n">atomicConfig</span><span class="o">.</span><span class="n">config</span>
 
-  <span class="k">def</span> <span class="n">configForBlock</span><span class="o">[</span><span class="kt">T</span><span class="o">](</span><span class="n">key</span><span class="k">:</span><span class="kt">String</span><span class="o">,</span><span class="n">value</span><span class="k">:</span><span class="kt">AnyRef</span><span class="o">,</span><span class="n">origin</span><span class="k">:</span><span class="kt">String</span><span class="o">)(</span><span class="n">block</span><span class="k">:</span> <span class="o">=&gt;</span> <span class="n">T</span><span class="o">)</span><span class="k">:</span><span class="kt">T</span> <span class="o">=</span> 
-    <span class="n">atomicConfig</span><span class="o">.</span><span class="n">configForBlock</span><span class="o">(</span><span class="n">key</span><span class="o">,</span><span class="n">value</span><span class="o">,</span><span class="n">origin</span><span class="o">)(</span><span class="n">block</span><span class="o">)</span>
-<span class="o">}</span>
+      <span class="k">def</span> <span class="n">configForBlock</span><span class="o">[</span><span class="kt">T</span><span class="o">](</span><span class="n">key</span><span class="k">:</span><span class="kt">String</span><span class="o">,</span><span class="n">value</span><span class="k">:</span><span class="kt">AnyRef</span><span class="o">,</span><span class="n">origin</span><span class="k">:</span><span class="kt">String</span><span class="o">)(</span><span class="n">block</span><span class="k">:</span> <span class="o">=&gt;</span> <span class="n">T</span><span class="o">)</span><span class="k">:</span><span class="kt">T</span> <span class="o">=</span> 
+        <span class="n">atomicConfig</span><span class="o">.</span><span class="n">configForBlock</span><span class="o">(</span><span class="n">key</span><span class="o">,</span><span class="n">value</span><span class="o">,</span><span class="n">origin</span><span class="o">)(</span><span class="n">block</span><span class="o">)</span>
+    <span class="o">}</span>
 </code></pre></div>
