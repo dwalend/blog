@@ -1,3 +1,9 @@
+---
+layout: post
+title: Testing With TypeSafe Config
+comments: True
+---
+
 # Testing With TypeSafe Config
 
 TL/DR - I found a workable compromise for testing with different configurations using [typesafe config](https://github.com/typesafehub/config) without starting a new JVM. See this [gist](https://gist.github.com/dwalend/5a193daa24af8dbfbdc5).
@@ -7,8 +13,8 @@ TL/DR - I found a workable compromise for testing with different configurations 
 TypeSafe Config code loads the config from a hierarchy of sources - primarily files on the classpath and java.lang.System properties. I can access my system's configuration from anywhere by calling 
 
 ```Scala
-    val config = ConfigFactory.load();
-    val dbUrl = config.getString("database.url")
+  val config = ConfigFactory.load();
+  val dbUrl = config.getString("database.url")
 ```
 
 I want to keep that simplicity. However, I also needed a good way to test with different configurations. My day-job project, [Shrine](http://catalyst.harvard.edu/services/shrine/)'s Data Steward Web App has three different major configurations so far. 
@@ -32,7 +38,7 @@ The older code in Shrine uses config parameter objects, skipping typesafe config
 I decided to wrap typesafe config with just a little mutability and use [defs](http://blog.jessitron.com/2012/07/choices-with-def-and-val-in-scala.html) where I need configurable values. Using defs for configurable values forces them to be reevaluated each time the owning code accesses them; there will always be a little in-memory overhead. However, any part of the system can access the Config when needed, with a key's name right next to the def that supplies the value. 
 
 ```Scala
-    def dbUrl = ExampleConfigSource.config.getString("database.url")
+  def dbUrl = ExampleConfigSource.config.getString("database.url")
 ```
 
 My first hack at the solution was to set and clean up system properties in a try/finally block, and use [ConfigFactory](https://github.com/typesafehub/config/blob/master/config/src/main/java/com/typesafe/config/ConfigFactory.java)'s resetCache method. The project is a web app showing a database; I can afford considerable overhead, but it just seemed sloppy. I won't share some of the uglier code, but the progression to something clean went fine. The second hack was to put the try/finally into a higher-order function. The third step started to look less hacky. I replaced the cache flush and system properties with API to use [Config's withFallback()](https://github.com/typesafehub/config#merging-config-trees) to get the default (cached and unchanging) Config. I put the changeable Config inside an [AtomicReference](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/atomic/package-summary.html) for minimal concurrent safety. Finally I dressed it up in a Scala-style [Try/Success/Failure](http://danielwestheide.com/blog/2012/12/26/the-neophytes-guide-to-scala-part-6-error-handling-with-try.html) . It's not fool-proof, but should be fine for running one test at a time.
@@ -40,75 +46,75 @@ My first hack at the solution was to set and clean up system properties in a try
 Here's what the code looks like:
 
 ```Scala
-    import java.util.concurrent.atomic.AtomicReference
-    import scala.util.{Failure, Success, Try}
-    import com.typesafe.config.{Config, ConfigFactory}
-    
-    /**
-    Use to tweak a Config without clearing and reloading a new config (for testing).
-    
-    @author dwalend
-     */
-    class AtomicConfigSource(baseConfig:Config) {
-      val atomicConfigRef = new AtomicReference[Config](ConfigFactory.empty())
-     
-      /**
-       * Get the atomic Config. Be sure to use defs for all config values that might be changed.
-       */
-      def config:Config = atomicConfigRef.get().withFallback(baseConfig)
-     
-      /**
-       * Use the config in a block of code with just one key/value replaced.
-       */
-      def configForBlock[T](key:String,value:AnyRef,origin:String)(block: => T):T = {
-        val configPairs = Map(key -> value)
-        configForBlock(configPairs,origin)(block)
+import java.util.concurrent.atomic.AtomicReference
+import scala.util.{Failure, Success, Try}
+import com.typesafe.config.{Config, ConfigFactory}
+
+/**
+Use to tweak a Config without clearing and reloading a new config (for testing).
+
+@author dwalend
+ */
+class AtomicConfigSource(baseConfig:Config) {
+  val atomicConfigRef = new AtomicReference[Config](ConfigFactory.empty())
+ 
+  /**
+   * Get the atomic Config. Be sure to use defs for all config values that might be changed.
+   */
+  def config:Config = atomicConfigRef.get().withFallback(baseConfig)
+ 
+  /**
+   * Use the config in a block of code with just one key/value replaced.
+   */
+  def configForBlock[T](key:String,value:AnyRef,origin:String)(block: => T):T = {
+    val configPairs = Map(key -> value)
+    configForBlock(configPairs,origin)(block)
+  }
+ 
+  /**
+   * Use the config in a block of code.
+   */
+  def configForBlock[T](configPairs:Map[String, _ <: AnyRef],origin:String)(block: => T):T = {
+    import scala.collection.JavaConverters.mapAsJavaMapConverter
+ 
+    val configPairsJava:java.util.Map[String, _ <: AnyRef] = configPairs.asJava
+    val blockConfig:Config = ConfigFactory.parseMap(configPairsJava,origin)
+    val originalConfig:Config = atomicConfigRef.getAndSet(blockConfig)
+    val tryT:Try[T] = Try(block)
+ 
+    val ok = atomicConfigRef.compareAndSet(blockConfig,originalConfig)
+ 
+    tryT match {
+      case Success(t) => {
+        if(ok) t
+        else throw new IllegalStateException(
+          s"Expected config from ${blockConfig.origin()} to be from ${atomicConfigRef.get().origin()} instead.")
       }
-     
-      /**
-       * Use the config in a block of code.
-       */
-      def configForBlock[T](configPairs:Map[String, _ <: AnyRef],origin:String)(block: => T):T = {
-        import scala.collection.JavaConverters.mapAsJavaMapConverter
-     
-        val configPairsJava:java.util.Map[String, _ <: AnyRef] = configPairs.asJava
-        val blockConfig:Config = ConfigFactory.parseMap(configPairsJava,origin)
-        val originalConfig:Config = atomicConfigRef.getAndSet(blockConfig)
-        val tryT:Try[T] = Try(block)
-     
-        val ok = atomicConfigRef.compareAndSet(blockConfig,originalConfig)
-     
-        tryT match {
-          case Success(t) => {
-            if(ok) t
-            else throw new IllegalStateException(
-              s"Expected config from ${blockConfig.origin()} to be from ${atomicConfigRef.get().origin()} instead.")
-          }
-          case Failure(x) => {
-            if(ok) throw x
-            else throw new IllegalStateException(
-              s"Throwable in block and expected config from ${blockConfig.origin()} to be from ${atomicConfigRef.get().origin()} instead.",x)
-          }
-        }
+      case Failure(x) => {
+        if(ok) throw x
+        else throw new IllegalStateException(
+          s"Throwable in block and expected config from ${blockConfig.origin()} to be from ${atomicConfigRef.get().origin()} instead.",x)
       }
     }
+  }
+}
 ```
 
 To use it, I create a Scala object to hold the config:
 
 ```Scala
-    /**
-     * A little object to let you reach your config from anywhere.
-     * 
-     * @author dwalend
-     */
-    object ExampleConfigSource {
-      //load from application.conf and the usual typesafe config sources
-      val atomicConfig = new AtomicConfigSource(ConfigFactory.load()) 
-     
-      def config:Config = atomicConfig.config
-     
-      def configForBlock[T](key:String,value:AnyRef,origin:String)(block: => T):T = 
-        atomicConfig.configForBlock(key,value,origin)(block)
-    }
+/**
+ * A little object to let you reach your config from anywhere.
+ * 
+ * @author dwalend
+ */
+object ExampleConfigSource {
+  //load from application.conf and the usual typesafe config sources
+  val atomicConfig = new AtomicConfigSource(ConfigFactory.load()) 
+ 
+  def config:Config = atomicConfig.config
+ 
+  def configForBlock[T](key:String,value:AnyRef,origin:String)(block: => T):T = 
+    atomicConfig.configForBlock(key,value,origin)(block)
+}
 ```
