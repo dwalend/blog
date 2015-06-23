@@ -5,8 +5,8 @@
     <description>David Walend&#39;s blog about scala, graphs, and coding</description>
     <link>http://dwalend.github.io/blog/</link>
     <atom:link href="http://dwalend.github.io/blog/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Mon, 22 Jun 2015 23:58:37 -0400</pubDate>
-    <lastBuildDate>Mon, 22 Jun 2015 23:58:37 -0400</lastBuildDate>
+    <pubDate>Tue, 23 Jun 2015 00:00:23 -0400</pubDate>
+    <lastBuildDate>Tue, 23 Jun 2015 00:00:23 -0400</lastBuildDate>
     <generator>Jekyll v2.5.3</generator>
     
       <item>
@@ -31,7 +31,7 @@
 
 &lt;h3&gt;Start a New Process&lt;/h3&gt;
 
-&lt;p&gt;The most brute force approach is to use a different JVM process for testing each configuration. That&amp;#39;s how I&amp;#39;d have handled this back in the age of &lt;a href=&quot;http://zeroturnaround.com/rebellabs/java-build-tools-part-2-a-decision-makers-comparison-of-maven-gradle-and-ant-ivy/&quot;&gt;ant&lt;/a&gt;. However, Shrine uses maven. Creating a new JVM process for tests is out-of-model in Shrine and possibly in any maven project. I skipped from ant to &lt;a href=&quot;https://codeascraft.com/2014/09/30/building-a-better-build-our-transition-from-ant-to-sbt/&quot;&gt;sbt&lt;/a&gt;. During the age of maven I was at MathWorks where we used make. Maven feels as alien as a &lt;a href=&quot;https://www.etsy.com/listing/91486506/alien-hand-knit-kiwi-green-warm-three&quot;&gt;three-fingered glove&lt;/a&gt;. I don&amp;#39;t know a tasteful way to spin up several new processes for running tests in the same maven subproject.&lt;/p&gt;
+&lt;p&gt;The most brute force approach is to use a different JVM process for testing each configuration. That&amp;#39;s how I&amp;#39;d have handled this back in the age of &lt;a href=&quot;http://zeroturnaround.com/rebellabs/java-build-tools-part-2-a-decision-makers-comparison-of-maven-gradle-and-ant-ivy/&quot;&gt;ant&lt;/a&gt;. However, Shrine uses maven. Creating a new JVM process for tests is out-of-model in Shrine and possibly in any maven project. I skipped from ant to &lt;a href=&quot;https://codeascraft.com/2014/09/30/building-a-better-build-our-transition-from-ant-to-sbt/&quot;&gt;sbt&lt;/a&gt;. During the age of maven I was at MathWorks where we used make. Maven feels as alien as a &lt;a href=&quot;https://www.etsy.com/listing/91486506/alien-hand-knit-kiwi-green-warm-three&quot;&gt;three-fingered glove&lt;/a&gt; to me. I don&amp;#39;t know a tasteful way to spin up several new processes for running tests in the same maven subproject.&lt;/p&gt;
 
 &lt;h3&gt;Config Parameter Objects&lt;/h3&gt;
 

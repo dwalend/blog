@@ -27,7 +27,7 @@ I thought of three options. None are perfect, but one is good enough.
 
 ### Start a New Process
 
-The most brute force approach is to use a different JVM process for testing each configuration. That's how I'd have handled this back in the age of [ant](http://zeroturnaround.com/rebellabs/java-build-tools-part-2-a-decision-makers-comparison-of-maven-gradle-and-ant-ivy/). However, Shrine uses maven. Creating a new JVM process for tests is out-of-model in Shrine and possibly in any maven project. I skipped from ant to [sbt](https://codeascraft.com/2014/09/30/building-a-better-build-our-transition-from-ant-to-sbt/). During the age of maven I was at MathWorks where we used make. Maven feels as alien as a [three-fingered glove](https://www.etsy.com/listing/91486506/alien-hand-knit-kiwi-green-warm-three). I don't know a tasteful way to spin up several new processes for running tests in the same maven subproject.
+The most brute force approach is to use a different JVM process for testing each configuration. That's how I'd have handled this back in the age of [ant](http://zeroturnaround.com/rebellabs/java-build-tools-part-2-a-decision-makers-comparison-of-maven-gradle-and-ant-ivy/). However, Shrine uses maven. Creating a new JVM process for tests is out-of-model in Shrine and possibly in any maven project. I skipped from ant to [sbt](https://codeascraft.com/2014/09/30/building-a-better-build-our-transition-from-ant-to-sbt/). During the age of maven I was at MathWorks where we used make. Maven feels as alien as a [three-fingered glove](https://www.etsy.com/listing/91486506/alien-hand-knit-kiwi-green-warm-three) to me. I don't know a tasteful way to spin up several new processes for running tests in the same maven subproject.
 
 ### Config Parameter Objects
 
