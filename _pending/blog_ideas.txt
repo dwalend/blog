@@ -1,3 +1,5 @@
+Pimping Config/apply(config)
+
 About the project
 
 Performace
@@ -19,8 +21,6 @@ How to use case classes with custom companion objects without giving up anything
     See examples from the pharmaTransform code from work
 
 Controlling/replacing .par for jobs in a collection
-
-Case class companion objects
 
 Scala compiled to JavaScript
     Followed http://www.scala-js.org/doc/tutorial.html
