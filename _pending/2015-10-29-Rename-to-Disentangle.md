@@ -4,7 +4,11 @@ title: Renaming to Disentangle
 comments: True
 ---
 
-TLDR - TODO
+TLDR - I renamed ScalaGraphMinimizer to [Disentangle](https://github.com/dwalend/Disentangle), which better matches what the library is about. Pull in the latest snapshot with
+
+    resolvers += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
+
+    libraryDependencies += "net.walend.disentangle" %% "graph" % "0.2.0-SNAPSHOT"
 
 I renamed ScalaGraphMinimizer to [Disentangle](https://github.com/dwalend/Disentangle). I wanted to change the name for a while. ScalaGraphMinimizer is internet-unique, but I realized during a presentation this spring that it was nearly impossible to say using a human mouth. My work with semiring-based minimization algorithms is pretty mature at this point and I'd like project to grow in new directions. While working on parallel versions of algorithms this fall I realized ScalaGraphMinimizer had outgrown its name.
 
@@ -76,6 +80,6 @@ Try it out. Pull it into an sbt project via
 
 Or clone the project and play in the console
 
-> git clone https://github.com/dwalend/Disentangle.git
-> cd Disentangle
-> sbt console
+    git clone https://github.com/dwalend/Disentangle.git
+    cd Disentangle
+    sbt console
