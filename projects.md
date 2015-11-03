@@ -6,7 +6,7 @@ permalink: /projects/
 
 Live open source projects
 
-* [Scala Graph Algorithms](https://github.com/dwalend/ScalaGraphMinimizer)
+* [Disentangle - Scala Graph Algorithms](https://github.com/dwalend/Disentangle)
 
 * [Enron Metadata](https://github.com/dwalend/EnronMetaData)
 
