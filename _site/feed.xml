@@ -5,9 +5,124 @@
     <description>David Walend&#39;s blog about scala, graphs, and coding</description>
     <link>http://dwalend.github.io/blog/</link>
     <atom:link href="http://dwalend.github.io/blog/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Tue, 03 Nov 2015 09:55:47 -0500</pubDate>
-    <lastBuildDate>Tue, 03 Nov 2015 09:55:47 -0500</lastBuildDate>
+    <pubDate>Tue, 10 Nov 2015 16:26:19 -0500</pubDate>
+    <lastBuildDate>Tue, 10 Nov 2015 16:26:19 -0500</lastBuildDate>
     <generator>Jekyll v2.5.3</generator>
+    
+      <item>
+        <title>Parallel Disentangle</title>
+        <description>&lt;script type=&quot;text/javascript&quot; src=&quot;../../../../disentangleParGraphs/js/d3.v3.js&quot;&gt;&lt;/script&gt;
+
+&lt;script type=&quot;text/javascript&quot;src=&quot;../../../../disentangleParGraphs/js/queue.js&quot;&gt;&lt;/script&gt;
+
+&lt;script type=&quot;text/javascript&quot;src=&quot;../../../../disentangleParGraphs/js/plot.js&quot;&gt;&lt;/script&gt;
+
+&lt;style type=&quot;text/css&quot;&gt;
+
+    path {
+    stroke-width: 2;
+    fill: none;
+    }
+
+    .axis path,
+    .axis line {
+    fill: none;
+    stroke: black;
+    shape-rendering: crispEdges;
+    }
+
+    .axis text {
+    font-family: sans-serif;
+    font-size: 10px;
+    }
+&lt;/style&gt;
+
+&lt;p&gt;TL/DR - I added parallel versions of Dijkstra&amp;#39;s and Brandes&amp;#39; algorithms to Disentangle. Writing the code was easy. Consider using  parallel versions of these algorithms when you&amp;#39;ve got more than about 100 nodes in your graph and you have computational power to spare. Call them via&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;val simpleShortPathLabelsFromPar = Dijkstra.parAllPairsShortestPaths(edges)
+
+val leastPathLabelsFromPar = Dijkstra.parAllPairsLeastPaths(edges,support,labelForEdge)
+
+val shortestPathsAndBetweennessFromPar = Brandes.parAllLeastPathsAndBetweenness(edges)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Pull in the latest snapshot with&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;resolvers += &amp;quot;Sonatype OSS Snapshots&amp;quot; at &amp;quot;https://oss.sonatype.org/content/repositories/snapshots&amp;quot;
+
+libraryDependencies += &amp;quot;net.walend.disentangle&amp;quot; %% &amp;quot;graph&amp;quot; % &amp;quot;0.2.0-SNAPSHOT&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h2&gt;Scala&amp;#39;s Parallel Collections&lt;/h2&gt;
+
+&lt;p&gt;Scala 2.9 provided &lt;a href=&quot;http://docs.scala-lang.org/overviews/parallel-collections/overview.html&quot;&gt;parallel versions of many of its standard collection classes&lt;/a&gt;. Functional operations on these collections happen in parallel using a default compute pool. Dijkstra&amp;#39;s and Brandes&amp;#39; algorithms can be run in parallel for each node. Aleksandar Prokopec provided some encouraging advice - all I needed to do was run the outermost functional operations on a parallel collection of nodes to use all the cores available. &lt;/p&gt;
+
+&lt;h2&gt;Fifteen Minutes Later&lt;/h2&gt;
+
+&lt;p&gt;I needed about ten minutes for the first pass, and five for a second pass (&lt;a href=&quot;TODO%20Brandes%20paper&quot;&gt;Brandes&amp;#39; has an extra wrinkle&lt;/a&gt;) to get the algorithms running in parallel. Here&amp;#39;s a code fragment from Dijkstra&amp;#39;s algorithm:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;def parAllPairsLeastPaths[Node,EdgeLabel,Label,Key](edges: GenTraversable[(Node, Node, EdgeLabel)],
+                                                    support: SemiringSupport[Label, Key],
+                                                    labelForEdge: (Node, Node, EdgeLabel) =&amp;gt; Label,
+                                                    nodeOrder: GenSeq[Node] = ParSeq.empty):ParSeq[(Node, Node, Label)] = {
+  val labelDigraph = createLabelDigraph(edges.par, support, labelForEdge, nodeOrder.par)
+
+  //profiler blames both flatten and fold of IndexedSet as trouble
+  labelDigraph.innerNodes.to[ParSeq].flatMap(source =&amp;gt; dijkstraSingleSource(labelDigraph, support)(source))
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Making the edges collection parallel speeds up translating to the internal directed graph representation. The bigger benefit, running dijkstraSingleSource in parallel, comes from making the nodes parallel. This code was so straight-forward that I wrote it while bouncing on the T on my way home from work.&lt;/p&gt;
+
+&lt;h2&gt;Results on an EC2 R3&lt;/h2&gt;
+
+&lt;p&gt;I spun up an AWS EC2 r3.8xlarge instance to benchmark on a quiet, modern multicore computer with a quarter-terabyte of ram. (A quick experiment on an AWS E2 c4.8xlarge showed that the system was ultimately memory-bound.) That part was easy. I spent most of my developer time tweaking graphs in D3.&lt;/p&gt;
+
+&lt;div id=&quot;linearDijkstra&quot; align=&quot;center&quot;&gt;&lt;/div&gt;
+
+&lt;script type=&quot;text/javascript&quot;&gt;
+plot3Results(false,&quot;#linearDijkstra&quot;,&quot;../../../../disentangleParGraphs/results/dijkstra.csv&quot;,&quot;../../../../disentangleParGraphs/results/parDijkstra.csv&quot;,&quot;../../../../disentangleParGraphs/results/floydWarshall.csv&quot;)
+&lt;/script&gt;
+ 
+
+&lt;p&gt;The right edge of this graph shows deviation from correct curves for Dijkstra&amp;#39;s algorithm after about 4096 nodes. I think that&amp;#39;s the garbage collector coming in to play. (Lower is faster.) The r3.8xlarge let me use 238 GB for the JVM, which ran Dijkstra&amp;#39;s algorithm on graphs with 16384 nodes before crashing into an out-of-memory error. You&amp;#39;ll notice the curve for the Floyd-Warshall algorithm arcing up quickly from the lower left. The Floyd-Warshall test didn&amp;#39;t crash. As expected it was really slow so I stopped it once I had values for fewer nodes. I was expecting the parallel version of the algorithm to fill up memory faster than the serial version, but was pleasantly surprised that they failed on the same-sized graph. The parallel version found shortest paths for 16384 nodes in just over 15 minutes, a 6X speedup over the serial version. &lt;/p&gt;
+
+&lt;div id=&quot;logDijkstra&quot; align=&quot;center&quot;&gt;&lt;/div&gt;
+
+&lt;script type=&quot;text/javascript&quot;&gt;
+plot3Results(true,&quot;#logDijkstra&quot;,&quot;../../../../disentangleParGraphs/results/dijkstra.csv&quot;,&quot;../../../../disentangleParGraphs/results/parDijkstra.csv&quot;,&quot;../../../../disentangleParGraphs/results/floydWarshall.csv&quot;)
+&lt;/script&gt;
+
+&lt;p&gt;To examine what was happening in that lower left corner I plotted the results log/log. (A little lower is much faster.) As you can see, the crossover point where concurrency starts to pay off seems to be at about 90 nodes (on a quiet AWS r3.8xlarge with 32 cores and 244 GB ram - YMMV). The Floyd-Warshall algorithm was never better for graphs with 32 or more nodes.&lt;/p&gt;
+
+&lt;p&gt;I found similar results for Brandes algorithm.&lt;/p&gt;
+
+&lt;div id=&quot;linearBrandes&quot; align=&quot;center&quot;&gt;&lt;/div&gt;
+
+&lt;script type=&quot;text/javascript&quot;&gt;
+plot2Results(false,&quot;#linearBrandes&quot;,&quot;../../../../disentangleParGraphs/results/brandes.csv&quot;,&quot;../../../../disentangleParGraphs/results/parBrandes.csv&quot;)
+&lt;/script&gt;
+
+&lt;div id=&quot;logBrandes&quot; align=&quot;center&quot;&gt;&lt;/div&gt;
+
+&lt;script type=&quot;text/javascript&quot;&gt;
+plot2Results(true,&quot;#logBrandes&quot;,&quot;../../../../disentangleParGraphs/results/brandes.csv&quot;,&quot;../../../../disentangleParGraphs/results/parBrandes.csv&quot;)
+&lt;/script&gt;
+
+&lt;p&gt;You can see some inefficiency - maybe the JVM garbage collector - start to come into play after about 4096 nodes, but it was able to XXXXXXXXX h 16384 nodes on an EC2 r3.8xlarge, and find all shortest paths and betweenness for every node in just over 15 minutes, a 6X speed-up over non-parallel. Not bad for 15 minutes of effort with no regard for &lt;a href=&quot;https://en.wikipedia.org/wiki/Amdahl%27s_law&quot;&gt;Amdahl&amp;#39;s law&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h2&gt;Try it out&lt;/h2&gt;
+
+&lt;p&gt;Pull it into an sbt project via&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;resolvers += &amp;quot;Sonatype OSS Snapshots&amp;quot; at &amp;quot;https://oss.sonatype.org/content/repositories/snapshots&amp;quot;
+
+libraryDependencies += &amp;quot;net.walend.disentangle&amp;quot; %% &amp;quot;graph&amp;quot; % &amp;quot;0.2.0-SNAPSHOT&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Or clone the project and play in the console&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;git clone https://github.com/dwalend/Disentangle.git
+cd Disentangle
+sbt console
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
+        <pubDate>Tue, 10 Nov 2015 00:00:00 -0500</pubDate>
+        <link>http://dwalend.github.io/blog/2015/11/10/Easy-Parallel/</link>
+        <guid isPermaLink="true">http://dwalend.github.io/blog/2015/11/10/Easy-Parallel/</guid>
+        
+        
+      </item>
     
       <item>
         <title>Renaming to Disentangle</title>
