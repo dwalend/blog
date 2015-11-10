@@ -4,6 +4,11 @@ title: Parallel Disentangle
 comments: True
 ---
 
+<script type="text/javascript" src="../disentangleParGraphs/js/d3.v3.js"></script>
+<script type="text/javascript"src="../disentangleParGraphs/js/queue.js"></script>
+<script type="text/javascript"src="../disentangleParGraphs/js/plot.js"></script>
+
+
 TLDR - I added parallel versions of Dijkstra's and Brandes' algorithms to Disentangle. Writing the code was easy. Consider using the parallel versions when you've got more than about 100 nodes in your graph. Call them via
 
     val simpleShortPathLabelsFromPar = Dijkstra.parAllPairsShortestPaths(edges)
@@ -21,7 +26,7 @@ Pull in the latest snapshot with
 
 #Scala's Parallel Collections
 
-Scala 2.9 provided [parallel versions of many of its standard collection classes](http://docs.scala-lang.org/overviews/parallel-collections/overview.html). Functional operations on these collections happen in parallel using a default compute pool. Dijkstra's and Brandes' algorithms can be run in parallel for each node. All I needed to do was run functional operations on a parallel collection of nodes to use all the cores available.
+Scala 2.9 provided [parallel versions of many of its standard collection classes](http://docs.scala-lang.org/overviews/parallel-collections/overview.html). Functional operations on these collections happen in parallel using a default compute pool. Dijkstra's and Brandes' algorithms can be run in parallel for each node. I found some encouragement from Aleksandar Prokopec. All I needed to do was run functional operations on a parallel collection of nodes to use all the cores available. 
 
 #Fifteen Minutes Later
 
@@ -43,17 +48,31 @@ Making the edges collection parallel speeds up translating to the internal direc
 
 I spun up an AWS EC2 r3.8xlarge instance to benchmark on modern multicore hardware. (A quick experiment on an AWS E2 C4 showed that the system was memory-bound.) That part was easy. I spent a lot more time tweaking graphs in D3.
  
-TODO linear graph
+<div id="linearDijkstra"></div>
+ <script type="text/javascript">
+    plot3Results(false,"#linearDijkstra","../disentangleParGraphs/results/dijkstra.csv","../../../../benchmark/results/v0.1.2/r3.8xlarge/parDijkstra.csv","../../../../benchmark/results/v0.1.2/r3.8xlarge/floydWarshall.csv")
+</script>
  
 The right edge of this graph shows deviation from correct curves for Dijkstra's algorithm after 4096 nodes. I think that's the garbage collector coming in to play. The r3.8xlarge let me use 238 GB for the JVM, which ran on graphs with 16384 nodes before crashing with an out-of-memory error. You'll notice the curve for the Floyd-Warshall algorithm arcing up quickly from the lower left. (The Floyd-Warshall test didn't crash. As expected it was really slow so I stopped it once I had values for the smaller graphs.) I was expecting the parallel version of the algorithm to fill up memory faster than the serial version. I was pleasantly surprised that they failed at the same stage. The parallel version found shortest paths for 16384 nodes in just over 15 minutes, a 6X speedup over the serial version. 
  
-TODO log/log graph
- 
+<div id="logDijkstra"></div>
+<script type="text/javascript">
+    plot3Results(true,"#logDijkstra","../disentangleParGraphs/results/dijkstra.csv","../../../../benchmark/results/v0.1.2/r3.8xlarge/parDijkstra.csv","../../../../benchmark/results/v0.1.2/r3.8xlarge/floydWarshall.csv")
+</script>
+
 To examine what was happening in that lower left corner I plotted the results log/log. As you can see, the crossover point where concurrency starts to pay off seems to be at about 90 nodes (on a quiet 32-core r3.8xlarge - YMMV). The Floyd-Warshall algorithm was never better for graphs with 32 or more nodes.
 
 I had similar results for Brandes algorithm.
 
-TODO Brandes graphs
+<div id="linearBrandes"></div>
+<script type="text/javascript">
+    plot2Results(false,"#linearBrandes","../disentangleParGraphs/results/brandes.csv","../../../../benchmark/results/v0.1.2/r3.8xlarge/parBrandes.csv")
+</script>
+
+<div id="logBrandes"></div>
+<script type="text/javascript">
+    plot2Results(true,"#logBrandes","../disentangleParGraphs/results/brandes.csv","../../../../benchmark/results/v0.1.2/r3.8xlarge/parBrandes.csv")
+</script>
 
 You can see the JVM garbage collector start to come into play at about 10000 nodes, but I was able to fit a graph with 16384 nodes on an EC2 r3.8xlarge, and find all shortest paths in just over 15 minutes, a 6X speed-up over non-parallel. Not bad for 15 minutes of effort with no regard for [Amdahl's law](https://en.wikipedia.org/wiki/Amdahl%27s_law).
 
