@@ -49,7 +49,7 @@ Scala 2.9 provided [parallel versions of many of its standard collection classes
 
 ##Fifteen Minutes Later
 
-I needed about ten minutes for the first pass, and five for a second pass ([Brandes' has an extra wrinkle](TODO Brandes paper)) to get the algorithms running in parallel. Here's a code fragment from Dijkstra's algorithm:
+I needed about ten minutes for the first pass, and five for a second pass ([Brandes' algorithm has an extra wrinkle](http://dl.acm.org/citation.cfm?id=2442521)) to get the algorithms running in parallel. Here's a code fragment from Dijkstra's algorithm:
 
     def parAllPairsLeastPaths[Node,EdgeLabel,Label,Key](edges: GenTraversable[(Node, Node, EdgeLabel)],
                                                         support: SemiringSupport[Label, Key],
@@ -61,18 +61,20 @@ I needed about ten minutes for the first pass, and five for a second pass ([Bran
       labelDigraph.innerNodes.to[ParSeq].flatMap(source => dijkstraSingleSource(labelDigraph, support)(source))
     }
 
-Making the edges collection parallel speeds up translating to the internal directed graph representation. The bigger benefit, running dijkstraSingleSource in parallel, comes from making the nodes parallel. This code was so straight-forward that I wrote it while bouncing on the T on my way home from work.
+Making the edges collection parallel speeds up translating to the internal directed graph representation. The bigger benefit, running dijkstraSingleSource for each node in parallel, comes from putting the nodes in a parallel collection. This code was so straight-forward that I wrote it while bouncing on the T on my way home from work.
 
-##Results on an EC2 R3
+##Results on an AWS EC2 r3.8xlarge
 
-I spun up an AWS EC2 r3.8xlarge instance to benchmark on a quiet, modern multicore computer with a quarter-terabyte of ram. (A quick experiment on an AWS E2 c4.8xlarge showed that the system was ultimately memory-bound.) That part was easy. I spent most of my developer time tweaking graphs in D3.
+I spun up an AWS EC2 r3.8xlarge instance to benchmark on a quiet, modern, multicore computer with a quarter-terabyte of ram. Running the benchmarks was easy. I spent most of my developer time tweaking these performance graphs in D3.
  
 <div id="linearDijkstra" align="center"></div>
 <script type="text/javascript">
 plot3Results(false,"#linearDijkstra","../../../../disentangleParGraphs/results/dijkstra.csv","../../../../disentangleParGraphs/results/parDijkstra.csv","../../../../disentangleParGraphs/results/floydWarshall.csv")
 </script>
  
-The right edge of this graph shows deviation from correct curves for Dijkstra's algorithm after about 4096 nodes. I think that's the garbage collector coming in to play. (Lower is faster.) The r3.8xlarge let me use 238 GB for the JVM, which ran Dijkstra's algorithm on graphs with 16384 nodes before crashing into an out-of-memory error. You'll notice the curve for the Floyd-Warshall algorithm arcing up quickly from the lower left. The Floyd-Warshall test didn't crash. As expected it was really slow so I stopped it once I had values for fewer nodes. I was expecting the parallel version of the algorithm to fill up memory faster than the serial version, but was pleasantly surprised that they failed on the same-sized graph. The parallel version found shortest paths for 16384 nodes in just over 15 minutes, a 6X speedup over the serial version. 
+The right half of this graph shows deviation from correct curves for Dijkstra's algorithm after about 4096 nodes. I think that's the garbage collector coming into play. (Lower is faster.) The r3.8xlarge let me use 238 GB for the JVM, which ran Dijkstra's algorithm on graphs with 16384 nodes before crashing into an out-of-memory error. I was expecting the parallel version of the algorithm to fill up memory faster than the serial version, but was pleasantly surprised that they ran out of memory on the same-sized graph. The parallel version found shortest paths for 16384 nodes in just over 15 minutes, about a 6X speedup over the serial version. 
+ 
+(You'll notice the curve for the Floyd-Warshall algorithm arcing up quickly from the lower left. The Floyd-Warshall test didn't crash; I had a spare half-hour of compute time after one of the larger tests and stopped it after that.)  
  
 <div id="logDijkstra" align="center"></div>
 <script type="text/javascript">
@@ -93,7 +95,7 @@ plot2Results(false,"#linearBrandes","../../../../disentangleParGraphs/results/br
 plot2Results(true,"#logBrandes","../../../../disentangleParGraphs/results/brandes.csv","../../../../disentangleParGraphs/results/parBrandes.csv")
 </script>
 
-You can see some inefficiency - maybe the JVM garbage collector - start to come into play after about 4096 nodes, but it was able to XXXXXXXXX h 16384 nodes on an EC2 r3.8xlarge, and find all shortest paths and betweenness for every node in just over 15 minutes, a 6X speed-up over non-parallel. Not bad for 15 minutes of effort with no regard for [Amdahl's law](https://en.wikipedia.org/wiki/Amdahl%27s_law).
+You can see some inefficiency - maybe the JVM garbage collector - start to come into play after about 4096 nodes, but it was able to find all shortest paths and betweenness for every node in just over 15 minutes for 16384 nodes on an EC2 r3.8xlarge. That's about a 6X speed-up over non-parallel. Not bad for 15 minutes of effort with no regard for [Amdahl's law](https://en.wikipedia.org/wiki/Amdahl%27s_law).
 
 ##Try it out 
 

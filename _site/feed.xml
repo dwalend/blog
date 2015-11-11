@@ -5,8 +5,8 @@
     <description>David Walend&#39;s blog about scala, graphs, and coding</description>
     <link>http://dwalend.github.io/blog/</link>
     <atom:link href="http://dwalend.github.io/blog/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Tue, 10 Nov 2015 16:26:19 -0500</pubDate>
-    <lastBuildDate>Tue, 10 Nov 2015 16:26:19 -0500</lastBuildDate>
+    <pubDate>Tue, 10 Nov 2015 23:29:54 -0500</pubDate>
+    <lastBuildDate>Tue, 10 Nov 2015 23:29:54 -0500</lastBuildDate>
     <generator>Jekyll v2.5.3</generator>
     
       <item>
@@ -55,7 +55,7 @@ libraryDependencies += &amp;quot;net.walend.disentangle&amp;quot; %% &amp;quot;g
 
 &lt;h2&gt;Fifteen Minutes Later&lt;/h2&gt;
 
-&lt;p&gt;I needed about ten minutes for the first pass, and five for a second pass (&lt;a href=&quot;TODO%20Brandes%20paper&quot;&gt;Brandes&amp;#39; has an extra wrinkle&lt;/a&gt;) to get the algorithms running in parallel. Here&amp;#39;s a code fragment from Dijkstra&amp;#39;s algorithm:&lt;/p&gt;
+&lt;p&gt;I needed about ten minutes for the first pass, and five for a second pass (&lt;a href=&quot;http://dl.acm.org/citation.cfm?id=2442521&quot;&gt;Brandes&amp;#39; algorithm has an extra wrinkle&lt;/a&gt;) to get the algorithms running in parallel. Here&amp;#39;s a code fragment from Dijkstra&amp;#39;s algorithm:&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;def parAllPairsLeastPaths[Node,EdgeLabel,Label,Key](edges: GenTraversable[(Node, Node, EdgeLabel)],
                                                     support: SemiringSupport[Label, Key],
                                                     labelForEdge: (Node, Node, EdgeLabel) =&amp;gt; Label,
@@ -66,11 +66,11 @@ libraryDependencies += &amp;quot;net.walend.disentangle&amp;quot; %% &amp;quot;g
   labelDigraph.innerNodes.to[ParSeq].flatMap(source =&amp;gt; dijkstraSingleSource(labelDigraph, support)(source))
 }
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;Making the edges collection parallel speeds up translating to the internal directed graph representation. The bigger benefit, running dijkstraSingleSource in parallel, comes from making the nodes parallel. This code was so straight-forward that I wrote it while bouncing on the T on my way home from work.&lt;/p&gt;
+&lt;p&gt;Making the edges collection parallel speeds up translating to the internal directed graph representation. The bigger benefit, running dijkstraSingleSource for each node in parallel, comes from putting the nodes in a parallel collection. This code was so straight-forward that I wrote it while bouncing on the T on my way home from work.&lt;/p&gt;
 
-&lt;h2&gt;Results on an EC2 R3&lt;/h2&gt;
+&lt;h2&gt;Results on an AWS EC2 r3.8xlarge&lt;/h2&gt;
 
-&lt;p&gt;I spun up an AWS EC2 r3.8xlarge instance to benchmark on a quiet, modern multicore computer with a quarter-terabyte of ram. (A quick experiment on an AWS E2 c4.8xlarge showed that the system was ultimately memory-bound.) That part was easy. I spent most of my developer time tweaking graphs in D3.&lt;/p&gt;
+&lt;p&gt;I spun up an AWS EC2 r3.8xlarge instance to benchmark on a quiet, modern, multicore computer with a quarter-terabyte of ram. Running the benchmarks was easy. I spent most of my developer time tweaking these performance graphs in D3.&lt;/p&gt;
 
 &lt;div id=&quot;linearDijkstra&quot; align=&quot;center&quot;&gt;&lt;/div&gt;
 
@@ -79,7 +79,9 @@ plot3Results(false,&quot;#linearDijkstra&quot;,&quot;../../../../disentangleParG
 &lt;/script&gt;
  
 
-&lt;p&gt;The right edge of this graph shows deviation from correct curves for Dijkstra&amp;#39;s algorithm after about 4096 nodes. I think that&amp;#39;s the garbage collector coming in to play. (Lower is faster.) The r3.8xlarge let me use 238 GB for the JVM, which ran Dijkstra&amp;#39;s algorithm on graphs with 16384 nodes before crashing into an out-of-memory error. You&amp;#39;ll notice the curve for the Floyd-Warshall algorithm arcing up quickly from the lower left. The Floyd-Warshall test didn&amp;#39;t crash. As expected it was really slow so I stopped it once I had values for fewer nodes. I was expecting the parallel version of the algorithm to fill up memory faster than the serial version, but was pleasantly surprised that they failed on the same-sized graph. The parallel version found shortest paths for 16384 nodes in just over 15 minutes, a 6X speedup over the serial version. &lt;/p&gt;
+&lt;p&gt;The right half of this graph shows deviation from correct curves for Dijkstra&amp;#39;s algorithm after about 4096 nodes. I think that&amp;#39;s the garbage collector coming into play. (Lower is faster.) The r3.8xlarge let me use 238 GB for the JVM, which ran Dijkstra&amp;#39;s algorithm on graphs with 16384 nodes before crashing into an out-of-memory error. I was expecting the parallel version of the algorithm to fill up memory faster than the serial version, but was pleasantly surprised that they ran out of memory on the same-sized graph. The parallel version found shortest paths for 16384 nodes in just over 15 minutes, about a 6X speedup over the serial version. &lt;/p&gt;
+
+&lt;p&gt;(You&amp;#39;ll notice the curve for the Floyd-Warshall algorithm arcing up quickly from the lower left. The Floyd-Warshall test didn&amp;#39;t crash; I had a spare half-hour of compute time after one of the larger tests and stopped it after that.)  &lt;/p&gt;
 
 &lt;div id=&quot;logDijkstra&quot; align=&quot;center&quot;&gt;&lt;/div&gt;
 
@@ -103,7 +105,7 @@ plot2Results(false,&quot;#linearBrandes&quot;,&quot;../../../../disentangleParGr
 plot2Results(true,&quot;#logBrandes&quot;,&quot;../../../../disentangleParGraphs/results/brandes.csv&quot;,&quot;../../../../disentangleParGraphs/results/parBrandes.csv&quot;)
 &lt;/script&gt;
 
-&lt;p&gt;You can see some inefficiency - maybe the JVM garbage collector - start to come into play after about 4096 nodes, but it was able to XXXXXXXXX h 16384 nodes on an EC2 r3.8xlarge, and find all shortest paths and betweenness for every node in just over 15 minutes, a 6X speed-up over non-parallel. Not bad for 15 minutes of effort with no regard for &lt;a href=&quot;https://en.wikipedia.org/wiki/Amdahl%27s_law&quot;&gt;Amdahl&amp;#39;s law&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;You can see some inefficiency - maybe the JVM garbage collector - start to come into play after about 4096 nodes, but it was able to find all shortest paths and betweenness for every node in just over 15 minutes for 16384 nodes on an EC2 r3.8xlarge. That&amp;#39;s about a 6X speed-up over non-parallel. Not bad for 15 minutes of effort with no regard for &lt;a href=&quot;https://en.wikipedia.org/wiki/Amdahl%27s_law&quot;&gt;Amdahl&amp;#39;s law&lt;/a&gt;.&lt;/p&gt;
 
 &lt;h2&gt;Try it out&lt;/h2&gt;
 
