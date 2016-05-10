@@ -9,5 +9,5 @@ github_username: dwalend
 
 # Build settings
 #markdown: kramdown
-markdown: redcarpet
+#markdown: redcarpet
 permalink: pretty
