@@ -4,9 +4,15 @@ title: Parallel Disentangle
 comments: True
 ---
 
-<script type="text/javascript" src="../../../../disentangleParGraphs/js/d3.v3.js"></script>
-<script type="text/javascript"src="../../../../disentangleParGraphs/js/queue.js"></script>
-<script type="text/javascript"src="../../../../disentangleParGraphs/js/plot.js"></script>
+<script type="text/javascript" src="../../../../disentangleParGraphs/js/d3.v3.js">
+</script>
+
+<script type="text/javascript" src="../../../../disentangleParGraphs/js/queue.js">
+</script>
+
+<script type="text/javascript" src="../../../../disentangleParGraphs/js/plot.js">
+</script>
+
 <style type="text/css">
 
     path {
@@ -43,11 +49,11 @@ Pull in the latest snapshot with
     libraryDependencies += "net.walend.disentangle" %% "graph" % "0.2.0-SNAPSHOT"
 
 
-##Scala's Parallel Collections
+## Scala's Parallel Collections
 
 Scala 2.9 provided [parallel versions of many of its standard collection classes](http://docs.scala-lang.org/overviews/parallel-collections/overview.html). Functional operations on these collections happen in parallel using a default compute pool. Dijkstra's and Brandes' algorithms can be run in parallel for each node. Aleksandar Prokopec provided some encouraging advice - all I needed to do was run the outermost functional operations on a parallel collection of nodes to use all the cores available. 
 
-##Fifteen Minutes Later
+## Fifteen Minutes Later
 
 I needed about ten minutes for the first pass, and five for a second pass ([Brandes' algorithm has an extra wrinkle](http://dl.acm.org/citation.cfm?id=2442521)) to get the algorithms running in parallel. Here's a code fragment from Dijkstra's algorithm:
 
@@ -63,7 +69,7 @@ I needed about ten minutes for the first pass, and five for a second pass ([Bran
 
 Making the edges collection parallel speeds up translating to the internal directed graph representation. The bigger benefit, running dijkstraSingleSource for each node in parallel, comes from putting the nodes in a parallel collection. This code was so straight-forward that I wrote it while bouncing on the T on my way home from work.
 
-##Results on an AWS EC2 r3.8xlarge
+## Results on an AWS EC2 r3.8xlarge
 
 I spun up an AWS EC2 r3.8xlarge instance to benchmark on a quiet, modern, multicore computer with a quarter-terabyte of ram. Running the benchmarks was easy. I spent most of my developer time tweaking these performance graphs in D3.
  
@@ -97,7 +103,7 @@ plot2Results(true,"#logBrandes","../../../../disentangleParGraphs/results/brande
 
 You can see some inefficiency - maybe the JVM garbage collector - start to come into play after about 4096 nodes, but it was able to find all shortest paths and betweenness for every node in just over 15 minutes for 16384 nodes on an EC2 r3.8xlarge. That's about a 6X speed-up over non-parallel. Not bad for 15 minutes of effort with no regard for [Amdahl's law](https://en.wikipedia.org/wiki/Amdahl%27s_law).
 
-##Try it out 
+## Try it out 
 
 Pull it into an sbt project via
 
