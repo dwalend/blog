@@ -72,5 +72,5 @@ That technique works great in general, but sometimes there'd only be one instanc
       val schema = StewardSchema(slickProfile)
     }
 
-Notice that StewardConfigSource.config? Sometimes I need some control over the configuration for testing. I've already [blogged about how I inject new config variables for testing](http://dwalend.github.io/blog/2015/06/21/Test-With-TypeSafeConfig/). That does put in one extra hop to answer "Where does this Config come from?" However, outside of testing anyone's first guess will be right. I've preserved the most important easy answer for "How do I control this value?"
+Notice that StewardConfigSource.config? Sometimes I need some control over the configuration for testing. I've already [blogged about how I inject new config variables for testing](http://dwalend.github.io/blog/2015/06/21/Test-With-TypeSafeConfig.html). That does put in one extra hop to answer "Where does this Config come from?" However, outside of testing anyone's first guess will be right. I've preserved the most important easy answer for "How do I control this value?"
 
