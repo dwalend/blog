@@ -4,13 +4,13 @@ title: Parallel Disentangle
 comments: True
 ---
 
-<script type="text/javascript" src="../../../../disentangleParGraphs/js/d3.v3.js">
+<script type="text/javascript" src="../../../disentangleParGraphs/js/d3.v3.js">
 </script>
 
-<script type="text/javascript" src="../../../../disentangleParGraphs/js/queue.js">
+<script type="text/javascript" src="../../../disentangleParGraphs/js/queue.js">
 </script>
 
-<script type="text/javascript" src="../../../../disentangleParGraphs/js/plot.js">
+<script type="text/javascript" src="../../../disentangleParGraphs/js/plot.js">
 </script>
 
 <style type="text/css">
@@ -75,7 +75,7 @@ I spun up an AWS EC2 r3.8xlarge instance to benchmark on a quiet, modern, multic
  
 <div id="linearDijkstra" align="center"></div>
 <script type="text/javascript">
-plot3Results(false,"#linearDijkstra","../../../../disentangleParGraphs/results/dijkstra.csv","../../../../disentangleParGraphs/results/parDijkstra.csv","../../../../disentangleParGraphs/results/floydWarshall.csv")
+plot3Results(false,"#linearDijkstra","../../../disentangleParGraphs/results/dijkstra.csv","../../../disentangleParGraphs/results/parDijkstra.csv","../../../disentangleParGraphs/results/floydWarshall.csv")
 </script>
  
 The right half of this graph shows deviation from correct curves for Dijkstra's algorithm after about 4096 nodes. I think that's the garbage collector coming into play. (Lower is faster.) The r3.8xlarge let me use 238 GB for the JVM, which ran Dijkstra's algorithm on graphs with 16384 nodes before crashing into an out-of-memory error. I was expecting the parallel version of the algorithm to fill up memory faster than the serial version, but was pleasantly surprised that they ran out of memory on the same-sized graph. The parallel version found shortest paths for 16384 nodes in just over 15 minutes, about a 6X speedup over the serial version. 
@@ -84,7 +84,7 @@ The right half of this graph shows deviation from correct curves for Dijkstra's 
  
 <div id="logDijkstra" align="center"></div>
 <script type="text/javascript">
-plot3Results(true,"#logDijkstra","../../../../disentangleParGraphs/results/dijkstra.csv","../../../../disentangleParGraphs/results/parDijkstra.csv","../../../../disentangleParGraphs/results/floydWarshall.csv")
+plot3Results(true,"#logDijkstra","../../../disentangleParGraphs/results/dijkstra.csv","../../../disentangleParGraphs/results/parDijkstra.csv","../../../disentangleParGraphs/results/floydWarshall.csv")
 </script>
 
 To examine what was happening in that lower left corner I plotted the results log/log. (A little lower is much faster.) As you can see, the crossover point where concurrency starts to pay off seems to be at about 90 nodes (on a quiet AWS r3.8xlarge with 32 cores and 244 GB ram - YMMV). The Floyd-Warshall algorithm was never better for graphs with 32 or more nodes.
@@ -93,12 +93,12 @@ I found similar results for Brandes algorithm.
 
 <div id="linearBrandes" align="center"></div>
 <script type="text/javascript">
-plot2Results(false,"#linearBrandes","../../../../disentangleParGraphs/results/brandes.csv","../../../../disentangleParGraphs/results/parBrandes.csv")
+plot2Results(false,"#linearBrandes","../../../disentangleParGraphs/results/brandes.csv","../../../disentangleParGraphs/results/parBrandes.csv")
 </script>
 
 <div id="logBrandes" align="center"></div>
 <script type="text/javascript">
-plot2Results(true,"#logBrandes","../../../../disentangleParGraphs/results/brandes.csv","../../../../disentangleParGraphs/results/parBrandes.csv")
+plot2Results(true,"#logBrandes","../../../disentangleParGraphs/results/brandes.csv","../../../disentangleParGraphs/results/parBrandes.csv")
 </script>
 
 You can see some inefficiency - maybe the JVM garbage collector - start to come into play after about 4096 nodes, but it was able to find all shortest paths and betweenness for every node in just over 15 minutes for 16384 nodes on an EC2 r3.8xlarge. That's about a 6X speed-up over non-parallel. Not bad for 15 minutes of effort with no regard for [Amdahl's law](https://en.wikipedia.org/wiki/Amdahl%27s_law).
