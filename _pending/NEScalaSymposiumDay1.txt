@@ -1,0 +1,76 @@
+Mathias
+
+* How to debug akka-streams backpressure?
+
+---
+
+Toby
+
+Lookup
+
+* thrift
+* sbt-native-packager
+** And see examples in slides
+* build-info
+
+Verners
+
+* See super-safe to do static analysis
+* Try out String Map String instead of Map[String,String]
+* Try type aliasing Left to Wrong
+* Try scalactic's Or.
+
+Wall
+
+* Try using an activator template for Enron
+* Maybe help get activator to use markdown
+
+Osheim
+
+Pretty
+
+* see default type parameters
+
+def foo[T](implicit d: T DefaultsTo String):T = ???
+
+* Mix inferred and explicit type parameters
+
+* See stack overflow answer for CanBuildFrom
+
+Lanna
+
+* Do I need self-types anywhere? I don't think so.
+
+Li
+
+* parquet, arvo and scalding/spark
+
+* What does weakTypeTag do?
+
+Wampler
+
+suereth
+
+* See snark on github .
+* sbt-completion
+* Scala.console
+* JLine  (painful)
+
+
+SBT
+
+* See sbt to drive maven poms. pom reader?
+
+scala.js
+
+* See scalatags library for writing html from scala
+* Autowire -- RPC library between client and server
+* uPickle for Json
+
+Rex Kerr -- collections questions
+
+
+
+
+
+
