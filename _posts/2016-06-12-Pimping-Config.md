@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Overcoming My Implicit Suspicions
+title: Implicit Pimp Suspicion
 comments: True
 ---
 
@@ -53,7 +53,7 @@ I'm half-tempted to suggest a Scala language fix to let the implicit class just 
 
 For a directed graph [Brandes' Algorithm](http://dwalend.github.io/Disentangle/v0.2.1/#net.walend.disentangle.graph.semiring.Brandes$) counts how many times a node appears in the shortest path from one node to another. To run Brande's Algorithm on an undirected graph, convert each undirected edge into two directed edges (one each way), run the calculation, then divide the counts by two - because the algorithm finds two paths in the directed graph for every path that exists in the undirected graph. 
 
-In [Disentangle](http://dwalend.github.io/Disentangle) the [algorithm code](http://dwalend.github.io/Disentangle/v0.2.1/#net.walend.disentangle.graph.semiring.package) is decoupled from the [graph structures](http://dwalend.github.io/Disentangle/v0.2.1/#net.walend.disentangle.graph.package). The parameters for algorithms are collections of edges and nodes, not graphs. Up until Brandes' algorithm on undirected graphs I was comfortable writing explicit, simple glue code to access lists of edges to feed the algorithms. I didn't want to force my users to convert to Disentangle's graph structures in order to access the algorithms, and didn't want parts of my algorithms escaping into the graph code. 
+In [Disentangle](https://github.com/dwalend/Disentangle) the [algorithm code](http://dwalend.github.io/Disentangle/v0.2.1/#net.walend.disentangle.graph.semiring.package) is decoupled from the [graph structures](http://dwalend.github.io/Disentangle/v0.2.1/#net.walend.disentangle.graph.package). The parameters for algorithms are collections of edges and nodes, not graphs. Up until Brandes' algorithm on undirected graphs I was comfortable writing explicit, simple glue code to access lists of edges to feed the algorithms. I didn't want to force my users to convert to Disentangle's graph structures in order to access the algorithms, and didn't want parts of my algorithms escaping into the graph code. 
 
 I trust people to convert from undirected to directed graphs; mistakes will give spectacular wrong answers. However, Brandes' "finally divide the results by two" would be easy to leave out; betweenness would still just be a big Map from nodes to unintuitive numbers. I had no good place to hang the divide-by-two correction.
 
@@ -110,6 +110,6 @@ The [code](https://github.com/dwalend/Disentangle/blob/master/graph/src/main/sca
       ...     
     }
 
-Again I put the implicit class in the package object to keep it in what feels like the right namespace. That code seems OK, so I added methods for other algorithms, did the same for directed graphs, and released it as [Disentangle 0.2.1](https://github.com/dwalend/Disentangle). 
+Again I put the implicit class in the package object to keep it in what feels like the right namespace. That code seems OK, so I added methods for other algorithms, did the same for directed graphs, and released it as [Disentangle 0.2.1](https://github.com/dwalend/Disentangle#changes-in-021-the-fifth-release). 
 
 I'm still openly suspicious of implicits. I wouldn't want to work with a whole library magically tacked together this way. However, using the pimp pattern to contain methods that would otherwise be drifting around in unrelated, undiscoverable code seems OK so far.
