@@ -1,3 +1,117 @@
+Reprint Understanding SOA
+
+Measured -  EV3
+    No more accidental craters on the moon
+    Scala 3  value classes and opaque types
+    Typed numbers
+    Exponents via type classes
+        This needs a for-loop
+    Bugs - ug
+
+Star Trek vs Star Wars
+    When things go well in a software project nerds talk about how their work is like Star Trek
+    When things go badly, it is like Star Wars
+
+SHRINE Turn-Around
+    This won't work but people sold it as if it does
+    Bug backlog
+    Like Netscape - but it worked!
+    Backwards compatibility and adaptable protocols
+        Boundaries
+        Circe
+        Optional fields
+        Translation between protocols
+    ... And then we blew it like a bad star wars sequel
+        Lost translation between protocols
+
+
+SHRINE Process
+    Leadership and expertise
+    Ruthlessly get out of the way
+    Road map - a plan from which to diverge
+        Feedback with leadership
+        Toyota Way
+            A3 and Nemiwashi to communicate the important technical details around a decision (This might involve its own write up)
+            A3 is just good for communication
+    Tech complexity boundaries
+        Not more complex than the core libraries
+            And really not more complex than their surface level
+    Sprints fit the availability of QA
+    The trace from goals to measurable tasks
+        Tasks take from 1-3 days
+            Or else take a day or two to break down the tasks
+    The daily cycle
+        Office hour
+    Each task
+        Branched Development
+    Shrub I wanted/Trunk I got
+    Start of a release
+    End of a release
+        More branches
+    New employee steps
+        Before the first day
+        First day - check out code
+        Second day - First change, and practice the process
+        Change to get a tour of all the software
+        "Fold the laundry" vs good stuff
+        Established employees delete code
+
+
+Scala scales by experience
+    EV3 -  limit to lego
+        - limit to what works on the EV3
+    SHRINE - limits for people entering the project
+    Disentangle - Get the API just right to be easy
+
+SHRINE Future
+    Restore backwards compatilibility
+        3.x adapters in a 4.x network
+            Translate queries to v1 at the hub
+                Restore signing
+        3.x QEPs in a 4.x network
+    Remove the adapter working database - poll QUEUED queries from the hub
+    Remove the QEP database and show the hub's data
+        (and half the propagation delay)
+    Separate auth/auth from shrine
+        Use case analysis
+            PM cell
+            Simple identity provider
+            Harvard identity provider
+            Federated identity
+        See wiki on how to do it
+
+
+Scala scales through time
+    SHRINE
+
+JNA/SNA/Scala Native/JNI
+    Ev3
+    
+
+Writing unix streams - EV3
+
+Mill - EV3
+    not sbt
+    not maven
+    scala-cli ?
+
+CQRS
+    Actually required by the contract
+    Has to be three brands of database
+    Wanted CouchDB/DynamoDB - but had to be a relational database
+    Relational tables severely restrictive - updates are really hard
+    CQRS in a table
+    DynamoDB experiment
+
+Backwards-compatible tables of common currency data
+Common currency case classes
+    Backwards compatibility worked well
+    Schema changes not needed
+
+CQ2 and Slick Could Work!!
+
+mill and ant tasks for Ev3
+
 Pimping Config/apply(config)
 
 About the project
@@ -17,8 +131,9 @@ Test data sets
     Stanford graph base
     Enron
 
-How to use case classes with custom companion objects without giving up anything.
-    See examples from the pharmaTransform code from work
+Type parameters vs type members
+    When to use which (Refer to NE Scala talk and blog entries) (And just one set of parameters)
+    Refining type members in a tall hierarchy (don't define a new type)
 
 Controlling/replacing .par for jobs in a collection
 
