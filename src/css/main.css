@@ -1,0 +1,253 @@
+/* Intuitive Counter
+   Dark by default. A reader who has explicitly asked for light gets light.
+   One column, sized for reading down a narrow screen. */
+
+:root {
+  /* Dark first, so scrollbars and form controls come up dark without extra work. */
+  color-scheme: dark light;
+
+  --bg:        #14161a;
+  --surface:   #1c1f26;
+  --text:      #d5dae2;
+  --muted:     #98a1af;
+  --heading:   #f0f3f7;
+  --link:      #83b4ff;
+  --visited:   #bda6ff;
+  --border:    #2b313c;
+  --rule:      #232833;
+
+  /* Prism tokens */
+  --tok-comment:  #7d8794;
+  --tok-keyword:  #c4a2f0;
+  --tok-string:   #a6d98d;
+  --tok-number:   #f0a868;
+  --tok-function: #83b4ff;
+  --tok-class:    #f2d58a;
+  --tok-punct:    #98a1af;
+
+  --measure: 34rem;
+  --wide:    52rem;
+
+  --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+               "Helvetica Neue", Arial, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas,
+               "Liberation Mono", monospace;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --bg:        #fdfdfd;
+    --surface:   #f3f4f7;
+    --text:      #24272e;
+    --muted:     #5b626e;
+    --heading:   #14161a;
+    --link:      #1b5cc9;
+    --visited:   #6b3fc4;
+    --border:    #dde1e8;
+    --rule:      #e7eaef;
+
+    --tok-comment:  #626976;
+    --tok-keyword:  #7c3aed;
+    --tok-string:   #2f7a33;
+    --tok-number:   #b4541a;
+    --tok-function: #1b5cc9;
+    --tok-class:    #8a6510;
+    --tok-punct:    #5b626e;
+  }
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  padding: 0 1.25rem;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  -webkit-text-size-adjust: 100%;
+}
+
+/* ---- header / footer ---- */
+
+.site-header,
+.site-footer {
+  max-width: var(--measure);
+  margin: 0 auto;
+}
+
+.site-header {
+  padding: 2rem 0 1.5rem;
+  border-bottom: 1px solid var(--rule);
+  margin-bottom: 2.5rem;
+}
+
+.site-title {
+  display: block;
+  font-size: 1.35rem;
+  font-weight: 600;
+  color: var(--heading);
+  text-decoration: none;
+  letter-spacing: -0.01em;
+}
+
+.site-nav {
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+}
+.site-nav a {
+  color: var(--muted);
+  margin-right: 1rem;
+  text-decoration: none;
+}
+.site-nav a:hover { color: var(--link); text-decoration: underline; }
+
+.site-footer {
+  margin-top: 4rem;
+  padding: 1.5rem 0 3rem;
+  border-top: 1px solid var(--rule);
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+.site-footer p { margin: 0.35rem 0; }
+
+/* ---- prose ---- */
+
+.page-content { max-width: var(--measure); margin: 0 auto; }
+
+h1, h2, h3, h4 {
+  color: var(--heading);
+  line-height: 1.25;
+  margin: 2.25rem 0 0.75rem;
+  letter-spacing: -0.01em;
+}
+h1 { font-size: 1.9rem; }
+h2 { font-size: 1.4rem; }
+h3 { font-size: 1.15rem; }
+
+p, ul, ol, blockquote { margin: 0 0 1.15rem; }
+ul, ol { padding-left: 1.4rem; }
+li { margin-bottom: 0.35rem; }
+
+a { color: var(--link); text-decoration-thickness: 1px; text-underline-offset: 2px; }
+a:visited { color: var(--visited); }
+
+blockquote {
+  border-left: 3px solid var(--border);
+  padding-left: 1rem;
+  margin-left: 0;
+  color: var(--muted);
+}
+
+hr { border: 0; border-top: 1px solid var(--rule); margin: 2.5rem 0; }
+
+img { max-width: 100%; height: auto; }
+
+/* ---- post furniture ---- */
+
+.post-header { margin-bottom: 2rem; }
+.post-title { margin-top: 0; }
+.post-meta { color: var(--muted); font-size: 0.9rem; margin: 0; }
+
+/* ---- post list ---- */
+
+.post-list { list-style: none; padding: 0; }
+.post-list li { margin-bottom: 1.5rem; }
+.post-list .post-meta { display: block; }
+.post-list a {
+  font-size: 1.15rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+.post-list a:hover { text-decoration: underline; }
+
+/* ---- code ----
+   Prose stays at the measure. Code breaks out wider, so a long Scala
+   signature has room before it wraps. */
+
+.post-content {
+  display: grid;
+  grid-template-columns: 1fr min(var(--measure), 100%) 1fr;
+}
+.post-content > * { grid-column: 2; }
+
+.post-content > pre,
+.post-content > .highlight,
+.post-content > table {
+  grid-column: 1 / -1;
+  width: min(var(--wide), 100%);
+  justify-self: center;
+}
+
+code, kbd, samp {
+  font-family: var(--font-mono);
+  font-size: 0.875em;
+}
+
+/* inline code */
+:not(pre) > code {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 0.1em 0.35em;
+  overflow-wrap: break-word;
+}
+
+pre {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.9rem 1rem;
+  margin: 0 0 1.15rem;
+  overflow-x: auto;          /* wide code scrolls itself, never the page */
+  line-height: 1.5;
+}
+pre code {
+  background: none;
+  border: 0;
+  padding: 0;
+  white-space: pre;
+}
+
+table {
+  border-collapse: collapse;
+  display: block;
+  overflow-x: auto;
+  font-size: 0.92rem;
+}
+th, td { border: 1px solid var(--border); padding: 0.4rem 0.6rem; text-align: left; }
+th { background: var(--surface); }
+
+/* ---- Prism, highlighted at build time (no client JS) ---- */
+
+.token.comment, .token.prolog, .token.doctype, .token.cdata {
+  color: var(--tok-comment); font-style: italic;
+}
+.token.punctuation, .token.operator { color: var(--tok-punct); }
+.token.keyword, .token.atrule, .token.important, .token.selector {
+  color: var(--tok-keyword);
+}
+.token.string, .token.char, .token.attr-value, .token.regex, .token.inserted {
+  color: var(--tok-string);
+}
+.token.number, .token.boolean, .token.constant, .token.symbol, .token.deleted {
+  color: var(--tok-number);
+}
+.token.function, .token.attr-name, .token.property, .token.tag {
+  color: var(--tok-function);
+}
+.token.class-name, .token.builtin, .token.namespace { color: var(--tok-class); }
+.token.entity, .token.url, .token.variable { color: var(--text); }
+
+/* ---- reading on a phone ---- */
+
+@media (max-width: 30rem) {
+  body { padding: 0 1rem; font-size: 1rem; }
+  h1 { font-size: 1.6rem; }
+  pre { padding: 0.75rem; border-radius: 4px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+}

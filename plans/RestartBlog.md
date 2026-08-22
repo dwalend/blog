@@ -45,8 +45,11 @@ See `MigrateOldBlogs.md` for the content-migration half of this.
   Good fit because it writes about the language it is written in, and because when
   it breaks only the figures break - the blog still builds and still publishes.
   Do this *after* the blog is up. See `disentangleParGraphs/` for prior art.
-- **Fediverse comments.** Post each article to Mastodon, put the toot id in
-  frontmatter, render replies alongside giscus. Doubles as distribution. Phase 2.
+- **Fediverse comments.** Was: post each article to Mastodon, put the toot id in
+  frontmatter, render replies alongside giscus. **Reconsider.** Its appeal was
+  that it doubled as distribution, but the actual channels are LinkedIn and
+  Discord, and it needs a Mastodon presence that does not exist. giscus stands on
+  its own. Drop unless a fediverse account appears. See Phase 11.
 
 ## Sequencing principle
 
@@ -161,7 +164,7 @@ Notes from doing this:
   classic script in the browser and Eleventy only copies it. Not a problem.
 
 
-## Phase 2 - Templates and theme
+## Phase 2 - Templates and theme  [DONE 2026-08-22]
 
 1. Port `_layouts/default.html` -> `src/_includes/base.liquid`. Mostly mechanical:
    `site.foo` -> `metadata.foo`, `{% include head.html %}` -> `{% include "head.liquid" %}`.
@@ -182,6 +185,35 @@ Notes from doing this:
    - A dark Prism theme for the build-time syntax highlighting.
 7. Verify against the code-heaviest content: the centaur post's JSON blocks and
    `_posts/2016-06-13-Pimping-Config.md`'s Scala.
+
+Notes from doing this:
+
+- Layouts live in `src/_includes/`: `base.liquid` (was `default.html`), plus
+  `post.liquid`, `page.liquid`, `head.liquid`, `header.liquid`, `footer.liquid`.
+- The old header's hamburger menu and `site.pages` loop are gone. One column does
+  not need a collapsing nav - Posts / About / RSS as plain links.
+- The footer carries the license line, which closes Phase 1 item 11.
+- **Twitter is not carried over.** The 2016 footer linked `twitter_username:
+  dwalend` and `metadata.js` does not. Say if it should come back, and whether as
+  X or as Mastodon (which pairs with the deferred fediverse-comments idea).
+- `about.md` was Jekyll boilerplate - it literally read "This blog uses the base
+  Jekyll theme." Rewritten from scratch, and worth your own pass.
+- `src/style-guide.md` at `/style-guide/` is a typography and code specimen for
+  checking the theme. Excluded from collections, so it is not in the post list.
+  Delete it if it is not wanted.
+- Code breaks out past the 34rem prose measure to a 52rem band via a three-column
+  grid on `.post-content`, so long Scala signatures have room. Wide code scrolls
+  inside its own `<pre>`; the page body never scrolls sideways.
+- Contrast was checked programmatically against WCAG AA for both palettes. One
+  failure found and fixed: the light-theme comment token was 4.40:1, now 5.02:1.
+  Everything else ranges 4.5:1 to 17.8:1.
+- Dropped `_includes/google_analytics.html`, which carried `UA-54450354-1`.
+- **The feed is a dangling link until Phase 3.** `head.liquid` emits the
+  autodiscovery tag and the header and footer link `/feed.xml`, but nothing
+  generates it yet. That is Phase 3's first item.
+- The rest of the old Jekyll tree (`_layouts/`, `_includes/`, `_sass/`,
+  `css/main.scss`, root `index.html`, `feed.xml`, `about.md`) is now superseded
+  but still present. Sweep it in Phase 5 with the post migration, in one go.
 
 ## Phase 3 - Feed and subscribing
 
@@ -258,3 +290,58 @@ Only once Phases 1-8 are verified on `dwalend.github.io/blog`.
 - Scala.js graph figures.
 - Mine `private-duck-aligner`'s `blog-fodder`.
 - Revisit Laika.
+
+## Phase 11 - Distribution and social
+
+Runs after Phase 9. Independent of Phase 10 - do it as soon as the site is live,
+rather than waiting on the wayback archaeology.
+
+The channels that matter are **LinkedIn** and **Discord**. Not Twitter/X: the
+2016 footer linked it, the new site does not, and it is not coming back.
+
+### 1. OpenGraph tags first - this is a prerequisite, not a nicety
+
+LinkedIn, Discord, and Slack all build their link previews from OpenGraph meta
+tags. `src/_includes/head.liquid` has none today, so a pasted link renders as a
+bare URL or a title-only card. Add to `head.liquid`:
+
+- `og:title`, `og:description`, `og:url`, `og:type` (`article` for posts,
+  `website` elsewhere), `og:site_name`
+- `article:published_time` on posts
+- `twitter:card` set to `summary_large_image` - despite the name, Discord and
+  several others read these tags too
+- `og:image` - needs an actual image. Options: a simple generated card per post,
+  or one site-wide fallback. A site-wide fallback is enough to start.
+
+Cheap, and it can land any time - it does not need to wait for the rest of this
+phase. Verify with Discord's own preview (paste into a private channel) and
+LinkedIn's Post Inspector.
+
+### 2. LinkedIn
+
+- Posts with outbound links get less reach than native text. The usual workaround
+  is a substantive summary as the post body with the link in the first comment.
+  Worth trying both and seeing whether it actually matters at this scale.
+- Do **not** paste full post text as a LinkedIn article. It creates a duplicate
+  with no reliable canonical back to `blog.walend.net`. Teaser plus link.
+
+### 3. Discord
+
+- Decide which servers. Scala's official Discord and Typelevel's are the obvious
+  fits for the Scala and graph posts; the LLM-workflow posts suit somewhere else
+  entirely.
+- Read each server's self-promotion rules before posting. Most have a designated
+  channel and dislike drive-by links.
+
+### 4. Announcement routine
+
+- Write down the actual steps for shipping a post, so it is a checklist and not a
+  decision each time: publish -> verify the feed updated -> LinkedIn -> Discord.
+- Consider whether any of it is worth automating from the RSS feed later. At a
+  post every week or two, by hand is probably correct.
+
+### 5. Relaunch post
+
+One "the blog is back, here is where it lives, here is the feed" note on both
+channels once Phase 9 is verified. Point at `/feed.xml` explicitly - the whole
+reason for leaving Hashnode was that the feed had become undiscoverable.

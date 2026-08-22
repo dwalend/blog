@@ -1,0 +1,12 @@
+<footer class="site-footer">
+  <p class="footer-links">
+    <a href="{{ '/feed.xml' | url }}">Subscribe via RSS</a> ·
+    <a href="https://github.com/{{ metadata.author.github }}">github/{{ metadata.author.github }}</a> ·
+    <a href="mailto:{{ metadata.author.email }}">{{ metadata.author.email }}</a>
+  </p>
+  <p class="footer-license">
+    Words &copy; {{ metadata.author.name }},
+    <a href="{{ metadata.license.content.url }}" rel="license">{{ metadata.license.content.name }}</a>.
+    Code samples: {{ metadata.license.samples }}.
+  </p>
+</footer>

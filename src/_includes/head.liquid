@@ -1,0 +1,10 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>{% if title %}{{ title | escape }} · {{ metadata.title }}{% else %}{{ metadata.title }}{% endif %}</title>
+<meta name="description" content="{% if description %}{{ description | escape }}{% else %}{{ metadata.description }}{% endif %}">
+
+<link rel="stylesheet" href="{{ '/css/main.css' | url }}">
+<link rel="canonical" href="{{ metadata.url }}{{ page.url | url }}">
+
+<link rel="alternate" type="application/rss+xml" title="{{ metadata.title }}" href="{{ metadata.url }}{{ '/feed.xml' | url }}">

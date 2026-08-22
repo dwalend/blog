@@ -1,14 +1,13 @@
 ---
-title: Home
+layout: base.liquid
 ---
-<h1>{{ metadata.title }}</h1>
-<p>{{ metadata.subtitle }}</p>
-
-<ul>
+<ul class="post-list">
 {% for post in collections.post reversed %}
   <li>
+    <span class="post-meta">{{ post.date | date: "%B %-d, %Y" }}</span>
     <a href="{{ post.url | url }}">{{ post.data.title }}</a>
-    <time datetime="{{ post.date | date: '%Y-%m-%d' }}">{{ post.date | date: "%B %e, %Y" }}</time>
   </li>
+{% else %}
+  <li><span class="post-meta">No posts yet.</span></li>
 {% endfor %}
 </ul>
