@@ -53,20 +53,35 @@ serving readers. DNS is the last step, and it is a single Route 53 record change
 
 ---
 
-## Phase 0 - Repo hygiene
+## Phase 0 - Repo hygiene  [DONE 2026-08-22]
 
-1. Decide the source branch. Currently **source lives on `gh-pages`**, which will
-   collide with an Actions-based Pages deploy. Move source to `master`:
-   - `git checkout master && git merge gh-pages` (or reset master to gh-pages).
-   - Delete the `gh-pages` branch locally and on origin once Actions deploy works.
-   - Repo Settings -> Pages -> Source = **GitHub Actions**.
-2. Prune stale branches: `toJekyll3`, `setup`, `pending`.
-3. Add to `.gitignore`: `_site`, `.jekyll-cache`, `.sass-cache`, `.DS_Store`,
-   `node_modules`, `.eleventy-cache`. Then `git rm -r --cached` the checked-in
-   `_site/` and `.sass-cache/` - both are build output sitting in the repo.
-4. Remove `.jekyll-cache/` and `.sass-cache/` from the working tree.
-5. Keep `_posts/`, `_layouts/`, `_includes/`, `_sass/`, `disentangleParGraphs/`,
-   `about.md`. Keep `_pending/` as the drafts folder.
+1. **Source of truth moved to `master`.** `master` was a strict ancestor of
+   `gh-pages` (100 commits behind, zero divergent), so this was a clean
+   `git merge --ff-only gh-pages`. `origin/HEAD` already points at `master`, so
+   the default branch needed no change.
+   - The fast-forward dropped `LICENSE` and `README.md`, which existed on the old
+     `master` initial commit and had been deleted on `gh-pages`. Worth adding a
+     README back at some point.
+2. **`gh-pages` stays, for now.** It is still serving `dwalend.github.io/blog`
+   through the legacy Pages build (`build_type: legacy`, `source: gh-pages`).
+   Retire it in Phase 4, once the Actions workflow is deploying. Switching the
+   Pages source before a workflow exists would take the live site down - that
+   step lives in Phase 4, not here.
+3. **`.gitignore` rewritten.** Added `node_modules/` and `.eleventy-cache/` for the
+   incoming Eleventy build, plus `.DS_Store`. Directories now carry trailing
+   slashes, entries are grouped, and the missing newline at end of file is fixed.
+   - Correction to an earlier draft of this plan: `_site/`, `.sass-cache/`,
+     `.jekyll-cache/`, `.idea/`, and `.DS_Store` were **never tracked** - only 57
+     files are in the index. There was no checked-in build output and nothing to
+     `git rm --cached`.
+4. **Stale build output removed from the working tree**: `_site/`, `.sass-cache/`,
+   `.jekyll-cache/`. All ignored, all derived - every one of the 23 files in
+   `_site` mapped onto the 10 posts plus `about.md`, `css/`, `disentangleParGraphs/`,
+   `feed.xml`, and `index.html`.
+5. **Stale branches.** `toJekyll3`, `origin/pending`, and `origin/setup` all have
+   **zero commits not reachable from `master`**, so deleting them loses nothing.
+6. Kept: `_posts/`, `_layouts/`, `_includes/`, `_sass/`, `disentangleParGraphs/`,
+   `about.md`, and `_pending/` as the drafts folder.
 
 ## Phase 1 - Eleventy skeleton
 
@@ -147,9 +162,13 @@ blog/
 1. `.github/workflows/pages.yml`: `actions/checkout` -> `actions/setup-node` with a
    pinned Node version and npm cache -> `npm ci` -> `npx @11ty/eleventy` ->
    `actions/upload-pages-artifact` -> `actions/deploy-pages`.
-2. Repo Settings -> Pages -> Source = GitHub Actions.
-3. **Do not add `src/CNAME` yet.** Site publishes to `https://dwalend.github.io/blog/`.
-4. Verify there: pages render, CSS loads, feed validates, links resolve.
+2. Repo Settings -> Pages -> Source = **GitHub Actions**. This is the step that
+   moves the site off the legacy `gh-pages` build - do it only once the workflow
+   above is green, since it takes the legacy build offline.
+3. Once the Actions deploy is verified, retire the `gh-pages` branch (local and
+   `origin`). It is fully contained in `master`, so nothing is lost.
+4. **Do not add `src/CNAME` yet.** Site publishes to `https://dwalend.github.io/blog/`.
+5. Verify there: pages render, CSS loads, feed validates, links resolve.
    Note the `/blog/` path prefix here versus `/` after the custom domain - use
    Eleventy's url filter everywhere so both work.
 
