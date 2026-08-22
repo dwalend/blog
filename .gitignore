@@ -1,4 +1,15 @@
-_site
-.sass-cache
+# Build output
+_site/
+.eleventy-cache/
+
+# Node
+node_modules/
+
+# Jekyll leftovers from the old stack
+.sass-cache/
+.jekyll-cache/
 .jekyll-metadata
-.idea
+
+# Editors and OS
+.idea/
+.DS_Store
