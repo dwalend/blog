@@ -1,0 +1,22 @@
+{
+  "name": "intuitive-counter",
+  "version": "1.0.0",
+  "description": "Intuitive Counter - David Walend's blog about Scala, graphs, and coding",
+  "author": "David Walend <david@walend.net>",
+  "license": "MIT",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "build": "eleventy",
+    "serve": "eleventy --serve",
+    "clean": "rm -rf _site"
+  },
+  "devDependencies": {
+    "@11ty/eleventy": "3.1.6",
+    "@11ty/eleventy-plugin-rss": "3.0.0",
+    "@11ty/eleventy-plugin-syntaxhighlight": "5.0.2"
+  }
+}

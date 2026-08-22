@@ -1,0 +1,14 @@
+---
+title: Home
+---
+<h1>{{ metadata.title }}</h1>
+<p>{{ metadata.subtitle }}</p>
+
+<ul>
+{% for post in collections.post reversed %}
+  <li>
+    <a href="{{ post.url | url }}">{{ post.data.title }}</a>
+    <time datetime="{{ post.date | date: '%Y-%m-%d' }}">{{ post.date | date: "%B %e, %Y" }}</time>
+  </li>
+{% endfor %}
+</ul>

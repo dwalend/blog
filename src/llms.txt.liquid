@@ -1,0 +1,19 @@
+---
+permalink: /llms.txt
+eleventyExcludeFromCollections: true
+---
+# {{ metadata.title }}
+
+> {{ metadata.description }}
+
+Written by {{ metadata.author.name }}. Posts are licensed CC BY 4.0
+({{ metadata.license.content.url }}) - quote, translate, and redistribute them
+freely with attribution. Code samples inside posts are public domain and need
+no attribution at all.
+
+The full text of every post is in the RSS feed at {{ metadata.url }}{{ "/feed.xml" | url }}.
+
+## Posts
+{% for post in collections.post reversed %}
+- [{{ post.data.title }}]({{ metadata.url }}{{ post.url | url }}){% if post.data.description %} - {{ post.data.description }}{% endif %}
+{%- endfor %}
