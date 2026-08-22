@@ -87,7 +87,7 @@ serving readers. DNS is the last step, and it is a single Route 53 record change
 6. Kept: `_posts/`, `_layouts/`, `_includes/`, `_sass/`, `disentangleParGraphs/`,
    `about.md`, and `_pending/` as the drafts folder.
 
-## Phase 1 - Eleventy skeleton
+## Phase 1 - Eleventy skeleton  [DONE 2026-08-22, except item 11]
 
 Target layout:
 
@@ -140,6 +140,25 @@ blog/
     Mike Bostock's and both are redistributed from the site.
 11. Footer line, since it is the only license text a reader will ever see:
     "Words (c) David Walend, CC BY 4.0. Code samples: public domain."
+    **Deferred to Phase 2** - there is no footer template yet.
+
+Notes from doing this:
+
+- `SITE_URL` and `PATH_PREFIX` are both overridable, and both were verified:
+  `PATH_PREFIX=/blog/ SITE_URL=https://dwalend.github.io` correctly yields
+  `https://dwalend.github.io/blog/sitemap.xml`. Phase 4 needs those set.
+- `llms.txt` is generated from the post collection rather than hand-maintained.
+  Adoption is around 8.7% of the top 1,000 sites with a W3C proposal as of
+  June 2026 and no demonstrated ranking benefit, but IDE agents do fetch it and
+  generating it costs nothing.
+- **Local Node is v21.7.2, which went EOL in June 2024.** Eleventy needs >= 18 so
+  it runs, but pin CI to an LTS (22 or 24) in Phase 4, and upgrading locally
+  would also silence the `ExperimentalWarning: Importing JSON modules` on
+  every build.
+- `node --check` reports a syntax error in the vendored `queue.js` only because
+  `package.json` declares `"type": "module"`, which makes node parse it as ESM
+  where d3-queue's `await = noop` variable is a reserved word. It loads as a
+  classic script in the browser and Eleventy only copies it. Not a problem.
 
 
 ## Phase 2 - Templates and theme
