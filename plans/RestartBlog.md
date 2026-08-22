@@ -30,6 +30,10 @@ See `MigrateOldBlogs.md` for the content-migration half of this.
 | Styling | Hand-rolled CSS, ~200 lines, dark by default, single column | Whole design surface is small; avoids a framework dependency. |
 | Analytics | None | Old UA property is dead; not re-adding tracking. |
 | 2014-2024 unpublished drafts | Stay drafts | May be updated and published someday. |
+| Content license | **CC BY 4.0** | The feed emits full post bodies, so readers, aggregators, and mirrors reproduce them wholesale. CC BY makes that unambiguously fine. Rejected BY-NC (ambiguous), BY-SA (viral), BY-ND (blocks translation). |
+| Site code license | **MIT** | Conventional, and GitHub displays it. Covers the Eleventy config, templates, CSS. |
+| Code samples in posts | **CC0 / public domain** | The first post's whole payload is a `settings.json` block meant to be pasted. Requiring attribution in someone's dotfiles is absurd. |
+| Crawlers, AI included | **Welcome** | "Robots Welcome, too." Explicitly permissive `robots.txt`; no interest in blocking AI training. |
 
 ### Deliberately deferred
 
@@ -123,6 +127,20 @@ blog/
 5. Exclude `src/drafts/` from the build (`eleventyExcludeFromCollections`, or just
    keep drafts outside `src/`).
 6. Verify: `npx @11ty/eleventy --serve` renders a stub index.
+7. `LICENSE` - MIT, covering the site code.
+8. `README.md` - written now that there is a real build to describe: what the
+   stack is, `npm ci && npx @11ty/eleventy`, where posts and drafts live, and a
+   `## License` section spelling out the three-way split (prose CC BY 4.0, site
+   code MIT, in-post snippets CC0).
+9. `src/robots.txt` - permissive, with a `Sitemap:` line. Name the AI crawlers
+   with an explicit `Allow` rather than relying on the default, so the intent is
+   on the record. Check whether `llms.txt` is worth adding alongside it.
+10. Restore the stripped BSD-3-Clause copyright headers to
+    `disentangleParGraphs/js/d3.v3.js` (d3 3.5.6) and `.../queue.js`. Both are
+    Mike Bostock's and both are redistributed from the site.
+11. Footer line, since it is the only license text a reader will ever see:
+    "Words (c) David Walend, CC BY 4.0. Code samples: public domain."
+
 
 ## Phase 2 - Templates and theme
 

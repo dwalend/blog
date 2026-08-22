@@ -161,6 +161,13 @@ Timing note: these have survived in the archive for 20 years and are not at
 immediate risk, but `weblogs.java.net` itself is long gone, so the wayback copy is
 the only copy.
 
+## 4b. Note for whichever post covers disentangleParGraphs
+
+When that post gets brought up to speed, add a footnote crediting **d3 3.5.6** and
+**queue.js** as Mike Bostock's, BSD-3-Clause. The vendored copies in
+`disentangleParGraphs/js/` had their copyright headers stripped; Phase 1 restores
+them in the JavaScript itself, and the post should say so in prose too.
+
 ## 5. private-duck-aligner blog-fodder (Phase 10+)
 
 Not a migration - a backlog. Mine it for post ideas once the publishing habit is
