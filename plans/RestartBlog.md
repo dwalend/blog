@@ -266,7 +266,7 @@ Verified: XML well-formed with all three namespaces resolving, excerpt in
 inside the content, empty-collection build omits `lastBuildDate` and still parses,
 and both the production and `PATH_PREFIX=/blog/` builds emit correct links.
 
-## Phase 4 - Deploy, without moving DNS
+## Phase 4 - Deploy, without moving DNS  [workflow written; the rest is yours]
 
 1. `.github/workflows/pages.yml`: `actions/checkout` -> `actions/setup-node` with a
    pinned Node version and npm cache -> `npm ci` -> `npx @11ty/eleventy` ->
@@ -280,6 +280,45 @@ and both the production and `PATH_PREFIX=/blog/` builds emit correct links.
 5. Verify there: pages render, CSS loads, feed validates, links resolve.
    Note the `/blog/` path prefix here versus `/` after the custom domain - use
    Eleventy's url filter everywhere so both work.
+
+Notes from doing this:
+
+- `.github/workflows/pages.yml` written. Action versions were checked rather than
+  assumed, and they have moved a long way: `checkout@v7`, `setup-node@v7`,
+  `configure-pages@v6`, `upload-pages-artifact@v5`, `deploy-pages@v5`.
+- Node pinned to **24**, the current Active LTS (Krypton). Node 22 (Jod) is in
+  maintenance; the laptop's 21 went EOL in 2024.
+- **The workflow needs no edit at Phase 9.** `PATH_PREFIX` and `SITE_URL` come
+  from `configure-pages` outputs (`base_path` and `origin`), which Pages fills in
+  from its own configuration - so it yields `dwalend.github.io` + `/blog` now and
+  `blog.walend.net` + `/` once the custom domain is set. Both cases were built
+  locally and produce correct links, including `base_path` with no trailing slash
+  and an empty `base_path`.
+- `npm run build` now runs `clean` first. Eleventy does not remove stale output,
+  and leftover files from deleted posts sat in `_site` until this was noticed.
+  CI is unaffected - it always builds from a fresh checkout.
+- Careful with `npm ci --dry-run`: it removes `node_modules` before doing
+  anything, dry run or not.
+
+### What is left, and why it is not mine to do
+
+`git push` and `git commit` are denied, and flipping the Pages source changes what
+the public site serves. In order:
+
+1. **You push** `master`. Nothing happens yet - Pages is still on the legacy
+   `gh-pages` build, and the workflow will run but its deploy step will fail or
+   no-op until step 2.
+2. **You flip** Settings -> Pages -> Source to **GitHub Actions**. This is the
+   moment the site stops coming from `gh-pages`. The last legacy build usually
+   keeps serving until the first Actions deployment replaces it.
+3. **Re-run the workflow** if step 1 ran before step 2.
+4. **Verify** at `https://dwalend.github.io/blog/`: the page renders with styling,
+   `/blog/feed.xml` parses, `/blog/robots.txt` and `/blog/sitemap.xml` resolve,
+   and the nav links go to `/blog/...` rather than `/blog/blog/...`.
+5. **Then** retire `gh-pages`, local and origin. It is fully contained in
+   `master`.
+
+Do not add `src/CNAME` yet - that is Phase 9.
 
 ## Phase 5 - Migrate the 10 published Jekyll posts
 

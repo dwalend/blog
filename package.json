@@ -10,7 +10,7 @@
     "node": ">=18"
   },
   "scripts": {
-    "build": "eleventy",
+    "build": "npm run clean && eleventy",
     "serve": "eleventy --serve",
     "clean": "rm -rf _site"
   },

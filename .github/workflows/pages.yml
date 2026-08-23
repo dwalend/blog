@@ -1,0 +1,55 @@
+name: Build and deploy to Pages
+
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Let a running deploy finish rather than cancelling it part way.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+
+      - run: npm ci
+
+      - name: Configure Pages
+        id: pages
+        uses: actions/configure-pages@v6
+
+      # base_path and origin come from Pages itself, so this works both at
+      # dwalend.github.io/blog and at a custom domain with no change here.
+      - name: Build
+        run: npx @11ty/eleventy
+        env:
+          PATH_PREFIX: ${{ steps.pages.outputs.base_path }}
+          SITE_URL: ${{ steps.pages.outputs.origin }}
+
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v5
