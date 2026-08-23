@@ -216,7 +216,7 @@ Notes from doing this:
   `css/main.scss`, root `index.html`, `feed.xml`, `about.md`) is now superseded
   but still present. Sweep it in Phase 5 with the post migration, in one go.
 
-## Phase 3 - Feed and subscribing
+## Phase 3 - Feed and subscribing  [DONE 2026-08-22]
 
 1. `src/feed.xml.liquid` using `@11ty/eleventy-plugin-rss`. The 2016 `feed.xml`
    is a close model - same fields, same 10-item limit.
@@ -226,6 +226,45 @@ Notes from doing this:
 4. Add a visible "Subscribe (RSS)" link in the footer as well - autodiscovery
    covers readers, a visible link covers humans.
 5. Optional later: an email option (Buttondown/Listmonk) fed from the RSS.
+
+Notes from doing this:
+
+- The feed is **`src/feed.njk`, not `.liquid`**. Every filter
+  `@11ty/eleventy-plugin-rss` 3.0.0 registers is Nunjucks-only
+  (`addNunjucksFilter`), and this site is Liquid, so a Liquid feed would have had
+  no `dateToRfc822`. `njk` is in `templateFormats` for this one file.
+- The plugin's own built-in RSS virtual template was **not** used: it emits
+  `<content:encoded>` while declaring only `xmlns:dc` and `xmlns:atom` on the
+  `<rss>` root, with no `xmlns:content`, which is not well-formed XML. The
+  hand-written template declares all three.
+- `eleventyFeedHead` is registered by the plugin's virtual-template module, not
+  the base plugin, so the 10-item limit is a `loop.index0` guard instead.
+- `description` is `post.data.description` if a post sets one, otherwise a
+  220-character auto-excerpt. `content:encoded` carries the full post. Worth
+  setting `description` in frontmatter during Phases 5 and 6 - the auto-excerpt
+  just takes the opening words.
+
+### Two bugs found and fixed while verifying
+
+- **Dates were a day early, and permalinks landed in the wrong month.** Eleventy
+  reads the date from the filename as UTC midnight; Liquid and `dateRfc822` both
+  rendered it in local time (EDT), moving it back four hours. A probe post named
+  `2026-09-01-*` published at `/2026/09/` only after the fix - before it, it went
+  to **`/2026/08/`**. Fixed with `setLiquidOptions({ timezoneOffset: 0 })` and by
+  passing `"UTC"` to `dateToRfc822`. This mattered: the alias scheme in Phases 5
+  and 6 is built on these permalinks.
+- **The path prefix was applied twice**, giving `href="/blog/blog/feed.xml"` in
+  the nav and footer. The RSS plugin force-adds Eleventy's HTML base plugin,
+  which rewrites root-relative URLs, and the templates already do that with the
+  `url` filter. Fixed by passing `htmlBasePluginOptions: { baseHref: "/" }` so
+  the transform passes those through. Absolute URLs were never affected, which is
+  why the autodiscovery tag looked correct. **This only shows up under
+  `PATH_PREFIX`, which is exactly the Phase 4 deploy.**
+
+Verified: XML well-formed with all three namespaces resolving, excerpt in
+`description` against full text in `content:encoded`, no relative URLs left
+inside the content, empty-collection build omits `lastBuildDate` and still parses,
+and both the production and `PATH_PREFIX=/blog/` builds emit correct links.
 
 ## Phase 4 - Deploy, without moving DNS
 
