@@ -45,11 +45,12 @@ See `MigrateOldBlogs.md` for the content-migration half of this.
   Good fit because it writes about the language it is written in, and because when
   it breaks only the figures break - the blog still builds and still publishes.
   Do this *after* the blog is up. See `disentangleParGraphs/` for prior art.
-- **Fediverse comments.** Was: post each article to Mastodon, put the toot id in
-  frontmatter, render replies alongside giscus. **Reconsider.** Its appeal was
-  that it doubled as distribution, but the actual channels are LinkedIn and
-  Discord, and it needs a Mastodon presence that does not exist. giscus stands on
-  its own. Drop unless a fediverse account appears. See Phase 11.
+- **Fediverse comments.** Post each article to Mastodon, put the toot id in
+  frontmatter, render replies alongside giscus. Still open - no objection to
+  Mastodon, just no expectation of much traffic there, and possibly little
+  traffic *because* it is not somewhere you currently spend time. That is a real
+  chicken-and-egg and not an argument either way. giscus does not depend on it, so
+  this can wait until there is a reason. See Phase 11.
 
 ## Sequencing principle
 
@@ -296,8 +297,9 @@ Only once Phases 1-8 are verified on `dwalend.github.io/blog`.
 Runs after Phase 9. Independent of Phase 10 - do it as soon as the site is live,
 rather than waiting on the wayback archaeology.
 
-The channels that matter are **LinkedIn** and **Discord**. Not Twitter/X: the
-2016 footer linked it, the new site does not, and it is not coming back.
+The channels that matter are **LinkedIn** and **Discord**. Not Twitter/X - the
+new site does not link it and it is not coming back. Mastodon stays an open
+question rather than a no; see the deferred list.
 
 ### 1. OpenGraph tags first - this is a prerequisite, not a nicety
 

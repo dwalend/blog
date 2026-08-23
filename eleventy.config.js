@@ -6,7 +6,6 @@ export default function (eleventyConfig) {
   eleventyConfig.addPlugin(pluginSyntaxHighlight);
   eleventyConfig.addPlugin(pluginRss);
 
-  // The d3 plots from the 2015 Disentangle posts, copied as they are.
   eleventyConfig.addPassthroughCopy({ disentangleParGraphs: "disentangleParGraphs" });
   eleventyConfig.addPassthroughCopy("src/css");
 
@@ -17,8 +16,7 @@ export default function (eleventyConfig) {
       includes: "_includes",
       data: "_data",
     },
-    // "/" once blog.walend.net is live. The interim deploy at
-    // dwalend.github.io/blog needs PATH_PREFIX=/blog/ instead.
+    // Set PATH_PREFIX when the site is served from a subdirectory.
     pathPrefix: process.env.PATH_PREFIX || "/",
     markdownTemplateEngine: "liquid",
     htmlTemplateEngine: "liquid",

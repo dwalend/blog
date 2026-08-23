@@ -1,8 +1,5 @@
-// Replaces Jekyll's _config.yml.
-//
-// SITE_URL is overridable so the pre-cutover builds at dwalend.github.io/blog
-// emit correct absolute URLs in the feed. It defaults to the domain the site
-// will live at once DNS moves.
+// SITE_URL overrides the absolute base URL used in the feed, sitemap, and
+// llms.txt, for builds served from somewhere other than the production domain.
 export default {
   title: "Intuitive Counter",
   subtitle: "A blog about Scala, graphs, and coding",
