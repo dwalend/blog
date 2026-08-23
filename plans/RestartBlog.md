@@ -266,7 +266,7 @@ Verified: XML well-formed with all three namespaces resolving, excerpt in
 inside the content, empty-collection build omits `lastBuildDate` and still parses,
 and both the production and `PATH_PREFIX=/blog/` builds emit correct links.
 
-## Phase 4 - Deploy, without moving DNS  [workflow written; the rest is yours]
+## Phase 4 - Deploy, without moving DNS  [DONE 2026-08-23; gh-pages still to retire]
 
 1. `.github/workflows/pages.yml`: `actions/checkout` -> `actions/setup-node` with a
    pinned Node version and npm cache -> `npm ci` -> `npx @11ty/eleventy` ->
@@ -319,6 +319,42 @@ the public site serves. In order:
    `master`.
 
 Do not add `src/CNAME` yet - that is Phase 9.
+
+### Outcome
+
+Deployed and verified live at `https://dwalend.github.io/blog/`. All of `/`,
+`/about/`, `/style-guide/`, `/css/main.css`, `/feed.xml`, `/robots.txt`,
+`/sitemap.xml`, `/llms.txt`, and the vendored d3 return 200. Nav links read
+`/blog/about/` and not `/blog/blog/about/`, which confirms the Phase 3
+double-prefix fix in production - the only place it could have shown.
+
+The first two runs failed at the deploy step: *Branch "master" is not allowed to
+deploy to github-pages due to environment protection rules.* The `github-pages`
+environment had a branch policy left over from the legacy build that allowed only
+`gh-pages`. Adding `master` to Settings -> Environments -> github-pages fixed it.
+Note the build job succeeded throughout; only the deploy gate rejected it.
+
+### One fix that matters before Phase 5
+
+Everything absolute came out **`http://`**, not https: the autodiscovery tag, the
+feed's channel link and self link, and the `Sitemap:` line. `configure-pages`
+reports `origin` from the Pages config, and this repo has `https_enforced: false`
+with no certificate, so `html_url` is `http://...`.
+
+Harmless with zero posts. Not harmless once posts exist: RSS readers key on
+`<guid>`. Publishing with `http://` guids and later flipping to `https://` makes
+every subscriber re-see the entire back catalogue as new.
+
+The workflow now forces https itself (`https://${PAGES_ORIGIN#*://}`), so it holds
+whatever the Pages setting says, at either domain. **Also worth turning on
+Settings -> Pages -> Enforce HTTPS**, which will additionally fix `html_url`.
+
+### Still to do
+
+Retire `gh-pages`, local and origin. It is fully contained in `master`. Note the
+Pages config still reports `source: {branch: gh-pages}` next to
+`build_type: workflow` - that field is vestigial once the build type is Actions,
+so ignore it rather than setting it back.
 
 ## Phase 5 - Migrate the 10 published Jekyll posts
 

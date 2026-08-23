@@ -34,11 +34,16 @@ jobs:
 
       # base_path and origin come from Pages itself, so this works both at
       # dwalend.github.io/blog and at a custom domain with no change here.
+      # Pages reports its origin as http:// until Enforce HTTPS is on, and feed
+      # guids must not change scheme later. Force https.
       - name: Build
-        run: npx @11ty/eleventy
         env:
           PATH_PREFIX: ${{ steps.pages.outputs.base_path }}
-          SITE_URL: ${{ steps.pages.outputs.origin }}
+          PAGES_ORIGIN: ${{ steps.pages.outputs.origin }}
+        run: |
+          export SITE_URL="https://${PAGES_ORIGIN#*://}"
+          echo "Building for $SITE_URL (prefix '${PATH_PREFIX:-/}')"
+          npx @11ty/eleventy
 
       - uses: actions/upload-pages-artifact@v5
         with:
