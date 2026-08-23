@@ -32,7 +32,7 @@ val config: Config = ConfigFactory.load("shrine")
 val keyStoreDescriptor = config.getConfigured("shrine.keystore",KeyStoreDescriptor(_))
 ```
 
-KeyStoreDescriptor's companion object has an [apply(Config)](/2016/05/Applying-Typesafe-Config/) method that makes a KeyStoreDescriptor. I ask Config for what I want through very clean, very intuitive code. 
+KeyStoreDescriptor's companion object has an [apply(Config)]({{ '/2016/05/Applying-Typesafe-Config/' | url }}) method that makes a KeyStoreDescriptor. I ask Config for what I want through very clean, very intuitive code. 
 
 Here's the code for ConfigExtensions:
 

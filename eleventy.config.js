@@ -35,6 +35,7 @@ export default function (eleventyConfig) {
 
   eleventyConfig.addPassthroughCopy({ disentangleParGraphs: "disentangleParGraphs" });
   eleventyConfig.addPassthroughCopy("src/css");
+  eleventyConfig.addPassthroughCopy("src/img");
 
   return {
     dir: {

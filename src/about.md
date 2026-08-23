@@ -16,7 +16,7 @@ quote, translate, and mirror them freely with attribution. Code samples inside
 posts are public domain; take them with no obligation. The
 [source of the site](https://github.com/dwalend/blog) is MIT.
 
-Subscribe [via RSS](/feed.xml). The feed carries the full text of every post.
+Subscribe [via RSS]({{ '/feed.xml' | url }}). The feed carries the full text of every post.
 
 Elsewhere: [github/dwalend](https://github.com/dwalend) ·
 [david@walend.net](mailto:david@walend.net)

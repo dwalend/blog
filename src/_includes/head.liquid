@@ -1,10 +1,48 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
+{%- comment -%}
+  Title and description are each used three times below, so resolve them once.
+  A post that sets `description` in front matter gets it everywhere - page meta,
+  OpenGraph, and the feed. Without one, everything falls back to the site
+  description rather than to a machine-made excerpt.
+{%- endcomment -%}
+{%- assign pageTitle = title | default: metadata.title -%}
+{%- assign pageDescription = description | default: metadata.description -%}
+{%- assign pagePath = page.url | url -%}
+{%- assign pageUrl = metadata.url | append: pagePath -%}
+{%- assign isPost = false -%}
+{%- if tags contains "post" -%}{%- assign isPost = true -%}{%- endif -%}
+
 <title>{% if title %}{{ title | escape }} · {{ metadata.title }}{% else %}{{ metadata.title }}{% endif %}</title>
-<meta name="description" content="{% if description %}{{ description | escape }}{% else %}{{ metadata.description }}{% endif %}">
+<meta name="description" content="{{ pageDescription | escape }}">
 
 <link rel="stylesheet" href="{{ '/css/main.css' | url }}">
-<link rel="canonical" href="{{ metadata.url }}{{ page.url | url }}">
+<link rel="canonical" href="{{ pageUrl }}">
 
 <link rel="alternate" type="application/rss+xml" title="{{ metadata.title }}" href="{{ metadata.url }}{{ '/feed.xml' | url }}">
+
+{%- comment -%}
+  LinkedIn, Discord, and Slack all build their link previews from these. Without
+  them a pasted link renders as a bare URL. Absolute URLs throughout - a preview
+  scraper has no page to resolve a relative one against.
+{%- endcomment %}
+<meta property="og:site_name" content="{{ metadata.title }}">
+<meta property="og:title" content="{{ pageTitle | escape }}">
+<meta property="og:description" content="{{ pageDescription | escape }}">
+<meta property="og:url" content="{{ pageUrl }}">
+<meta property="og:type" content="{% if isPost %}article{% else %}website{% endif %}">
+<meta property="og:image" content="{{ metadata.url }}{{ '/img/og-default.png' | url }}">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="{{ metadata.title }} — {{ metadata.subtitle }}">
+{%- if isPost %}
+<meta property="article:published_time" content="{{ page.date | date: '%Y-%m-%dT%H:%M:%SZ' }}">
+<meta property="article:author" content="{{ metadata.author.name }}">
+{%- endif %}
+
+{%- comment -%}
+  Despite the name, Discord and several other scrapers read the twitter:* tags
+  too. The rest they take from the og:* tags above.
+{%- endcomment %}
+<meta name="twitter:card" content="summary_large_image">

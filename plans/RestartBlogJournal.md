@@ -342,3 +342,88 @@ feed degrades to exactly today's behaviour - raw XML - and nothing breaks for
 subscribers; the explanatory page just stops appearing. The replacement, if it
 comes to that, is an ordinary `/subscribe/` page with the nav pointing there
 instead of at the feed.
+
+## 2026-08-23 - Phase 4 loose ends closed
+
+- **`gh-pages` retired**, local and origin (`3ab7184`). It was fully contained in
+  `master`.
+- **Enforce HTTPS turned on** in Settings -> Pages.
+
+## 2026-08-23 - OpenGraph tags
+
+`head.liquid` had none, so a link pasted into LinkedIn or Discord rendered as a
+bare URL. It now emits `og:site_name`, `og:title`, `og:description`, `og:url`,
+`og:type`, `og:image` with `:width` / `:height` / `:alt`, plus
+`article:published_time` and `article:author` on posts and
+`twitter:card = summary_large_image` everywhere.
+
+- **Title, description, and URL are resolved once at the top** with `assign` and
+  the `default` filter, then reused by `<title>`, the meta description, and the
+  og tags. They had been computed inline twice already; three more copies would
+  have been the point where they drifted apart.
+- **`og:type` keys off `{% if tags contains "post" %}`.** `posts.json` sets
+  `tags: "post"`, and Liquid's `contains` matches both a bare string and an
+  array, so this holds whichever shape Eleventy hands over. Verified: posts get
+  `article`, `/about/` and `/` get `website`.
+- **Every og URL is absolute**, built as `metadata.url` + `page.url | url`. A
+  scraper has no document to resolve a relative URL against.
+  - The first cut wrote `metadata.url | append: page.url | url`, which runs the
+    `url` filter over the whole absolute string rather than over the path. It
+    happened to look right at `PATH_PREFIX=/`. Split into two `assign`s.
+- **Alias stubs emit no og tags**, because `alias.liquid` writes its own `<head>`
+  rather than including `head.liquid`. That is correct - they are `noindex`
+  redirects.
+- `article:published_time` comes out as `2016-06-13T00:00:00Z`, matching the
+  filename. That is the Phase 3 `timezoneOffset: 0` fix still holding.
+
+### The card
+
+`src/img/og-default.png`, 1200x630, generated with ImageMagick from the site
+palette - `#14161a` ground, `#f0f3f7` title, `#98a1af` subtitle, a `#83b4ff`
+left bar and hostname. 11.7 KB at 8-bit. `src/img/` needed a new
+`addPassthroughCopy` in `eleventy.config.js`.
+
+Regenerating it, should the wording change:
+
+```sh
+magick -size 1200x630 xc:'#14161a' \
+  -fill '#83b4ff' -draw 'rectangle 0,0 14,630' \
+  -font '/System/Library/Fonts/Supplemental/Arial Bold.ttf' -pointsize 92 -fill '#f0f3f7' \
+  -annotate +90+310 'Intuitive Counter' \
+  -font '/System/Library/Fonts/Supplemental/Arial.ttf' -pointsize 42 -fill '#98a1af' \
+  -annotate +90+380 'A blog about Scala, graphs, and coding' \
+  -font '/System/Library/Fonts/Supplemental/Arial.ttf' -pointsize 34 -fill '#83b4ff' \
+  -annotate +90+545 'blog.walend.net' \
+  src/img/og-default.png
+magick src/img/og-default.png -depth 8 -strip PNG8:src/img/og-default.png
+```
+
+The second command is not optional - the first writes 16-bit, which is 55 KB for
+a picture using seven colours.
+
+ImageMagick has no `rsvg-convert` delegate on this laptop, so an SVG source
+would have fallen back to its own limited renderer. Drawing directly avoids the
+question.
+
+### A path-prefix bug found while verifying, in four content links
+
+Checking the `PATH_PREFIX=/blog/` build turned up four root-relative links in
+content that never went through the `url` filter, so they pointed at `/...`
+instead of `/blog/...` and **404ed on the live site**:
+
+- `src/about.md` - "Subscribe via RSS" -> `/feed.xml`
+- `2016-06-13-Pimping-Config.md` -> `/2016/05/Applying-Typesafe-Config/`
+- `2016-05-20-Applying-Typesafe-Config.md` -> `/2015/06/Test-With-TypeSafeConfig/`
+- `2014-10-05-Semirings.md` -> `/2014/09/graphs-in-scala/`
+
+The last three are the cross-links Phase 5 rewrote. The journal entry there says
+they were "rewritten relative"; they were rewritten to the new *scheme* but left
+root-relative, which is a different thing and only breaks under a path prefix.
+
+All four now read `{{ '/path/' | url }}`. Markdown bodies render through Liquid,
+so the filter works inline. After the fix a `/blog/` build has **zero** unprefixed
+root-relative `href` or `src` attributes anywhere in `_site`.
+
+Worth remembering as a rule: **no bare root-relative URL in content or
+templates.** It works in production and only in production, which is the worst
+place for a bug to hide.

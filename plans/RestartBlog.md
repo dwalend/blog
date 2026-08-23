@@ -164,7 +164,7 @@ blog/
    instead of raw XML. Added 2026-08-23.
 6. Optional later: an email option (Buttondown/Listmonk) fed from the RSS.
 
-## Phase 4 - Deploy, without moving DNS  [DONE 2026-08-23; gh-pages still to retire]
+## Phase 4 - Deploy, without moving DNS  [DONE 2026-08-23]
 
 1. `.github/workflows/pages.yml`: `actions/checkout` -> `actions/setup-node` with a
    pinned Node version and npm cache -> `npm ci` -> `npx @11ty/eleventy` ->
@@ -219,36 +219,21 @@ Two things to check rather than decide:
 
 ## Carried into the next few commits
 
-Housekeeping and cheap wins that outlived their own phases. None of them block
-Phase 6, and all four are easier now than later.
+Retiring `gh-pages`, Enforce HTTPS, and the OpenGraph tags are all done - see the
+journal. One item left, and it is easier before Phase 6 adds four more posts:
 
-1. **Retire `gh-pages`, local and origin.** Fully contained in `master`, so
-   nothing is lost. Left over from Phase 4. Note the Pages config still reports
-   `source: {branch: gh-pages}` beside `build_type: workflow` - that field is
-   vestigial once the build type is Actions, so ignore it rather than setting it
-   back.
+1. **`description:` in each post's front matter.** The feed falls back to a
+   220-character auto-excerpt that just grabs the opening words, and two of the
+   ten are visibly wrong because of it: `Easy-Parallel`'s excerpt opens with the
+   d3 chart's embedded CSS (`path { stroke-width: 2; ... }`), and `Semirings`
+   carries a double-escaped `&amp;quot;` where the source had a quotation mark -
+   `striptags` leaves the entity behind and the template then escapes the
+   ampersand again.
 
-2. **Settings -> Pages -> Enforce HTTPS.** Also Phase 4. The workflow already
-   forces `https://` into the feed guids itself, so this is belt-and-braces, but
-   it additionally fixes what the Pages API reports as `html_url`.
-
-3. **Two cheap things, both easier before Phase 6 adds four more posts:**
-
-   - **OpenGraph tags in `head.liquid`** - Phase 11 item 1, and a prerequisite
-     for the LinkedIn/Discord announcement rather than a nicety. There are none
-     today, so a pasted link renders as a bare URL with no card. `og:title`,
-     `og:description`, `og:url`, `og:type`, `og:site_name`,
-     `article:published_time` on posts, `twitter:card`, and one site-wide
-     `og:image` to start.
-
-   - **`description:` in each post's front matter.** The feed falls back to a
-     220-character auto-excerpt that just grabs the opening words, and two of
-     the ten are visibly wrong because of it: `Easy-Parallel`'s excerpt opens
-     with the d3 chart's embedded CSS (`path { stroke-width: 2; ... }`), and
-     `Semirings` carries a double-escaped `&amp;quot;` where the source had a
-     quotation mark - `striptags` leaves the entity behind and the template then
-     escapes the ampersand again. A hand-written `description` fixes both, and
-     feeds the OpenGraph `og:description` above.
+   One string per post now feeds three places: the page `<meta name="description">`,
+   `og:description`, and the feed's `<description>`. Until they are written, all
+   three fall back to the site description, which is correct but says the same
+   thing on every page.
 
 ## Phase 6 - Migrate the 4 Hashnode posts
 
@@ -305,23 +290,18 @@ The channels that matter are **LinkedIn** and **Discord**. Not Twitter/X - the
 new site does not link it and it is not coming back. Mastodon stays an open
 question rather than a no; see the deferred list.
 
-### 1. OpenGraph tags first - this is a prerequisite, not a nicety
+### 1. OpenGraph tags  [DONE 2026-08-23]
 
-LinkedIn, Discord, and Slack all build their link previews from OpenGraph meta
-tags. `src/_includes/head.liquid` has none today, so a pasted link renders as a
-bare URL or a title-only card. Add to `head.liquid`:
+`head.liquid` emits the full set, with `src/img/og-default.png` as a site-wide
+card. See the journal. Two things still worth doing when this phase comes up:
 
-- `og:title`, `og:description`, `og:url`, `og:type` (`article` for posts,
-  `website` elsewhere), `og:site_name`
-- `article:published_time` on posts
-- `twitter:card` set to `summary_large_image` - despite the name, Discord and
-  several others read these tags too
-- `og:image` - needs an actual image. Options: a simple generated card per post,
-  or one site-wide fallback. A site-wide fallback is enough to start.
-
-Cheap, and it can land any time - it does not need to wait for the rest of this
-phase. Verify with Discord's own preview (paste into a private channel) and
-LinkedIn's Post Inspector.
+- **Verify with the real scrapers** - paste a link into a private Discord
+  channel, and run one through LinkedIn's Post Inspector. Neither can be checked
+  from here, and both cache aggressively, so check before announcing rather than
+  after.
+- **Per-post cards, maybe.** One site-wide image is enough to start. A generated
+  card per post would read better in a feed of links, but it is only worth it if
+  the announcements turn out to matter.
 
 ### 2. LinkedIn
 

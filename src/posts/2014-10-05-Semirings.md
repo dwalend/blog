@@ -27,7 +27,7 @@ trait SemiringSupport[L,Key] {
   def heapKeyForLabel:Label => Key
 ```
 
-SemiringSupport needs something to define the Labels the semiring operates on, a Semiring which brings the operators, and some bits to support heaps for Dijkstra's algorithm. For the labels, I'm using a similar technique that I used for [the most general class of graphs](/2014/09/graphs-in-scala/), but this time I have a type parameter, L, that helps the compiler do some work for me. 
+SemiringSupport needs something to define the Labels the semiring operates on, a Semiring which brings the operators, and some bits to support heaps for Dijkstra's algorithm. For the labels, I'm using a similar technique that I used for [the most general class of graphs]({{ '/2014/09/graphs-in-scala/' | url }}), but this time I have a type parameter, L, that helps the compiler do some work for me. 
 
 Here's Semiring's declaration, embedded inside the namespace. I think it is easy to map to the corresponding passage from Cormen’s _Algorithms_, “A general framework for solving path problems in directed graphs,” 26.4 in my 1989 copy. (Cormen seems to have dropped it from later editions, but I found an OK description in [Stoner's _An Introduction to Data Structures and Algorithms_](http://books.google.com/books?id=S-tXjl1hsUYC&lpg=PA54&dq=aho%20hopcroft%20ullman&pg=PA336#v=snippet&q=%22245.%20The%20algebraic%22&f=false).)
 
