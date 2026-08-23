@@ -386,20 +386,19 @@ left bar and hostname. 11.7 KB at 8-bit. `src/img/` needed a new
 Regenerating it, should the wording change:
 
 ```sh
-magick -size 1200x630 xc:'#14161a' \
-  -fill '#83b4ff' -draw 'rectangle 0,0 14,630' \
-  -font '/System/Library/Fonts/Supplemental/Arial Bold.ttf' -pointsize 92 -fill '#f0f3f7' \
-  -annotate +90+310 'Intuitive Counter' \
-  -font '/System/Library/Fonts/Supplemental/Arial.ttf' -pointsize 42 -fill '#98a1af' \
-  -annotate +90+380 'A blog about Scala, AI, graphs, and coding' \
-  -font '/System/Library/Fonts/Supplemental/Arial.ttf' -pointsize 34 -fill '#83b4ff' \
-  -annotate +90+545 'blog.walend.net' \
+magick -size 2400x1260 xc:'#14161a' \
+  -fill '#83b4ff' -draw 'rectangle 0,0 28,1260' \
+  -font '/System/Library/Fonts/Supplemental/Arial Bold.ttf' -pointsize 184 -fill '#f0f3f7' \
+  -annotate +180+620 'Intuitive Counter' \
+  -font '/System/Library/Fonts/Supplemental/Arial.ttf' -pointsize 84 -fill '#98a1af' \
+  -annotate +180+760 'A blog about Scala, AI, graphs, and coding' \
+  -font '/System/Library/Fonts/Supplemental/Arial.ttf' -pointsize 68 -fill '#83b4ff' \
+  -annotate +180+1090 'blog.walend.net' \
+  -background '#14161a' -alpha remove -alpha off -depth 8 -strip \
   src/img/og-default.png
-magick src/img/og-default.png -depth 8 -strip PNG8:src/img/og-default.png
 ```
 
-The second command is not optional - the first writes 16-bit, which is 55 KB for
-a picture using seven colours.
+**Do not add `PNG8:` to that.** See below.
 
 ImageMagick has no `rsvg-convert` delegate on this laptop, so an SVG source
 would have fallen back to its own limited renderer. Drawing directly avoids the
@@ -469,3 +468,39 @@ truncating a meta description and LinkedIn shows less than that, so anything muc
 longer gets cut mid-sentence in the place it matters most.
 
 Posts still needing this treatment: the four from Phase 6.
+
+## 2026-08-23 - The card was blurry on LinkedIn
+
+Discord rendered the card correctly. LinkedIn rendered it badly, and the cause
+was an optimisation I made when the card was first generated.
+
+The first version was written through `PNG8:`, which quantises to a palette. It
+took the image from 55 KB to 11.9 KB - and from thousands of colours to **73**.
+Light antialiased text on a dark ground is almost entirely intermediate greys;
+73 colours across the whole image leaves the glyph edges stepped rather than
+smooth. On a page at full size that is hard to see. After a platform downscales
+it and re-encodes it as JPEG, the stepping becomes mush.
+
+Saving 43 KB on an image that is fetched once per shared link and cached was
+never worth anything. It was optimising the wrong axis.
+
+The replacement is rendered at **2400x1260** - twice the linear size, so a
+platform that downscales has real pixels to work from - in full 24-bit colour.
+734 colours, 64 KB. Alpha is removed as well (`-alpha remove -alpha off`): the
+render came out `TrueColorAlpha`, and a transparent channel is a known way to get
+odd results out of a scraper that flattens to JPEG.
+
+`og:image:width` and `og:image:height` in `head.liquid` were updated to match.
+They have to describe the actual file or scrapers reserve the wrong space.
+
+### Vector is not an option here
+
+The obvious thought is to ship an SVG and let each platform rasterise at whatever
+size it needs. No scraper does this. LinkedIn, Discord, Facebook, and X all
+require a raster `og:image` and will ignore or fail on an SVG. The nearest
+equivalent is what is done above: keep the source resolution high enough that
+their downscale is the only resampling step.
+
+If it is still soft in the LinkedIn feed after this, the next lever is type size
+rather than resolution - the card renders small there, and 84px of subtitle at
+2400 wide is about 19px once LinkedIn is done with it.
