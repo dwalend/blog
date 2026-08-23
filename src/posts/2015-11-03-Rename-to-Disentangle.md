@@ -2,13 +2,18 @@
 layout: post
 title: Renaming to Disentangle
 comments: True
+aliases:
+  - /2015/11/03/Rename-to-Disentangle.html
+  - /2015/11/03/Rename-to-Disentangle/
 ---
 
 TL/DR - I renamed ScalaGraphMinimizer to [Disentangle](https://github.com/dwalend/Disentangle), which better matches what the library is about. Pull in the latest snapshot with
 
-    resolvers += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
+```scala
+resolvers += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
 
-    libraryDependencies += "net.walend.disentangle" %% "graph" % "0.2.0-SNAPSHOT"
+libraryDependencies += "net.walend.disentangle" %% "graph" % "0.2.0-SNAPSHOT"
+```
 
 ## Disentangle
 
@@ -26,31 +31,35 @@ The above differentiates Disentangle from its predecessors. Some structures, lik
 
 Computer languages are usually pretty good at defining graphs, at least directed graphs. A general-purpose programming language ought to provide a good starting point for general-purpose graph algorithms without demanding too much from developers. Scala - as a better Java - provides a lot of easily-accessible features through its type system. I chose those features for Disentangle's surface API. Disentangle's starting point is a collection of Tuples and a simple, single API call on an object. Code that uses it looks like this:
 
-    /**
-     * Edges are just a Seq of Tuple3[Node,Node,Edge]
-     */
-    val edges: Seq[(String, String, String)] = Seq(
-                                                  ("A","B","ab"),
-                                                  ("B","C","bc"),
-                                                  ("C","D","cd"),
-                                                  ("D","E","de"),
-                                                  ("E","F","ef"),
-                                                  ("E","B","eb"),
-                                                  ("E","H","eh"),
-                                                  ("H","C","hc")
-                                                )
-    
-    import net.walend.disentangle.graph.semiring.{Dijkstra,FirstStepsTrait}
-    
-    /**
-     * Generate all the shortest paths in the graph
-     */
-    val simpleShortPathLabels = Dijkstra.allPairsShortestPaths(edges)
+```scala
+/**
+ * Edges are just a Seq of Tuple3[Node,Node,Edge]
+ */
+val edges: Seq[(String, String, String)] = Seq(
+                                              ("A","B","ab"),
+                                              ("B","C","bc"),
+                                              ("C","D","cd"),
+                                              ("D","E","de"),
+                                              ("E","F","ef"),
+                                              ("E","B","eb"),
+                                              ("E","H","eh"),
+                                              ("H","C","hc")
+                                            )
+
+import net.walend.disentangle.graph.semiring.{Dijkstra,FirstStepsTrait}
+
+/**
+ * Generate all the shortest paths in the graph
+ */
+val simpleShortPathLabels = Dijkstra.allPairsShortestPaths(edges)
+```
 
 or with types defined:
 
-    val simpleShortPathLabels: Seq[(String, String, Option[FirstStepsTrait[String, Int]])] = 
-        Dijkstra.allPairsShortestPaths(edges)
+```scala
+val simpleShortPathLabels: Seq[(String, String, Option[FirstStepsTrait[String, Int]])] = 
+    Dijkstra.allPairsShortestPaths(edges)
+```
 
 
 FirstStepsTrait has a Set of possible first steps to take on shortest paths, and the length of those paths.  
@@ -59,32 +68,40 @@ FirstStepsTrait has a Set of possible first steps to take on shortest paths, and
   
 Other frameworks get into trouble when you want something just a little beyond exactly what their algorithms can deliver. To customize the code you have to fork and bend the whole algorithm. However, Disentangle's implementations of the Floyd-Warshall algorithm, Dijkstra's algorithm, and Brandes' algorithm take a semiring to define what "shortest path" means. Dijkstra.allPairsShortestPaths() is a wrapper method around allPairsLeastPaths(), which takes a SemiringSupport object. The default version finds paths with the fewest nodes. Here's a code snippet from inside of object Dijkstra:
 
-    def defaultSupport[Node] = AllPathsFirstSteps[Node,Int,Int](FewestNodes)
+```scala
+def defaultSupport[Node] = AllPathsFirstSteps[Node,Int,Int](FewestNodes)
 
-    def allPairsShortestPaths[Node,EdgeLabel](edges:GenTraversable[(Node,Node,EdgeLabel)],
-                                          nodeOrder:GenSeq[Node] = Seq.empty
-                                        ):Seq[(Node,Node,Option[FirstStepsTrait[Node, Int]])] = {
-      val support = defaultSupport[Node]
-      allPairsLeastPaths(edges, support, support.convertEdgeToLabel(FewestNodes.convertEdgeToLabel), nodeOrder)
-    }
+def allPairsShortestPaths[Node,EdgeLabel](edges:GenTraversable[(Node,Node,EdgeLabel)],
+                                      nodeOrder:GenSeq[Node] = Seq.empty
+                                    ):Seq[(Node,Node,Option[FirstStepsTrait[Node, Int]])] = {
+  val support = defaultSupport[Node]
+  allPairsLeastPaths(edges, support, support.convertEdgeToLabel(FewestNodes.convertEdgeToLabel), nodeOrder)
+}
+```
     
 ## Pick Weights via Semirings    
     
 My most specific complaint with other frameworks is their baked-in selection of what to use for weights. Disentangle is semiring-based, so you can supply the semiring -- you can use a weight that matches your needs. I created a straight-forward double-based semiring - LeastWeights - to provide traditional Double weights. It's easy to [copy and bend to your needs](https://github.com/dwalend/Disentangle/blob/to0.1.2/graph/src/main/scala/net/walend/disentangle/graph/semiring/LeastWeights.scala).
 
-    import net.walend.disentangle.graph.semiring.{AllPathsFirstSteps,LeastWeights}
-    val support: AllPathsFirstSteps[String, Double, Double] = 
-      new AllPathsFirstSteps(LeastWeights)
+```scala
+import net.walend.disentangle.graph.semiring.{AllPathsFirstSteps,LeastWeights}
+val support: AllPathsFirstSteps[String, Double, Double] = 
+  new AllPathsFirstSteps(LeastWeights)
+```
     
 (If the edges aren't Doubles already you'll need to supply some function to convert your edges to Doubles. I wrote this cheezy hack as an example.)
 
-    def stringToDouble(fromNode:String,toNode:String,edge:String):Double = 
-      edge.map(_.hashCode().toDouble).product
+```scala
+def stringToDouble(fromNode:String,toNode:String,edge:String):Double = 
+  edge.map(_.hashCode().toDouble).product
+```
     
 Instead of calling allPairsShortestPaths() call allPairsLeastPaths() to generate all the shortest paths.
 
-    val leastPathLabels: Seq[(String, String, support.Label)] = 
-      Dijkstra.allPairsLeastPaths(edges,support,support.convertEdgeToLabel[String](stringToDouble))
+```scala
+val leastPathLabels: Seq[(String, String, support.Label)] = 
+  Dijkstra.allPairsLeastPaths(edges,support,support.convertEdgeToLabel[String](stringToDouble))
+```
 
 ## Other Semirings
 
@@ -94,12 +111,16 @@ Because Disentangle is semiring-based, it's possible to create your own semiring
 
 Pull it into an sbt project via
 
-    resolvers += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
+```scala
+resolvers += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
 
-    libraryDependencies += "net.walend.disentangle" %% "graph" % "0.2.0-SNAPSHOT"
+libraryDependencies += "net.walend.disentangle" %% "graph" % "0.2.0-SNAPSHOT"
+```
 
 Or clone the project and play in the console
 
-    git clone https://github.com/dwalend/Disentangle.git
-    cd Disentangle
-    sbt console
+```bash
+git clone https://github.com/dwalend/Disentangle.git
+cd Disentangle
+sbt console
+```

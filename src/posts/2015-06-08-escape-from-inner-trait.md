@@ -2,6 +2,9 @@
 layout: post
 title: Escape to an Inner Object
 comments: True
+aliases:
+  - /2015/06/08/escape-from-inner-trait.html
+  - /2015/06/08/escape-from-inner-trait/
 ---
 ## An Inner Trait Puzzle
 
@@ -91,7 +94,7 @@ class OuterClass(val beyond: Beyond){
 
 Assigning a type of TopTrait to innerThing compiles past that, but the compiler can't find the inner trait's def. This seems correct to me and is the fix I settled for in the project's code. However, it doesn't explain what's going on.
 
-```scala 
+```scala
     val innerThing:TopTrait = beyond.innerThing
 ```
 

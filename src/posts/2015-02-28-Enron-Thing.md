@@ -2,6 +2,9 @@
 layout: post
 title: Between People at Enron
 comments: True
+aliases:
+  - /2015/02/28/Enron-Thing.html
+  - /2015/02/28/Enron-Thing/
 ---
 
 The tests in my [graph algorithm library](https://github.com/dwalend/ScalaGraphMinimizer) up to now have all used randomly connected graphs -- graphs with some random edges connecting nodes. To test Brandes' betweenness algorithm and (soon) the Louvain method I wanted some graph from nature. The Louvain method would be particularly bad at random graphs.
@@ -21,9 +24,11 @@ I downloaded them from [Forever Data](http://foreverdata.org/1009/). (I could no
 
 I'd thought parsing the CSVs would be a good way to get a little experience with [Parboiled](https://github.com/sirthias/parboiled2). It didn't go so well. The CSV example didn't work out of the box, but [Mathias](https://github.com/sirthias) fixed it when I asked. He then added it as an official example. I had a companion object for my Transmission class, which [caused trouble](https://github.com/sirthias/parboiled2); "Note that there is one quirk: For some reason this notation stops working if you explicitly define a companion object for your case class. You'll have to write ~> (Person(_, _)) instead." Having the companion object extend the right Tuple13 fixed it (and possibly problems with Slick).
 
-    import implicit.expletives
+```scala
+import implicit.expletives
 
-    object Transmission extends ((String,Int,Long,Email,Email,String,Boolean,Boolean,Boolean,String,String,String,String) => Transmission)
+object Transmission extends ((String,Int,Long,Email,Email,String,Boolean,Boolean,Boolean,String,String,String,String) => Transmission)
+```
 
 I can't recommend trying to maintain that extends clause in a project where anyone gets to add or remove columns, but at least the compiler will complain if you break it.
 
@@ -35,26 +40,30 @@ I gave up and wrote my own CSV parser. I was a bit [intimidated at first](http:/
 
 The more interesting, more idiomatic feature of the code is that parsing any line produces either a record of someone sending an email or a description of what problem the parser encountered -- Either\[Problem,Transmission\] in Scala. The bulk of the code is lines that dig out problems with the data.
 
-      def create(fileName:String,lineNumber:Int,lineContents:Seq[String]):Either[Problem,Transmission] = {
-        if (lineContents.size != 11) {
-          if (lineContents.size < 11) Left(Problem(fileName, lineNumber,Category.tooFewColumns.name, s"(${lineContents.size}) in $lineContents"))
-          else Left(Problem(fileName, lineNumber,Category.tooManyColumns.name, s"(${lineContents.size}) in $lineContents"))
-        }
-        else {
-          val sender = Email(lineContents(1))
-          val recipient = Email(lineContents(2))
-          if(!sender.address.contains('@')) Left(Problem(fileName,lineNumber,Category.missingAt.name,s"sender $sender"))
-          else if (!recipient.address.contains('@')) Left(Problem(fileName,lineNumber,Category.missingAt.name,s"recipient $recipient"))
+```scala
+  def create(fileName:String,lineNumber:Int,lineContents:Seq[String]):Either[Problem,Transmission] = {
+    if (lineContents.size != 11) {
+      if (lineContents.size < 11) Left(Problem(fileName, lineNumber,Category.tooFewColumns.name, s"(${lineContents.size}) in $lineContents"))
+      else Left(Problem(fileName, lineNumber,Category.tooManyColumns.name, s"(${lineContents.size}) in $lineContents"))
+    }
+    else {
+      val sender = Email(lineContents(1))
+      val recipient = Email(lineContents(2))
+      if(!sender.address.contains('@')) Left(Problem(fileName,lineNumber,Category.missingAt.name,s"sender $sender"))
+      else if (!recipient.address.contains('@')) Left(Problem(fileName,lineNumber,Category.missingAt.name,s"recipient $recipient"))
 
-          //Finally it's OK to make a Transmission
-          else  Right(Transmission(fileName = fileName,
+      //Finally it's OK to make a Transmission
+      else  Right(Transmission(fileName = fileName,
+```
 
 
 This approach works amazingly well. At the end of one pass it gives me a large sample of clean data plus a list of problems to fix, caveat problems I've never thought about that bring down the whole works. (I really need Bill Venners' [Eastwood -- Good, Bad, or Ugly](https://thenewcircle.com/s/post/1704/comparing_functional_error_handling_in_scalaz_and_scalactic?utm_campaign=twitter_channel&utm_source=twitter&utm_medium=social&utm_content=%22Comparing%20Functional%20Error%20Handling%20in%20Scalaz%20and%20Scalactic%2C%22%20%40bvenners%27s%20talk%20from%20%40nescalas%20is%20now%20live!) , late in the talk and in an unrecorded session the next day. We couldn't figure out how to make Eastwood play nice with monadic idioms. However, Either will get us through the night.)
 
 The only really aggravating problem I encountered while reading in the data was "java.nio.charset.MalformedInputException: Input length = 1" , which is pretty unhelpful. Adding the iso-8859-1 encoding parameter to
 
-    Source.fromFile(file,"iso-8859-1").getLines().toIterable.drop(1)
+```scala
+Source.fromFile(file,"iso-8859-1").getLines().toIterable.drop(1)
+```
 
 fixed that. Thank you, Google.
 
@@ -70,18 +79,20 @@ Github is good at flat files. It's not that hard to pull a database out of an ar
 
 I was fiddling around in the REPL anyway, so I made my data file for the graph algorithm tests there.
 
-    import scala.pickling._
-    import scala.pickling.json._
-    import net.walend.enron.EnronDatabase
-    import java.nio.file.{Paths, Files}
-    import java.nio.charset.StandardCharsets
+```scala
+import scala.pickling._
+import scala.pickling.json._
+import net.walend.enron.EnronDatabase
+import java.nio.file.{Paths, Files}
+import java.nio.charset.StandardCharsets
 
-    val edges = EnronDatabase.extractTransmissionCounts
-    val edgeString:String = pickledEdges.value
-    JSONPickle(edgeString).unpickle[Seq[(String,String,Int)]]
-    Files.write(Paths.get("results/LessEnron2000Apr.txt"), pickledEdges.toString.getBytes(StandardCharsets.UTF_8))
-    val fileString = scala.io.Source.fromFile("results/LessEnron2000Apr.txt").mkString
-    Files.write(Paths.get("results/LessEnron2000Apr.txt"), pickledEdges.value.getBytes(StandardCharsets.UTF_8))
+val edges = EnronDatabase.extractTransmissionCounts
+val edgeString:String = pickledEdges.value
+JSONPickle(edgeString).unpickle[Seq[(String,String,Int)]]
+Files.write(Paths.get("results/LessEnron2000Apr.txt"), pickledEdges.toString.getBytes(StandardCharsets.UTF_8))
+val fileString = scala.io.Source.fromFile("results/LessEnron2000Apr.txt").mkString
+Files.write(Paths.get("results/LessEnron2000Apr.txt"), pickledEdges.value.getBytes(StandardCharsets.UTF_8))
+```
 
 The only explicative was figuring out to use pickledEdges.value instead of pickledEdges.toString .
 
@@ -89,82 +100,94 @@ The only explicative was figuring out to use pickledEdges.value instead of pickl
 
 Pulling the graph back out and running Brandes' betweenness was very tidy:
 
-    "Betweenness for Enron data" should "be calculated" in {
+```scala
+"Betweenness for Enron data" should "be calculated" in {
 
-      import scala.io.Source
-      import scala.pickling._
-      import scala.pickling.json._
+  import scala.io.Source
+  import scala.pickling._
+  import scala.pickling.json._
 
-      val fileContents = Source.fromURL(getClass.getResource("/Enron2000Apr.json")).mkString
-      val edges = JSONPickle(fileContents).unpickle[Seq[(String,String,Int)]]
+  val fileContents = Source.fromURL(getClass.getResource("/Enron2000Apr.json")).mkString
+  val edges = JSONPickle(fileContents).unpickle[Seq[(String,String,Int)]]
 
-      val labelGraphAndBetweenness = Brandes.allLeastPathsAndBetweenness(edges,Seq.empty,FewestNodes,FewestNodes.convertEdgeToLabel)
-    }
+  val labelGraphAndBetweenness = Brandes.allLeastPathsAndBetweenness(edges,Seq.empty,FewestNodes,FewestNodes.convertEdgeToLabel)
+}
+```
 
 ## Results
 
 In the REPL via sbt test:console, I ran
 
-    scala> import scala.io.Source
-    scala> import scala.pickling._
-    scala> import scala.pickling.json._
-    scala> import net.walend.graph.SomeGraph._
-    scala> import net.walend.graph.semiring.Brandes.BrandesSteps
-    scala> import net.walend.graph.semiring
-    scala> import net.walend.graph.semiring._
-    scala> val fileContents = Source.fromURL(getClass.getResource("/Enron2000Apr.json")).mkString
-    scala> val edges = JSONPickle(fileContents).unpickle[Seq[(String,String,Int)]]
-    scala> val labelGraphAndBetweenness = Brandes.allLeastPathsAndBetweenness(edges,Seq.empty,FewestNodes,FewestNodes.convertEdgeToLabel)
-    scala> val betweenness = labelGraphAndBetweenness._2
+```
+scala> import scala.io.Source
+scala> import scala.pickling._
+scala> import scala.pickling.json._
+scala> import net.walend.graph.SomeGraph._
+scala> import net.walend.graph.semiring.Brandes.BrandesSteps
+scala> import net.walend.graph.semiring
+scala> import net.walend.graph.semiring._
+scala> val fileContents = Source.fromURL(getClass.getResource("/Enron2000Apr.json")).mkString
+scala> val edges = JSONPickle(fileContents).unpickle[Seq[(String,String,Int)]]
+scala> val labelGraphAndBetweenness = Brandes.allLeastPathsAndBetweenness(edges,Seq.empty,FewestNodes,FewestNodes.convertEdgeToLabel)
+scala> val betweenness = labelGraphAndBetweenness._2
+```
 
 And finally
 
-    scala> betweenness.to[Seq].sortBy(x => x._2)
-    java.lang.AssertionError: assertion failed: List(value _2$mcD$sp, value _2$mcD$sp, value _2$mcD$sp, value _2$mcD$sp, value _2$mcD$sp, value _2$mcD$sp, value _2$mcD$sp, value _2$mcD$sp, value _2$mcD$sp, value _2$mcD$sp)
-    	at scala.reflect.internal.Symbols$Symbol.suchThat(Symbols.scala:1916)
-    	at scala.tools.nsc.transform.SpecializeTypes$$anon$2.matchingSymbolInPrefix$1(SpecializeTypes.scala:1460)
-    	at scala.tools.nsc.transform.SpecializeTypes$$anon$2.transformSelect$1(SpecializeTypes.scala:1483)
-     ...
-     	at sbt.TrapExit$App.run(TrapExit.scala:248)
-     	at java.lang.Thread.run(Thread.java:745)
+```
+scala> betweenness.to[Seq].sortBy(x => x._2)
+java.lang.AssertionError: assertion failed: List(value _2$mcD$sp, value _2$mcD$sp, value _2$mcD$sp, value _2$mcD$sp, value _2$mcD$sp, value _2$mcD$sp, value _2$mcD$sp, value _2$mcD$sp, value _2$mcD$sp, value _2$mcD$sp)
+	at scala.reflect.internal.Symbols$Symbol.suchThat(Symbols.scala:1916)
+	at scala.tools.nsc.transform.SpecializeTypes$$anon$2.matchingSymbolInPrefix$1(SpecializeTypes.scala:1460)
+	at scala.tools.nsc.transform.SpecializeTypes$$anon$2.transformSelect$1(SpecializeTypes.scala:1483)
+ ...
+ 	at sbt.TrapExit$App.run(TrapExit.scala:248)
+ 	at java.lang.Thread.run(Thread.java:745)
 
-     That entry seems to have slain the compiler.  Shall I replay
-     your session? I can re-run each line except the last one.
-     [y/n]
+ That entry seems to have slain the compiler.  Shall I replay
+ your session? I can re-run each line except the last one.
+ [y/n]
+```
 
 How civilized, but not quite what I wanted for a finale. It's only 1700 email addresses, so sortBy should be fine. A quick search lead to [a bug report vs Scala 2.11.5](https://issues.scala-lang.org/browse/SI-9099), already fixed in 2.11.6. Switching to 2.11.4 got through the trouble.
 
 Here's a list of the addresses with the 10 highest betweenness values in April 2000 at Enron:
 
-    (steven.kean@enron.com,53260.58012691413)
-    (jeff.dasovich@enron.com,59156.98903661527)
-    (chris.germany@enron.com,61701.19086004503)
-    (carol.clair@enron.com,67655.27390774187)
-    (susan.scott@enron.com,76157.68561454736)
-    (sally.beck@enron.com,82040.94643046238)
-    (sara.shackleton@enron.com,89571.2341102196)
-    (vince.kaminski@enron.com,96123.70935699047)
-    (tana.jones@enron.com,110579.53312945696)
-    (mark.taylor@enron.com,111545.81230355639)
+```
+(steven.kean@enron.com,53260.58012691413)
+(jeff.dasovich@enron.com,59156.98903661527)
+(chris.germany@enron.com,61701.19086004503)
+(carol.clair@enron.com,67655.27390774187)
+(susan.scott@enron.com,76157.68561454736)
+(sally.beck@enron.com,82040.94643046238)
+(sara.shackleton@enron.com,89571.2341102196)
+(vince.kaminski@enron.com,96123.70935699047)
+(tana.jones@enron.com,110579.53312945696)
+(mark.taylor@enron.com,111545.81230355639)
+```
 
 Switching to the MostProbable semiring was just a matter of mapping the edges to normalized edges and rerunning Brandes'. (The most frequented sender and recipient pair in the sample is vince.kaminski@enron.com writing to vince.kaminski@aol.com 274 times. I'm sure there's an anecdote behind that.)
 
-    val weightedEdges = edges.map(x => (x._1,x._2,x._3.toDouble/274))
-    val normalizedGraphAndBetweenness = Brandes.allLeastPathsAndBetweenness(edges,Seq.empty,MostProbable,MostProbable.convertEdgeToLabel)
-    val normalizedBetweenness = normalizedGraphAndBetweenness._2
+```scala
+val weightedEdges = edges.map(x => (x._1,x._2,x._3.toDouble/274))
+val normalizedGraphAndBetweenness = Brandes.allLeastPathsAndBetweenness(edges,Seq.empty,MostProbable,MostProbable.convertEdgeToLabel)
+val normalizedBetweenness = normalizedGraphAndBetweenness._2
+```
 
 The nodes with the 10 highest betweennesses using this probability model are not that different; debra.perlingiere@enron.com replaced jeff.dasovich@enron.com, and the other rankings moved around a bit. ActivateNetworks' assumption was fine.
 
-    (chris.germany@enron.com,72725.80682360567)
-    (steven.kean@enron.com,81287.60122108378)
-    (debra.perlingiere@enron.com,89005.54636283437)
-    (susan.scott@enron.com,90021.18526949426)
-    (sally.beck@enron.com,115103.96001437954)
-    (vince.kaminski@enron.com,119572.49086838862)
-    (tana.jones@enron.com,159331.96521970455)
-    (mark.taylor@enron.com,179964.3443774904)
-    (carol.clair@enron.com,186060.8626406191)
-    (sara.shackleton@enron.com,206970.0875042239)
+```
+(chris.germany@enron.com,72725.80682360567)
+(steven.kean@enron.com,81287.60122108378)
+(debra.perlingiere@enron.com,89005.54636283437)
+(susan.scott@enron.com,90021.18526949426)
+(sally.beck@enron.com,115103.96001437954)
+(vince.kaminski@enron.com,119572.49086838862)
+(tana.jones@enron.com,159331.96521970455)
+(mark.taylor@enron.com,179964.3443774904)
+(carol.clair@enron.com,186060.8626406191)
+(sara.shackleton@enron.com,206970.0875042239)
+```
 
 Betweenness did not do that good a job finding [the executives accused in the scandal](http://en.wikipedia.org/wiki/Enron_scandal#Trials). Hopefully the Louvain method will do better.
 

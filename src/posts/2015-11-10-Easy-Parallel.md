@@ -2,6 +2,9 @@
 layout: post
 title: Parallel Disentangle
 comments: True
+aliases:
+  - /2015/11/10/Easy-Parallel.html
+  - /2015/11/10/Easy-Parallel/
 ---
 
 <script type="text/javascript" src="../../../disentangleParGraphs/js/d3.v3.js">
@@ -15,38 +18,42 @@ comments: True
 
 <style type="text/css">
 
-    path {
-    stroke-width: 2;
-    fill: none;
-    }
+path {
+stroke-width: 2;
+fill: none;
+}
 
-    .axis path,
-    .axis line {
-    fill: none;
-    stroke: black;
-    shape-rendering: crispEdges;
-    }
+.axis path,
+.axis line {
+fill: none;
+stroke: black;
+shape-rendering: crispEdges;
+}
 
-    .axis text {
-    font-family: sans-serif;
-    font-size: 10px;
-    }
+.axis text {
+font-family: sans-serif;
+font-size: 10px;
+}
 </style>
 
 
 TL/DR - I added parallel versions of Dijkstra's and Brandes' algorithms to Disentangle. Writing the code was easy. Consider using  parallel versions of these algorithms when you've got more than about 100 nodes in your graph and you have computational power to spare. Call them via
 
-    val simpleShortPathLabelsFromPar = Dijkstra.parAllPairsShortestPaths(edges)
+```scala
+val simpleShortPathLabelsFromPar = Dijkstra.parAllPairsShortestPaths(edges)
 
-    val leastPathLabelsFromPar = Dijkstra.parAllPairsLeastPaths(edges,support,labelForEdge)
+val leastPathLabelsFromPar = Dijkstra.parAllPairsLeastPaths(edges,support,labelForEdge)
 
-    val shortestPathsAndBetweennessFromPar = Brandes.parAllLeastPathsAndBetweenness(edges)
+val shortestPathsAndBetweennessFromPar = Brandes.parAllLeastPathsAndBetweenness(edges)
+```
 
 Pull in the latest snapshot with
 
-    resolvers += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
+```scala
+resolvers += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
 
-    libraryDependencies += "net.walend.disentangle" %% "graph" % "0.2.0-SNAPSHOT"
+libraryDependencies += "net.walend.disentangle" %% "graph" % "0.2.0-SNAPSHOT"
+```
 
 
 ## Scala's Parallel Collections
@@ -57,15 +64,17 @@ Scala 2.9 provided [parallel versions of many of its standard collection classes
 
 I needed about ten minutes for the first pass, and five for a second pass ([Brandes' algorithm has an extra wrinkle](http://dl.acm.org/citation.cfm?id=2442521)) to get the algorithms running in parallel. Here's a code fragment from Dijkstra's algorithm:
 
-    def parAllPairsLeastPaths[Node,EdgeLabel,Label,Key](edges: GenTraversable[(Node, Node, EdgeLabel)],
-                                                        support: SemiringSupport[Label, Key],
-                                                        labelForEdge: (Node, Node, EdgeLabel) => Label,
-                                                        nodeOrder: GenSeq[Node] = ParSeq.empty):ParSeq[(Node, Node, Label)] = {
-      val labelDigraph = createLabelDigraph(edges.par, support, labelForEdge, nodeOrder.par)
+```scala
+def parAllPairsLeastPaths[Node,EdgeLabel,Label,Key](edges: GenTraversable[(Node, Node, EdgeLabel)],
+                                                    support: SemiringSupport[Label, Key],
+                                                    labelForEdge: (Node, Node, EdgeLabel) => Label,
+                                                    nodeOrder: GenSeq[Node] = ParSeq.empty):ParSeq[(Node, Node, Label)] = {
+  val labelDigraph = createLabelDigraph(edges.par, support, labelForEdge, nodeOrder.par)
 
-      //profiler blames both flatten and fold of IndexedSet as trouble
-      labelDigraph.innerNodes.to[ParSeq].flatMap(source => dijkstraSingleSource(labelDigraph, support)(source))
-    }
+  //profiler blames both flatten and fold of IndexedSet as trouble
+  labelDigraph.innerNodes.to[ParSeq].flatMap(source => dijkstraSingleSource(labelDigraph, support)(source))
+}
+```
 
 Making the edges collection parallel speeds up translating to the internal directed graph representation. The bigger benefit, running dijkstraSingleSource for each node in parallel, comes from putting the nodes in a parallel collection. This code was so straight-forward that I wrote it while bouncing on the T on my way home from work.
 
@@ -107,12 +116,16 @@ You can see some inefficiency - maybe the JVM garbage collector - start to come 
 
 Pull it into an sbt project via
 
-    resolvers += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
+```scala
+resolvers += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
 
-    libraryDependencies += "net.walend.disentangle" %% "graph" % "0.2.0-SNAPSHOT"
+libraryDependencies += "net.walend.disentangle" %% "graph" % "0.2.0-SNAPSHOT"
+```
 
 Or clone the project and play in the console
 
-    git clone https://github.com/dwalend/Disentangle.git
-    cd Disentangle
-    sbt console
+```bash
+git clone https://github.com/dwalend/Disentangle.git
+cd Disentangle
+sbt console
+```

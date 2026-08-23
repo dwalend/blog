@@ -356,9 +356,84 @@ Pages config still reports `source: {branch: gh-pages}` next to
 `build_type: workflow` - that field is vestigial once the build type is Actions,
 so ignore it rather than setting it back.
 
-## Phase 5 - Migrate the 10 published Jekyll posts
+## Phase 5 - Migrate the 10 published Jekyll posts  [DONE 2026-08-23]
 
 See `MigrateOldBlogs.md`.
+
+All ten moved to `src/posts/`, live at `/YYYY/MM/slug/`, with 20 redirect stubs,
+10 feed items, and 12 sitemap URLs (stubs correctly excluded).
+
+### The one that mattered: 49 code blocks were rendering as prose
+
+Eleventy disables markdown-it's indented code blocks by default -
+`this.mdLib.disable("code")`, its Issue #2438. Eight of the ten posts use
+four-space indented code throughout, which kramdown rendered as code and Eleventy
+was silently flattening into paragraphs. Every Scala sample in those posts was
+running together as body text.
+
+Fixed with `eleventyConfig.amendLibrary("md", (md) => md.enable("code"))`.
+That recovered **49 code blocks**, in the pages and in the feed. Worth knowing
+this is a rendering-engine difference, not an authoring choice - the posts were
+always correct.
+
+### Aliases
+
+`aliases:` in each post's front matter lists the old URLs; a collection in
+`eleventy.config.js` flattens them and `src/alias.liquid` paginates one stub per
+entry, with `rel=canonical` plus a meta refresh. Both shapes that were in
+circulation are covered - `/2016/06/13/Pimping-Config.html` and
+`/2016/06/13/Pimping-Config/`. The same mechanism carries Phase 6's Hashnode
+slugs, which is why it is front matter rather than derived from filenames.
+
+### Other repairs
+
+- **CRLF line endings** in `2014-09-01-back-in.md` and
+  `2014-09-10-graphs-in-scala.md`, normalised to LF. They had been breaking
+  front-matter parsing in tooling that expects `^---$`.
+- **Fence tags**: five ```` ```Scala ```` (capital S) would not have matched
+  Prism's lowercase language classes. Now nine ```` ```scala ```` and one
+  ```` ```bash ````.
+- **Three cross-links between posts** pointed at absolute
+  `dwalend.github.io/blog/YYYY/MM/DD/...` URLs. Rewritten relative and to the new
+  scheme, so they work on either domain. The two remaining `dwalend.github.io`
+  links are Disentangle scaladoc, correctly left alone.
+- No `{% highlight %}` blocks, no `site.baseurl`, no Liquid at all in the bodies -
+  the plan anticipated those and none existed.
+
+### Code blocks converted to fenced, with languages
+
+The recovered blocks were `<pre><code>` with no language. All 50 indented blocks
+across seven posts are now fenced and labelled, judged block by block:
+
+**51 scala, 3 bash, 1 java, 4 deliberately unlabelled.**
+
+- The `java` block is in `Semirings` - angle-bracket generics and
+  `new Dijkstra<...>()`, a Java comparison against the Scala version.
+- The `bash` blocks are `git clone` / `cd` sequences.
+- The four unlabelled ones are all in `Enron-Thing`: two `scala>` REPL
+  transcripts and two blocks of raw result data. A language tag would have
+  highlighted the prompts and stack traces as if they were source.
+- `sbt` fragments (`libraryDependencies +=`, `resolvers +=`) are tagged `scala`,
+  which is what they are.
+
+Two mistakes made and corrected while doing this, both worth remembering:
+
+- **The first block detector ignored existing fences**, so in the two posts that
+  already used ```` ``` ```` it inserted new fences *inside* open blocks, breaking
+  the pairing. The detector now tracks fence state - and with that fix, those two
+  posts turn out to have no loose indented blocks at all.
+- **One "CSS block" was live CSS**, not a sample: `Easy-Parallel` embeds a d3
+  chart, and its `<style type="text/css">` contents got wrapped in a fence.
+  Unwrapped. It is the only post carrying live HTML.
+
+Verified afterwards: fences balanced in all ten posts, prose and code identical to
+`HEAD` apart from the intended cross-link rewrites, and the chart's relative
+`../../../disentangleParGraphs/js/plot.js` still resolves - the old permalink had
+three path segments plus a filename, the new one has three directory segments, so
+the depth happens to match.
+
+Feed `description` still falls back to an auto-excerpt; setting `description` in
+front matter per post would read better in readers.
 
 ## Phase 6 - Migrate the 4 Hashnode posts
 

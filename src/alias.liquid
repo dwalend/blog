@@ -1,0 +1,21 @@
+---
+pagination:
+  data: collections.aliases
+  size: 1
+  alias: redirect
+permalink: "{{ redirect.from }}"
+eleventyExcludeFromCollections: true
+---
+<!DOCTYPE html>
+<html lang="{{ metadata.language }}">
+<head>
+<meta charset="utf-8">
+<title>{{ redirect.title }}</title>
+<link rel="canonical" href="{{ metadata.url }}{{ redirect.to | url }}">
+<meta http-equiv="refresh" content="0; url={{ metadata.url }}{{ redirect.to | url }}">
+<meta name="robots" content="noindex">
+</head>
+<body>
+<p>This post moved to <a href="{{ metadata.url }}{{ redirect.to | url }}">{{ redirect.title }}</a>.</p>
+</body>
+</html>

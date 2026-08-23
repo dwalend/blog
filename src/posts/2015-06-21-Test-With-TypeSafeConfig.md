@@ -2,6 +2,9 @@
 layout: post
 title: Testing With TypeSafe Config
 comments: True
+aliases:
+  - /2015/06/21/Test-With-TypeSafeConfig.html
+  - /2015/06/21/Test-With-TypeSafeConfig/
 ---
 
 # Testing With TypeSafe Config
@@ -12,7 +15,7 @@ TL/DR - I found a workable compromise for testing with different configurations 
 
 TypeSafe Config code loads the config from a hierarchy of sources - primarily files on the classpath and java.lang.System properties. I can access my system's configuration from anywhere by calling 
 
-```Scala
+```scala
   val config = ConfigFactory.load();
   val dbUrl = config.getString("database.url")
 ```
@@ -37,7 +40,7 @@ The older code in Shrine uses config parameter objects, skipping typesafe config
 
 I decided to wrap typesafe config with just a little mutability and use [defs](http://blog.jessitron.com/2012/07/choices-with-def-and-val-in-scala.html) where I need configurable values. Using defs for configurable values forces them to be reevaluated each time the owning code accesses them; there will always be a little in-memory overhead. However, any part of the system can access the Config when needed, with a key's name right next to the def that supplies the value. 
 
-```Scala
+```scala
   def dbUrl = ExampleConfigSource.config.getString("database.url")
 ```
 
@@ -45,7 +48,7 @@ My first hack at the solution was to set and clean up system properties in a try
 
 Here's what the code looks like:
 
-```Scala
+```scala
 import java.util.concurrent.atomic.AtomicReference
 import scala.util.{Failure, Success, Try}
 import com.typesafe.config.{Config, ConfigFactory}
@@ -103,7 +106,7 @@ class AtomicConfigSource(baseConfig:Config) {
 
 To use it, I create a Scala object to hold the config:
 
-```Scala
+```scala
 /**
  * A little object to let you reach your config from anywhere.
  * 
@@ -122,7 +125,7 @@ object ExampleConfigSource {
 
 To change config in a test, wrap the test code in a configForBlock:
 
-```Scala
+```scala
   "Steward" should " accept query requests with no topic in 'just log and approve everything' mode " in {
 
     ExampleConfigSource.configForBlock("shrine.steward.createTopicsMode", 

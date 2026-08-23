@@ -2,13 +2,18 @@
 layout: post
 title: Just apply(Config)
 comments: True
+aliases:
+  - /2016/05/20/Applying-Typesafe-Config.html
+  - /2016/05/20/Applying-Typesafe-Config/
 ---
 
 TL/DR - I started using apply methods in companion objects that take a TypeSafe Config instance parameter. Now I am much happier. 
 
-    object UsefulConfigurableThing {
-        def apply(config:Config):UsefulConfigurableThing = { ... }
-    }
+```scala
+object UsefulConfigurableThing {
+    def apply(config:Config):UsefulConfigurableThing = { ... }
+}
+```
     
 I use this method to make standard parts easy to configure. I let things be even simpler for singletons - a singleton just accesses the Config it needs. The resulting code is clear and very flat. Competing options meant filing my head with a new bag of API names and sometimes a new skill in an uninteresting discipline. This flat approach saves me from depending on a mountain of YANGTNI framework features.
 
@@ -38,22 +43,24 @@ The Akka project spun out [TypeSafe Config](https://github.com/typesafehub/confi
 
 I settled on using an apply(Config) method in a case class' companion object as my standard approach. 
  
-    case class StewardQueryAuthorizationService(qepUserName:String,
-                                                qepPassword:String,
-                                                stewardBaseUrl:URL,
-                                                defaultTimeout:FiniteDuration = 10 seconds) extends 
-                 QueryAuthorizationService with 
-                 Loggable with 
-                 Json4sSupport {...} 
+```scala
+case class StewardQueryAuthorizationService(qepUserName:String,
+                                            qepPassword:String,
+                                            stewardBaseUrl:URL,
+                                            defaultTimeout:FiniteDuration = 10 seconds) extends 
+             QueryAuthorizationService with 
+             Loggable with 
+             Json4sSupport {...} 
  
-    object StewardQueryAuthorizationService {
+object StewardQueryAuthorizationService {
 
-      def apply(config:Config):StewardQueryAuthorizationService = StewardQueryAuthorizationService (
-        qepUserName = config.getString("qepUserName"),
-        qepPassword = config.getString("qepPassword"),
-        stewardBaseUrl = config.get("stewardBaseUrl", new URL(_))
-      )
-    }
+  def apply(config:Config):StewardQueryAuthorizationService = StewardQueryAuthorizationService (
+    qepUserName = config.getString("qepUserName"),
+    qepPassword = config.getString("qepPassword"),
+    stewardBaseUrl = config.get("stewardBaseUrl", new URL(_))
+  )
+}
+```
 
 The apply() method pulls arguments from the Config for the case class' constructor, then calls the case class. JSON to case class. Standard, general tools. No special skills or big patterns to explain. No mystery. 
 
@@ -61,16 +68,18 @@ The apply() method pulls arguments from the Config for the case class' construct
  
 That technique works great in general, but sometimes there'd only be one instance of the class. A Scala object is a better choice. For that, I apply Li Haoyi's principle of least power. I go one step further than hard-coding, and pull the value out of the Config exactly where I need it. 
  
-    object StewardSchema {
+```scala
+object StewardSchema {
 
-      val allConfig:Config = StewardConfigSource.config
-      val config:Config = allConfig.getConfig("shrine.steward.database")
-    
-      val slickProfileClassName = config.getString("slickProfileClassName")
-      val slickProfile:JdbcProfile = StewardConfigSource.objectForName(slickProfileClassName)
-    
-      val schema = StewardSchema(slickProfile)
-    }
+  val allConfig:Config = StewardConfigSource.config
+  val config:Config = allConfig.getConfig("shrine.steward.database")
 
-Did you notice that StewardConfigSource.config? Sometimes I need some control over the configuration for testing. I've already [blogged about how I inject new config variables for testing](http://dwalend.github.io/blog/2015/06/21/Test-With-TypeSafeConfig.html). That does put in one extra hop to answer "Where does this Config come from?" However, outside of testing anyone's first guess will be right. I've preserved the most important easy answer for "How do I control this value?"
+  val slickProfileClassName = config.getString("slickProfileClassName")
+  val slickProfile:JdbcProfile = StewardConfigSource.objectForName(slickProfileClassName)
+
+  val schema = StewardSchema(slickProfile)
+}
+```
+
+Did you notice that StewardConfigSource.config? Sometimes I need some control over the configuration for testing. I've already [blogged about how I inject new config variables for testing](/2015/06/Test-With-TypeSafeConfig/). That does put in one extra hop to answer "Where does this Config come from?" However, outside of testing anyone's first guess will be right. I've preserved the most important easy answer for "How do I control this value?"
 
