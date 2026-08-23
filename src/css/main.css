@@ -162,6 +162,25 @@ img { max-width: 100%; height: auto; }
 }
 .post-list a:hover { text-decoration: underline; }
 
+/* ---- feed page ----
+   The RSS feed carries an XSLT stylesheet so a browser shows this instead of
+   raw XML. Feed readers never see any of it. */
+
+.feed-notice {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 1.25rem 1.25rem 0.5rem;
+  margin-bottom: 2.5rem;
+}
+.feed-url { margin: 0.5rem 0 1rem; }
+.feed-url code {
+  display: inline-block;
+  font-size: 1rem;
+  word-break: break-all;
+}
+.feed-help { color: var(--muted); font-size: 0.9rem; }
+
 /* ---- code ----
    Prose stays at the measure. Code breaks out wider, so a long Scala
    signature has room before it wraps. */

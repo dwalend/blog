@@ -1,0 +1,72 @@
+---
+permalink: /feed.xsl
+eleventyExcludeFromCollections: true
+---
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Browsers stopped rendering RSS years ago, so a reader who clicks the feed
+     link gets raw XML and no idea what to do with it. This stylesheet is applied
+     only by browsers; feed readers ignore it and parse the RSS underneath. -->
+<xsl:stylesheet version="1.0"
+                xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+                xmlns:dc="http://purl.org/dc/elements/1.1/"
+                xmlns:atom="http://www.w3.org/2005/Atom">
+  <xsl:output method="html" encoding="utf-8" indent="yes"
+              doctype-system="about:legacy-compat"/>
+
+  <xsl:template match="/rss/channel">
+    <html lang="{{ metadata.language }}">
+      <head>
+        <meta charset="utf-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <meta name="robots" content="noindex"/>
+        <title><xsl:value-of select="title"/> · RSS feed</title>
+        <link rel="stylesheet" href="{{ '/css/main.css' | url }}"/>
+      </head>
+      <body>
+        <header class="site-header">
+          <a class="site-title" href="{link}"><xsl:value-of select="title"/></a>
+          <nav class="site-nav">
+            <a href="{link}">Posts</a>
+          </nav>
+        </header>
+
+        <main class="page-content">
+          <h1>RSS feed</h1>
+
+          <div class="feed-notice">
+            <p>
+              This page is a <strong>feed</strong>. Subscribe to it and new posts
+              arrive in your reader — no account, no email address, no algorithm
+              deciding what you see.
+            </p>
+            <p>Copy this address into any feed reader:</p>
+            <p class="feed-url"><code><xsl:value-of select="atom:link/@href"/></code></p>
+            <p class="feed-help">
+              Readers worth trying: NetNewsWire (free, Mac and iOS), Feedbin,
+              Inoreader, Miniflux. Most browsers no longer display feeds
+              themselves, which is why this page exists.
+            </p>
+          </div>
+
+          <h2>Recent posts</h2>
+          <ul class="post-list">
+            <xsl:for-each select="item">
+              <li>
+                <a href="{link}"><xsl:value-of select="title"/></a>
+                <span class="post-meta"><xsl:value-of select="substring(pubDate, 1, 16)"/></span>
+                <p><xsl:value-of select="description"/></p>
+              </li>
+            </xsl:for-each>
+          </ul>
+        </main>
+
+        <footer class="site-footer">
+          <p class="footer-links">
+            <a href="{link}">Back to <xsl:value-of select="title"/></a>
+          </p>
+          <p class="footer-license"><xsl:value-of select="copyright"/></p>
+        </footer>
+      </body>
+    </html>
+  </xsl:template>
+</xsl:stylesheet>

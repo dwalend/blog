@@ -216,6 +216,23 @@ Notes from doing this:
   `css/main.scss`, root `index.html`, `feed.xml`, `about.md`) is now superseded
   but still present. Sweep it in Phase 5 with the post migration, in one go.
 
+### Width, revisited [2026-08-23]
+
+`--measure` 34rem -> **51rem**, `--wide` 52rem -> **78rem** - 150% of the
+original, and the header, footer, and post list follow `--measure` with it.
+34rem used about a third of a 16" screen and left code cramped enough to be hard
+to scan.
+
+At 51rem prose runs roughly 110 characters, which is longer than the usual
+advice. Read against real posts and kept anyway: the code is what this blog is
+for. If body text ever feels like a slog to track back to the left margin, widen
+only `--wide` and pull `--measure` back toward 40rem.
+
+Code went from about 90 columns to about 136. Of the 611 code lines across the
+ten posts, **550 fit before and 600 fit now**. The 11 that still scroll are 140
+to 225 characters - the long signatures in `Semirings` and `Pimping-Config` -
+and no plausible measure would have held them.
+
 ## Phase 3 - Feed and subscribing  [DONE 2026-08-22]
 
 1. `src/feed.xml.liquid` using `@11ty/eleventy-plugin-rss`. The 2016 `feed.xml`
@@ -265,6 +282,38 @@ Verified: XML well-formed with all three namespaces resolving, excerpt in
 `description` against full text in `content:encoded`, no relative URLs left
 inside the content, empty-collection build omits `lastBuildDate` and still parses,
 and both the production and `PATH_PREFIX=/blog/` builds emit correct links.
+
+### Browsers get a readable page [2026-08-23]
+
+`/feed.xml` rendered as a wall of raw XML, which is correct and useless to a
+human who clicks "RSS" in the nav. Browsers stopped rendering feeds years ago
+(Firefox 64, Safari 6), so this needs solving on the site's side.
+
+`src/feed.xsl.liquid` -> `/feed.xsl`, pulled in by an `<?xml-stylesheet?>`
+processing instruction at the top of `feed.njk`. A browser applies it and gets a
+page: what a feed is, the URL to copy, a few readers worth trying, and the ten
+recent posts. Feed readers ignore the PI entirely and parse the RSS underneath,
+byte for byte what it was.
+
+- It links `css/main.css` rather than carrying its own styles, so it tracks the
+  palette and dark mode for free. Only `.feed-notice`, `.feed-url`, and
+  `.feed-help` were added - about 15 lines.
+- `doctype-system="about:legacy-compat"` on `xsl:output` is load-bearing.
+  Without it the transform emits no doctype at all and the browser lays the page
+  out in quirks mode, which breaks the CSS.
+- XSLT attribute value templates use single braces (`href="{link}"`), which
+  Liquid passes through untouched. No `{% raw %}` needed.
+- Both files serve as `application/xml`, which browsers accept for a stylesheet.
+  **Re-verify this on GitHub Pages** - the content type comes from its server,
+  not Eleventy's, and a `text/plain` would silently disable the transform.
+- Verified with `xsltproc _site/feed.xsl _site/feed.xml`, and under
+  `PATH_PREFIX=/blog/`, where the PI and the CSS link both come out `/blog/...`.
+
+**Chrome has announced it intends to remove XSLT support.** When that lands the
+feed degrades to exactly today's behaviour - raw XML - and nothing breaks for
+subscribers; the explanatory page just stops appearing. The replacement, if it
+comes to that, is an ordinary `/subscribe/` page with the nav pointing there
+instead of at the feed.
 
 ## Phase 4 - Deploy, without moving DNS  [DONE 2026-08-23; gh-pages still to retire]
 
@@ -434,6 +483,57 @@ the depth happens to match.
 
 Feed `description` still falls back to an auto-excerpt; setting `description` in
 front matter per post would read better in readers.
+
+### The Jekyll tree is gone [2026-08-23]
+
+Phase 2 deferred this sweep to Phase 5 and it did not happen then. Done now: 19
+tracked files deleted - `_config.yml`, `_includes/` (8), `_layouts/` (3),
+`_sass/` (3), `css/main.scss`, and the root `index.html`, `feed.xml`, and
+`about.md`. The empty `_posts/` went with them.
+
+All superseded by `src/`. Nothing in `src/`, `.github/`, or the Eleventy config
+referenced any of it - the only surviving mentions are prose, in `README.md` and
+`src/style-guide.md`. `_config.yml` is inert now that Pages builds from Actions
+rather than Jekyll. `_pending/`, `disentangleParGraphs/`, and `plans/` stay.
+
+The one fact worth rescuing from the deleted tree was the Disqus shortname,
+`intuitivecounter`, in `_includes/comments.html`. It is already written down in
+`MigrateOldBlogs.md`, so Phase 7 loses nothing.
+
+---
+
+## Carried into the next few commits
+
+Housekeeping and cheap wins that outlived their own phases. None of them block
+Phase 6, and all four are easier now than later.
+
+1. **Retire `gh-pages`, local and origin.** Fully contained in `master`, so
+   nothing is lost. Left over from Phase 4. Note the Pages config still reports
+   `source: {branch: gh-pages}` beside `build_type: workflow` - that field is
+   vestigial once the build type is Actions, so ignore it rather than setting it
+   back.
+
+2. **Settings -> Pages -> Enforce HTTPS.** Also Phase 4. The workflow already
+   forces `https://` into the feed guids itself, so this is belt-and-braces, but
+   it additionally fixes what the Pages API reports as `html_url`.
+
+3. **Two cheap things, both easier before Phase 6 adds four more posts:**
+
+   - **OpenGraph tags in `head.liquid`** - Phase 11 item 1, and a prerequisite
+     for the LinkedIn/Discord announcement rather than a nicety. There are none
+     today, so a pasted link renders as a bare URL with no card. `og:title`,
+     `og:description`, `og:url`, `og:type`, `og:site_name`,
+     `article:published_time` on posts, `twitter:card`, and one site-wide
+     `og:image` to start.
+
+   - **`description:` in each post's front matter.** The feed falls back to a
+     220-character auto-excerpt that just grabs the opening words, and two of
+     the ten are visibly wrong because of it: `Easy-Parallel`'s excerpt opens
+     with the d3 chart's embedded CSS (`path { stroke-width: 2; ... }`), and
+     `Semirings` carries a double-escaped `&amp;quot;` where the source had a
+     quotation mark - `striptags` leaves the entity behind and the template then
+     escapes the ampersand again. A hand-written `description` fixes both, and
+     feeds the OpenGraph `og:description` above.
 
 ## Phase 6 - Migrate the 4 Hashnode posts
 

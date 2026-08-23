@@ -36,6 +36,8 @@ src/
 ├── posts/              published posts; posts.json sets their shared defaults
 ├── css/main.css
 ├── index.liquid
+├── feed.njk            RSS; the one Nunjucks template, for the RSS plugin's filters
+├── feed.xsl.liquid     XSLT so browsers show the feed as a page, not raw XML
 ├── robots.txt.liquid   generated
 ├── sitemap.xml.liquid  generated
 └── llms.txt.liquid     generated from the post list
@@ -49,9 +51,9 @@ Jekyll site and the 2024 Hashnode site are preserved with redirect stubs.
 
 ## Deploying
 
-GitHub Actions builds and deploys to GitHub Pages on push to `master`.
-
-> Not wired up yet — that lands in Phase 4. See `plans/RestartBlog.md`.
+GitHub Actions builds and deploys to GitHub Pages on push to `master`. The
+workflow reads `PATH_PREFIX` and `SITE_URL` from the Pages configuration, so it
+works unchanged at `dwalend.github.io/blog` and at the custom domain later.
 
 ## License
 
