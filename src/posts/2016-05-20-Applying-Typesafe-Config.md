@@ -1,6 +1,7 @@
 ---
 layout: post
 title: Just apply(Config)
+description: "Try using apply methods in companion objects that take values from a TypeSafe Config instance parameter."
 comments: True
 aliases:
   - /2016/05/20/Applying-Typesafe-Config.html

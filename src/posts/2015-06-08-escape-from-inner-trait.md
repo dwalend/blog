@@ -1,6 +1,7 @@
 ---
 layout: post
 title: Escape to an Inner Object
+description: "I hit a puzzle with visibility, inner traits, and inner objects, while plugging semirings into Dijkstra's algorithm."
 comments: True
 aliases:
   - /2015/06/08/escape-from-inner-trait.html

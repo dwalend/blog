@@ -1,6 +1,7 @@
 ---
 layout: post
 title: Generics and Semirings and Tilting at Windmills
+description: "Semirings let you change what shortest means in a shortest-path algorithm. Java's generics turned that into an eyesore; Scala's type families handle it cleanly."
 comments: True
 aliases:
   - /2014/10/05/Semirings.html

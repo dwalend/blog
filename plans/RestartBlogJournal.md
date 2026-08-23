@@ -444,3 +444,28 @@ root-relative `href` or `src` attributes anywhere in `_site`.
 Worth remembering as a rule: **no bare root-relative URL in content or
 templates.** It works in production and only in production, which is the worst
 place for a bug to hide.
+
+## 2026-08-23 - `description:` for all ten posts
+
+One string per post now feeds three places: the page `<meta name="description">`,
+`og:description`, and the feed's `<description>`. Both defects the auto-excerpt
+was causing are gone - `_site/feed.xml` has zero `&amp;quot;` and zero items with
+the d3 chart's CSS in the description.
+
+**Five were lifts, not drafts.** Those posts open with a `TL/DR -` line written
+for exactly this purpose, and stripped of their markdown links they came out at
+93 to 157 characters - already the right size. `Easy-Parallel`'s ran long and was
+compressed; `Test-With-TypeSafeConfig` and `Applying-Typesafe-Config` had the
+library name capitalised as "TypeSafe Config" to match the post titles, since the
+body had it as link text in lower case.
+
+**Five had no TL/DR and were drafted**, and are the ones worth a second read:
+`back-in`, `graphs-in-scala`, `Semirings`, `Enron-Thing`, and
+`escape-from-inner-trait`. They are a stranger's summary of your own posts until
+you have looked at them.
+
+All ten land between 93 and 158 characters. Roughly 155 is where Google starts
+truncating a meta description and LinkedIn shows less than that, so anything much
+longer gets cut mid-sentence in the place it matters most.
+
+Posts still needing this treatment: the four from Phase 6.

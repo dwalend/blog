@@ -1,6 +1,7 @@
 ---
 layout: post
 title: Renaming to Disentangle
+description: "I renamed ScalaGraphMinimizer to Disentangle."
 comments: True
 aliases:
   - /2015/11/03/Rename-to-Disentangle.html

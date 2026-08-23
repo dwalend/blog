@@ -217,23 +217,19 @@ Two things to check rather than decide:
    affects the laptop - upgrading would also silence the
    `ExperimentalWarning: Importing JSON modules` on every build.
 
-## Carried into the next few commits
+## Where things stand
 
-Retiring `gh-pages`, Enforce HTTPS, and the OpenGraph tags are all done - see the
-journal. One item left, and it is easier before Phase 6 adds four more posts:
+Phases 0-5 are done and the carry-over list is empty: `gh-pages` retired, Enforce
+HTTPS on, OpenGraph tags and card shipped, `description:` written for all ten
+posts. **Phase 6 is next.**
 
-1. **`description:` in each post's front matter.** The feed falls back to a
-   220-character auto-excerpt that just grabs the opening words, and two of the
-   ten are visibly wrong because of it: `Easy-Parallel`'s excerpt opens with the
-   d3 chart's embedded CSS (`path { stroke-width: 2; ... }`), and `Semirings`
-   carries a double-escaped `&amp;quot;` where the source had a quotation mark -
-   `striptags` leaves the entity behind and the template then escapes the
-   ampersand again.
+Two checks that can only be done against the live site, so they belong with the
+next deploy rather than with a commit:
 
-   One string per post now feeds three places: the page `<meta name="description">`,
-   `og:description`, and the feed's `<description>`. Until they are written, all
-   three fall back to the site description, which is correct but says the same
-   thing on every page.
+- The `.xsl` content type on GitHub Pages. If it lands as `text/plain` the feed
+  silently goes back to raw XML in the browser.
+- Link previews, via a private Discord channel and LinkedIn's Post Inspector.
+  Both cache hard, so check before announcing anything.
 
 ## Phase 6 - Migrate the 4 Hashnode posts
 

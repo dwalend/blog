@@ -1,6 +1,7 @@
 ---
 layout: post
 title: Implicit Pimp Suspicion
+description: "I'm very suspicious of Scala's implicits and the pimp pattern. I pimped Typesafe Config's Config class to handle case class apply() constructors and Options."
 comments: True
 aliases:
   - /2016/06/13/Pimping-Config.html

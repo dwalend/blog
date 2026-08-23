@@ -1,6 +1,7 @@
 ---
 layout: post
 title: Between People at Enron
+description: "Random graphs make poor tests for Brandes' betweenness, so I built a real social graph from a month of the Enron email corpus."
 comments: True
 aliases:
   - /2015/02/28/Enron-Thing.html

@@ -1,6 +1,7 @@
 ---
 layout: post
 title: Graphs, Now in Scala
+description: "JDigraph hit the limits of Java's type system. Scala lets me define the most general graph algorithms I can so I can specify what its node and edge types, and operators are to match my problem."
 comments: True
 aliases:
   - /2014/09/10/graphs-in-scala.html

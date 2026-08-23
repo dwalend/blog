@@ -1,6 +1,7 @@
 ---
 layout: post
 title: Testing With TypeSafe Config
+description: "I found a workable compromise for testing with different configurations using TypeSafe Config without starting a new JVM or turning the code inside out."
 comments: True
 aliases:
   - /2015/06/21/Test-With-TypeSafeConfig.html

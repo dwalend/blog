@@ -1,6 +1,7 @@
 ---
 layout: post
 title: Parallel Disentangle
+description: "I added parallel versions of Dijkstra's and Brandes' algorithms to Disentangle. Writing the code was easy. Consider using them above about 100 nodes."
 comments: True
 aliases:
   - /2015/11/10/Easy-Parallel.html
