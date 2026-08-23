@@ -391,7 +391,7 @@ magick -size 1200x630 xc:'#14161a' \
   -font '/System/Library/Fonts/Supplemental/Arial Bold.ttf' -pointsize 92 -fill '#f0f3f7' \
   -annotate +90+310 'Intuitive Counter' \
   -font '/System/Library/Fonts/Supplemental/Arial.ttf' -pointsize 42 -fill '#98a1af' \
-  -annotate +90+380 'A blog about Scala, graphs, and coding' \
+  -annotate +90+380 'A blog about Scala, AI, graphs, and coding' \
   -font '/System/Library/Fonts/Supplemental/Arial.ttf' -pointsize 34 -fill '#83b4ff' \
   -annotate +90+545 'blog.walend.net' \
   src/img/og-default.png
@@ -404,6 +404,23 @@ a picture using seven colours.
 ImageMagick has no `rsvg-convert` delegate on this laptop, so an SVG source
 would have fallen back to its own limited renderer. Drawing directly avoids the
 question.
+
+### The subtitle was missing AI
+
+The card came out reading "A blog about Scala, graphs, and coding". `about.md`
+had said "Scala, **AI**, graphs, and coding" since it was rewritten in Phase 2,
+but `metadata.js` was never updated to match, so the two had been disagreeing
+about what the blog is about.
+
+Fixed in `metadata.js` (`subtitle` and `description`), and in `package.json` and
+`README.md`, which each carried their own copy of the same sentence. One string
+in `metadata.description` now reaches the page meta description, `og:description`,
+the feed's channel `<description>`, and `llms.txt`; `metadata.subtitle` reaches
+`og:image:alt` and the card. Card regenerated.
+
+Four hand-maintained copies of one sentence is three too many, but `package.json`
+and `README.md` cannot read `metadata.js`, so this is the floor without more
+machinery than it is worth.
 
 ### A path-prefix bug found while verifying, in four content links
 

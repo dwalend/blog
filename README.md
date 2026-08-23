@@ -1,6 +1,6 @@
 # Intuitive Counter
 
-David Walend's blog about Scala, graphs, and coding — <https://blog.walend.net>
+David Walend's blog about Scala, AI, graphs, and coding — <https://blog.walend.net>
 
 ## Stack
 
