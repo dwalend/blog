@@ -340,19 +340,25 @@ trackers" decision, but it is no longer literally zero third parties.
 Discussions, renders in both colour schemes, and that the archived 2015 thread
 sits above it without the two looking like one conversation.
 
-## Phase 8 - Publish the first new post
+## Phase 8 - Publish the first new post  [DONE 2026-08-24]
 
-1. Finish `_pending/2026-08-25-centaur-hoofbeats.md`. **Formatted 2026-08-24** -
-   headings marked up, bare URLs linked, the TL/DR's `[TODO add a link here to
-   Boink!]` replaced with a real `#boink` anchor, and the Reading/Listening
-   sign-off given a rule and bold labels. Still in `_pending/`, still with its
-   title as a body `# ` line; publishing is steps 2-4 below. Needs a
-   `description:` too, like every other post.
-2. Add frontmatter: `title: A Centaur's Gait`, `date: 2026-08-25`, `comments: true`,
-   tags. The body currently starts with a bare `A Centaur's Gait` title line -
-   that moves into frontmatter.
-3. Move to `src/posts/`.
-4. Verify the JSON code blocks highlight correctly and do not overflow on a phone.
+1. **Draft finished** and reviewed.
+2. **Front matter added**: `title: A Centaur's Gait`, `comments: True`, a
+   `description:`, and tags `AI` / `Claude Code` / `SDLC` alongside `post`. The
+   date comes from the filename, as it does for every other post - no `date:`
+   key needed. The body's `# A Centaur's Gait` line was removed, so the page has
+   one `h1` from `post.liquid` and six `h2`s.
+3. **Moved to `src/posts/`**, live at `/2026/08/centaur-hoofbeats/`. Fifteen
+   posts; it leads the index and the feed.
+4. **Verified**: the JSON block highlights (`language-json`, real Prism tokens),
+   its longest line is 68 characters so it scrolls inside its own `<pre>` on a
+   phone rather than pushing the page sideways, and OpenGraph, giscus, and the
+   `#boink` anchor all resolve.
+
+**Note the date.** The filename says 2026-08-25 and the post is live now with
+that date. Eleventy builds future-dated posts without complaint - there is no
+`--future` flag to forget, the way Jekyll had. If it should read as the 24th,
+rename the file; if the 25th is intended, nothing to do.
 
 ## Phase 9 - DNS cutover
 

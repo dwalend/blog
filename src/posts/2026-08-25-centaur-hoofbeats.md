@@ -1,4 +1,14 @@
-# A Centaur's Gait
+---
+layout: post
+title: A Centaur's Gait
+description: "With Claude Code I'm able to code faster hour-by-hour, but at very uneven pace. I configured hooks to play a tone when Claude Code needs my attention."
+comments: True
+tags:
+  - post
+  - AI
+  - Claude Code
+  - SDLC
+---
 
 Using an LLM has changed the rhythm of how I work on a minute-by-minute scale. It bothered me at first, but I've figured out some things. In the spirit of ((((Do something!) small) useful) Now!) from ascii inventor Bob Bemer:
 

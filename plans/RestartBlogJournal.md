@@ -749,3 +749,35 @@ Structural only; the prose is untouched apart from three typos.
 Left alone deliberately: the Lisp-shaped Bob Bemer quote, the 1997/1998
 Kasparov dates (they are consistent), and the title as a body `# ` line, since
 moving it into front matter is part of publishing rather than formatting.
+
+## 2026-08-24 - Phase 8: "A Centaur's Gait" published
+
+The first new post in ten years. Live at `/2026/08/centaur-hoofbeats/`, leading
+the index and the feed; fifteen posts total.
+
+Mechanically small, because the earlier phases had already built everything it
+needed: `posts.json` supplies the layout, tag, and permalink; the filename
+supplies the date; `head.liquid` picks up the `description` for both the page
+meta and `og:description`; `comments.liquid` maps giscus to
+`/2026/08/centaur-hoofbeats/`; and the heading-id rule makes the TL/DR's
+`#boink` link resolve.
+
+- Tags are `post`, `AI`, `Claude Code`, `SDLC`. `SDLC` already existed on
+  "The 20-Minute Limit", which is the closest neighbour in subject.
+- No `date:` in front matter - the filename prefix is what every other post uses,
+  and adding one here would have been a second source of truth.
+- The JSON block's longest line is 68 characters. On a phone that is roughly 44
+  visible, so it scrolls inside its own `<pre>`; the `<pre>` is a direct child of
+  `.post-content`, which is what puts it in the breakout grid column and keeps
+  the page itself from scrolling sideways.
+
+### The post is dated tomorrow
+
+The filename is `2026-08-25-`, and it was published on the 24th. **Eleventy
+builds future-dated posts with no complaint** - there is no `future: false`
+default to trip over the way Jekyll had, and nothing warns. So the post is live,
+the feed says `Tue, 25 Aug 2026`, and `article:published_time` says the same.
+
+Harmless here, and probably intended. Worth knowing as a general property: a
+typo in a filename year would publish silently and sort to the top of the index
+forever.
