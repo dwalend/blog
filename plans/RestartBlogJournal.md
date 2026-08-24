@@ -619,3 +619,87 @@ licensing choice.
 The four superseded drafts moved to `_pending/published/` with a README mapping
 each to what it shipped as. The published version is longer than its draft in all
 four cases, so nothing obvious was cut. Ten drafts remain unpublished.
+
+## 2026-08-23 - Phase 7: comments
+
+Discussions enabled on `dwalend/blog` via `gh api -X PATCH ... has_discussions=true`,
+which creates the six default categories. Comments use **Announcements**
+(`DIC_kwDOAU3wQs4DEDUY`); repo id is `MDEwOlJlcG9zaXRvcnkyMTg4NDk5NA==`. Both are
+baked into `comments.liquid` - they are public identifiers, not secrets.
+
+### The mapping had to be `specific`, not `pathname`
+
+giscus documents `data-mapping="pathname"` as the normal choice, and it would
+have been a live bug here. The browser's pathname is `/blog/2016/06/x/` today and
+becomes `/2016/06/x/` after the Phase 9 cutover, so every post's comments would
+have been filed under one discussion before the move and a different one after -
+silently, with the old thread still existing but no longer found.
+
+`data-mapping="specific"` with `data-term="{{ page.url }}"` avoids it: `page.url`
+never carries the path prefix. Verified by building both ways - the term is
+`/2016/06/Pimping-Config/` under `PATH_PREFIX=/blog/` and under `/`.
+
+This is the same class of bug as the four root-relative content links: something
+that works, and only stops working when the prefix changes.
+
+### The archived Disqus thread
+
+`archived-comments.liquid` reads `src/_data/archivedComments.json`, keyed by
+`page.url`, and renders above giscus. Tested with a fixture, which rendered
+correctly; the fixture was removed, so the section is currently absent from every
+page. Dropping the real comments in is the only remaining step, and that needs
+the Disqus export.
+
+### giscus is the first third party this site talks to
+
+Worth recording because it cuts against the "no analytics, no trackers" decision,
+even though it does not reverse it. Before this, a page load fetched nothing off
+this domain - no webfonts, no CDN, highlighting done at build time. Post pages
+now request `giscus.app/client.js` and embed a giscus.app iframe, so that host
+sees readers' IPs. `data-loading="lazy"` defers it until the reader scrolls to
+the comments, which means most readers who bounce never make the request.
+
+## 2026-08-24 - The Disqus thread, recovered without an export
+
+The plan said to export from Disqus admin and warned it was the only copy. The
+export is not on the settings page - it lives under Discussions - but it turned
+out not to be needed at all.
+
+Disqus still publishes **public RSS feeds**, and they still work:
+
+- Per thread: `https://intuitivecounter.disqus.com/<thread-slug>/latest.rss`
+- Whole forum: `https://intuitivecounter.disqus.com/latest.rss`
+
+The forum feed carried all nine comments with author, date, permalink, and full
+HTML body. Six are the real thread on "Escape to an Inner Object"; the other
+three are the author's own "Test disqus" posts from 2014 and were left out.
+
+Finding the thread slug took one step first: hitting Disqus's embed endpoint
+with the old post URL,
+
+```
+https://disqus.com/embed/comments/?base=default&f=intuitivecounter&t_u=<old-url>
+```
+
+returns a page whose inline JSON names the thread's RSS feed. Two different slugs
+came back - `escape_to_an_inner_object_98` for the `.html` URL and `..._11` for
+the trailing-slash one - which is the same both-shapes-in-circulation problem the
+aliases were built for. Both per-thread feeds returned **zero** items; only the
+forum-wide feed had the comments. Worth remembering: the per-thread feed looked
+authoritative and was empty.
+
+Stored in `src/_data/archivedComments.json` keyed by `page.url`, sorted oldest
+first, bodies kept as the HTML Disqus served. `dwalend` is rendered as "David
+Walend"; the other two names are exactly as they appeared. Verified: six
+comments render, the HTML is not escaped, "Jörg-Ulrich Wölfel" survives intact,
+and the archive sits above giscus.
+
+Alexey Romanov's comments use backticks around identifiers, which Disqus never
+rendered as code. Left literal - that is what he wrote and what readers saw.
+
+### Why this was worth doing now
+
+The plan's urgency column said "before Disqus rots further," and that was right
+for a reason it did not name: these feeds are the last unauthenticated copy. They
+depend on Disqus keeping a 2014 forum's RSS alive. The content is now in the
+repo, in git, in a plain JSON file that needs nothing from Disqus.

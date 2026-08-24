@@ -1,0 +1,39 @@
+{%- comment -%}
+  giscus: comments backed by GitHub Discussions in this repo. Gated on the
+  `comments` flag, the way the old Disqus include was.
+
+  Mapping is `specific` with `page.url` as the term, not the documented default
+  of `pathname`. Under a path prefix the browser's pathname is `/blog/2016/06/x/`
+  but at the custom domain it is `/2016/06/x/`, so pathname mapping would file
+  the same post's comments under two different discussions across the Phase 9
+  cutover. `page.url` carries no prefix and is stable across both.
+{%- endcomment -%}
+{%- if comments %}
+<section class="comments" aria-label="Comments">
+  <h2 class="comments-heading">Comments</h2>
+  <script src="https://giscus.app/client.js"
+          data-repo="dwalend/blog"
+          data-repo-id="MDEwOlJlcG9zaXRvcnkyMTg4NDk5NA=="
+          data-category="Announcements"
+          data-category-id="DIC_kwDOAU3wQs4DEDUY"
+          data-mapping="specific"
+          data-term="{{ page.url }}"
+          data-strict="1"
+          data-reactions-enabled="1"
+          data-emit-metadata="0"
+          data-input-position="top"
+          data-theme="preferred_color_scheme"
+          data-lang="en"
+          data-loading="lazy"
+          crossorigin="anonymous"
+          async>
+  </script>
+  <noscript>
+    <p class="comments-fallback">
+      Comments need JavaScript. They live in
+      <a href="https://github.com/dwalend/blog/discussions">this repo's GitHub Discussions</a>,
+      which you can read and post to directly.
+    </p>
+  </noscript>
+</section>
+{%- endif %}

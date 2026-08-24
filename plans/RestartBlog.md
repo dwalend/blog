@@ -311,15 +311,34 @@ stay in git history. See the journal.
 original hotlinked URLs, which is what Hashnode serves today, so nothing
 regressed; three of the five are simply already broken.
 
-## Phase 7 - Comments
+## Phase 7 - Comments  [DONE 2026-08-24]
 
-1. Enable Discussions on `dwalend/blog`, create an "Announcements"-style category
-   for comments.
-2. Install the giscus GitHub App, scoped to the one repo.
-3. Add `src/_includes/comments.liquid` with the giscus script, mapped by pathname,
-   theme wired to the page palette (`preferred_color_scheme` or a fixed dark theme).
-4. Gate on frontmatter the way the old Disqus include did - `{% if comments %}`.
-5. Preserve the 2015 Disqus thread as static HTML - see `MigrateOldBlogs.md`.
+1. **Discussions enabled** on `dwalend/blog`. Comments use **Announcements**,
+   which only maintainers can start discussions in - what giscus wants.
+2. **giscus GitHub App installed**, scoped to the one repo. Verified against
+   `giscus.app/api/discussions`, which answers "Discussion not found" for a term
+   with no thread yet rather than "giscus is not installed" - so the repo,
+   category, and app all resolve. The first comment creates the discussion.
+3. **`src/_includes/comments.liquid`.** Mapped with `specific` + `page.url`, not
+   `pathname` - see the journal; `pathname` would have split every post's
+   comments across the Phase 9 cutover. Theme `preferred_color_scheme`.
+4. **Gated on `{% if comments %}`.** All 14 posts; not `/about/` or
+   `/style-guide/`.
+5. **The 2015 Disqus thread is preserved.** All six real comments are in
+   `src/_data/archivedComments.json` and render above giscus on
+   `/2015/06/escape-from-inner-trait/`. **No Disqus export was needed** - the
+   forum's public RSS feed still had them. See the journal.
+
+**One consequence worth knowing.** giscus is the first external request this site
+makes - there are no webfonts, and highlighting happens at build time. Post pages
+now load `giscus.app/client.js` and an iframe from the same host, so giscus.app
+sees the IP of anyone who reads a post. That does not undo the "no analytics, no
+trackers" decision, but it is no longer literally zero third parties.
+`data-loading="lazy"` holds the request until the reader scrolls that far.
+
+**Still worth doing by hand:** post a comment on one page and confirm it lands in
+Discussions, renders in both colour schemes, and that the archived 2015 thread
+sits above it without the two looking like one conversation.
 
 ## Phase 8 - Publish the first new post
 

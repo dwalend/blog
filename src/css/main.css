@@ -181,6 +181,34 @@ img { max-width: 100%; height: auto; }
 }
 .feed-help { color: var(--muted); font-size: 0.9rem; }
 
+/* ---- comments ----
+   giscus renders into an iframe it sizes itself; the archived Disqus thread is
+   plain static HTML above it. */
+
+.comments,
+.archived-comments {
+  max-width: var(--measure);
+  margin: 3rem auto 0;
+  padding-top: 2rem;
+  border-top: 1px solid var(--rule);
+}
+.comments-heading { margin-top: 0; font-size: 1.25rem; }
+.comments-fallback,
+.archived-note { color: var(--muted); font-size: 0.9rem; }
+
+.archived-comment {
+  border-left: 3px solid var(--border);
+  padding-left: 1rem;
+  margin-bottom: 1.75rem;
+}
+.archived-meta {
+  margin: 0 0 0.4rem;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+.archived-author { color: var(--heading); font-weight: 600; margin-right: 0.5rem; }
+.archived-comment p:last-child { margin-bottom: 0; }
+
 /* ---- code ----
    Prose stays at the measure. Code breaks out wider, so a long Scala
    signature has room before it wraps. */

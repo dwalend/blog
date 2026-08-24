@@ -1,0 +1,23 @@
+{%- comment -%}
+  Comments from the 2015 Disqus thread, kept as static HTML because Disqus is
+  rotting and the thread is worth more than the system it lived in. Data is in
+  `src/_data/archivedComments.json`, keyed by the post's `page.url`.
+{%- endcomment -%}
+{%- assign archived = archivedComments[page.url] -%}
+{%- if archived %}
+<section class="archived-comments" aria-label="Archived comments">
+  <h2 class="comments-heading">Comments from 2015</h2>
+  <p class="archived-note">
+    Preserved from the Disqus thread this post carried at the time.
+  </p>
+  {%- for c in archived %}
+  <article class="archived-comment">
+    <p class="archived-meta">
+      <span class="archived-author">{{ c.author }}</span>
+      <time datetime="{{ c.date }}">{{ c.date | date: "%B %-d, %Y" }}</time>
+    </p>
+    {{ c.body }}
+  </article>
+  {%- endfor %}
+</section>
+{%- endif %}

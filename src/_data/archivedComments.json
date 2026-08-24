@@ -1,0 +1,42 @@
+{
+  "_README": [
+    "Comments rescued from Disqus, keyed by the post's page.url.",
+    "Each entry: author, date (YYYY-MM-DD), body (HTML, rendered as-is).",
+    "Recovered 2026-08-24 from https://intuitivecounter.disqus.com/latest.rss,",
+    "the forum's public comment feed - no Disqus export was needed.",
+    "Three 'Test disqus' comments by the author were left out; these six are the real thread.",
+    "Keys starting with _ are ignored; lookup is by page.url, which always starts with /."
+  ],
+  "/2015/06/escape-from-inner-trait/": [
+    {
+      "author": "Alexey Romanov",
+      "date": "2015-06-13",
+      "body": "<p>First, some things - types from the outer class' member variables - that should be visible inside the inner object are not</p><p>The type _is_ visible inside the inner object. But because `InnerObject.innerThing` is itself public, its type has to be visible outside of `OuterClass` class as well, and it isn't because it contains a reference to a private variable.</p>"
+    },
+    {
+      "author": "Jörg-Ulrich Wölfel",
+      "date": "2015-06-14",
+      "body": "<p>The following line works: val innerThing: BeyondTrait#InnerTrait = beyond.innerThing</p>"
+    },
+    {
+      "author": "David Walend",
+      "date": "2015-06-25",
+      "body": "<p>Thanks for the comment. I've spent a few days puzzling through it. I'm having trouble mapping the \"it\"s.</p><p>InnerObject.innerThing is public. InnerObject.innerThing's type has to be visible outside OuterClass (). That type is a Beyond's anonymous extension of InnerTrait. The anonymous extension is private inside Beyond, not public.</p><p>The compiler doesn't walk up the hierarchy from that anonymous extension to something that is public. Should it?</p><p>Thanks again,</p><p>David</p>"
+    },
+    {
+      "author": "David Walend",
+      "date": "2015-06-25",
+      "body": "<p>Thanks! That's a good option. Any idea why the compiler doesn't walk up from the anonymous extension of InnerTrait?</p>"
+    },
+    {
+      "author": "Alexey Romanov",
+      "date": "2015-06-25",
+      "body": "<p>&gt; The anonymous extension is private inside Beyond, not public.</p><p>Not quite. The type of InnerObject.innerThing is beyond.InnerTrait. It's the `beyond` part which is private, just as the message says.</p><p>&gt; The compiler doesn't walk up the hierarchy from that anonymous extension to something that is public. Should it?</p><p>I don't think it should.</p><p>1. The type may be private unintentionally (e.g. the programmer intended to make `beyond` public). Better to give the message and allow the programmer to choose what to do.</p><p>2. Do you have different \"external\" and \"internal\" types for `InnerObject.innerThing`? Or should making it private change the inferred type?</p><p>3. What if you have several public supertypes? E.g. what should the type of X.x  be here:</p><p>object X {<br>  trait Foo<br>  trait Bar<br>  private class FooBar extends Foo with Bar<br>  val x = new FooBar<br>}</p>"
+    },
+    {
+      "author": "David Walend",
+      "date": "2015-06-26",
+      "body": "<p>Thanks for staying with me on this. I've got the example shrunk to just</p><p>scala&gt; object X {<br>     | private class FooBar;<br>     | val x = new FooBar;<br>     | }<br>&lt;console&gt;:9: error: private class FooBar escapes its defining scope as part of type X.FooBar<br>       val x = new FooBar;</p><p>The compiler would have to chose between making x of class Any or FooBar. Any is a bad choice. FooBar won't work because the FooBar class is private. And all the rest is just window dressing for the puzzle.</p><p>I think I've got it. Thanks again.</p>"
+    }
+  ]
+}

@@ -7,7 +7,7 @@ order of urgency.
 | --- | --- | --- | --- |
 | Jekyll `_posts/` (2014-2016) | 10 | Already in the repo | Phase 5 |
 | Hashnode (2024) | 4 | Done 2026-08-23 | Phase 6 |
-| Disqus comments (2015) | 6 real | Before Disqus rots further | Phase 7 |
+| Disqus comments (2015) | 6 real | Done 2026-08-24 | Phase 7 |
 | java.net via wayback (2003-2009) | ~37 pages | After launch | Phase 10 |
 
 ---
@@ -93,7 +93,7 @@ Steps:
 Leave the Hashnode blog itself in place, unpublished-to. `dwalend.hashnode.dev`
 keeps working as a backstop even after `blog.walend.net` moves.
 
-## 3. The Disqus comments (Phase 7)
+## 3. The Disqus comments (Phase 7)  [DONE 2026-08-24]
 
 The `intuitivecounter` forum (created 2014-09-02) is still live and still holds
 **9 comments**. Three are your own "Test disqus" posts. The remaining six are real,
