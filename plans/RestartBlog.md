@@ -223,6 +223,29 @@ Phases 0-5 are done and the carry-over list is empty: `gh-pages` retired, Enforc
 HTTPS on, OpenGraph tags and card shipped, `description:` written for all ten
 posts. **Phase 6 is next.**
 
+### Rename the OpenGraph card back  [on or after 2026-08-30]
+
+`src/img/og-card-v2.png` is a **temporary name**. The file was renamed on
+2026-08-23 for one reason only: LinkedIn had cached the first, badly quantised
+version of the card on its own media servers, and Post Inspector refreshes page
+metadata without replacing a stored image. A new URL is a new asset to them, and
+was the only reliable way to force a refetch.
+
+The `v2` carries no meaning and will read as though a `v3` should follow. Once
+LinkedIn has shown the sharp card:
+
+1. `mv src/img/og-card-v2.png src/img/og-default.png`
+2. Update the reference in `src/_includes/head.liquid`, plus `README.md` and the
+   recipe in the journal.
+3. Push, and re-inspect once to confirm the preview survives the move.
+
+Waiting a week is arbitrary - there is no published TTL for LinkedIn's image
+cache. The real signal is having seen the sharp card render at least once.
+
+If the DNS cutover (Phase 9) happens first, do the rename as part of it and skip
+the separate re-inspection. Every preview cache keys on URL, so moving to
+`blog.walend.net` gives clean caches anyway and makes this moot.
+
 Two checks that can only be done against the live site, so they belong with the
 next deploy rather than with a commit:
 
@@ -288,7 +311,7 @@ question rather than a no; see the deferred list.
 
 ### 1. OpenGraph tags  [DONE 2026-08-23]
 
-`head.liquid` emits the full set, with `src/img/og-default.png` as a site-wide
+`head.liquid` emits the full set, with `src/img/og-card-v2.png` as a site-wide
 card. See the journal. Two things still worth doing when this phase comes up:
 
 - **Verify with the real scrapers** - paste a link into a private Discord

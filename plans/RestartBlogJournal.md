@@ -395,7 +395,7 @@ magick -size 2400x1260 xc:'#14161a' \
   -font '/System/Library/Fonts/Supplemental/Arial.ttf' -pointsize 68 -fill '#83b4ff' \
   -annotate +180+1090 'blog.walend.net' \
   -background '#14161a' -alpha remove -alpha off -depth 8 -strip \
-  src/img/og-default.png
+  src/img/og-card-v2.png
 ```
 
 **Do not add `PNG8:` to that.** See below.
@@ -504,3 +504,28 @@ their downscale is the only resampling step.
 If it is still soft in the LinkedIn feed after this, the next lever is type size
 rather than resolution - the card renders small there, and 84px of subtitle at
 2400 wide is about 19px once LinkedIn is done with it.
+
+## 2026-08-23 - Renamed the card to bust LinkedIn's media cache
+
+The 2400x1260 card deployed and was verified live - `curl` on
+`/blog/img/og-default.png` returned the new file, 734 colours, TrueColor, 64 KB,
+with `og:image:width` / `:height` on the page declaring 2400 and 1260 to match.
+LinkedIn still showed the blurry one.
+
+So the stale image was on LinkedIn's side. Post Inspector re-scrapes a page's
+metadata, but the image itself was copied to `media.licdn.com` when it first
+fetched the 73-colour version, and re-inspecting does not replace that stored
+asset.
+
+Renamed `og-default.png` -> `og-card-v2.png`, which makes it a new asset to them.
+References updated in `head.liquid`, `README.md`, this file's recipe, and the
+plan's Phase 11 entry.
+
+**This name is temporary.** There is a note at the tail of the plan to change it
+back, and the reason it exists at all is a cache on someone else's server rather
+than anything about the file. Left alone, `v2` invites a `v3`.
+
+No TTL is published for that cache, which is why the rename was worth doing
+rather than waiting it out. Note also that Phase 9 moves the site to
+`blog.walend.net` - every preview cache keys on URL, so the cutover clears all of
+this regardless.
