@@ -60,6 +60,9 @@ export default function (eleventyConfig) {
   eleventyConfig.addPassthroughCopy({ disentangleParGraphs: "disentangleParGraphs" });
   eleventyConfig.addPassthroughCopy("src/css");
   eleventyConfig.addPassthroughCopy("src/img");
+  // CNAME has no extension, so Eleventy ignores it unless copied explicitly.
+  // The Actions deploy sets the custom domain from this file in the artifact.
+  eleventyConfig.addPassthroughCopy("src/CNAME");
 
   return {
     dir: {

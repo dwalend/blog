@@ -360,20 +360,102 @@ that date. Eleventy builds future-dated posts without complaint - there is no
 `--future` flag to forget, the way Jekyll had. If it should read as the 24th,
 rename the file; if the 25th is intended, nothing to do.
 
-## Phase 9 - DNS cutover
+## Phase 9 - DNS cutover  [PREPARED 2026-08-24, not executed]
 
-Only once Phases 1-8 are verified on `dwalend.github.io/blog`.
+Everything Phases 1-8 gate is done and verified. What remains is the cutover
+itself, which is deliberately not automated: the moment the DNS record changes,
+every Hashnode URL dies.
 
-1. Add `src/CNAME` containing `blog.walend.net`. Push, let Actions deploy.
-2. Repo Settings -> Pages -> Custom domain = `blog.walend.net`.
-3. Route 53: change the `blog.walend.net` record from `CNAME hashnode.network`
-   to `CNAME dwalend.github.io`. (Subdomain, so CNAME is correct - the four
-   `185.199.10x.153` A records are only needed for an apex domain.)
-4. Wait for GitHub to provision the Let's Encrypt cert, then enable **Enforce HTTPS**.
-5. Verify: every alias from Phases 5-6 resolves, feed is reachable at the new
-   host, autodiscovery works from a real feed reader.
-6. Leave the Hashnode blog in place but stop posting to it. Its
-   `dwalend.hashnode.dev` URLs keep working as a backstop.
+### State at 2026-08-24
+
+| | |
+| --- | --- |
+| Live at | `https://dwalend.github.io/blog/` (Pages `build_type: workflow`, `https_enforced: true`, `cname: null`) |
+| Posts / feed items / sitemap URLs / aliases | 15 / 10 / 17 / 24 |
+| `blog.walend.net` | `CNAME hashnode.network`, TTL **600** |
+| Route 53 hosted zone | `Z09976561DOUNYRCRMG2A` (`walend.net.`) |
+| `dwalend.github.io` resolves to | `185.199.108-111.153` |
+| Last commit before prep | `d35388a` "First post." |
+
+**Pre-cutover verification passed with zero failures**: every core page
+(`/`, `/about/`, `/feed.xml`, `/feed.xsl`, `/rss.xml`, `/robots.txt`,
+`/sitemap.xml`, `/llms.txt`, the OG card), all 15 posts, and all 24 alias stubs
+return 200. The checker was sanity-tested against a URL that should 404, so the
+result is real rather than a broken loop reporting success.
+
+### Prepared, uncommitted
+
+- `src/CNAME` containing `blog.walend.net`, plus its `addPassthroughCopy` in
+  `eleventy.config.js` - it has no extension, so Eleventy skips it otherwise.
+  The Actions deploy sets the custom domain from this file in the artifact.
+- `src/rss.njk` and `src/_includes/feed-body.njk`. **See the journal** - this one
+  is not cosmetic, it is the difference between keeping and losing the existing
+  Hashnode subscribers.
+
+### The order, which is not the order this plan originally had
+
+The original step list put Pages settings before DNS. That fails: GitHub
+validates the DNS record when a custom domain is set, and it still points at
+Hashnode.
+
+1. **Optional, recommended: lower the TTL first.** The record is TTL 600. Set it
+   to 60, wait ~10 minutes, then cut over. The difference is a one-minute versus
+   a ten-minute propagation tail.
+2. **Commit and push** the prepared files. Let Actions finish (~30s). The CNAME
+   file in the artifact is what tells Pages about the domain.
+3. **Run the Route 53 change immediately after** - back to back with step 2.
+   Between them the new site is unreachable at *either* URL, because
+   `dwalend.github.io/blog` begins redirecting to `blog.walend.net`, which is
+   still Hashnode. Keep the window short.
+
+   ```sh
+   cat > /tmp/route53-cutover.json <<'JSON'
+   {
+     "Comment": "Move blog.walend.net from Hashnode to GitHub Pages",
+     "Changes": [
+       {
+         "Action": "UPSERT",
+         "ResourceRecordSet": {
+           "Name": "blog.walend.net.",
+           "Type": "CNAME",
+           "TTL": 300,
+           "ResourceRecords": [{ "Value": "dwalend.github.io" }]
+         }
+       }
+     ]
+   }
+   JSON
+   aws route53 change-resource-record-sets \
+     --hosted-zone-id Z09976561DOUNYRCRMG2A \
+     --change-batch file:///tmp/route53-cutover.json
+   ```
+
+   To roll back, run the same batch with `"Value": "hashnode.network"`.
+4. **Wait for the certificate.** HTTPS fails until Let's Encrypt issues for the
+   new domain - minutes to about an hour. GitHub retries on its own.
+5. **Enable Enforce HTTPS.** It stays unavailable until the cert exists.
+6. **Verify** - the same sweep as above, against `https://blog.walend.net`:
+   every alias, both feeds, autodiscovery from a real feed reader.
+7. **Leave the Hashnode blog in place**, unpublished-to. `dwalend.hashnode.dev`
+   keeps working as a backstop.
+
+### Every feed guid changes at this moment
+
+Guids go from `https://dwalend.github.io/blog/...` to `https://blog.walend.net/...`.
+A subscriber would re-see the entire back catalogue as new.
+
+**This is harmless only because nobody is subscribed to the github.io feed** - it
+was never announced. After the cutover the guids are stable for good. This is the
+last moment that is free, which is a reason to cut over before Phase 11 tells
+anyone the feed exists.
+
+### Fold these in while the caches clear
+
+Both are in "Where things stand" above, and every preview and DNS cache resets
+here anyway:
+
+- Rename the OpenGraph card off its temporary `og-card-v2.png`.
+- Source the Grover pictures properly.
 
 ## Phase 10 - After launch
 

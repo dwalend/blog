@@ -781,3 +781,67 @@ the feed says `Tue, 25 Aug 2026`, and `article:published_time` says the same.
 Harmless here, and probably intended. Worth knowing as a general property: a
 typo in a filename year would publish silently and sort to the top of the index
 forever.
+
+## 2026-08-24 - Phase 9 prep, and the feed URL that would have gone silent
+
+The cutover itself is not done - `blog.walend.net` still points at Hashnode.
+This is what was prepared and what verifying it turned up.
+
+### The pre-cutover sweep
+
+Every core page, all 15 posts, and all 24 alias stubs return 200 at
+`https://dwalend.github.io/blog/`. Zero failures.
+
+Worth noting how that was checked, because a green result from a broken checker
+is worse than no check: the loop was sanity-tested against a URL that should
+404, and it reported 404. It also caught that the centaur post was already live,
+which was a useful cross-check that the sitemap-derived list was real rather
+than reflecting only the local `_site`.
+
+### Hashnode's feed lives at `/rss.xml`, not `/feed.xml`
+
+This was the find. `https://blog.walend.net/rss.xml` returns 200 today;
+`https://blog.walend.net/feed.xml` returns **404**. Hashnode published this
+blog's feed at `/rss.xml` for the whole 2024 run, and the new site only served
+`/feed.xml`.
+
+So every existing subscriber would have gone silent at the cutover - no error,
+no redirect, just a feed that stopped updating. That is a bad way to lose the
+readers the migration was supposed to keep, and a particularly bad irony given
+the stated reason for leaving Hashnode was that its feed had become
+undiscoverable.
+
+The site now publishes both. `feed.njk` and the new `rss.njk` each set a
+`selfPath` and include `_includes/feed-body.njk`, so there is one feed body with
+two permalinks, each declaring its own correct `atom:link self`. Item guids are
+identical across the two, so a reader that somehow has both subscribed still
+dedupes.
+
+Note the site's autodiscovery `<link>` still points at `/feed.xml` alone.
+`/rss.xml` is a compatibility URL for existing subscribers, not a second
+advertised feed.
+
+### The first attempt shipped a broken feed
+
+Splitting the template put a `{% set %}` tag and a Nunjucks comment ahead of the
+XML declaration. Both render to nothing but leave their newlines, so the output
+began with a blank line and `<?xml ...?>` was no longer at byte 0 - which makes
+the document malformed. Every reader would have rejected it.
+
+It looked fine in `git diff` and the build reported success. What caught it was
+parsing the output with an XML parser instead of eyeballing it. Fixed by
+starting `feed-body.njk` directly at `<?xml` and using whitespace-trimming tags
+(`{%-` / `-%}`, `{#-` / `-#}`) in both callers. Both feeds now parse, at `/` and
+under `PATH_PREFIX=/blog/`.
+
+The general lesson, again: **verify generated output by parsing it, not by
+reading it.** This is the third defect this project has produced that a
+structural read would have missed - the others were the flattened blockquotes and
+the double-encoded caret.
+
+### The scratchpad is not a place to leave a runbook
+
+The Route 53 change batch was first written to this session's scratchpad
+directory, which does not survive into a new session. It now lives inline in
+`RestartBlog.md` along with the hosted zone id, the current record, and the
+rollback value, so the cutover can be executed from a cold context.
