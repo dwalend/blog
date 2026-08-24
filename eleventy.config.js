@@ -8,7 +8,31 @@ export default function (eleventyConfig) {
   // Eleventy disables markdown-it's indented code blocks by default. The posts
   // migrated from Jekyll use them throughout, and without this their code
   // renders as paragraphs.
-  eleventyConfig.amendLibrary("md", (md) => md.enable("code"));
+  eleventyConfig.amendLibrary("md", (md) => {
+    md.enable("code");
+
+    // Slugged ids on every heading, so a post can link to its own sections.
+    // markdown-it exposes the renderer rule directly, so this needs no plugin.
+    // The slug comes from the heading's rendered text, not its source, or a
+    // heading like `## [SHRINE](https://...)` would drag the URL into the id.
+    md.renderer.rules.heading_open = (tokens, idx, options, env, self) => {
+      const text = (tokens[idx + 1].children || [])
+        .filter((t) => t.type === "text" || t.type === "code_inline")
+        .map((t) => t.content)
+        .join("");
+      const base =
+        text
+          .toLowerCase()
+          .trim()
+          .replace(/[^\p{L}\p{N}\s-]/gu, "")
+          .replace(/\s+/g, "-") || "section";
+      const seen = (env.headingSlugs = env.headingSlugs || new Map());
+      const n = seen.get(base) || 0;
+      seen.set(base, n + 1);
+      tokens[idx].attrSet("id", n ? `${base}-${n}` : base);
+      return self.renderToken(tokens, idx, options);
+    };
+  });
   // The RSS plugin pulls in the HTML base plugin, which rewrites root-relative
   // URLs in HTML output. Templates already apply the pathPrefix with the `url`
   // filter, so leave its base at "/" and let it pass those through untouched.

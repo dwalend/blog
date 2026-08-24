@@ -342,7 +342,12 @@ sits above it without the two looking like one conversation.
 
 ## Phase 8 - Publish the first new post
 
-1. Finish `_pending/2026-08-25-centaur-hoofbeats.md`.
+1. Finish `_pending/2026-08-25-centaur-hoofbeats.md`. **Formatted 2026-08-24** -
+   headings marked up, bare URLs linked, the TL/DR's `[TODO add a link here to
+   Boink!]` replaced with a real `#boink` anchor, and the Reading/Listening
+   sign-off given a rule and bold labels. Still in `_pending/`, still with its
+   title as a body `# ` line; publishing is steps 2-4 below. Needs a
+   `description:` too, like every other post.
 2. Add frontmatter: `title: A Centaur's Gait`, `date: 2026-08-25`, `comments: true`,
    tags. The body currently starts with a bare `A Centaur's Gait` title line -
    that moves into frontmatter.

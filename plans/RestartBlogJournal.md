@@ -703,3 +703,49 @@ The plan's urgency column said "before Disqus rots further," and that was right
 for a reason it did not name: these feeds are the last unauthenticated copy. They
 depend on Disqus keeping a 2014 forum's RSS alive. The content is now in the
 repo, in git, in a plain JSON file that needs nothing from Disqus.
+
+## 2026-08-24 - Heading ids, so posts can link to their own sections
+
+The centaur draft wanted a link from its TL/DR to the section holding the
+`settings.json` block. Nothing on the site generated heading ids, so there was
+nothing to link to - and the four migrated Hashnode posts had lost the ids
+Hashnode gave them when the HTML was converted to Markdown.
+
+Added as a `heading_open` renderer rule inside the existing `amendLibrary("md")`
+call in `eleventy.config.js`. No plugin: markdown-it exposes the rule directly
+and the whole thing is about fifteen lines.
+
+Two details that matter:
+
+- **The slug comes from the heading's rendered text, not its source.** Taking
+  `tokens[idx + 1].content` would turn `## [SHRINE](https://open.catalyst...)`
+  into an id carrying the whole URL. Walking the inline token's children and
+  keeping only `text` and `code_inline` gives `id="shrine"`. Verified against
+  that exact heading in `bounding-complexity-in-scala-projects`.
+- **Duplicate headings get a numeric suffix**, tracked in a `Map` on markdown-it's
+  per-render `env` rather than in module scope, so the counter cannot leak
+  between pages.
+
+Every post now has ids on its headings, which is worth having generally - it is
+what makes "link to that bit further down" possible at all, and it gives readers
+linkable section anchors.
+
+## 2026-08-24 - Formatting the centaur draft
+
+Structural only; the prose is untouched apart from three typos.
+
+- Five bare section-title lines became `##` headings, and `# TL/DR` dropped to
+  `##`. The post now has one `h1` - the title, from `post.liquid` - and six `h2`s.
+- `[TODO add a link here to Boink!]` became `[these hooks](#boink)`, placed where
+  the sentence actually needs it rather than trailing the paragraph. Verified by
+  rendering the draft to a scratch post: `href="#boink"` and `<h2 id="boink">`
+  both present, then the scratch copy removed.
+- Two bare URLs became links - the Science History Institute piece behind the
+  Deep Blue "glitch" aside, and the two sign-off recommendations.
+- The Reading/Listening sign-off got an `---` rule and bold labels.
+- Typos: "a alert" -> "an alert", "satarists" -> "satirists", "suprizingly" ->
+  "surprisingly". Trailing whitespace stripped throughout.
+
+Left alone deliberately: the Lisp-shaped Bob Bemer quote, the 1997/1998
+Kasparov dates (they are consistent), and the title as a body `# ` line, since
+moving it into front matter is part of publishing rather than formatting.
