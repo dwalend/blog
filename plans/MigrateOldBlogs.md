@@ -6,7 +6,7 @@ order of urgency.
 | Source | Count | Urgency | Phase |
 | --- | --- | --- | --- |
 | Jekyll `_posts/` (2014-2016) | 10 | Already in the repo | Phase 5 |
-| Hashnode (2024) | 4 | **Before DNS cutover** | Phase 6 |
+| Hashnode (2024) | 4 | Done 2026-08-23 | Phase 6 |
 | Disqus comments (2015) | 6 real | Before Disqus rots further | Phase 7 |
 | java.net via wayback (2003-2009) | ~37 pages | After launch | Phase 10 |
 
@@ -51,7 +51,7 @@ Steps:
    `{{ site.baseurl }}` references need updating.
 5. Spot-check internal cross-links between posts - several reference each other.
 
-## 2. The 4 Hashnode posts (Phase 6)
+## 2. The 4 Hashnode posts (Phase 6)  [DONE 2026-08-23]
 
 **Do this before the DNS cutover.** Once `blog.walend.net` leaves Hashnode these
 URLs stop resolving.

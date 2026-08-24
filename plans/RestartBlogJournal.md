@@ -529,3 +529,93 @@ No TTL is published for that cache, which is why the rename was worth doing
 rather than waiting it out. Note also that Phase 9 moves the site to
 `blog.walend.net` - every preview cache keys on URL, so the cutover clears all of
 this regardless.
+
+## 2026-08-23 - Phase 6: the four Hashnode posts
+
+Pulled from `https://dwalend.hashnode.dev/rss.xml` - 72 KB, four items, full
+bodies in `content:encoded`, nothing truncated. That host survives the DNS move,
+which is why the plan preferred it over `blog.walend.net/rss.xml`.
+
+Now live at `/2024/03/the-new-hire-plan/`, `/2024/04/cqrs-in-a-relational-database-via-slick/`,
+`/2024/04/the-20-minute-limit/`, and `/2024/04/bounding-complexity-in-scala-projects/`.
+Fourteen posts total; the feed's ten now start with the 2024 four.
+
+### HTML to Markdown, without adding a dependency
+
+No `pandoc`, no `html2text`, no `turndown` on this laptop, and installing one
+into the project for a one-time migration would have meant a dependency in
+`package.json` forever. The tag vocabulary was surveyed first and turned out to
+be small - `p`, `h1`, `h2`, `ul`/`li`, `pre`/`code`, `a`, `img`, `blockquote`,
+`em`, `s`, and 335 `span`s - so a purpose-built converter on `html.parser` was
+about 60 lines. It lives in the scratchpad, not the repo; it has done its job.
+
+- The 335 `span`s are all `hljs-*` wrappers from Hashnode's syntax highlighting.
+  Dropped, keeping their text - this site highlights with Prism at build time.
+- All 15 code blocks carried `class="lang-scala"`, mapped to ```` ```scala ````.
+  Verified in the output: 8 highlighted blocks in the CQRS page, matching its 8.
+- `<a target="_blank">` - `target` dropped, per the plan.
+- One converter bug caught in review: `alt` present but valueless makes
+  `HTMLParser` yield `None`, so `.get("alt","")` returned `None` and produced
+  `![None](...)`. `.get("alt") or ""` fixes it.
+
+### Two defects caught in review, after the first conversion looked clean
+
+An artifact scan over the four converted posts turned up both. Neither would
+have thrown an error.
+
+- **Five blockquotes had been flattened into ordinary paragraphs.** The
+  converter applied its `> ` prefix at `</blockquote>`, by which time the child
+  `<p>` had already flushed the text unprefixed. In
+  `bounding-complexity-in-scala-projects` that silently turned three
+  Berners-Lee quotations and a Randy Pausch line into what reads as his own
+  prose. That is an attribution problem, not a formatting one. The prefix now
+  applies at the paragraph flush, with a depth counter. Six blockquotes render.
+- **`O(n&#94;3)` in a code fence.** Hashnode double-encoded the caret, so
+  `convert_charrefs` decoded `&amp;#94;` to the literal string `&#94;` - and a
+  markdown code fence would have displayed it verbatim rather than as `^`.
+
+Worth keeping the lesson: the first pass produced valid, clean-looking Markdown,
+and both of these survived a structural check of headings, fences, and links.
+What caught them was scanning for things that should *not* be there - raw
+entities, stray tags - and comparing element counts against the source HTML.
+
+### Aliases: only one shape, not two
+
+Phase 5 emitted both `/slug.html` and `/slug/` for each old URL. That does not
+work here. Hashnode's URLs are bare - `/the-new-hire-plan` - and Eleventy refuses
+to write an extensionless file, correctly: `/the-new-hire-plan` as a *file* and
+`/the-new-hire-plan/` as a *directory* cannot both exist.
+
+Only `/slug/` is needed. GitHub Pages redirects `/the-new-hire-plan` to
+`/the-new-hire-plan/` when the directory has an `index.html`, so one stub covers
+both shapes.
+
+### Tags would have silently unpublished the posts
+
+`src/posts/posts.json` sets `tags: "post"`, and that is what `collections.post`
+is built from. Front matter **overrides** directory data for `tags` rather than
+merging, so writing `tags: [Scala, Slick]` on a post drops it out of the
+collection - off the index, out of the feed, no error. Every one of the four
+lists `post` first. Verified: the index still renders 14 entries.
+
+### Images
+
+Two are his own uploads on Hashnode's CDN and were pulled into the repo as
+`src/img/posts/2024-04-16-planck-curve.png` and `2024-04-12-cqrs-diagram.png`,
+both 960x540. Referenced through `{{ '...' | url }}`, per the no-bare-root-relative
+rule. Both had an empty `alt`; real alt text was written for each.
+
+Five more are the blue-muppet running gag in the CQRS post, hotlinked from
+appadvice, Walmart, LinkedIn, and a Google image thumbnail. **Three of the five
+are already broken**: appadvice does not resolve, `media.licdn.com` returns 403,
+and one `<img>` has no `src` at all - it renders as an HTML comment for now.
+Left pointing at their original URLs, which is what Hashnode does today. Flagged
+in the plan as an open decision rather than resolved quietly: they are Sesame
+Street stills on strangers' CDNs, and copying them into a CC BY / MIT repo is a
+licensing choice.
+
+### Drafts
+
+The four superseded drafts moved to `_pending/published/` with a README mapping
+each to what it shipped as. The published version is longer than its draft in all
+four cases, so nothing obvious was cut. Ten drafts remain unpublished.
