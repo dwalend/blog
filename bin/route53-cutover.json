@@ -1,0 +1,14 @@
+{
+  "Comment": "Move blog.walend.net from Hashnode to GitHub Pages",
+  "Changes": [
+    {
+      "Action": "UPSERT",
+      "ResourceRecordSet": {
+        "Name": "blog.walend.net.",
+        "Type": "CNAME",
+        "TTL": 300,
+        "ResourceRecords": [{ "Value": "dwalend.github.io" }]
+      }
+    }
+  ]
+}

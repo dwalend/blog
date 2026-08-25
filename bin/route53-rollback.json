@@ -1,0 +1,14 @@
+{
+  "Comment": "Roll blog.walend.net back to Hashnode",
+  "Changes": [
+    {
+      "Action": "UPSERT",
+      "ResourceRecordSet": {
+        "Name": "blog.walend.net.",
+        "Type": "CNAME",
+        "TTL": 300,
+        "ResourceRecords": [{ "Value": "hashnode.network" }]
+      }
+    }
+  ]
+}

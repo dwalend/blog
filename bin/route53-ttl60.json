@@ -1,0 +1,14 @@
+{
+  "Comment": "Lower blog.walend.net TTL ahead of the cutover",
+  "Changes": [
+    {
+      "Action": "UPSERT",
+      "ResourceRecordSet": {
+        "Name": "blog.walend.net.",
+        "Type": "CNAME",
+        "TTL": 60,
+        "ResourceRecords": [{ "Value": "hashnode.network" }]
+      }
+    }
+  ]
+}

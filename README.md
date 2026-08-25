@@ -33,11 +33,14 @@ PATH_PREFIX=/blog/ SITE_URL=https://dwalend.github.io npm run build
 src/
 ├── _data/metadata.js   site metadata (replaces Jekyll's _config.yml)
 ├── _includes/          layouts and partials, in Liquid
+│   └── feed-body.njk   one feed body, shared by both feed permalinks
 ├── posts/              published posts; posts.json sets their shared defaults
 ├── css/main.css
 ├── img/og-default.png  the site-wide OpenGraph card
 ├── index.liquid
-├── feed.njk            RSS; the one Nunjucks template, for the RSS plugin's filters
+├── feed.njk            RSS at /feed.xml; Nunjucks, for the RSS plugin's filters
+├── rss.njk             the same feed at /rss.xml, where Hashnode published it
+├── CNAME               the custom domain, copied through to the artifact
 ├── feed.xsl.liquid     XSLT so browsers show the feed as a page, not raw XML
 ├── robots.txt.liquid   generated
 ├── sitemap.xml.liquid  generated
@@ -45,6 +48,7 @@ src/
 _pending/               drafts, not built
 disentangleParGraphs/   d3 plots from the 2015 Disentangle posts
 plans/                  the restart and migration plans
+bin/                    sweep.sh, and the Route 53 change batches for the cutover
 ```
 
 Posts get permalinks of the form `/YYYY/MM/slug/`. Older URLs from the 2014–2016

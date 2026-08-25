@@ -376,14 +376,9 @@ every Hashnode URL dies.
 return 200. The checker was sanity-tested against a URL that should 404, so the
 result is real rather than a broken loop reporting success.
 
-### Prepared, uncommitted
+### Committed, not yet pushed
 
-**`master` is currently a red build.** `446d936 "Before DNS cutover."` committed
-`feed.njk` in its new one-line include form but not the three new files it
-depends on, so Actions run #20 died with `template not found: feed-body.njk` and
-wrote 0 files. That is fail-safe - the artifact upload never ran and Pages still
-serves the "First post." deploy - but the next commit has to `git add` all three,
-or the same thing happens again.
+`30f4d34 "Before DNS cutover."` carries all of it:
 
 - `src/CNAME` containing `blog.walend.net`, plus its `addPassthroughCopy` in
   `eleventy.config.js` - it has no extension, so Eleventy skips it otherwise.
@@ -395,6 +390,15 @@ or the same thing happens again.
   Hashnode subscribers.
 - The og-card rename, `og-card-v2.png` -> `og-default.png`, folded in here
   because every preview cache resets at the cutover anyway.
+
+The predecessor commit, `446d936`, shipped `feed.njk` in its new one-line include
+form without the three files it depends on, so Actions run #20 died with
+`template not found: feed-body.njk` and wrote 0 files. That was fail-safe - the
+artifact upload never ran, and Pages kept serving the previous deploy - but it
+is why `master` sat red overnight. `30f4d34` is the fix.
+
+`bin/` holds what the cutover needs: `sweep.sh`, and the three Route 53 change
+batches as files rather than heredocs.
 
 ### The order, which is not the order this plan originally had
 
@@ -412,85 +416,154 @@ as `PATH_PREFIX`. The failed run on 2026-08-24 logged it plainly:
 Building for https://dwalend.github.io (prefix '/blog')
 ```
 
-`cname` is still `null` in the Pages API, so the first build after `src/CNAME`
-lands will *still* emit `/blog/...` URLs while the site is being served at the
-root of `blog.walend.net`. CSS, images, and all 24 aliases would 404. **The
-custom domain has to register before the build that produces the final URLs**,
-which means a second run, not one.
+So the first build after `src/CNAME` lands will *still* emit `/blog/...` URLs
+while the site is being served at the root of `blog.walend.net`. CSS, images, and
+all 24 aliases would 404. **The custom domain has to register before the build
+that produces the final URLs**, which means a second run, not one.
 
 So: cut DNS over first, let the domain register, then rebuild.
 
-1. **Optional, recommended: lower the TTL first.** The record is TTL 600. Set it
-   to 60, wait ~10 minutes, then cut over. The difference is a one-minute versus
-   a ten-minute propagation tail.
-2. **Commit and push** the prepared files - `src/CNAME`, `src/rss.njk`,
-   `src/_includes/feed-body.njk`, and the og-card rename. Wait for green. This
-   build still emits `/blog/...`; that is expected and correct, because DNS has
-   not moved and the site is still served at `dwalend.github.io/blog/`.
-3. **Run the Route 53 change immediately after** - back to back with step 2.
-   Between them the new site may be unreachable at *either* URL if the artifact's
-   CNAME registers the domain: `dwalend.github.io/blog` begins redirecting to
-   `blog.walend.net`, which is still Hashnode. Keep the window short.
+Every command below is meant to be copied out of this file rather than retyped.
+The Route 53 change batches live in `bin/` as real files, so no command here
+carries a multi-line quoted heredoc - that is what made the first attempt at
+this fail on a mangled quote. **Run them from the repo root**; the `file://`
+paths are relative to the working directory.
 
-   ```sh
-   cat > /tmp/route53-cutover.json <<'JSON'
-   {
-     "Comment": "Move blog.walend.net from Hashnode to GitHub Pages",
-     "Changes": [
-       {
-         "Action": "UPSERT",
-         "ResourceRecordSet": {
-           "Name": "blog.walend.net.",
-           "Type": "CNAME",
-           "TTL": 300,
-           "ResourceRecords": [{ "Value": "dwalend.github.io" }]
-         }
-       }
-     ]
-   }
-   JSON
-   aws route53 change-resource-record-sets \
-     --hosted-zone-id Z09976561DOUNYRCRMG2A \
-     --change-batch file:///tmp/route53-cutover.json
-   ```
+#### 1. Lower the TTL, then wait about ten minutes
 
-   To roll back, run the same batch with `"Value": "hashnode.network"`.
-4. **Confirm the custom domain registered.** This is the step the plan was
-   missing.
+```sh
+aws route53 change-resource-record-sets \
+  --hosted-zone-id Z09976561DOUNYRCRMG2A \
+  --change-batch file://bin/route53-ttl60.json
+```
 
-   ```sh
-   gh api repos/dwalend/blog/pages --jq '{cname,html_url,https_enforced}'
-   ```
+Still pointing at Hashnode; only the TTL moves. The wait matters because
+resolvers holding the old record keep it for up to the *old* 600 seconds. Watch
+it drop, and go when it reads 60:
 
-   - **`cname` is `blog.walend.net`** - the artifact's CNAME file did the work.
-   - **`cname` is still `null`** - the artifact route does not apply to a custom
-     Actions workflow here, so set the domain by hand in Settings -> Pages. It
-     validates now that DNS resolves, and setting it queues a rebuild on its own.
-5. **Re-run the build so the URLs come out at `/`.** Only needed if step 4 found
-   the domain already set by the artifact - setting it by hand queues its own
-   rebuild.
+```sh
+dig +noall +answer blog.walend.net @8.8.8.8
+```
 
-   ```sh
-   gh workflow run pages.yml && sleep 20 && gh run watch
-   ```
+#### 2. Push, and wait for green
 
-   Then check that the prefix is gone before believing it:
+```sh
+git push && sleep 10 && gh run watch
+```
 
-   ```sh
-   gh run view --log | grep 'Building for'   # want prefix '/'
-   curl -sI https://blog.walend.net/css/main.css | head -1
-   ```
+This build logs `prefix '/blog'`, which is correct at this point - DNS has not
+moved and the site is still served at `dwalend.github.io/blog/`. **Do not go on
+from a red run.**
 
-   Budget a few minutes across steps 4 and 5, not the ~30s a single deploy takes.
-6. **Wait for the certificate.** HTTPS fails until Let's Encrypt issues for the
-   new domain - minutes to about an hour. GitHub retries on its own.
-7. **Enable Enforce HTTPS.** It stays unavailable until the cert exists.
-8. **Verify** - the same sweep as above, against `https://blog.walend.net`:
-   every alias, both feeds, autodiscovery from a real feed reader. Do this after
-   step 5, not before; a sweep against a `/blog/`-prefixed build will pass on the
-   pages and fail on every asset, which is a confusing way to find out.
-9. **Leave the Hashnode blog in place**, unpublished-to. `dwalend.hashnode.dev`
-   keeps working as a backstop.
+#### 3. Route 53 cutover, immediately after
+
+```sh
+aws route53 change-resource-record-sets \
+  --hosted-zone-id Z09976561DOUNYRCRMG2A \
+  --change-batch file://bin/route53-cutover.json
+```
+
+Then wait for it to resolve. Want `dwalend.github.io.` and the four
+`185.199.10[8-11].153` addresses:
+
+```sh
+dig +short blog.walend.net @8.8.8.8
+```
+
+**Rollback**, valid at any point from here on:
+
+```sh
+aws route53 change-resource-record-sets \
+  --hosted-zone-id Z09976561DOUNYRCRMG2A \
+  --change-batch file://bin/route53-rollback.json
+```
+
+#### 4. Did the custom domain register?
+
+```sh
+gh api repos/dwalend/blog/pages --jq '{cname,html_url,https_enforced}'
+```
+
+- **`cname` is `blog.walend.net`** - the artifact's CNAME file did the work.
+  Go to step 5.
+- **`cname` is still `null`** - the artifact route does not apply to a custom
+  Actions workflow here. Set it yourself; it validates now that DNS resolves,
+  and queues its own rebuild, so **skip step 5** and go to step 6:
+
+  ```sh
+  gh api -X PUT repos/dwalend/blog/pages -f cname=blog.walend.net -F https_enforced=false
+  ```
+
+  If the API refuses, the UI path is: repo page -> **Settings** (top nav, right
+  end) -> **Pages** (left sidebar, under "Code and automation") -> **Custom
+  domain** field -> type `blog.walend.net` -> **Save**.
+
+#### 5. Rebuild so the URLs come out at `/`
+
+Only if step 4 found the domain already set.
+
+```sh
+gh workflow run pages.yml && sleep 20 && gh run watch
+```
+
+Confirm the prefix is gone rather than assuming it. Want `prefix '/'`:
+
+```sh
+gh run view --log | grep 'Building for'
+```
+
+If it still says `/blog`, the domain had not registered when the build started.
+Wait a minute and run it again.
+
+#### 6. Wait for the certificate
+
+Minutes to about an hour. GitHub retries on its own.
+
+```sh
+until curl -sI --max-time 10 https://blog.walend.net/ >/dev/null 2>&1; do sleep 60; done; echo "HTTPS answering"
+```
+
+#### 7. Enforce HTTPS
+
+```sh
+gh api -X PUT repos/dwalend/blog/pages -F https_enforced=true
+gh api repos/dwalend/blog/pages --jq '{cname,https_enforced}'
+```
+
+UI fallback: **Settings** -> **Pages** -> **Enforce HTTPS** checkbox, below the
+custom domain field. It stays greyed out until the certificate exists.
+
+#### 8. Full sweep
+
+`bin/sweep.sh` checks every URL the local build produces against a live base URL,
+and sanity-tests itself against a URL that must 404. Build first so the list is
+current:
+
+```sh
+npx @11ty/eleventy && bin/sweep.sh https://blog.walend.net
+```
+
+Want `checked 52 URLs, 0 failures` and `sanity check (want 404): 404`. Run this
+**after** step 5 - against a `/blog/`-prefixed build it passes every page and
+fails every asset, which is a confusing way to find the problem.
+
+Three things the sweep cannot check:
+
+```sh
+curl -sI https://blog.walend.net/feed.xsl | grep -i content-type
+```
+
+Want `application/xml` or `text/xsl`. If it lands as `text/plain` the transform
+silently does nothing and the feed shows as raw XML in a browser.
+
+Then subscribe to `https://blog.walend.net/feed.xml` in a real reader to confirm
+autodiscovery, and paste a post link into a private Discord channel and
+LinkedIn's Post Inspector for the card.
+
+#### 9. Leave the Hashnode blog in place
+
+Unpublished-to, not deleted. `dwalend.hashnode.dev` keeps working as a backstop,
+and it is the rollback target if something surfaces days later.
 
 ### Every feed guid changes at this moment
 
