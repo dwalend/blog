@@ -209,7 +209,9 @@ easy to lose track of.
 
 Two things to check rather than decide:
 
-4. **The `.xsl` content type on GitHub Pages.** Eleventy serves it as
+4. **ANSWERED 2026-08-25 - it is `application/xml` in production.** The feed
+   renders as a page, no `text/plain` regression. Original note follows.
+   **The `.xsl` content type on GitHub Pages.** Eleventy serves it as
    `application/xml` and browsers accept that, but the content type in production
    comes from GitHub's server. If it lands as `text/plain` the transform silently
    does nothing and the feed goes back to raw XML. Look at the next deploy.
@@ -353,22 +355,30 @@ that date. Eleventy builds future-dated posts without complaint - there is no
 `--future` flag to forget, the way Jekyll had. If it should read as the 24th,
 rename the file; if the 25th is intended, nothing to do.
 
-## Phase 9 - DNS cutover  [PREPARED 2026-08-24, not executed]
+## Phase 9 - DNS cutover  [DONE 2026-08-25]
 
 Everything Phases 1-8 gate is done and verified. What remains is the cutover
 itself, which is deliberately not automated: the moment the DNS record changes,
 every Hashnode URL dies.
 
-### State at 2026-08-24
+### State after the cutover, 2026-08-25
 
 | | |
 | --- | --- |
-| Live at | `https://dwalend.github.io/blog/` (Pages `build_type: workflow`, `https_enforced: true`, `cname: null`) |
+| Live at | `https://blog.walend.net/` (Pages `build_type: workflow`, `cname: blog.walend.net`) |
 | Posts / feed items / sitemap URLs / aliases | 15 / 10 / 17 / 24 |
-| `blog.walend.net` | `CNAME hashnode.network`, TTL **600** |
+| `blog.walend.net` | `CNAME dwalend.github.io`, TTL **300** |
 | Route 53 hosted zone | `Z09976561DOUNYRCRMG2A` (`walend.net.`) |
-| `dwalend.github.io` resolves to | `185.199.108-111.153` |
-| Last commit before prep | `d35388a` "First post." |
+| Certificate | Let's Encrypt, `CN=blog.walend.net`, to 2026-11-23 |
+| Cutover commits | `30f4d34`, then the runbook commit; build `32862473920` is the first at `prefix '/'` |
+
+**Post-cutover verification, over both http and https**: `bin/sweep.sh` checked
+52 URLs with 0 failures and its sanity check returned 404. Feed self-links and
+guids are on `https://blog.walend.net`, `/rss.xml` answers 200 for the Hashnode
+subscribers, autodiscovery points at `/feed.xml`, and `/feed.xsl` comes back as
+`application/xml`.
+
+### What the state was before, 2026-08-24
 
 **Pre-cutover verification passed with zero failures**: every core page
 (`/`, `/about/`, `/feed.xml`, `/feed.xsl`, `/rss.xml`, `/robots.txt`,
@@ -382,9 +392,11 @@ result is real rather than a broken loop reporting success.
 
 - `src/CNAME` containing `blog.walend.net`, plus its `addPassthroughCopy` in
   `eleventy.config.js` - it has no extension, so Eleventy skips it otherwise.
-  Whether this file alone registers the custom domain is unconfirmed; it is
-  documented behavior for branch-based publishing, and this repo uses a custom
-  workflow. Step 4 of the order below checks rather than assumes.
+  **It turned out to be inert.** The artifact's CNAME does not register a custom
+  domain for a custom Actions workflow, only for branch-based publishing; the
+  domain had to be set over the API. The file is harmless and matches what the
+  Pages settings say, so it stays, but the comment in `eleventy.config.js`
+  claiming it "sets the custom domain" is wrong and should be corrected.
 - `src/rss.njk` and `src/_includes/feed-body.njk`. **See the journal** - this one
   is not cosmetic, it is the difference between keeping and losing the existing
   Hashnode subscribers.
@@ -478,29 +490,51 @@ aws route53 change-resource-record-sets \
   --change-batch file://bin/route53-rollback.json
 ```
 
-#### 4. Did the custom domain register?
+#### 4. Set the custom domain
+
+`src/CNAME` in the artifact **does not** register the domain for a custom Actions
+workflow - confirmed on 2026-08-25, `cname` stayed `null` after a green deploy
+carrying the file. Set it over the API:
+
+```sh
+gh api -X PUT repos/dwalend/blog/pages -f cname=blog.walend.net
+```
+
+Silent `204` is success. Confirm:
 
 ```sh
 gh api repos/dwalend/blog/pages --jq '{cname,html_url,https_enforced}'
 ```
 
-- **`cname` is `blog.walend.net`** - the artifact's CNAME file did the work.
-  Go to step 5.
-- **`cname` is still `null`** - the artifact route does not apply to a custom
-  Actions workflow here. Set it yourself; it validates now that DNS resolves,
-  and queues its own rebuild, so **skip step 5** and go to step 6:
+**Do not pass `https_enforced` here.** GitHub rejects that field outright while
+no certificate exists, even setting it to `false`:
 
-  ```sh
-  gh api -X PUT repos/dwalend/blog/pages -f cname=blog.walend.net -F https_enforced=false
-  ```
+```
+{"message": "The certificate does not exist yet", "status": "404"}
+```
 
-  If the API refuses, the UI path is: repo page -> **Settings** (top nav, right
-  end) -> **Pages** (left sidebar, under "Code and automation") -> **Custom
-  domain** field -> type `blog.walend.net` -> **Save**.
+The whole request is refused, nothing partially applies, and GitHub flips
+`https_enforced` to `false` on its own when the domain changes.
 
-#### 5. Rebuild so the URLs come out at `/`
+If the API refuses for some other reason, the UI path is: repo page ->
+**Settings** (top nav, right end) -> **Pages** (left sidebar, under "Code and
+automation") -> **Custom domain** field -> type `blog.walend.net` -> **Save**.
 
-Only if step 4 found the domain already set.
+#### 5. Rebuild so the URLs come out at `/`  (always - this is not optional)
+
+Setting the domain over the API **does not queue a rebuild.** The artifact still
+in place was built with `prefix '/blog'` and is now being served at the root, so
+between step 4 and this step the live site is up but unstyled - every asset and
+alias 404s:
+
+```
+http://blog.walend.net/                    200
+http://blog.walend.net/css/main.css        200   the file is there
+page links                                 /blog/css/main.css
+http://blog.walend.net/blog/css/main.css   404   but the HTML points here
+```
+
+Keep this window short:
 
 ```sh
 gh workflow run pages.yml && sleep 20 && gh run watch
@@ -510,18 +544,32 @@ Confirm the prefix is gone rather than assuming it. Want `prefix '/'`:
 
 ```sh
 gh run view --log | grep 'Building for'
+curl -s http://blog.walend.net/ | grep -o 'href="[^"]*main.css"'
 ```
 
 If it still says `/blog`, the domain had not registered when the build started.
 Wait a minute and run it again.
 
-#### 6. Wait for the certificate
+#### 6. Wait for the certificate - usually already done
 
-Minutes to about an hour. GitHub retries on its own.
+Check before waiting. On 2026-08-25 the certificate issued about twelve minutes
+after step 4, so by the time step 5's rebuild was verified it was already live
+and this step was a no-op:
+
+```sh
+curl -sI --max-time 10 https://blog.walend.net/ | head -1
+```
+
+`HTTP/2 200` means go straight to step 7. If it does not answer, GitHub retries
+on its own - minutes to about an hour - and this waits it out:
 
 ```sh
 until curl -sI --max-time 10 https://blog.walend.net/ >/dev/null 2>&1; do sleep 60; done; echo "HTTPS answering"
 ```
+
+Note that Let's Encrypt backdates `notBefore` about an hour for clock skew, so a
+certificate can look older than the moment you set the domain. That is normal
+and not evidence of a stale certificate.
 
 #### 7. Enforce HTTPS
 
@@ -562,8 +610,20 @@ LinkedIn's Post Inspector for the card.
 
 #### 9. Leave the Hashnode blog in place
 
-Unpublished-to, not deleted. `dwalend.hashnode.dev` keeps working as a backstop,
-and it is the rollback target if something surfaces days later.
+Unpublished-to, not deleted. **The backstop is the DNS rollback, not the
+subdomain.** `dwalend.hashnode.dev` returns 403 on every page after the cutover
+- only its `/rss.xml` still answers - because Hashnode still holds
+`blog.walend.net` as its custom domain and serves the free subdomain as a 403
+while one is configured.
+
+That same configuration is what makes `bin/route53-rollback.json` work, so
+removing the custom domain in Hashnode's dashboard would restore the subdomain at
+the cost of the rollback path. Bad trade. Leave it.
+
+#### 10. Nothing to do about the TTL
+
+The step 3 batch UPSERTs the whole record set, so the record comes back at TTL
+300 with the new value. The 60 from step 1 does not survive and needs no reset.
 
 ### Every feed guid changes at this moment
 

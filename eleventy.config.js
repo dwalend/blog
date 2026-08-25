@@ -61,7 +61,8 @@ export default function (eleventyConfig) {
   eleventyConfig.addPassthroughCopy("src/css");
   eleventyConfig.addPassthroughCopy("src/img");
   // CNAME has no extension, so Eleventy ignores it unless copied explicitly.
-  // The Actions deploy sets the custom domain from this file in the artifact.
+  // It does not set the custom domain - a custom Actions workflow needs that set
+  // in the Pages settings. This keeps the repo agreeing with those settings.
   eleventyConfig.addPassthroughCopy("src/CNAME");
 
   return {

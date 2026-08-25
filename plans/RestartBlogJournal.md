@@ -845,3 +845,157 @@ The Route 53 change batch was first written to this session's scratchpad
 directory, which does not survive into a new session. It now lives inline in
 `RestartBlog.md` along with the hosted zone id, the current record, and the
 rollback value, so the cutover can be executed from a cold context.
+
+## 2026-08-25 - Phase 9: the cutover
+
+`blog.walend.net` moved off Hashnode at 10:40 and was fully verified on HTTPS by
+10:56. Sixteen minutes of transition, of which about ten were a site that was up
+but unstyled. Everything below is what the plan got wrong on the way, because
+that is the part worth keeping.
+
+### Three assumptions failed, all of the same kind
+
+Each one was written into the plan as a statement of fact by someone who had not
+run it. None of them was hard to check. The pattern is now unmistakable enough
+to name: **the plan's confident sentences are the ones to distrust**, because the
+verified ones tend to arrive hedged.
+
+**1. `src/CNAME` in the artifact does not set the custom domain.** The plan said
+"The Actions deploy sets the custom domain from this file in the artifact," and
+`eleventy.config.js` carried a comment saying the same. After a green deploy
+carrying the file, `gh api repos/dwalend/blog/pages` still reported
+`cname: null`. That behavior is real for branch-based publishing; this repo uses
+a custom workflow, where it does nothing. The domain had to be set over the API.
+
+The file stays, because it keeps the repo agreeing with the Pages settings, but
+the comment claiming it does the work is gone.
+
+**2. `https_enforced` cannot be set while no certificate exists - not even to
+`false`.** The step 4 command included `-F https_enforced=false`, on the
+reasoning that enforcement was on and the new domain had no certificate yet.
+GitHub rejected the whole request:
+
+```
+{"message": "The certificate does not exist yet", "status": "404"}
+```
+
+Nothing partially applied - `cname` was still `null`, `https_enforced` still
+`true`. Dropping the flag and sending only `-f cname=blog.walend.net` worked
+immediately, and GitHub set `https_enforced: false` on its own as part of the
+domain change. The flag was solving a problem that GitHub already handles.
+
+**3. Setting the domain does not queue a rebuild.** The plan said it did, and on
+that basis made step 5 conditional - "only if step 4 found the domain already
+set." Both branches were wrong: the artifact route never set it, and the API
+route never rebuilt. So the artifact in place was still the one built with
+`prefix '/blog'`, now being served at the root of the new domain:
+
+```
+http://blog.walend.net/                    200
+http://blog.walend.net/css/main.css        200   the file is there
+page links                                 /blog/css/main.css
+http://blog.walend.net/blog/css/main.css   404   but the HTML points here
+```
+
+The site was live, readable, and completely unstyled, with every image and all 24
+aliases 404ing. `gh workflow run pages.yml` fixed it in 24 seconds once run, but
+nothing would have prompted running it - the deploy was green, the home page
+returned 200, and the failure was invisible to any check that only looked at page
+status codes.
+
+**What caught it** was curling for the actual `href` rather than trusting the
+200:
+
+```sh
+curl -s http://blog.walend.net/ | grep -o 'href="[^"]*main.css"'
+```
+
+Same lesson as the flattened blockquotes, the double-encoded caret, and the
+malformed feed: **check the structure, not the status.** A 200 is not evidence
+that a page works.
+
+### The rewrite that caught it in advance
+
+The failed run of 2026-08-24 logged one line that turned out to matter:
+
+```
+Building for https://dwalend.github.io (prefix '/blog')
+```
+
+That is `actions/configure-pages` reporting `base_path` from the Pages settings -
+not from `src/CNAME`. Reading it before the cutover is what turned "add the
+CNAME and push" into a nine-step order with a verification between the domain
+change and the final build. The unstyled window happened anyway, but it was
+expected, bounded, and fixed by a step already written down rather than
+diagnosed live.
+
+Worth noting that the log line came from a **failed** build. The failure was
+unrelated - a missing include - and the useful information was incidental to it.
+
+### The certificate was not the slow part
+
+The plan budgeted "minutes to about an hour" and gave a polling loop. Let's
+Encrypt issued in about twelve minutes, so by the time step 5's rebuild was
+verified the certificate was already live and step 6 was a no-op.
+
+One thing that reads alarming and is not: Let's Encrypt backdates `notBefore`
+about an hour for clock skew. The certificate showed `notBefore=Aug 25 13:54:41
+GMT` against a domain set at 14:42 GMT, which looks like a certificate issued
+before the domain existed. It is normal.
+
+### A heredoc is a bad way to ship a command
+
+The first attempt at step 1 failed on a mangled quote. The step was an eleven-line
+`cat > /tmp/route53-cutover.json <<'JSON'` heredoc full of quoted JSON - the most
+paste-hostile construct in the whole runbook, and it broke the moment it passed
+through a terminal that touched a character.
+
+The change batches now live in `bin/` as real files, so the commands carry no
+quoting at all:
+
+```sh
+aws route53 change-resource-record-sets \
+  --hosted-zone-id Z09976561DOUNYRCRMG2A \
+  --change-batch file://bin/route53-cutover.json
+```
+
+`bin/sweep.sh` moved out of the scratchpad at the same time, which closes the
+complaint filed in the Phase 9 prep entry. It finds `_site` relative to itself,
+takes a base URL, and sanity-tests itself against a URL that must 404. It ran
+four times across the cutover - twice before, twice after - and the two failures
+it reported before the push (`/img/og-default.png`, `/rss.xml`) were exactly the
+two files sitting in the unpushed commit. A checker that confirms what you
+already know is how you learn to believe it when it says zero.
+
+### The Hashnode backstop is a 403
+
+Step 9 says to leave the Hashnode blog in place, with `dwalend.hashnode.dev`
+working as a backstop. It does not. Every page there returns 403, though
+`/rss.xml` still answers 200.
+
+The likely reason is that Hashnode still holds `blog.walend.net` as its custom
+domain and serves the free subdomain as a 403 while one is configured. That same
+configuration is what makes the DNS rollback work - repoint the CNAME at
+`hashnode.network` and Hashnode serves the custom domain again - so the backstop
+that matters is intact and the browsable alternate URL is what was lost.
+Removing the custom domain in Hashnode's dashboard would restore the subdomain at
+the cost of the rollback path, which is a bad trade. Left alone.
+
+Unverified, because verifying it means actually rolling back.
+
+### The TTL did not need resetting
+
+The step 1 batch lowered the record to TTL 60 while it still pointed at Hashnode;
+the step 3 cutover batch UPSERTs the entire record set, so it came back at TTL
+300 with the new value. There is no leftover 60 anywhere. All four public
+resolvers agreed at each stage, which is the cheap check worth running before
+concluding DNS has done anything.
+
+### Final state
+
+`https://blog.walend.net`, `https_enforced: true`, http answering 301. The sweep
+passes 52 URLs with 0 failures over both schemes. Feed self-links and guids are
+on the new host - the one free moment to change every guid, spent as planned.
+`/rss.xml` answers 200, so the Hashnode subscribers carry over. `/feed.xsl`
+serves as `application/xml`, which closes the open question about whether the
+browser transform would survive production.
