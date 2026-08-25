@@ -152,14 +152,69 @@ The old `weblogs.java.net/blog/dwalend/` blog is recoverable. A CDX query was
 reported to return **84 archived URLs, of which ~37 are article pages**, spanning
 **2003 through 2009**.
 
-**Re-verify that count before planning around it.** The query below did not
-answer on 2026-08-25 - two attempts, both timing out rather than returning an
-error - so the 84/37 figures are as-recorded, not as-confirmed. The CDX endpoint
-is often slow rather than gone; treat a timeout as "try again," not as loss.
+**The wayback machine was unreachable on 2026-08-25 - from archive.org's side.**
+`web.archive.org` refused connections on both 80 and 443, from two different
+machines, over ~75-second timeouts.
 
+The first read of this was wrong. Seeing `archive.org` work while
+`web.archive.org` failed, it looked like an egress policy on the agent's sandbox.
+Running the same script from the laptop produced the identical failure, which
+ruled that out. What it actually is:
+
+- One A record, `207.241.237.3`, from every public resolver. No AAAA, so no
+  IPv6-first stall.
+- Connecting straight to that IP with SNI fails the same way, so nothing local is
+  intercepting.
+- `archive.org` lives on `207.241.224.2` - a different range - which is why one
+  host answers and the other does not.
+- The `wayback/available` API on `archive.org`, which answered normally twenty
+  minutes earlier, started returning **`429 Too Many Requests`**.
+
+A host refusing every connection while its sibling sheds load with 429s is the
+archive under strain. Transient, most likely. **Retry later rather than
+debugging the network** - and back off rather than hammering, since something
+over there is already rate-limiting.
+
+`bin/fetch-javanet.sh` is resumable precisely for this: re-running after a
+failure re-queries CDX only if `cdx.txt` is missing, and skips every article
+already on disk.
+
+What could be confirmed, via the availability API on the reachable `archive.org`
+host, is that **the material is still there**:
+
+```sh
+curl -s "https://archive.org/wayback/available?url=weblogs.java.net/blog/dwalend/"
+# -> closest snapshot 20090531085525, status 200, available true
 ```
-http://web.archive.org/cdx/search/cdx?url=weblogs.java.net/blog/dwalend*&output=text&fl=original,timestamp,statuscode&collapse=urlkey&filter=statuscode:200
+
+The CDX endpoint is not mirrored on that host (404), so the **84 archived URLs /
+~37 article pages** figures remain as-recorded rather than as-confirmed. A CDX
+timeout means try again; it does not mean anything is lost.
+
+**`bin/fetch-javanet.sh` does the network half** - CDX query, filter to article
+pages, fetch each with the `id_` suffix, write raw HTML into
+`_archive-src/javanet/`. It is resumable, so an interrupted run costs nothing,
+and it sleeps a second between fetches. Run it from a machine that can reach the
+archive:
+
+```sh
+bin/fetch-javanet.sh --list    # show what would be fetched, no downloads
+bin/fetch-javanet.sh           # fetch what is missing
 ```
+
+Everything after that - HTML to Markdown, frontmatter, presentation - can be done
+here from the local files.
+
+One trap already found and fixed in that script: Movable Type puts articles under
+`/archive/`, so filtering that path out drops **every** article. The
+`YYYY/MM/slug.html` date pattern is what separates articles from the category
+listings; nothing else needs excluding but `index.html` and the `%23comments`
+artifacts.
+
+**`_archive-src/` gets committed** (decided 2026-08-25). The wayback copy is the
+only copy, and 20-year-old bytes are worth having twice. It is not in
+`.gitignore`, so the fetched HTML lands in the working tree ready to commit -
+that is deliberate, not an oversight.
 
 Sample of what is there:
 
