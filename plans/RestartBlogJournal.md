@@ -999,3 +999,71 @@ on the new host - the one free moment to change every guid, spent as planned.
 `/rss.xml` answers 200, so the Hashnode subscribers carry over. `/feed.xsl`
 serves as `application/xml`, which closes the open question about whether the
 browser transform would survive production.
+
+## 2026-08-25 - The Grover pictures, solved by not having any
+
+The plan spent a long section on where to source five Grover images and how to
+justify hosting them. Both questions dissolved: the beats are now **links into
+the Internet Archive's scan**, one page each, and the site hosts no Sesame
+Workshop images at all.
+
+### Reading the book to pick the pages
+
+Thirty-two scans at `archive.org/details/stnmnst`. Guessing page numbers from
+filenames would have been fast and wrong, so all 32 were downloaded and montaged
+into four contact sheets to actually look at. That mattered - the escalation in
+the book is rope, then nails, then a brick wall, and only the second of those
+matches "does his best to stop you reading more" the way the original alt text
+meant it.
+
+| Beat | Page | What is on it |
+| --- | --- | --- |
+| taken aback | 0007 | "Oh, I am so scared of Monsters!!!" |
+| asks you not to read | 0009 | "So please do not turn the page" |
+| does his best to stop you | 0016 | "THERE! I, Grover, am nailing this page..." |
+| pleads | 0025 | "PLEASE PLEASE PLEASE" |
+| relieved | 0028 | "Oh, I am so embarrassed...." |
+
+The fifth beat had been missing since the Hashnode migration - an HTML comment
+holding nothing but its alt text, because Hashnode's own HTML had an `<img>` with
+no `src`. The gag is five beats again.
+
+### The copyright question answered itself
+
+The plan framed this as a judgement call to make deliberately: small illustrative
+images, commentary, non-commercial blog, no free licence available. All true, and
+all moot. Linking is not reproducing. The section that agonised over it is now
+three sentences.
+
+Worth noticing that the *better* answer showed up only because the original one -
+self-host them - was written down explicitly enough to argue with.
+
+### What it costs
+
+The gag used to be visual: a picture of Grover physically blocking the scroll.
+A line of italic text you have to choose to click is quieter, and the escalation
+now rests mostly on the section headings. Those carried most of it anyway. Real
+tradeoff, taken knowingly, and the whole reason it is recorded rather than
+presented as a clean win.
+
+### Two things broke, both mine
+
+**A hand-rolled anchor is a hand-maintained anchor.** The footnote marker is a
+`<sup>` link to the note's heading id. Renaming the heading from "A Note on
+Grover" to `A Note on "Famous Blue Muppet"` changed the generated id and left the
+superscript pointing at `#a-note-on-grover`, which no longer existed. Nothing
+failed - no build error, no 404, just a link that quietly did nothing.
+
+That is the argument for `markdown-it-footnote`, and it still lost: one note in
+one post against a fourth dependency on a build stabilised the same morning. But
+the plan now says in as many words that the two must be changed together.
+
+**And a duplicated phrase** - "Famous Blue Muppet is taken aback is taken aback"
+- survived an edit and a commit. Prose has no build step.
+
+### Naming
+
+"Famous Blue Muppet" is title-cased throughout, as a stand-in name rather than a
+description. The character is named exactly once, in the credit at the foot of
+the post. The piece refuses to say who it is until it has to, which is a better
+joke than the images were.

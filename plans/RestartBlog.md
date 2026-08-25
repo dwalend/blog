@@ -221,52 +221,60 @@ Two things to check rather than decide:
 
 ## Where things stand
 
-Phases 0-6 are done: `gh-pages` retired, Enforce HTTPS on, OpenGraph tags and
-card shipped, `description:` on every post, and the four Hashnode posts migrated.
-Fourteen posts live. **Phase 7 - giscus comments, and rescuing the 2015 Disqus
-thread - is next.**
+**Phases 0-9 are done.** The blog is live at `https://blog.walend.net`, fifteen
+posts, both feeds serving, comments working, HTTPS enforced. The two follow-ups
+that used to sit here - the Grover pictures and the OpenGraph card name - are
+both closed; their sections are kept below as the record of how.
 
-Two follow-ups below are not blockers, and neither is urgent. Do them when
-convenient, or fold them into the Phase 9 cutover.
+**Phase 11 - distribution - is next**, and the plan wants it soon: the feed guids
+are stable now, and nobody has been told the feed exists.
 
-### Find a reliable source for the Grover pictures
+### The Grover pictures  [DONE 2026-08-25]
 
-The CQRS post runs a gag: Grover, escalating from taken-aback to pleading, trying
-to stop you reading - the joke from *The Monster at the End of This Book*. Five
-images. They are staying; they need a source that does not rot.
+Solved by not hosting them. The five beats are now **links into the Internet
+Archive's scan** of the book, `https://archive.org/details/stnmnst`, one page per
+beat, rather than embedded images.
 
-Right now each one hotlinks a stranger's CDN, grabbed from image search, and
-**three of the five are already dead**: `handoff-cdn.appadvice.com` does not
-resolve, `media.licdn.com` returns 403, and one `<img>` had no `src` at all in
-Hashnode's own HTML - it currently sits in the Markdown as an HTML comment
-holding its alt text. The two that still answer are a Walmart product photo
-(1.2 MB) and a Google thumbnail, and neither is a promise about next year.
+| Beat | Page |
+| --- | --- |
+| taken aback | `stnmnst0007.jpg` - "Oh, I am so scared of Monsters!!!" |
+| asks you not to read this | `stnmnst0009.jpg` - "So please do not turn the page" |
+| does his best to stop you | `stnmnst0016.jpg` - "THERE! I, Grover, am nailing this page..." |
+| pleads with you | `stnmnst0025.jpg` - "PLEASE PLEASE PLEASE" |
+| relieved, embarrassed | `stnmnst0028.jpg` - "Oh, I am so embarrassed..." |
 
-**Self-hosting is the only fix.** Any external URL breaks again eventually, and
-the point of the migration was to stop depending on other people's servers. Put
-them in `src/img/posts/` beside the Planck curve and the CQRS diagram.
+The pages were chosen by reading all 32 scans, not by guessing from filenames.
+**The gag is back to five beats**; the fifth was the `<!-- MISSING IMAGE -->`
+comment that had been holding nothing but its alt text since the Hashnode
+migration.
 
-That makes the real question where to get five good stills, not how to reference
-them:
+This closes the three dead hotlinks and drops the last external image on the
+site. It also settles the copyright question the old plan called a judgement
+call, and settles it more cleanly than self-hosting would have: citing a source
+is not reproducing the illustrations. Self-hosting five Sesame Workshop images
+was defensible; not needing to is better.
 
-- The **book itself** is the strongest fit - the gag is a direct reference, so
-  frames or cover art from *The Monster at the End of This Book* land better than
-  arbitrary Grover photos, and there is a clean provenance story.
-- **Muppet Wiki** has the best catalogue by far. Download, do not hotlink; it is
-  a Fandom site and hotlinking is both against their terms and unreliable.
-- Whatever the source, **write real alt text**. The current alt lines are good
-  ("Famous blue muppet pleading with you to read no further") and should survive.
+**What it costs.** The gag used to be visual interruption - a picture of Grover
+blocking the scroll. A line of text you have to choose to click is quieter, and
+the escalation now rests mostly on the section headings, which carried most of it
+anyway. That is the tradeoff, made deliberately.
 
-Worth being clear-eyed: Grover is Sesame Workshop's, and there is no free licence
-for these. Small illustrative images used for commentary on a non-commercial blog
-is the ordinary case people rely on, and the site is already CC BY for prose with
-the images plainly not his. That is a judgement call, not something to look up -
-make it deliberately rather than by default. If it feels wrong, the fallback is
-to cut the images and keep the escalating section headings, which carry most of
-the joke on their own.
+A `## A Note on "Famous Blue Muppet"` section at the foot of the post credits Jon
+Stone and Michael Smollin, links the scan, and makes the case for owning the
+book. It is reached by a `[1]` superscript on the first beat. **Hand-rolled, not
+`markdown-it-footnote`** - one note in one post does not justify a fourth
+dependency, and the site already hand-rolls its heading anchors. If footnotes
+become a habit, revisit that.
 
-One image is currently missing entirely, so this is also the moment the gag goes
-back to five beats instead of four.
+**"Famous Blue Muppet" is title-cased throughout**, as a stand-in name rather
+than a description. The character is named exactly once, in the credit at the
+foot of the post - which is the joke: the whole piece refuses to say who it is
+until it has to.
+
+Note the anchor and the heading have to be kept in sync by hand, which is exactly
+what broke once already: renaming the heading left the superscript pointing at a
+`#a-note-on-grover` that no longer existed. If the heading text changes again,
+change the `<sup>` link with it.
 
 ### Rename the OpenGraph card back  [DONE 2026-08-24]
 
@@ -301,10 +309,9 @@ All four live at `/2024/MM/slug/` with flat-slug aliases, descriptions, and tags
 The site is now 14 posts. The superseded `_pending` drafts were deleted - they
 stay in git history. See the journal.
 
-**The Grover gag stays**, and needs a reliable source for its five images - see
-"Find a reliable source for the Grover pictures" above. They still point at the
-original hotlinked URLs, which is what Hashnode serves today, so nothing
-regressed; three of the five are simply already broken.
+**The Grover gag stays**, and is now five links into the Internet Archive's scan
+rather than five hotlinked images - see "The Grover pictures" above. Three of the
+five originals were already dead when they arrived from Hashnode.
 
 ## Phase 7 - Comments  [DONE 2026-08-24]
 
@@ -641,7 +648,7 @@ Both are in "Where things stand" above, and every preview and DNS cache resets
 here anyway:
 
 - ~~Rename the OpenGraph card off its temporary `og-card-v2.png`.~~ Done.
-- Source the Grover pictures properly.
+- ~~Source the Grover pictures properly.~~ Done - linked, not hosted.
 
 ## Phase 10 - After launch
 
