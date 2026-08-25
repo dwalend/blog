@@ -148,3 +148,28 @@ Why keep things simple: Ref the bit about "Always favor readability"
 
                         https://medium.com/@jaimefjorge/studying-scala-code-style-how-twitter-and-spark-do-it-ff4005835f01
 
+
+
+The constraint nobody set
+    A plan file said "no trackers" and I believed it. So did the assistant. Neither of us decided it.
+    The trail, three hops, each defensible:
+        1. Decisions table, giscus row: "No server, no ads, no trackers, data stays in the repo."
+           A fact about giscus, offered as a reason to pick it.
+        2. A session later, the Phase 7 write-up: "the 'no analytics, no trackers' decision."
+           Now it is a decision. Now it is the site's.
+        3. A session after that, asked to spec a page counter, the plan argues *against* it:
+           "the site's whole posture is no trackers; adding a counter silently is worse than
+           not adding one." Reasoning from my own values back at me. Values I never held.
+    What I actually decided was one table row: no Google Analytics, don't re-add tracking,
+    and I care some about privacy. GoatCounter - no cookies, no cross-site ids, IPs hashed
+    for a day and dropped - fits that fine. It was arguing against something I asked for.
+    The interesting part is that a wrong FACT would have been caught. Reality corrects facts.
+    An invented CONSTRAINT never gets tested - it just quietly shapes every recommendation
+    after it, and it sounds like principle, so nobody argues with it.
+    Angle: this is a documentation failure that looks like a values failure. Written notes
+    are supposed to be the durable part. But paraphrase compounds - each summary is faithful
+    to the last one, none is faithful to the source. Like a photocopy of a photocopy, except
+    each generation reads as MORE confident than the one before, not less.
+    Ties to: the SOA retrospective (what did I claim then that I only inferred?),
+    and to LLM context generally - same mechanism, faster.
+    Possible title: "The Constraint Nobody Set" or "Photocopy Confidence"

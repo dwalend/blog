@@ -1138,3 +1138,50 @@ none of the checks was expensive: one `curl -L`, one `os.listdir`, one
 `git log --diff-filter=D`. The pattern from the cutover holds - **the confident
 sentences are the ones to verify** - and it applies to a plan's description of
 the world just as much as to a build's output.
+
+## 2026-08-25 - A decision that was never made
+
+Asked to spec installing GoatCounter, the first draft of Phase 12 argued against
+it: it would violate the site's "no trackers" posture, and adding it silently
+would be worse than not adding it at all.
+
+**There is no such decision.** David said so, and he was right.
+
+The trail is short and every step looks reasonable:
+
+1. Line 33 of `RestartBlog.md`, in the decisions table, gives the rationale for
+   choosing giscus: "No server, no ads, no trackers, data stays in the repo."
+   A fact about giscus.
+2. The Phase 7 write-up, a session later, refers to "the 'no analytics, no
+   trackers' decision." Now it is a decision, and it is the site's.
+3. Phase 12, written today, escalates it to "the site's whole posture is no
+   trackers," and uses that to argue against a tool that had been asked for.
+
+The actual decision is one table row: no Google Analytics, no re-adding tracking,
+plus a stated general interest in privacy. GoatCounter - no cookies, no
+cross-site identifiers, IPs hashed for same-day dedup and discarded - does not
+conflict with that. It is closer to an expression of it.
+
+### Why this is worth an entry
+
+The failure mode is not "got a fact wrong." It is **inventing a constraint and
+then respecting it**, which is expensive in a way a wrong fact is not: a wrong
+fact gets corrected on contact with reality, while an invented constraint quietly
+shapes every recommendation after it and never gets tested. Here it produced an
+argument against work that had been explicitly requested, dressed as fidelity to
+the author's own values.
+
+It is also the same shape as the java.net misdiagnosis earlier today - reasoning
+confidently from one observation to a general conclusion - except that this one
+was about what the author believes rather than about the network, which makes it
+worse. Getting someone's position wrong and then citing it back to them is not a
+technical error.
+
+Phase 12 now sizes the cost honestly (two DNS lookups and a 3.5KB async script),
+drops the "say so in public" obligation to an optional nicety, and carries a note
+recording the drift. The Phase 7 sentence was corrected to say what the Analytics
+decision actually covers. The older journal entry that first paraphrased it is
+left alone - it is a record of what was believed at the time, and rewriting it
+would hide exactly the thing worth seeing.
+
+**When the plan states a position, check whether it was decided or inferred.**

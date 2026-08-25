@@ -46,3 +46,16 @@
   too. The rest they take from the og:* tags above.
 {%- endcomment %}
 <meta name="twitter:card" content="summary_large_image">
+
+{%- comment -%}
+  GoatCounter. No cookies, no cross-site identifiers; IPs are hashed for
+  same-day deduplication and discarded. The noscript pixel is not optional -
+  this site ships no JavaScript of its own, so a JS-only counter would silently
+  measure only the subset of readers who run it.
+{%- endcomment %}
+<script data-goatcounter="https://intuitivecounter.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
+<noscript>
+  <img src="https://intuitivecounter.goatcounter.com/count?p={{ page.url }}"
+       alt="" width="1" height="1" loading="lazy">
+</noscript>

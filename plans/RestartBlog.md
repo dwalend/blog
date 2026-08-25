@@ -33,7 +33,7 @@ See `MigrateOldBlogs.md` for the content-migration half of this.
 | Comments | **giscus** (GitHub Discussions) | No server, no ads, no trackers, data stays in the repo. |
 | Title | "Intuitive Counter" | Unchanged. |
 | Styling | Hand-rolled CSS, ~200 lines, dark by default, single column | Whole design surface is small; avoids a framework dependency. |
-| Analytics | None | Old UA property is dead; not re-adding tracking. |
+| Analytics | **GoatCounter** (2026-08-25) | Old UA property is dead and Google Analytics is not coming back. GoatCounter sets no cookies, uses no cross-site identifiers, and hashes IPs for same-day dedup then discards them. Counts without JavaScript via a pixel, which matters because the site ships no JS of its own. See Phase 12. |
 | 2014-2024 unpublished drafts | Stay drafts | May be updated and published someday. |
 | Content license | **CC BY 4.0** | The feed emits full post bodies, so readers, aggregators, and mirrors reproduce them wholesale. CC BY makes that unambiguously fine. Rejected BY-NC (ambiguous), BY-SA (viral), BY-ND (blocks translation). |
 | Site code license | **MIT** | Conventional, and GitHub displays it. Covers the Eleventy config, templates, CSS. |
@@ -334,8 +334,10 @@ five originals were already dead when they arrived from Hashnode.
 **One consequence worth knowing.** giscus is the first external request this site
 makes - there are no webfonts, and highlighting happens at build time. Post pages
 now load `giscus.app/client.js` and an iframe from the same host, so giscus.app
-sees the IP of anyone who reads a post. That does not undo the "no analytics, no
-trackers" decision, but it is no longer literally zero third parties.
+sees the IP of anyone who reads a post. That does not undo the Analytics
+decision - which is about Google Analytics and re-adding tracking, not about
+third parties in general - but the site is no longer literally zero third
+parties.
 `data-loading="lazy"` holds the request until the reader scrolls that far.
 
 **Still worth doing by hand:** post a comment on one page and confirm it lands in
@@ -707,3 +709,132 @@ card. See the journal. Two things still worth doing when this phase comes up:
 One "the blog is back, here is where it lives, here is the feed" note on both
 channels once Phase 9 is verified. Point at `/feed.xml` explicitly - the whole
 reason for leaving Hashnode was that the feed had become undiscoverable.
+
+## Phase 12 - GoatCounter  [INSTALLED 2026-08-25, awaiting signup]
+
+**The snippet is in `src/_includes/head.liquid` and builds.** It is on all 18
+real pages and on none of the 24 alias redirect stubs, which is correct - those
+meta-refresh to the real page, which counts the visit. Nothing double-counts.
+
+**One step is outstanding and only David can do it: registering the site code.**
+`https://intuitivecounter.goatcounter.com` currently answers 400, which is what
+GoatCounter returns for an unregistered site, so the code is free and unclaimed.
+Until it is registered the counting requests fail harmlessly - no console errors
+a reader would notice, no broken layout, just no data.
+
+### Why this one and not the others
+
+The constraint that rules everything out: **GitHub Pages gives no server logs**,
+so there is nothing to analyse after the fact. Every option is a client-side
+request or a change of host. Given that, GoatCounter wins on two points that
+matter for this site:
+
+- **It can count without JavaScript**, via an `<img>` pixel. The site ships no
+  JS of its own, so a JS-only counter would measure a subset of readers and
+  quietly under-report. Every other lightweight option is JS-only.
+- **The exit is a file.** Hosted GoatCounter exports; self-hosted is one Go
+  binary over SQLite. Compare Plausible self-hosted, which is Docker plus
+  Postgres plus Clickhouse - three services to operate to answer "did anyone
+  read it."
+
+Self-hosting is not realistic here anyway: there is no server in this stack, and
+adding one to count page views inverts the effort. **Use the hosted free tier**,
+which covers non-commercial use.
+
+### What it costs
+
+Sized honestly, because an earlier draft of this section overstated it - see the
+note at the end of this phase.
+
+- **Two more hosts per page**: `gc.zgo.at` for the script and
+  `<code>.goatcounter.com` for the collector. Today the site makes one external
+  request (giscus, post pages only) and the home page makes none. In practice
+  the cost is two DNS lookups and a 3.5KB async script. Negligible.
+- **No cookies, no cross-site identifiers, no PII.** IPs are hashed for same-day
+  deduplication and discarded. Among things that produce a number, this is about
+  as well-behaved as it gets.
+- **One more service** that could change terms or go away. Mitigated by the
+  export and by a rollback that is one deleted snippet.
+
+The zero-external-requests home page is a pleasing property, not a principle.
+Worth noticing it ends; not worth much weight.
+
+### Steps
+
+1. **Sign up** at `https://www.goatcounter.com/signup` and claim the site code
+   **`intuitivecounter`** - it must be exactly that, because it is already
+   hard-coded in `head.liquid`. Verified free on 2026-08-25. The dashboard then
+   lives at `https://intuitivecounter.goatcounter.com`. **[OUTSTANDING]**
+2. ~~**Add the snippet**~~ **[DONE]** - in `src/_includes/head.liquid`. Both
+   halves are present; the second is the reason for choosing this tool:
+
+   ```html
+   <script data-goatcounter="https://intuitivecounter.goatcounter.com/count"
+           async src="//gc.zgo.at/count.js"></script>
+   <noscript>
+     <img src="https://intuitivecounter.goatcounter.com/count?p={{ page.url }}"
+          alt="" width="1" height="1">
+   </noscript>
+   ```
+
+   Note `{{ page.url }}` - without an explicit path the pixel has no way to say
+   which page it is reporting.
+3. ~~**Decide whether it goes on every page.**~~ **[DONE - site-wide.]** Alias
+   stubs are excluded automatically, since they render from `alias.liquid` and
+   never reach `head.liquid`. That is the right behaviour: they meta-refresh to
+   the real page, which counts, so nothing double-counts. If `/style-guide/` or
+   `/about/` should be skipped later, gate it the way comments are gated, on a
+   frontmatter flag.
+4. ~~**Build and check the markup**~~ **[DONE]** - home page carries
+   `count?p=/`, the centaur post carries `count?p=/2026/08/centaur-hoofbeats/`,
+   18 of 42 HTML files and the other 24 are redirect stubs. Re-check with:
+
+   ```sh
+   npx @11ty/eleventy
+   grep -o 'goatcounter[^"]*' _site/index.html
+   grep -c 'gc.zgo.at' _site/2026/08/centaur-hoofbeats/index.html
+   ```
+
+5. **Deploy, then verify both paths separately.** Load a page normally and
+   confirm a hit appears in the dashboard. Then load one **with JavaScript
+   disabled** and confirm a hit still appears. If only the first works, the
+   `<noscript>` half is wrong and the tool has lost the advantage it was picked
+   for.
+6. ~~**Update the decisions table**~~ **[DONE]** - the Analytics row now reads
+   GoatCounter, with what it does and does not collect.
+7. **Optional: mention it somewhere.** A line in the footer or `/about/` naming
+   GoatCounter and what it does not collect. Not obligatory - the site has never
+   claimed to run nothing - but cheap, and the kind of thing a reader who cares
+   about this would like to find.
+
+### Rollback
+
+Delete the snippet from `head.liquid`, one commit, done. No data migration, no
+account entanglement, nothing left behind in the templates.
+
+### The question to answer before any of it
+
+**What changes based on the number?** If the answer is "know whether the relaunch
+landed," giscus comments and direct replies already answer that at zero cost. If
+it is "know which posts are worth writing more of," the counter earns its second
+external host. Worth being honest about which one it is before installing
+anything.
+
+### A note on how this section read the first time
+
+The first draft argued against GoatCounter on the grounds that it violated the
+site's "no trackers" posture. **There is no such decision.** The phrase entered
+this file at line 33 as a bullet describing why *giscus* was a good choice - "no
+server, no ads, no trackers" - was paraphrased in a later session into "the 'no
+analytics, no trackers' decision," and was then used here as a site-wide
+principle to argue against a tool that had been asked for.
+
+The actual decision is the Analytics row: no Google Analytics, no re-adding
+tracking, plus a general interest in privacy. GoatCounter does not conflict with
+that; it is arguably an expression of it.
+
+Recorded because the drift is the interesting part: three small paraphrases, each
+defensible on its own, turning a fact about one tool into a principle attributed
+to the author. Plans accumulate this the way code accumulates dead branches.
+**When this file states a position, check that it was decided rather than
+inferred.**
