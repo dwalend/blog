@@ -38,7 +38,7 @@ We started recording events in a simplified "Command Query" style in SHRINE 1.19
 
 ## Do Not Use CQRS Unless You Need It
 
-![Famous blue muppet is taken aback](https://handoff-cdn.appadvice.com/generated-app-plays/409467802/927770624-half-thumb/00001.jpg)
+*[Famous blue muppet is taken aback is taken aback.](https://archive.org/details/stnmnst/JPEG/stnmnst0007.jpg)*<sup>[1](#a-note-on-grover)</sup>
 
 Li Haoyi's blog entry "Strategic Scala Style: Principle of Least Power" introduces CQRS with "Don't use Event-Sourcing/CQRS unless you know what you're doing." [https://www.lihaoyi.com/post/StrategicScalaStylePrincipleofLeastPower.html#immutability--mutability](https://www.lihaoyi.com/post/StrategicScalaStylePrincipleofLeastPower.html#immutability--mutability) If you haven't read that article - go read it now. It's amazingly good general advice. Then understand why I've got references to Jon Stone's *The Monster at the End of This Book*, and that what follows is likely not good advice.
 
@@ -58,7 +58,7 @@ Using this event list for a network of four dozen hospitals, many more active re
 
 ## Sometimes You Need CQRS (Sometimes It Won't Be Enough)
 
-![Famous blue muppet asking you to not read this](https://i5.walmartimages.com/asr/398a2d2b-0323-4554-9e07-e9922b430ec9.c3a365ee49f423883987f24465860b27.jpeg?odnHeight=768&odnWidth=768&odnBg=FFFFFF)
+*[Famous blue muppet asks you not to read this.](https://archive.org/details/stnmnst/JPEG/stnmnst0009.jpg)*
 
 CQRS is particularly good at making a coherent, self-consistent view available in the chaos that is distributed computing. Observations of time in computing systems are staggeringly horrible.
 
@@ -122,7 +122,7 @@ Storing state structures like this is a recommended practice for CouchDB/DynamoD
 
 ## More Art, More Compromise: CQRS - but Storing State - in a Relational Database
 
-![Famous blue muppet doing his best to stop you from readying more](https://media.licdn.com/dms/image/C4E12AQFsiUtTc6m9FA/article-cover_image-shrink_600_2000/0/1520048114982?e=2147483647&v=beta&t=zWXAUd5Jf58HSh2gEBV14JtZ78jqhOIoLXy4pcfIGVs)
+*[Famous blue muppet does his best to stop you reading more.](https://archive.org/details/stnmnst/JPEG/stnmnst0016.jpg)*
 
 Really - if you can just use CouchDB, or DynamoDB, or something that fits your problem better than late-1980s relational database tables then stop reading, build your system, and go live a happier life. I recommended we store SHRINE's common currency data structures in DynamoDB or CouchDB, with a thin facade to just expose the calls SHRINE needed from either tool. My boss pointed out that our operations team had no experience with either system and were busy with higher priority projects. We needed to store everything in the relational database SHRINE already used.
 
@@ -130,7 +130,7 @@ Later Simon Chang - an amazing operations engineer - and I demonstrated SHRINE 2
 
 ## You're Still Reading?
 
-![Famous blue muppet pleading with you to read no further](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR50DdNX0mUSTHu7-eZoA_sVdWBqXGeakuFNxTz9XiybewBYWKjiuSHTNtAKTvcD7PaN5M&usqp=CAU)
+*[Famous blue muppet pleads with you to read no further.](https://archive.org/details/stnmnst/JPEG/stnmnst0025.jpg)*
 
 Let me see if I can talk you out of the mistake you are about to make by showing some of the code I wrote to get this working in SHRINE. (I guess it wasn't that bad, but we own some complex code when we could have just downloaded a library.)
 
@@ -255,4 +255,16 @@ Examining the generated SQL showed that almost everything in this method happene
 
 All-in-all this worked very well for SHRINE 2.0 to SHRINE 4.3 - about five years of production use. That upsert() is probably the most involved method I wrote and didn't delete in SHRINE's codebase. It has the feel of a senior class project to teach us how something complex works. I'm happy it works well, but there are easier off-the-shelf tools to get CQRS working. It's something other people could use but probably shouldn't.
 
-<!-- MISSING IMAGE (no src in the Hashnode HTML): Relieved blue muppet -->
+*[Famous blue muppet, relieved, is so embarrassed.](https://archive.org/details/stnmnst/JPEG/stnmnst0028.jpg)*
+
+---
+
+## A Note on "Famous Blue Muppet"
+
+**1.** The interruptions above are Grover's, from Jon Stone's *The Monster at the
+End of This Book*, illustrated by Michael Smollin. Each one links to a page of
+the [Internet Archive's scan](https://archive.org/details/stnmnst). I swapped the images out for links when I restarted this blog in mid-2026. Recent advances in AI have made me very sensitive to copyright.
+
+Jon Stone wrote this amazing book about dread, anticipation, and the gap between the two. It makes a great introduction to a discussion of The Sunk Cost Fallacy. It is essential reading alongside critiques of software development livecycle trends.
+
+You should own a physical copy. It can express your concerns very quickly, but it does not work on a screen. You don't want some Famous Blue Muppet sabotaging your trackpad.
