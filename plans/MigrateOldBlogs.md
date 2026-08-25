@@ -1,20 +1,24 @@
 # Migrating the Old Blogs
 
-Content-migration companion to `RestartBlog.md`. Four sources, in descending
-order of urgency.
+Content-migration companion to `RestartBlog.md`. Four sources.
 
-| Source | Count | Urgency | Phase |
+**Three of the four are done.** The blog went live at `https://blog.walend.net`
+on 2026-08-25; everything time-boxed by the DNS cutover finished before it. Only
+the java.net recovery is left, and it was never urgent.
+
+| Source | Count | Status | Phase |
 | --- | --- | --- | --- |
-| Jekyll `_posts/` (2014-2016) | 10 | Already in the repo | Phase 5 |
+| Jekyll `_posts/` (2014-2016) | 10 | Done 2026-08-23 | Phase 5 |
 | Hashnode (2024) | 4 | Done 2026-08-23 | Phase 6 |
 | Disqus comments (2015) | 6 real | Done 2026-08-24 | Phase 7 |
-| java.net via wayback (2003-2009) | ~37 pages | After launch | Phase 10 |
+| java.net via wayback (2003-2009) | ~37 pages | **Outstanding** | Phase 10 |
 
 ---
 
-## 1. The 10 Jekyll posts (Phase 5)
+## 1. The 10 Jekyll posts (Phase 5)  [DONE 2026-08-23]
 
-Already in `_posts/` with Jekyll frontmatter. Low risk - mostly a move plus an alias.
+All ten live at `/YYYY/MM/slug/` with 20 redirect stubs. The old Jekyll tree is
+deleted; it stays in git history.
 
 | File | Title |
 | --- | --- |
@@ -29,32 +33,49 @@ Already in `_posts/` with Jekyll frontmatter. Low risk - mostly a move plus an a
 | `2016-05-20-Applying-Typesafe-Config.md` | Just apply(Config) |
 | `2016-06-13-Pimping-Config.md` | Implicit Pimp Suspicion |
 
-Steps:
+What it took, kept because the next migration will hit the same things:
 
-1. Move `_posts/*.md` -> `src/posts/`. Eleventy reads the `YYYY-MM-DD-` filename
-   prefix for the date the same way Jekyll does, so dates carry over for free.
-2. Frontmatter is already compatible (`layout`, `title`, `comments`). `layout: post`
-   resolves to `src/_includes/post.liquid`.
-3. **Aliases.** Old URLs were `https://dwalend.github.io/blog/YYYY/MM/DD/Name.html`.
-   New URLs are `https://blog.walend.net/YYYY/MM/slug/`. Generate a redirect stub
-   per old path. Both a `.html` and a trailing-slash variant were in circulation
-   (the Disqus thread list shows both `/Easy-Parallel.html` and `/Easy-Parallel/`),
-   so emit both.
-   - These are meta-refresh + `<link rel="canonical">` stubs, not HTTP 301s.
-     GitHub Pages cannot serve real redirects on a static site.
-   - Note the old host was `dwalend.github.io/blog/...`, a *different origin* from
-     `blog.walend.net`. Stubs on the new domain only help links that already point
-     at the new domain. Keeping the repo's Pages site reachable at
-     `dwalend.github.io/blog/` preserves the rest.
-4. Check the body of each for Jekyll-isms: `{% highlight scala %}` blocks need to
-   become fenced ```` ```scala ```` blocks for the syntax-highlight plugin, and
-   `{{ site.baseurl }}` references need updating.
-5. Spot-check internal cross-links between posts - several reference each other.
+1. Moving `_posts/*.md` -> `src/posts/` carried the dates for free - Eleventy
+   reads the `YYYY-MM-DD-` filename prefix the same way Jekyll does.
+2. Frontmatter was already compatible (`layout`, `title`, `comments`).
+3. **Aliases.** Old URLs were `.../YYYY/MM/DD/Name.html`, new ones are
+   `/YYYY/MM/slug/`. Both a `.html` and a trailing-slash variant were in
+   circulation, so both are emitted - 20 stubs for 10 posts. They are
+   meta-refresh + `<link rel="canonical">` stubs, not HTTP 301s; GitHub Pages
+   cannot serve real redirects for a static site.
+4. **49 code blocks** that Eleventy had been flattening into prose were recovered
+   and fenced with languages. This was the expensive part, and it is the reason
+   the journal keeps repeating that generated output must be parsed rather than
+   read.
+
+### The old github.io origin now redirects  [changed at the cutover]
+
+This section used to warn that `dwalend.github.io/blog/...` was a *different
+origin* from `blog.walend.net`, so stubs on the new domain could not help links
+pointing at the old one, and that the fix was keeping the github.io site
+reachable.
+
+**That is no longer how it behaves, and the outcome is better than the warning
+feared.** Setting the custom domain made GitHub serve the old origin as a
+redirect to the new one, preserving the path. Verified 2026-08-25:
+
+```
+https://dwalend.github.io/blog/2015/11/10/Easy-Parallel.html
+  -> 301 https://blog.walend.net/2015/11/10/Easy-Parallel.html
+  -> 200 (the alias stub)
+  -> the post
+```
+
+So an old github.io link lands on the right post through two hops, and no
+separate provision is needed for that origin. Nothing to do here; recorded
+because the old warning read as a live constraint.
 
 ## 2. The 4 Hashnode posts (Phase 6)  [DONE 2026-08-23]
 
-**Do this before the DNS cutover.** Once `blog.walend.net` leaves Hashnode these
-URLs stop resolving.
+Done before the DNS cutover, which is what made it possible - once
+`blog.walend.net` left Hashnode on 2026-08-25 these source URLs stopped
+resolving. The text came from the **published** RSS content, not the raw
+`_pending` drafts, because the published versions had been edited.
 
 | Published | Title | Hashnode slug |
 | --- | --- | --- |
@@ -106,23 +127,35 @@ and five of them form one substantive thread:
 
 That thread is worth more than the comment system it lives in.
 
-Steps:
+How it actually went:
 
-1. Export from Disqus admin: Settings -> Export. It emails a WXR/XML archive.
-   Do this early - it is the only copy.
-2. Because it is six comments on one post, **do not** try to import them into
-   giscus. Render them as static HTML at the foot of that one post: name, date,
-   body, in a `<section class="archived-comments">`.
-3. Credit the commenters by name and keep their original dates.
-4. Note the forum has ~25 threads but 0 posts on all of them except this one -
-   many are duplicates from `127.0.0.1:4000` local previews and from URL-scheme
-   churn. Nothing else needs preserving.
-5. After export, the Disqus account can be abandoned.
+1. **No Disqus export was needed.** The plan said to export from Settings ->
+   Export early, because it was "the only copy." It was not - the forum's public
+   RSS feed still carried the comments, and that is where they came from. The
+   export step was never run.
+2. All six real comments live in `src/_data/archivedComments.json` and render as
+   static HTML above giscus on `/2015/06/escape-from-inner-trait/`. Importing
+   six comments into giscus was never worth it.
+3. Commenters are credited by name with their original dates.
+4. The forum's other ~25 threads hold 0 posts - duplicates from
+   `127.0.0.1:4000` local previews and URL-scheme churn. Nothing else needed
+   preserving.
+5. The Disqus account can be abandoned. Worth doing deliberately rather than by
+   neglect, since the data is now in the repo.
 
-## 4. java.net via the wayback machine (Phase 10)
+## 4. java.net via the wayback machine (Phase 10)  [OUTSTANDING]
 
-The old `weblogs.java.net/blog/dwalend/` blog is recoverable. A CDX query returns
-**84 archived URLs, of which ~37 are article pages**, spanning **2003 through 2009**.
+**The only migration left**, and the only one that was never time-boxed by the
+cutover.
+
+The old `weblogs.java.net/blog/dwalend/` blog is recoverable. A CDX query was
+reported to return **84 archived URLs, of which ~37 are article pages**, spanning
+**2003 through 2009**.
+
+**Re-verify that count before planning around it.** The query below did not
+answer on 2026-08-25 - two attempts, both timing out rather than returning an
+error - so the 84/37 figures are as-recorded, not as-confirmed. The CDX endpoint
+is often slow rather than gone; treat a timeout as "try again," not as loss.
 
 ```
 http://web.archive.org/cdx/search/cdx?url=weblogs.java.net/blog/dwalend*&output=text&fl=original,timestamp,statuscode&collapse=urlkey&filter=statuscode:200
@@ -173,17 +206,28 @@ them in the JavaScript itself, and the post should say so in prose too.
 Not a migration - a backlog. Mine it for post ideas once the publishing habit is
 re-established. Out of scope for the restart.
 
-## 6. The 2014-2024 drafts
+## 6. The drafts in `_pending/`
 
-Staying drafts, per decision. Keep them out of the build but in the repo:
+Staying drafts, per decision. Out of the build, in the repo. Thirteen files as of
+2026-08-25:
 
 `2014-09-02-blog-setup.md`, `2014-09-05-custom-collection.md`,
 `2015-03-31-Progression.md`, `2015-06-01-Java-Pedantic.md`,
 `2016-05-13-welcome-to-jekyll.markdown`, `2024-02-27-back-again.md`,
-`2024-03-21-Daily-Loop.md`, `2024-04-26-horses.md`, `remotely.md`,
-`blog_ideas.txt`, `NEScalaSymposiumDay1.txt`
+`2024-03-21-Daily-Loop.md`, `2024-04-26-horses.md`,
+`2026-08-30-kill-at-thirty-percent.md`, `you-shouldnt-be-able-to.md`,
+`remotely.md`, `blog_ideas.txt`, `NEScalaSymposiumDay1.txt`
 
-Note `2016-05-13-welcome-to-jekyll.markdown` is the stock Jekyll sample post and can
-just be deleted. The four drafts that correspond to published Hashnode posts
+Two are newer than this plan and are **not** part of the migration -
+`2026-08-30-kill-at-thirty-percent.md` and `you-shouldnt-be-able-to.md` are new
+writing, and `2026-08-30` is a future date of the same kind the centaur post
+used. Eleventy builds future-dated posts without complaint, so a date is not a
+guard; moving the file into `src/posts/` is what publishes it.
+
+`2016-05-13-welcome-to-jekyll.markdown` is the stock Jekyll sample post and can
+just be deleted.
+
+The four drafts that corresponded to published Hashnode posts
 (`2024-03-01-first-day-plan.md`, `2024-03-20-20-minute-limit.md`,
-`2024-04-27-capping-complexity.md`, `CQRSWithRDMS.md`) are superseded by section 2.
+`2024-04-27-capping-complexity.md`, `CQRSWithRDMS.md`) were superseded by
+section 2 and deleted; they stay in git history.

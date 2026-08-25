@@ -1067,3 +1067,74 @@ the plan now says in as many words that the two must be changed together.
 description. The character is named exactly once, in the credit at the foot of
 the post. The piece refuses to say who it is until it has to, which is a better
 joke than the images were.
+
+## 2026-08-25 - Reconciling `MigrateOldBlogs.md` against what happened
+
+Three of that plan's four sources were done and the file still read as though
+none of them were. Bringing it up to date turned up more than tense changes.
+
+### A warning that had quietly become false
+
+Section 1 said `dwalend.github.io/blog/...` was a *different origin* from
+`blog.walend.net`, so alias stubs on the new domain could not help links pointing
+at the old one, and that the mitigation was keeping the github.io site reachable.
+
+Setting the custom domain changed that. GitHub now serves the old origin as a
+redirect that preserves the path:
+
+```
+https://dwalend.github.io/blog/2015/11/10/Easy-Parallel.html
+  -> 301 https://blog.walend.net/2015/11/10/Easy-Parallel.html
+  -> 200 (the alias stub)
+  -> the post
+```
+
+Old links land on the right post through two hops, and the mitigation the plan
+prescribed is unnecessary. Better than the warning feared, and worth writing down
+precisely because it read as a live constraint - a stale warning is more
+expensive than a stale status line, since someone will act on it.
+
+That is twice now the cutover has produced behavior nobody had verified: the
+artifact CNAME that did nothing, and this origin that started redirecting. Both
+were one `curl` away the whole time.
+
+### An inventory that had drifted
+
+Section 6 listed eleven drafts. `_pending/` holds thirteen. The two extra -
+`2026-08-30-kill-at-thirty-percent.md` and `you-shouldnt-be-able-to.md` - are new
+writing, not migration, so they had never belonged to this plan's subject and had
+simply accumulated underneath it.
+
+Caught by cross-checking the list against `os.listdir` rather than reading both
+and trusting my eyes. It also caught `2024-04-27-capping-complexity.md`, which I
+had just transcribed into the file as `2024-04-26`; git history had the real
+name. **A list of filenames is generated output too** - diff it, do not read it.
+
+Noted in passing that `2026-08-30` is a future date of the same kind the centaur
+post used. Eleventy builds future-dated posts without complaint, so the date is
+not a guard. Moving the file into `src/posts/` is what publishes it.
+
+### A claim that could not be re-verified
+
+Section 4's CDX query - the one that reports 84 archived java.net URLs, ~37 of
+them articles - did not answer. Two attempts, both timing out rather than
+returning an error.
+
+The figures stay in the plan, relabelled as-recorded rather than as-confirmed,
+with a note that a CDX timeout means try again rather than that anything is lost.
+The alternative was leaving a number that looks measured sitting next to a query
+that no longer runs, which is the kind of thing that gets planned around.
+
+### The Disqus export, again
+
+Section 3 still said to export from Disqus early because it was "the only copy."
+It was not, and the export was never run - see the 2026-08-24 entry, which has
+the whole story. The plan now records what happened instead of what was expected.
+
+### The general shape
+
+Every correction here came from checking a claim the plan stated confidently, and
+none of the checks was expensive: one `curl -L`, one `os.listdir`, one
+`git log --diff-filter=D`. The pattern from the cutover holds - **the confident
+sentences are the ones to verify** - and it applies to a plan's description of
+the world just as much as to a build's output.
