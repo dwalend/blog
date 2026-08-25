@@ -395,7 +395,7 @@ magick -size 2400x1260 xc:'#14161a' \
   -font '/System/Library/Fonts/Supplemental/Arial.ttf' -pointsize 68 -fill '#83b4ff' \
   -annotate +180+1090 'blog.walend.net' \
   -background '#14161a' -alpha remove -alpha off -depth 8 -strip \
-  src/img/og-card-v2.png
+  src/img/og-default.png
 ```
 
 **Do not add `PNG8:` to that.** See below.

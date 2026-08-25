@@ -35,7 +35,7 @@ src/
 ├── _includes/          layouts and partials, in Liquid
 ├── posts/              published posts; posts.json sets their shared defaults
 ├── css/main.css
-├── img/og-card-v2.png  the site-wide OpenGraph card
+├── img/og-default.png  the site-wide OpenGraph card
 ├── index.liquid
 ├── feed.njk            RSS; the one Nunjucks template, for the RSS plugin's filters
 ├── feed.xsl.liquid     XSLT so browsers show the feed as a page, not raw XML

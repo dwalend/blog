@@ -1,0 +1,10 @@
+---
+permalink: /rss.xml
+eleventyExcludeFromCollections: true
+---
+{#-
+  Hashnode published this blog's feed at /rss.xml for the whole 2024 run, and
+  /feed.xml 404'd there. Anyone still subscribed to that URL would have gone
+  silent at the DNS cutover. Same content, same guids, so they carry over.
+-#}
+{%- set selfPath = "/rss.xml" -%}{%- include "feed-body.njk" -%}

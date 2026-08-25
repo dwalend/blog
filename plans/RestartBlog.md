@@ -266,28 +266,21 @@ the joke on their own.
 One image is currently missing entirely, so this is also the moment the gag goes
 back to five beats instead of four.
 
-### Rename the OpenGraph card back  [on or after 2026-08-30]
+### Rename the OpenGraph card back  [DONE 2026-08-24]
 
-`src/img/og-card-v2.png` is a **temporary name**. The file was renamed on
-2026-08-23 for one reason only: LinkedIn had cached the first, badly quantised
-version of the card on its own media servers, and Post Inspector refreshes page
-metadata without replacing a stored image. A new URL is a new asset to them, and
-was the only reliable way to force a refetch.
+Folded into the Phase 9 cutover, as this section said to do if the cutover came
+first. `src/img/og-card-v2.png` is back to `src/img/og-default.png`, with the
+reference updated in `src/_includes/head.liquid`, `README.md`, and the recipe in
+the journal.
 
-The `v2` carries no meaning and will read as though a `v3` should follow. Once
-LinkedIn has shown the sharp card:
+The `v2` existed for one reason: on 2026-08-23 LinkedIn had cached the first,
+badly quantised card on its own media servers, and Post Inspector refreshes page
+metadata without replacing a stored image, so a new URL was the only reliable way
+to force a refetch. The name carried no meaning and read as though a `v3` should
+follow.
 
-1. `mv src/img/og-card-v2.png src/img/og-default.png`
-2. Update the reference in `src/_includes/head.liquid`, plus `README.md` and the
-   recipe in the journal.
-3. Push, and re-inspect once to confirm the preview survives the move.
-
-Waiting a week is arbitrary - there is no published TTL for LinkedIn's image
-cache. The real signal is having seen the sharp card render at least once.
-
-If the DNS cutover (Phase 9) happens first, do the rename as part of it and skip
-the separate re-inspection. Every preview cache keys on URL, so moving to
-`blog.walend.net` gives clean caches anyway and makes this moot.
+No separate re-inspection is needed. Every preview cache keys on URL, and moving
+to `blog.walend.net` gives clean caches anyway.
 
 Two checks that can only be done against the live site, so they belong with the
 next deploy rather than with a commit:
@@ -385,28 +378,59 @@ result is real rather than a broken loop reporting success.
 
 ### Prepared, uncommitted
 
+**`master` is currently a red build.** `446d936 "Before DNS cutover."` committed
+`feed.njk` in its new one-line include form but not the three new files it
+depends on, so Actions run #20 died with `template not found: feed-body.njk` and
+wrote 0 files. That is fail-safe - the artifact upload never ran and Pages still
+serves the "First post." deploy - but the next commit has to `git add` all three,
+or the same thing happens again.
+
 - `src/CNAME` containing `blog.walend.net`, plus its `addPassthroughCopy` in
   `eleventy.config.js` - it has no extension, so Eleventy skips it otherwise.
-  The Actions deploy sets the custom domain from this file in the artifact.
+  Whether this file alone registers the custom domain is unconfirmed; it is
+  documented behavior for branch-based publishing, and this repo uses a custom
+  workflow. Step 4 of the order below checks rather than assumes.
 - `src/rss.njk` and `src/_includes/feed-body.njk`. **See the journal** - this one
   is not cosmetic, it is the difference between keeping and losing the existing
   Hashnode subscribers.
+- The og-card rename, `og-card-v2.png` -> `og-default.png`, folded in here
+  because every preview cache resets at the cutover anyway.
 
 ### The order, which is not the order this plan originally had
 
-The original step list put Pages settings before DNS. That fails: GitHub
-validates the DNS record when a custom domain is set, and it still points at
-Hashnode.
+Two things force the sequence, and they pull against each other.
+
+**DNS has to move before Pages settings.** GitHub validates the DNS record when a
+custom domain is set, and it still points at Hashnode. That is why the original
+step list - Pages settings, then DNS - fails.
+
+**The build reads its base path from the Pages settings, not from `src/CNAME`.**
+`actions/configure-pages` reports `base_path`, and the workflow passes it through
+as `PATH_PREFIX`. The failed run on 2026-08-24 logged it plainly:
+
+```
+Building for https://dwalend.github.io (prefix '/blog')
+```
+
+`cname` is still `null` in the Pages API, so the first build after `src/CNAME`
+lands will *still* emit `/blog/...` URLs while the site is being served at the
+root of `blog.walend.net`. CSS, images, and all 24 aliases would 404. **The
+custom domain has to register before the build that produces the final URLs**,
+which means a second run, not one.
+
+So: cut DNS over first, let the domain register, then rebuild.
 
 1. **Optional, recommended: lower the TTL first.** The record is TTL 600. Set it
    to 60, wait ~10 minutes, then cut over. The difference is a one-minute versus
    a ten-minute propagation tail.
-2. **Commit and push** the prepared files. Let Actions finish (~30s). The CNAME
-   file in the artifact is what tells Pages about the domain.
+2. **Commit and push** the prepared files - `src/CNAME`, `src/rss.njk`,
+   `src/_includes/feed-body.njk`, and the og-card rename. Wait for green. This
+   build still emits `/blog/...`; that is expected and correct, because DNS has
+   not moved and the site is still served at `dwalend.github.io/blog/`.
 3. **Run the Route 53 change immediately after** - back to back with step 2.
-   Between them the new site is unreachable at *either* URL, because
-   `dwalend.github.io/blog` begins redirecting to `blog.walend.net`, which is
-   still Hashnode. Keep the window short.
+   Between them the new site may be unreachable at *either* URL if the artifact's
+   CNAME registers the domain: `dwalend.github.io/blog` begins redirecting to
+   `blog.walend.net`, which is still Hashnode. Keep the window short.
 
    ```sh
    cat > /tmp/route53-cutover.json <<'JSON'
@@ -431,12 +455,41 @@ Hashnode.
    ```
 
    To roll back, run the same batch with `"Value": "hashnode.network"`.
-4. **Wait for the certificate.** HTTPS fails until Let's Encrypt issues for the
+4. **Confirm the custom domain registered.** This is the step the plan was
+   missing.
+
+   ```sh
+   gh api repos/dwalend/blog/pages --jq '{cname,html_url,https_enforced}'
+   ```
+
+   - **`cname` is `blog.walend.net`** - the artifact's CNAME file did the work.
+   - **`cname` is still `null`** - the artifact route does not apply to a custom
+     Actions workflow here, so set the domain by hand in Settings -> Pages. It
+     validates now that DNS resolves, and setting it queues a rebuild on its own.
+5. **Re-run the build so the URLs come out at `/`.** Only needed if step 4 found
+   the domain already set by the artifact - setting it by hand queues its own
+   rebuild.
+
+   ```sh
+   gh workflow run pages.yml && sleep 20 && gh run watch
+   ```
+
+   Then check that the prefix is gone before believing it:
+
+   ```sh
+   gh run view --log | grep 'Building for'   # want prefix '/'
+   curl -sI https://blog.walend.net/css/main.css | head -1
+   ```
+
+   Budget a few minutes across steps 4 and 5, not the ~30s a single deploy takes.
+6. **Wait for the certificate.** HTTPS fails until Let's Encrypt issues for the
    new domain - minutes to about an hour. GitHub retries on its own.
-5. **Enable Enforce HTTPS.** It stays unavailable until the cert exists.
-6. **Verify** - the same sweep as above, against `https://blog.walend.net`:
-   every alias, both feeds, autodiscovery from a real feed reader.
-7. **Leave the Hashnode blog in place**, unpublished-to. `dwalend.hashnode.dev`
+7. **Enable Enforce HTTPS.** It stays unavailable until the cert exists.
+8. **Verify** - the same sweep as above, against `https://blog.walend.net`:
+   every alias, both feeds, autodiscovery from a real feed reader. Do this after
+   step 5, not before; a sweep against a `/blog/`-prefixed build will pass on the
+   pages and fail on every asset, which is a confusing way to find out.
+9. **Leave the Hashnode blog in place**, unpublished-to. `dwalend.hashnode.dev`
    keeps working as a backstop.
 
 ### Every feed guid changes at this moment
@@ -454,7 +507,7 @@ anyone the feed exists.
 Both are in "Where things stand" above, and every preview and DNS cache resets
 here anyway:
 
-- Rename the OpenGraph card off its temporary `og-card-v2.png`.
+- ~~Rename the OpenGraph card off its temporary `og-card-v2.png`.~~ Done.
 - Source the Grover pictures properly.
 
 ## Phase 10 - After launch
@@ -475,7 +528,7 @@ question rather than a no; see the deferred list.
 
 ### 1. OpenGraph tags  [DONE 2026-08-23]
 
-`head.liquid` emits the full set, with `src/img/og-card-v2.png` as a site-wide
+`head.liquid` emits the full set, with `src/img/og-default.png` as a site-wide
 card. See the journal. Two things still worth doing when this phase comes up:
 
 - **Verify with the real scrapers** - paste a link into a private Discord

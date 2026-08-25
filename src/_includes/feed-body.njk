@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet type="text/xsl" href="{{ "/feed.xsl" | url }}"?>
+<rss version="2.0"
+     xmlns:atom="http://www.w3.org/2005/Atom"
+     xmlns:content="http://purl.org/rss/1.0/modules/content/"
+     xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <channel>
+    <title>{{ metadata.title }}</title>
+    <link>{{ metadata.url }}{{ "/" | url }}</link>
+    <atom:link href="{{ metadata.url }}{{ selfPath | url }}" rel="self" type="application/rss+xml" />
+    <description>{{ metadata.description }}</description>
+    <language>{{ metadata.language }}</language>
+    <copyright>{{ metadata.author.name }}, {{ metadata.license.content.name }}</copyright>
+{%- if collections.post | length %}
+    <lastBuildDate>{{ collections.post | getNewestCollectionItemDate | dateToRfc822("UTC") }}</lastBuildDate>
+{%- endif %}
+{%- for post in collections.post | reverse %}
+{%- if loop.index0 < 10 %}
+{%- set postUrl = metadata.url + (post.url | url) %}
+    <item>
+      <title>{{ post.data.title }}</title>
+      <link>{{ postUrl }}</link>
+      <guid isPermaLink="true">{{ postUrl }}</guid>
+      <pubDate>{{ post.date | dateToRfc822("UTC") }}</pubDate>
+      <dc:creator>{{ metadata.author.name }}</dc:creator>
+{%- for tag in post.data.tags %}{% if tag != "post" %}
+      <category>{{ tag }}</category>
+{%- endif %}{% endfor %}
+      <description>{{ post.data.description if post.data.description else (post.content | striptags | truncate(220)) }}</description>
+      <content:encoded><![CDATA[{{ post.content | transformWithHtmlBase(metadata.url, post.url) | safe }}]]></content:encoded>
+    </item>
+{%- endif %}
+{%- endfor %}
+  </channel>
+</rss>
