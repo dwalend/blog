@@ -143,111 +143,113 @@ How it actually went:
 5. The Disqus account can be abandoned. Worth doing deliberately rather than by
    neglect, since the data is now in the repo.
 
-## 4. java.net via the wayback machine (Phase 10)  [OUTSTANDING]
+## 4. java.net, recovered from Common Crawl (Phase 10)  [FETCHED 2026-08-25]
 
-**The only migration left**, and the only one that was never time-boxed by the
-cutover.
+**34 blog posts (2003-2009) in `_archive-src/javanet/`, plus 2 java.net articles
+in `_archive-src/javanet-articles/`.** All from Common Crawl; the wayback machine
+was never used.
 
-The old `weblogs.java.net/blog/dwalend/` blog is recoverable. A CDX query was
-reported to return **84 archived URLs, of which ~37 are article pages**, spanning
-**2003 through 2009**.
+### The articles were not blog posts
 
-**The wayback machine was unreachable on 2026-08-25 - from archive.org's side.**
-`web.archive.org` refused connections on both 80 and 443, from two different
-machines, over ~75-second timeouts.
+`today.java.net/pub/a/...` was a different site from `weblogs.java.net/blog/dwalend`,
+which is why searching the blog archive never found them. This plan said
+"article" and it was read as "blog post."
 
-The first read of this was wrong. Seeing `archive.org` work while
-`web.archive.org` failed, it looked like an egress policy on the agent's sandbox.
-Running the same script from the laptop produced the identical failure, which
-ruled that out. What it actually is:
+- **`2006-04-04-understanding-service-oriented-architecture.html`** - 62KB, the
+  one the retrospective is for. Opens by going after the hype: *"By 2008, SOA will
+  provide the basis for 80 percent of development projects." At JavaOne 2005, 82
+  of the 168 technical session PDFs contained "SOA."*
+- **`2008-05-08-jmx-for-unit-tests-in-tdd.html`** - a JavaOne 2008 session
+  abstract, complete as captured but short. David expected only one article;
+  there were two.
 
-- One A record, `207.241.237.3`, from every public resolver. No AAAA, so no
-  IPv6-first stall.
-- Connecting straight to that IP with SNI fails the same way, so nothing local is
-  intercepting.
-- `archive.org` lives on `207.241.224.2` - a different range - which is why one
-  host answers and the other does not.
-- The `wayback/available` API on `archive.org`, which answered normally twenty
-  minutes earlier, started returning **`429 Too Many Requests`**.
+Found via the author page `today.java.net/pub/au/95`, which is linked from the
+SOA article and lists everything he wrote there. **That is the trick worth
+remembering**: an author page enumerates what a URL-pattern search cannot guess.
 
-A host refusing every connection while its sibling sheds load with 429s is the
-archive under strain. Transient, most likely. **Retry later rather than
-debugging the network** - and back off rather than hammering, since something
-over there is already rate-limiting.
+The URL itself came from a javawhat.com directory entry David found - a page with
+no content on it, but with the exact link. A dead end that was not one.
 
-`bin/fetch-javanet.sh` is resumable precisely for this: re-running after a
-failure re-queries CDX only if `cdx.txt` is missing, and skips every article
-already on disk.
+| Year | Posts |
+| --- | --- |
+| 2003 | 4 |
+| 2004 | 6 |
+| 2005 | 5 |
+| 2006 | 8 |
+| 2007 | 4 |
+| 2008 | 3 |
+| 2009 | 1 |
 
-What could be confirmed, via the availability API on the reachable `archive.org`
-host, is that **the material is still there**:
+### Why Common Crawl instead
+
+`web.archive.org` refused every connection for a full day on 2026-08-25 - from
+two machines, over ~75-second timeouts - while `archive.org` itself stayed up.
+See the journal. Rather than wait it out, the question became which *other*
+archive holds this material.
+
+Checked: `arquivo.pt` (reachable, has nothing - it is a Portuguese national
+archive), `archive.today` (reachable), `web.archive.org.bibalex.org` (down),
+**Common Crawl (reachable, and has it)**.
+
+Common Crawl's two oldest indexes, `CC-MAIN-2008-2009` and `CC-MAIN-2009-2010`,
+cover the tail of the java.net run - but they hold snapshots of the *whole*
+archive, back to 2003, because the blog's own monthly `/archive/` pages were
+still linked when the crawler came through. That is the lucky part and it is
+worth understanding: the crawl date bounds when the crawler visited, not how old
+the content is.
+
+### How it works
+
+`bin/fetch-javanet-cc.py` queries both indexes, keeps the largest capture per
+URL, does a ranged read against `data.commoncrawl.org`, unzips the ARC record,
+and writes the HTTP body. Resumable; existing files are skipped.
 
 ```sh
-curl -s "https://archive.org/wayback/available?url=weblogs.java.net/blog/dwalend/"
-# -> closest snapshot 20090531085525, status 200, available true
+bin/fetch-javanet-cc.py --list    # inventory only
+bin/fetch-javanet-cc.py           # fetch what is missing
 ```
 
-The CDX endpoint is not mirrored on that host (404), so the **84 archived URLs /
-~37 article pages** figures remain as-recorded rather than as-confirmed. A CDX
-timeout means try again; it does not mean anything is lost.
+`bin/fetch-javanet.sh` (the wayback version) is kept. Common Crawl only has what
+Common Crawl crawled; if the wayback machine comes back it is worth re-running to
+see whether it holds anything Common Crawl missed. The plan's original figure was
+~37 article pages against the 33 recovered here.
 
-**`bin/fetch-javanet.sh` does the network half** - CDX query, filter to article
-pages, fetch each with the `id_` suffix, write raw HTML into
-`_archive-src/javanet/`. It is resumable, so an interrupted run costs nothing,
-and it sleeps a second between fetches. Run it from a machine that can reach the
-archive:
+Two filter traps, both hit and both fixed - **articles live under `/archive/`**,
+so excluding that path drops everything, and **`/YYYY/MM/index.html` matches the
+article pattern** but is a monthly listing, not a post. Excluding those took the
+count from 58 to 33.
 
-```sh
-bin/fetch-javanet.sh --list    # show what would be fetched, no downloads
-bin/fetch-javanet.sh           # fetch what is missing
-```
+### The SOA retrospective
 
-Everything after that - HTML to Markdown, frontmatter, presentation - can be done
-here from the local files.
+The plan wanted "an especially good article on service-oriented architecture."
+It is **`2004-01-coupling_in_sof.html`, "Coupling in Software Architecture"** -
+a coupling spectrum running from dissociated ubiquitous services assembled by
+discovery (UDDI, topic-based messaging) through known services assembled at run
+time by configuration.
 
-One trap already found and fixed in that script: Movable Type puts articles under
-`/archive/`, so filtering that path out drops **every** article. The
-`YYYY/MM/slug.html` date pattern is what separates articles from the category
-listings; nothing else needs excluding but `index.html` and the `%23comments`
-artifacts.
+Note the date: January 2004. That makes it a **22-year** retrospective, not the
+20 this plan has said since it was written.
 
-**`_archive-src/` gets committed** (decided 2026-08-25). The wayback copy is the
-only copy, and 20-year-old bytes are worth having twice. It is not in
-`.gitignore`, so the fetched HTML lands in the working tree ready to commit -
-that is deliberate, not an oversight.
+The category index at `archive/web_services_and_xml/index.html` is **not** in
+Common Crawl - no captures. If that grouping matters for the retrospective it
+needs the wayback machine, or reconstructing from the posts themselves.
 
-Sample of what is there:
+### Still to do
 
-- `2003/09/defending_autob.html`, `design_for_reus.html`, `somnifugijms_fo_6.html`
-- `2003/10/design_for_exce.html`, `reviewing_the_j.html`
-- `2004/01/coupling_in_sof.html`, `2004/07/test_driving_ge.html`,
-  `2004/08/moving_jdigraph.html`, `2004/12/naming_generic.html`
-- `2005/03/better_javadoc.html`, `2005/08/graphviz_class.html`
-- `2006/05/tilting_at_the_1.html`, `2006/12/pronouns_in_com.html`
-- `2007/05/preparing_for_j.html`, `2007/06/salutafugijms_j_1.html`
-
-There is also a category index at `archive/web_services_and_xml/index.html` -
-**that is the thread to pull for the service-oriented-architecture retrospective.**
-
-Steps:
-
-1. Run the CDX query, filter to `statuscode:200`, drop `/index.html` archive pages
-   and the `%23comments` artifacts.
-2. For each article, fetch `http://web.archive.org/web/<timestamp>id_/<url>` - the
-   `id_` suffix returns the original bytes without the wayback toolbar injection.
-3. Convert the 2003-era HTML to Markdown. Expect Movable Type markup, old entities,
-   and dead outbound links.
-4. Decide presentation. Suggestion: publish under an `/archive/` prefix with a
-   standing header noting the original date and source, rather than backdating them
-   into the main feed - the feed should not suddenly emit 37 items from 2003.
-5. Tag them so they are browsable but do not dominate the front page.
-6. Then write the **SOA 20-year retrospective** as a *new* post that links back into
-   the recovered `web_services_and_xml` material. That is the actual goal; the
-   recovery is in service of it.
-
-Timing note: these have survived in the archive for 20 years and are not at
-immediate risk, but `weblogs.java.net` itself is long gone, so the wayback copy is
-the only copy.
+1. Convert the 33 HTML files to Markdown. Expect Movable Type markup, old
+   entities, and dead outbound links.
+2. Recover per-post dates. The filenames give `YYYY-MM`; the exact day is in the
+   HTML as "Posted by dwalend on September 18, 2003 at 05:14 AM" but in more than
+   one template shape across six years, so it needs a real parser rather than one
+   regex.
+3. **Decide about comments.** Several posts carry substantial threads - "Design
+   For Exceptions" has 25, "Naming Generic Types" 16, "What Giants?" 14, "Better
+   JavaDoc" 13. That is a real archive, the same judgement as the 2015 Disqus
+   thread in section 3, and it is in the recovered HTML already.
+4. Decide presentation - an `/archive/` prefix with a standing header rather than
+   backdating 33 items into the main feed.
+5. Then write the retrospective as a *new* post linking back into it. That is the
+   actual goal; the recovery is in service of it.
 
 ## 4b. Note for whichever post covers disentangleParGraphs
 

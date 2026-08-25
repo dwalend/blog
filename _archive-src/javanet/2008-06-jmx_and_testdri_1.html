@@ -1,0 +1,577 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" /> 
+<title>JMX and Test-Driven Development | Java.net</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="alternate" type="application/atom+xml" title="Java.net Atom" href="/node/240364/atom/feed" />
+<meta name="description" content="At JavaOne this year I did a short talk on using JMX in test-driven development." />
+<meta name="robots" content="index,follow" />
+<meta name="DC.title" content="JMX and Test-Driven Development" />
+<link rel="shortcut icon" href="/misc/favicon.ico" type="image/x-icon" />
+<link type="text/css" rel="stylesheet" media="all" href="/sites/default/files/css/css_af4e7d6b9b2939fd69526c5b49804d2a.css" />
+<!--[if IE]>
+<link rel="stylesheet" href="/sites/all/themes/java/ie.css" />
+<![endif]-->
+
+<style>
+#edit-taxonomy-6-wrapper{display:none} /*feed category*/
+</style>
+
+<style>
+#edit-taxonomy-4-wrapper{display:none} /*comm homepage*/
+</style>
+
+
+<link rel="shortcut icon" href="http://community.java.net/favicon.ico">
+<!--  Begin SiteCatalyst code  -->
+<script language="JavaScript">
+<!--
+var s_channel="other";
+//--></script>
+<!--  End SiteCatalyst code  -->
+</head>
+<body id="page-body" leftmargin="0" topmargin="0" rightmargin="0" bgcolor="#ffffff" marginheight="0" marginwidth="0">
+<a name="top"></a>
+<div class="topline">
+  <div class="topbar">
+    <table border="0" cellpadding="0" cellspacing="0" height="25" width="100%">
+      <tbody>
+        <tr>
+          <td rowspan="2" width="100%"><a href="http://www.java.net/"><img src="/images/header_jnet_new.jpg" alt="The Source for Java Technology Collaboration" border="0" height="60" width="500"></a></td>
+          <td style="vertical-align: middle;" nowrap="nowrap"><div id="login">
+          	              <form name="loginform" id="loginform" action="https://www.dev.java.net/servlets/TLogin" method="post">
+                <input name="redir" value="http://www.java.net/blog/dwalend/archive/2008/06/jmx_and_testdri_1.html" type="hidden">
+                <div> <strong>User:</strong>
+                  <input name="loginID" id="loginID" value="" size="7" maxlength="32" type="text">
+                  <strong>Password:</strong>
+                  <input name="password" id="password" value="" size="7" maxlength="32" type="password">
+                  <input name="Login" class="buttonred" id="Button" value="Login" type="submit">
+                </div>
+                <div class="small" align="right"><strong> <a href="https://www.dev.java.net/servlets/Join">Register</a> | <a href="https://www.dev.java.net/servlets/TLogin">Login help</a> &nbsp;&nbsp;&nbsp;</strong>
+						</div>
+              </form>
+            </div></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <noindex>
+    <div class="tabs" id="toptabs">
+      <table border="0" cellpadding="4" cellspacing="0">
+        <tbody>
+          <tr>
+            <!-- make the active tab a TH instead of TD -->
+            <td><a href="https://www.dev.java.net/servlets/StartPage">My pages</a> </td>
+            								<td><a href="http://www.java.net/projects/">Projects</a></td>
+                <td><a href="http://www.java.net/community">Communities</a> </td>
+                <th><a href="http://www.java.net/">java.net</a></th>
+							          </tr>
+        </tbody>
+      </table>
+    </div>
+  </noindex>
+
+  <table id="main" border="0" cellpadding="2" cellspacing="2" width="100%">
+    <tbody>
+      <tr valign="top">
+        <td id="leftcol" rowspan="2" width="170">
+           <div id="block-menu-menu-get-involved" class="clear-block block block-menu">
+
+  <h2>Get Involved</h2>
+
+  <div class="content"><ul class="menu"><li class="leaf first"><a href="/about-javanet" title="About java.net">About java.net</a></li>
+<li class="leaf"><a href="/request-project" title="Request a Project">Request a Project</a></li>
+<li class="leaf"><a href="/publicize-your-project" title="Publicize your Project">Publicize your Project</a></li>
+<li class="leaf"><a href="/submit-content" title="Submit Content">Submit Content</a></li>
+<li class="leaf"><a href="https://java-net.dev.java.net/" title="">java-net Project</a></li>
+<li class="leaf"><a href="/enhancements" title="">Java.net Enhancements</a></li>
+<li class="leaf"><a href="https://www.dev.java.net/servlets/OpenCollabNet" title="">Site Help</a></li>
+<li class="leaf last"><a href="/form/report-inappropriate-content" title="Report Inappropriate Content">Report Inappropriate Content</a></li>
+</ul></div>
+</div>
+<div id="block-menu-menu-get-informed" class="clear-block block block-menu">
+
+  <h2>Get Informed</h2>
+
+  <div class="content"><ul class="menu"><li class="leaf first"><a href="/articles" title="">Articles</a></li>
+<li class="leaf"><a href="/blogfront" title="">Blogs</a></li>
+<li class="leaf"><a href="/events" title="">Events</a></li>
+<li class="leaf"><a href="http://safari.java.net/" title="">java.net Online Books</a></li>
+<li class="leaf last"><a href="/today/archive" title="Archive">java.net Archives</a></li>
+</ul></div>
+</div>
+<div id="block-menu-menu-get-connected" class="clear-block block block-menu">
+
+  <h2>Get Connected</h2>
+
+  <div class="content"><ul class="menu"><li class="leaf first"><a href="http://forums.java.net/" title="">java.net Forums</a></li>
+<li class="leaf"><a href="http://wiki.java.net" title="">Wiki</a></li>
+<li class="leaf"><a href="http://wiki.java.net/bin/view/Javapedia/WebHome" title="">Javapedia</a></li>
+<li class="leaf"><a href="http://wiki.java.net/bin/view/People/WebHome" title="">People</a></li>
+<li class="leaf"><a href="/partners" title="">Partners</a></li>
+<li class="leaf"><a href="http://wiki.java.net/bin/view/Javanet/JobsWiki" title="">Jobs</a></li>
+<li class="leaf"><a href="/pub/q/rsschannels" title="">RSS Feeds</a></li>
+<li class="leaf last"><a href="/jugs-list">Java User Groups</a></li>
+</ul></div>
+</div>
+<div id="block-block-1" class="clear-block block block-block">
+
+  <h2>Search</h2>
+
+  <div class="content"><form action="http://www.google.com/cse" id="cse-search-box">
+                  <div>Web and Projects:</div>
+                  <div>
+                   <input type="text" name="q" size="22" />
+                   <input type="hidden" name="cx" value="017555676512375062942:o5-kz1r0m2s" />
+                   <input type="hidden" name="ie" value="UTF-8" />
+                    <input type="submit" name="sa" value="Search" />
+                  </div>
+                </form>
+<script type="text/javascript" src="http://www.google.com/cse/brand?form=cse-search-box&lang=en"></script>
+
+
+
+            <!--<script type="text/javascript" src="/images/brand.htm"></script>-->
+                <div>Online Books:</div>
+                <form action="http://safari.java.net/search" method="post" name="searchForm" id="form_searchForm">
+                  <input name="__formName" value="searchForm" type="hidden">
+                  <input value="simple" name="searchmode" id="searchmode" type="hidden">
+                  <input value="0" name="page" id="page" type="hidden">
+                  <input value="summary" name="searchview" id="searchview" type="hidden">
+                  <input value="rank" name="sort" id="sort" type="hidden">
+                  <input value="desc" name="order" id="order" type="hidden">
+                  <input value="1" name="NewSearch" id="NewSearch" type="hidden">
+                  <div>
+                    <input name="searchtextbox" id="searchtextbox" value="" class="medium" size="14" type="text">
+                    <input class="buttonred" value=" » " border="0" type="submit">
+                  </div>
+                </form>
+                <div>java.net on <a href="http://markmail.org/">MarkMail</a>:</div>
+                <form action="http://markmail.org/search/list:net.java">
+                  <div>
+                    <input name="q" id="searchtextbox" value="" class="medium" size="14" type="text">
+                    <input class="buttonred" value=" » " border="0" type="submit">
+                  </div>
+                </form>
+                <div><a href="http://www.java.net/search">Advanced Search</a></div>
+</div>
+</div>
+        </td>
+        <td colspan="2" height="3"><img src="/images/a.gif" height="3" width="1"><br></td>
+      </tr>
+      <tr>
+        <td width="10"><img src="/images/a.gif" height="1" width="10"></td>
+        <td valign="top" width="100%">
+          <br>
+          <a name="skip2content"></a>
+          	            	<div id="content-top">
+              	<div id="block-block-20" class="clear-block block block-block">
+
+
+  <div class="content"><div id="blog-author-top"><table><tr><td><div id="blog-author-body"><img align="left" src="/images/people/david_walend.jpg" border="0" /></div></td><td valign="top"><h2><a href="/blog/7120">David Walend</a></h2><div id="blog-nav-links"><a href="/blog/2007/11/14/how-big-boolean">How big is that boolean[]?</a> | <a href="/blog/7120">Main</a> | <a href="/blog/2008/07/23/good-bye-alpha">Good-bye, Alpha</a></div></td></tr></table><div id="blog-author-feedlink2"><a href="/blog/7120/feed"><img src="/misc/feed.png" border="0" /></a></div></div><div style="clear:both"></div><div style="border-bottom: 4px #eee solid;">&nbsp;</div></div>
+</div>
+              </div>
+            						                          <h2 class="title">JMX and Test-Driven Development</h2>
+                                                <style>
+#edit-taxonomy-6-wrapper{display:none} /*feed category*/
+</style>
+
+<style>
+#edit-taxonomy-4-wrapper{display:none} /*comm homepage*/
+</style>
+
+  <div class="blog-node node">
+          <div id="blog-submitted">Posted by <a href="/blog/7120">dwalend</a> on June 8, 2008 at 3:51 PM PDT</div>  
+  <div class="content"><span class='print-link'></span><p>
+At JavaOne this year I did a <a href="http://today.java.net/pub/a/today/2008/05/08/j1-2k8-mtW07.html?page=last#thread">short talk</a> on using JMX in test-driven development. The talk was based on what I discovered working with JMX on another project, and delved deeper into while adding JMX support to <a href="https://somnifugijms.dev.java.net/">SomnifugiJMS</a> as part of <a href="https://somnifugijms.dev.java.net/servlets/ProjectDocumentList?folderID=9103&expandFolder=9103&folderID=0">release 21</a>. Test-driven development worked extremely well when combined with JMX. JMX should help testing systems with some defined life cycle. 
+</p><p>
+<b>Test Driven Development</b>
+</p><p>
+<a href="http://en.wikipedia.org/wiki/Test_driven_development">Test driven development</a> maximizes the benefits of writing tests by demanding that we write the tests before the code that will attempt to pass those tests. It ensures some level of quality because all work completed will pass at least one test. Developers establish a rapid, highly iterative development loop. The tests provide an easy way to measure progress. Managers enjoy having the detailed insight that a list of tests gives them. When I've got a little time away from the day job to do open source work, I can write a small test, then get back to making the test pass later. 
+</p><p>
+Test code and JMX monitoring code have a shared programatic problem. We promise ourselves that we'll go back and write test code later, and will add JMX monitoring code before we need it. Deadlines loom large, we get things working, and move on to the next project without doing either job well. Test driven development breaks that vicious cycle for tests. Using JMX in the tests breaks the cycle for both. (Thanks to <a href="http://weblogs.java.net/blog/editors/">Chris</a> for pointing this out after my talk.)
+</p><p>
+The test driven development loop is pretty simple. First, decide what feature to implement next. Design the API for that feature. Next, write a test for that feature and observe that all the other tests still pass. Finally write code to make the new test pass. Repeat until tests of all the features pass. Like <a href="http://weblogs.java.net/blog/johnsmart/archive/2008/06/tests_first_or.html">John says</a>, you can write the tests just after the code so long as you create tests in the same flow and are done before your work escapes your head and your desktop. Your code will have tests before it leaves the cradle.
+</p><p>
+Test driven development presents some challenges. You have to have some clue about what features to develop before starting the loop. You need to have some idea about the classes and methods that will form your API. Test driven development works best for black-box testing, so you'll have to expose enough of your system to test your work. In Java, that often means adding public access to classes and methods, hacking in via reflection, or excising test code out of packages and classes after you run your tests. JMX can help with these challenges somewhat, by providing an alternative way to get information out.
+</p><p>
+<b>JMX</b>
+</p><p>
+JMX is the <a href="http://java.sun.com/j2se/1.5.0/docs/guide/jmx/index.html">Java Management eXtension</a> API (from the late 1990s -- the X dates it). JMX provides a standard way for Java systems to report their state and health to the outside world, and to allow themselves to be adjusted and tuned via standard tools. It provides two main styles of interacting with the running system: MBeans expose select getters, setters and methods to outside control. Notifications push information out from the Java system to listeners.
+</p><p>
+MBeans expose select methods on a class to the JMX system. Java classes follow a special design pattern -- the MBean -- and registering instances of the class with an MBean server. An MBean interface defines the exposed methods. You could use this interface to expose useful attributes to make them observable in tests, and to set attributes and call methods in order to drive tests. For testing, the MBean interface doesn't provide any great advantage over just using public methods. However, I found I could use the MBean's existence in the MBean server to provide a simple test of an object's lifecycle. 
+</p><p>
+JMX also specifies using Notifications to signal lifecycle and state changes from inside objects via the speaker/listener pattern. Add NotificationListeners to objects that implement the NotificationEmitter interface. When something of note happens within the MBean object, have it send a Notification to the listeners. This speaker/listener pattern works well in testing. It provides a good alternative to exposing state because the exposure is controlled by your code sending the Notifications, not via public method calls to your object. Further, it lets you write tests of lifecycle changes instead of tests based on methods. Lifecycle events are easier to get right early in development, generally easier to change, and are less likely to change over time than method signatures. Your tests will be less brittle and you'll spend less time rewriting them. 
+</p><p>
+<b>JMX-Based Tests</b>
+</p><p>
+I found a few key features to make the code easy to test, and a few key features to test. MBeans will be easier to test if each MBean knows its ObjectName. Tests should check that expected MBeans exist. Because the MBean server will hold on to stray references, tests should check that MBeans are cleaned up at the end of their useful life.  Notifications need to be machine-understandable; I subclassed Notification and added an enum field. Define the MBean interface and the Notification help in the same file to make it easier for others to find the Notifications. Tests should check that the code sent the expected Notifications exercised during the test run. These code examples are from <a href="https://somnifugijms.dev.java.net/source/browse/somnifugijms/v3/source/somnifugi/net/walend/somnifugi/SomniMessageConsumer.java?view=markup">SomniMessageConsumer.java</a>, <a href="https://somnifugijms.dev.java.net/source/browse/somnifugijms/v3/source/somnifugi/net/walend/somnifugi/SomniMessageConsumerMBean.java?view=markup">SomniMessageConsumerMBean.java</a> and <a href="https://somnifugijms.dev.java.net/source/browse/somnifugijms/v3/source/somnifugi/net/walend/somnifugi/test/MonitorTest.java?view=markup">MonitorTest.java</a>.
+</p><p>
+<b>Each MBean Knows its ObjectName</b>
+</p><p>
+To make each MBean know its object name, put the method in the MBean interface:
+</p><p>
+<pre>
+<code>
+public interface SomniMessageConsumerMBean
+{
+    <span style="color:green">public ObjectName getObjectName();</span>
+    ...
+}
+</code>
+</pre>
+</p><p>
+and fill it in:
+</p><p>
+<pre>
+<code>
+public abstract class SomniMessageConsumer 
+    implements MessageConsumer, SomniMessageConsumerMBean, NotificationEmitter
+{
+
+...
+    <span style="color:green">private final ObjectName objectName;</span>
+
+    protected SomniMessageConsumer(String name,
+                                             Takable<Message> feed,
+                                             SomniExceptionListener somniExceptionListener,
+                                             String destinationName,
+                                             SomniSession session)
+    {
+
+...
+        try
+        {
+            <span style="color:green">objectName = new ObjectName("net.walend.somnifugi:type="
+                                                       +this.getClass().getName()+",
+                                                       name="+name);</span>
+            registerWithJMX();
+        }
+        catch(MalformedObjectNameException mone)
+        {
+            throw new SomniRuntimeException("JMX problem with "+this.getName(),mone);
+        }
+    }
+</code>
+</pre>
+</p><p>
+Using the MBean in your test code becomes easy; you aren't constantly writing queries to find the right MBean.
+</p><p>
+<pre>
+<code>
+        expectedMBeans.add(<span style="color:green">subscriber.getObjectName()</span>);
+</code>
+</pre>
+</p><p>
+<b>Tests Check for Expected MBeans</b>
+</p><p>
+I check what MBeans were registered in the server at least twice per test, so I carved out a method to make sure that everything was there, with nothing extra, using an MBean query.
+</p><p>
+<pre>
+<code>
+    @SuppressWarnings("unchecked")
+    void checkExpectedMBeanNames(Set&lt;ObjectName> expected)
+        throws MalformedObjectNameException,
+                   MBeanException,
+                   AttributeNotFoundException,
+                   InstanceNotFoundException,
+                   ReflectionException
+    {
+        MBeanServer server = ManagementFactory.getPlatformMBeanServer();
+
+        <span style="color:green">ObjectName query = new ObjectName("net.walend.somnifugi:*");
+        Set&lt;ObjectName> result = (Set&lt;ObjectName>)server.queryNames(query,null);</span>
+        
+        Set&lt;ObjectName> remainder = new HashSet&lt;ObjectName>(result);
+        remainder.removeAll(expected);
+        
+        assertTrue("Remainder is not empty: "+remainder,remainder.isEmpty());
+        
+        assertEquals(expected,result);
+    }
+</code>
+</pre>
+</p><p>
+Then I fell into a regular pattern in the tests -- The code makes all the JMS parts, then makes sure they are all in the server.
+</p><p>
+<pre>
+<code>
+        SomniTopicConnection connection = (SomniTopicConnection)SomniJNDIBypass.IT.getTopicConnectionFactory().createTopicConnection();
+        SomniTopicSession session = (SomniTopicSession)connection.createTopicSession(false,Session.AUTO_ACKNOWLEDGE);
+        String topicName = "testNotifyTopicSubscribers";
+        SomniTopic topic = SomniJNDIBypass.IT.getTopic(topicName);
+        SomniTopicPublisher publisher = (SomniTopicPublisher)session.createPublisher(topic);
+        SomniTopicSubscriber subscriber = (SomniTopicSubscriber)session.createSubscriber(topic);
+
+        connection.start();
+        
+        MBeanServer server = ManagementFactory.getPlatformMBeanServer();
+
+        Set<ObjectName> expectedMBeans = new HashSet<ObjectName>();
+        expectedMBeans.add(connection.getObjectName());
+        expectedMBeans.add(topic.getObjectName());
+        expectedMBeans.add(session.getObjectName());
+        expectedMBeans.add(publisher.getObjectName());
+        expectedMBeans.add(subscriber.getObjectName());
+        <span style="color:green">checkExpectedMBeanNames(expectedMBeans);</span>
+</code>
+</pre>
+</p><p>
+<b>Tests Check that MBeans are Cleaned Up</b>
+</p><p>
+The second call to checkExpectedMBeanNames() makes sure that the test cleans out all of the MBeans at the end of the test. If the code doesn't clean them out, the server holds onto a reference, which prevents the garbage collector from reclaiming the memory. Some of these objects hold many references, so a leak can use a lot of memory.
+</p><p>
+<code>
+<pre>
+        connection.close();
+        SomniJNDIBypass.IT.removeTopic(topicName);
+        
+        <span style="color:green">expectedMBeans.clear();</span>
+        <span style="color:green">checkExpectedMBeanNames(expectedMBeans);</span>
+    }
+</pre>
+</code>
+</p><p>
+<b>Machine-Understandable Notifications</b>
+</p><p>
+For a finer lifecycle test, I created machine-understandable Notification subclasses. Notification comes with a String type, Object source, and a long sequenceNumber. The source and sequence number are pretty straightforward to use. The type String offers very little. I made a subclass to carry a machine-understandable enum and to help with consistency in the type string. This enum has to implement SomniNotificationType. There's no way to enforce that in Java, but it's at least javadoced. getSomniNotificationType() provides a way to check the enum in code.
+</p><p>
+<code>
+<pre>
+@SuppressWarnings("serial")
+public class SomniNotification
+    extends Notification
+    implements Serializable
+{
+    private final <span style="color:green">SomniNotificationType noteType;</span>
+    private final String partName;
+    
+    public SomniNotification(SomniNotificationType noteType,
+                                         Object source,long sequenceNumber,
+                                         String partName)
+    {
+        super(noteType.getTypeString(),source,sequenceNumber,partName + noteType.getVerbPhrase());
+        
+        this.noteType = noteType;
+        this.partName = partName;
+    }
+
+    public SomniNotificationType <span style="color:green">getSomniNotificationType()</span>
+    {
+        return noteType;
+    }
+    
+    public String getPartName()
+    {
+        return partName;
+    }
+
+    
+    <span style="color:green">
+    /**
+    To be implemented by an enum defined in the MBean interface.
+    */
+    public static interface SomniNotificationType
+    {
+        public String getTypeString();
+
+        public String getVerbPhrase();
+    }
+    </span>
+}
+</pre>
+</code>
+</p><p>
+<b>Collocate the MBean interface and Notification Enum</b>
+</p><p>
+I put the notification enum in the same file, as a static inner class of the MBean interface. This grouping means there's only one place to look in source code to understand how the MBean interacts with a JMX monitor.
+</p><p>
+<pre>
+<code>
+public interface SomniMessageConsumerMBean
+{
+...
+    @SuppressWarnings("serial")
+    public static enum SomniMessageConsumerNotificationType
+        implements <span style="color:green">SomniNotification.SomniNotificationType</span>, Serializable
+    {
+        <span style="color:green">CONSUMERCLOSED("net.walend.somnifugi.ConsumerClosed"," closed"),
+        MESSAGECONSUMED("net.walend.somnifugi.MessageConsumed"," consumed"),
+        MESSAGELISTENERCHANGED("net.walend.somnifugi.MessageListenerChanged"," changed"),
+        MESSAGETIMEDOUT("net.walend.somnifugi.MessageTimedOut"," timed out");</span>
+        
+        private final String typeString;
+        private final String verbPhrase;
+        
+        private SomniMessageConsumerNotificationType(String typeString,String verbPhrase)
+        {
+            this.typeString = typeString;
+            this.verbPhrase = verbPhrase;
+        }
+        
+        public String getTypeString()
+        {
+            return typeString;
+        }
+        
+        public String getVerbPhrase()
+        {
+            return verbPhrase;
+        }
+    }
+
+</code>
+</pre>
+</p><p>
+<b>Tests Check Notifications Sent During the Run</b>
+</p><p>
+I created TestNotificationListener to test that the system was producing the right notifications. It takes a list of expected notifications in the constructor, and verifies that all the notifications came in the right order inside a check() method.
+</p><p>
+<pre>
+<code>
+    private static class TestNotificationListener
+        implements <span style="color:green">NotificationListener</span>
+    {
+        private List<SomniNotification.SomniNotificationType> expected;
+        private List<SomniNotification.SomniNotificationType> received = new ArrayList<SomniNotification.SomniNotificationType>();
+        
+        TestNotificationListener(List<SomniNotification.SomniNotificationType> expected)
+        {
+            this.expected = expected;
+        }
+        
+        public void handleNotification(Notification notification, Object handback)
+        {
+            SomniNotification somniNotification = (SomniNotification)notification;
+            received.add(somniNotification.getSomniNotificationType());
+        }
+        
+        <span style="color:green">void check()
+        {
+            assertEquals(expected,received);
+        }</span>
+    }
+</code>
+</pre>
+</p><p>
+In the test, I give the TestNotificationListener a list of notifications, do things during the test, and make sure the right notifications were sent. This approach lets me define the expected lifecycle steps within the class, and observe them from outside, without using public methods.
+</p><p>
+<pre>
+<code>
+        List<SomniNotification.SomniNotificationType> expected = new ArrayList<SomniNotification.SomniNotificationType>();
+        expected.add(SomniMessageConsumerMBean.SomniMessageConsumerNotificationType.MESSAGECONSUMED);
+        expected.add(SomniMessageConsumerMBean.SomniMessageConsumerNotificationType.MESSAGECONSUMED);
+        expected.add(SomniMessageConsumerMBean.SomniMessageConsumerNotificationType.CONSUMERCLOSED);
+        <span style="color:green">TestNotificationListener listener = new TestNotificationListener(expected);</span>
+
+        Object handback = null;
+        server.addNotificationListener(name,listener,null,handback);
+
+        ...//Lots of code for the test
+        
+        <span style="color:green">listener.check();</span>
+
+</code>
+</pre>
+</p><p>
+<b>Where This Technique Will Work</b>
+</p><p>
+Using JMX for test-driven development will work very well in some cases, but doesn't fit all problems. If you want to support JMX MBeans and Notifications, using this technique is an easy right decision. If objects in your system have nontrivial lifecycles, it is a very good fit. If you aren't sure about the methods your system should support, but know more about the lifecycle of the objects, it should work well. SomnifugiJMS was a particularly good fit for JMX-based tests. I wanted to add JMX support. The Java Message Service specification defines a horde of parts used to ship message around. Each part has its own lifecycle. Plus I wanted to remove non-JMS public methods, and to use JMX to support more complex tests.
+</p><p>
+Some systems may have trouble using this technique. JMX has some overhead; if you are concerned about how much CPU and memory goes into creating and shuffling strings for logging, JMX may be too heavyweight. It's not a very good fit for data structure or algorithm code, where the public API is the main focus. Systems with no lifecycle won't get much benefit. JMX-based tests written for systems with extremely complex, changing lifecycle may be too brittle.
+</p><p>
+<b>References</b>
+</p><p>
+<a href="http://en.wikipedia.org/wiki/Test_driven_development">Wikipedia</a> has a non-volatile description of test-first development. I found this when I was looking for something with minimal hype and political agenda. The <a href="http://java.sun.com/j2se/1.5.0/docs/guide/jmx/index.html">JMX reference</a> from Sun contains examples of how to use JMX in your source code. The bias in the document is more toward monitoring existing systems -- it does a great job of telling how to hook up monitors via different protocols, but a skilled programmer see how to use stock JMX classes in an existing system via delegation. Eamonn McManus' <a href="http://weblogs.java.net/blog/emcmanus/">Eamonn McManus' blog</a> is the best source for what's coming next in JMX.
+</p></div>
+    <div class="links">&raquo; <ul class="links inline"><li class="blog_usernames_blog first"><a href="/blogs/dwalend" title="Read dwalend&#039;s latest blog entries.">dwalend&#039;s blog</a></li>
+<li class="comment_forbidden"><span><a href="/user/login?destination=comment/reply/240364%2523comment-form">Login</a> or <a href="/user/register?destination=comment/reply/240364%2523comment-form">register</a> to post comments</span></li>
+<li class="statistics_counter"><span>214 visits</span></li>
+<li class="print_html last"><a href="/print/240364" title="Display a printer-friendly version of this page." class="print-page" rel="nofollow">Printer-friendly version</a></li>
+</ul></div>    <div class="taxonomy">Related Topics &gt;&gt; 
+	<a href="/blogs/topic/27">Testing</a> &nbsp; &nbsp; &nbsp;    </div>  </div>
+  <div id="comment-header">Comments</div>
+  <div id="comment-header2">Comments are listed in date ascending order (oldest first)</div>
+                                        <div id="content-bottomdiv2">
+                	                </div>
+                            
+        </td>
+              </tr>
+      <tr>
+        <td rowspan="2" valign="bottom"><img src="/images/a.gif" alt=" " border="0" height="1" width="170"><br>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <br>
+  <img src="/images/a.gif" alt=" " border="0" height="1" width="170"><br>
+  <img src="/images/a.gif" alt=" " border="0" height="1" width="170"><br>
+
+  <table border="0" cellpadding="0" cellspacing="10" width="100%">
+    <tbody>
+      <tr>
+        <td>&nbsp;
+          <div class="grayline"></div>
+          <table class="vatop" border="0" cellpadding="0" cellspacing="0" width="100%">
+            <tbody>
+              <tr>
+                <td><img src="/images/a.gif" alt=" " border="0" height="1" width="190"><br>
+                  <a href="http://www.sun.com/"><img src="/images/logo_sun_small.gif" alt=" " border="0" height="29" vspace="5" width="61"></a></td>
+                <td valign="top" width="60%"><div class="footer">
+                    <!--  Start Quantcast tag  -->
+                    <script type="text/javascript" src="/images/quant.js"></script> 
+                    <script type="text/javascript">
+											_qacct="p-20l78bOOCbhcg";
+											quantserve(); 
+                    </script>
+                    <noscript>
+                    <img src="http://pixel.quantserve.com/pixel/p-20l78bOOCbhcg.gif" style="display: none" height="1" width="1" alt="Quantcast"/>
+                    </noscript>
+                    <!--  End Quantcast tag  -->
+                    <a href="https://java-net.dev.java.net/feedback.html">Feedback</a> &nbsp;|&nbsp;<a href="/javanet-faq">FAQ</a> &nbsp;|&nbsp;<a href="http://java.net/presscenter/">Press</a>&nbsp;|&nbsp;<a href="/javanet-web-site-terms-use">Terms of Use</a><br>
+                    <a href="http://www.sun.com/privacy/">Privacy</a> &nbsp;|&nbsp; <a href="http://www.sun.com/suntrademarks/">Trademarks</a>&nbsp;|&nbsp;<a href="https://java-net.dev.java.net/sitemap.html">Site Map</a> <br>
+                    <span class="sp5">&nbsp;</span><br>
+                    Your use of this web site or any of its content or software indicates your agreement to be bound by these <a href="/javanet-web-site-terms-use">Terms of Participation</a>.<br>
+                    <span class="sp5">&nbsp;</span><br>
+                    Copyright &copy; 1995-2008 Sun Microsystems, Inc. </div></td>
+                <td align="right" valign="top" width="40%"><div class="footer"> 
+		<a href="http://www.collab.net/"><img src="/images/montague_logo_collabnet.gif" alt="Collabnet Logo" border="0" height="19" width="85"></a>
+		<a href="http://www.cognisync.com/"><img src="/images/cognisync.jpg" alt="Cognisync Communities" border="0"></a>
+<br>
+                    Powered by Sun Microsystems, Inc.,<br>
+                    CollabNet and Cognisync </div></td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="grayline"></div></td>
+      </tr>
+    </tbody>
+  </table>
+  <!--  Begin SiteCatalyst code  
+  <script language="JavaScript" src="/images/s_code_remote.js"></script>
+  <script type="text/javascript" src="/images/metrics_group1.js"></script> 
+   End SiteCatalyst code  -->
+</div>
+<div style="display:none"> </div>
+<script type="text/javascript" src="/sites/default/files/js/js_44eb2ff930a1455efe1931bab6efb04e.js"></script>
+<script type="text/javascript">
+<!--//--><![CDATA[//><!--
+jQuery.extend(Drupal.settings, { "basePath": "/", "extlink": { "extTarget": "_blank", "extClass": 0, "extSubdomains": 1, "extExclude": "", "extInclude": "", "extAlert": 0, "extAlertText": "This link will take you to an external web site. We are not responsible for their content.", "mailtoClass": 0 }, "fivestar": { "titleUser": "Your rating: ", "titleAverage": "Average: ", "feedbackSavingVote": "Saving your vote...", "feedbackVoteSaved": "Your vote has been saved.", "feedbackDeletingVote": "Deleting your vote...", "feedbackVoteDeleted": "Your vote has been deleted." } });
+//--><!]]>
+</script>
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-10612840-1");
+pageTracker._trackPageview();
+} catch(err) {}
+</script>
+</body>
+</html>
+

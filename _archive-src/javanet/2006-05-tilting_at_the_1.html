@@ -1,0 +1,506 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="http://www.movabletype.org/" />
+
+<title>David Walend's Blog: Tilting at the Generics Windmill</title>
+
+<link rel="stylesheet" href="http://weblogs.java.net/blog/styles-site.css" type="text/css" />
+<link rel="stylesheet" href="http://www.java.net/css/main.css" type="text/css">
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://weblogs.java.net/blog/dwalend/index.rdf" />
+<link rel="alternate" type="application/atom+xml" title="Atom" href="http://weblogs.java.net/blog/dwalend/atom.xml" />
+
+<link rel="start" href="http://weblogs.java.net/blog/dwalend/" title="Home" />
+<link rel="prev" href="http://weblogs.java.net/blog/dwalend/archive/2006/01/affine_frustrat_1.html" title="Affine Frustration Transformed - New! Fewer Bugs!" />
+
+<link rel="next" href="http://weblogs.java.net/blog/dwalend/archive/2006/05/no_giant_or_win_1.html" title="No Giant or Windmill, Just a Deranged Muppet" />
+
+
+
+
+
+<!--  Begin SiteCatalyst code  -->
+<script language="JavaScript">
+<!--
+var s_channel="David Walend's Blog";
+//--></script>
+<!--  End SiteCatalyst code  -->
+
+</head>
+
+<body>
+
+<!--  Masthead  -->
+<div class="topline">
+<div class="topbar">
+<table border="0" cellpadding="0" cellspacing="0" width="100%" height="25">
+<tr>
+<td width="100%" rowspan="2"><a href="http://www.java.net"><img src="/images/header_jnet_new.jpg" width="500" height="60" border="0" alt="The Source for Java Technology Collaboration"></a></td>
+ <td nowrap="nowrap" style="vertical-align:middle">
+ <div id="login">
+ 
+  <form name="loginform" id="loginform" action="https://www.dev.java.net/servlets/TLogin" method="post">
+  <input type="hidden" name="redir" value="http://weblogs.java.net/blog/dwalend/archive/2006/05/tilting_at_the_1.html">
+  <div>
+  <strong>User:</strong>
+   <input type="text" name="loginID" id="loginID" value="" size="7" maxlength="32" />
+   <strong>Password:</strong>
+
+   <input type="password" name="password" id="password" value="" size="7" maxlength="32" />
+   <input type="submit" name="Login" class="buttonred" id="Button" value="Login" /> </div>
+  <div class="small" align="right"><strong> <a href="https://www.dev.java.net/servlets/Join">Register</a>  | <a href="https://www.dev.java.net/servlets/TLogin">Login help</a>   &nbsp;&nbsp;&nbsp;</strong></div> 
+</form>
+ 
+</div>
+</td> 
+</tr>
+</table>
+</div>
+
+<!--  Tabs  -->
+
+
+<noindex>
+<div class="tabs" id="toptabs">
+<table cellspacing=0 cellpadding=4 border=0>
+<tbody>
+<tr>
+<td><a href="https://www.dev.java.net/servlets/StartPage">My       pages</a> </td>
+<td><a       href="http://community.java.net/projects/">Projects</a></td>
+<td><a href="http://community.java.net">Communities</a>   </td>
+<th><a href="http://www.java.net">java.net</a></th>
+</tr></tbody></table></div>
+</noindex>
+
+
+
+<table id="main" cellspacing="2" cellpadding="2" width="100%" border="0">
+  <tbody>
+  <tr valign=top>
+    <td id="leftcol" width="150" rowspan="2">
+	<img src="http://today.java.net/im/a.gif" width="150" height="1"><br />
+<div id="navcolumn">
+<!--   COMMUNITY LINKS   -->
+<noindex>
+<div class="toolgroup" id="communitylinks">
+<div class="label"><strong>Get Involved</strong></div>
+<div class="body">
+<div><a href="https://java-net.dev.java.net/">java-net Project</a></div>
+<div><a href="http://www.java.net/request_project.csp">Request a Project</a></div>
+<div><a href="http://community.java.net/help_wanted/">Project&nbsp;Help&nbsp;Wanted&nbsp;Ads</a></div>
+<div><a href="http://community.java.net/projects/publicize.csp">Publicize your Project</a></div>
+<!-- <div><a href="#">Success Stories</a></div>  -->
+<div><a href="http://today.java.net/cs/user/create/bl">Submit Content</a></div>
+</div>
+</div>
+
+<div class="toolgroup" id="communitylinks">
+<div class="label"><strong>Get Informed</strong></div>
+<div class="body">
+<div><a href="http://www.java.net/about.csp">About java.net</a></div>
+<div><a href="http://today.java.net/pub/q/articles">Articles</a></div>
+<div><a href="http://weblogs.java.net/">Blogs</a></div>
+<div><a href="http://www.java.net/events">Events</a></div>
+<div><a href="http://today.java.net/today/alsotoday.csp">Also in Java Today</a></div>
+<div><a href="http://safari.java.net">java.net Online Books</a></div>
+<div><a href="http://today.java.net/today/archive/">java.net Archives</a></div>
+</div>
+</div>
+
+<div class="toolgroup" id="communitylinks">
+<div class="label"><strong>Get Connected</strong></div>
+<div class="body">
+<div><a href="http://forums.java.net">java.net Forums</a></div>
+<div><a href="http://wiki.java.net/">Wiki</a> and <a href="http://wiki.java.net/bin/view/Javapedia/WebHome">Javapedia</a></div>
+<div><a href="http://wiki.java.net/bin/view/People/WebHome">People</a>, <a href="http://partners.java.net">Partners</a>, and <a href="http://wiki.java.net/bin/view/Javanet/JobsWiki">Jobs</a> </div>
+<div><a href="http://community.java.net/jugs/listing.csp">Java User Groups</a></div>
+<div><!--  <a href="https://java-net.dev.java.net/servlets/ProjectMailingListList">Newsletters</a> and  --><a href="http://today.java.net/pub/q/rsschannels">RSS Feeds</a></div>
+</div>
+</div>
+
+<div class="toolgroup" id="communitylinks">
+<div class="label"><b>Search</b></div>
+<div class="body">
+<form action="http://onesearch.sun.com/search/onesearch/index.jsp">
+<div>Web and Projects:</div>
+<div><input type="text" name="qt" class="medium" size="14" onfocus="if( this.value==this.defaultValue ) this.value='';" value=""/>
+<input type="hidden" name="col" value="all-unfiltered">
+<input type="hidden" name="qt" value="+url:java.net">
+<input type="submit" border="0" class="buttonred" value=" &raquo; "></div>
+</form>
+<div>Online Books:</div>
+<form action="http://safari.java.net/search" method="post" name="searchForm" id="form_searchForm">
+<input name="__formName" value="searchForm" type="hidden" />
+<input value="simple" name="searchmode" id="searchmode" type="hidden" />
+<input value="0" name="page" id="page" type="hidden" />
+<input value="summary" name="searchview" id="searchview" type="hidden" />
+<input value="rank" name="sort" id="sort" type="hidden" />
+<input value="desc" name="order" id="order" type="hidden" />
+<input value="1" name="NewSearch" id="NewSearch" type="hidden" />
+<div>
+<input name="searchtextbox" id="searchtextbox" type="text" value="" class="medium" size="14" />
+<input class="buttonred" value=" &raquo; " border="0" type="submit"></div>
+</form>
+<div><a href="http://www.java.net/search.csp">Advanced Search</a></div>
+</div>
+</div>
+</noindex>
+
+</div>
+<br />
+</td>
+<td height="3" colspan="2"><img src="http://today.java.net/images/a.gif" width="1" height="3"><br /></td>
+</tr>
+<tr> 
+<td width="10"><img src="http://today.java.net/images/a.gif" width="10" height="1"></td>
+<td width="100%" valign="top">
+
+
+
+
+<div class="link-note">
+<a href="http://weblogs.java.net/blog/dwalend/index.rdf"><img src="http://www.java.net/images/icons/feed.png" width="16" height="16" vspace="4" hspace="10" border="0" alt="Syndicate this blog (XML)" align="right" /></a><br />
+</div>
+
+
+
+<img src="/images/people/david_walend.jpg" border="0" height="68" width="99" alt="David Walend" align="left" vspace="3" hspace="6" />
+
+
+
+
+<h2><a href="http://weblogs.java.net/blog/dwalend/">David Walend's Blog</a></h2>
+
+<div class="small" align="right">
+<a href="http://weblogs.java.net/blog/dwalend/archive/2006/01/affine_frustrat_1.html">&laquo;Affine Frustration Transformed - New! Fewer Bugs!</a> |
+
+<a href="http://weblogs.java.net/blog/dwalend/">Main</a>
+| <a href="http://weblogs.java.net/blog/dwalend/archive/2006/05/no_giant_or_win_1.html">No Giant or Windmill, Just a Deranged Muppet &raquo;</a>
+
+</div>
+
+<div class="grayline"></div>
+
+<h3>Tilting at the Generics Windmill</h3>
+
+<span class="ltcaption1">Posted by <b>dwalend</b> on May 01, 2006 at 04:26 PM</a> | <a href="http://weblogs.java.net/blog/dwalend/archive/2006/05/tilting_at_the_1.html#comments">Comments (8)</a>
+
+</span>
+
+<br /><br />
+
+<p>
+I've got a quixotic streak that needs exercise every so often. It's time. I'm doing <a href="http://wiki.java.net/bin/view/Javaone/CommunityCorner#MiniTalksSched">a talk on usability problems in generics that I think can be fixed</a> at 2:30 pm on Thursday in the <a href="http://wiki.java.net/bin/view/Javaone/CommunityCorner">Java Community pavilion at JavaOne</a>. That windmill aught to break a lance.
+</p><p>
+Just before JavaOne 2005 there was a huge dust-up over generics as people started using them, and trying to teach how they work. Ken Arnold <a href="http://weblogs.java.net/blog/arnold/archive/2005/06/generics_consid_1.html">blogged</a> "Generics are a mistake... A design should have a complexity budget to keep its overall complexity under control. Generics are way out of whack." Trashing generics became the season's fashion. Chris Adamson <a href="http://weblogs.java.net/blog/editors/archives/2005/10/broken_hearts_a.html">retorted</a> that we were experiencing "Buyer's remorse for Generics." After all, <a href="http://jcp.org/en/jsr/detail?id=14">JSR-14</a> -- the generics proposal -- started in 1999, but did not appear in a release until JDK5 in late 2004. Any of us could play with generics in Java using the gj and pizzac compilers. We had five years to point out problems we found using the syntax. For example, borrowing C++ template syntax would look too much like XML. (If we get direct manipulation of XML, it won't look like XML. I'm not sure that's a bad thing. XML is pretty hard on the eyes. The angle brackets do make writing html about Generics or XML really painful -- &amp;lt;s everywhere.) That's water over the dam at this point. I'd like to start a conversation about finding ways to fix the stumbling blocks we've found, targeted for Dolphin.
+</p><p>
+I like generics. I use them (and abuse them. See below) in my <a href="http://jdigraph.dev.java.net">JDigraph</a> project. I wrote JSDK 1.4 code in a Digraph interface that looked like this:
+</p><p><pre><code>
+    public Object addEdge(Object fromNode, Object toNode, Object edge) throws NodeMissingException;
+</code></pre></p><p>
+which caused frequent <code>NodeMissingException</code>s from calls like 
+</p><p><pre><code>
+        hisDigraph.addEdge(hisFromNode, hisEdge, hisToNode);
+</code></pre></p><p>
+. The compiler couldn't point out that the second argument was supposed to be a node and the third was supposed to be an edge. Autocompletion in IDEs, combined with some developers' habit of grabbing the top argument in the autocomplete list led to NodeMissingExceptions, confusion and frustration. In JDK 5, the code looks like this:
+</p><p><pre><code>
+    public Edge addEdge(Node fromNode, Node toNode, Edge edge) throws NodeMissingException;
+</code></pre></p><p>
+Just as Keys and Values in Maps are rarely of the same class, Nodes and Edges rarely share an ancestor closer than Object. The compiler helps the developers get things right. My code is much clearer to me (easier to figure out what I did) and much clearer to people trying to use it (fewer agitated developers at my office door).
+</p><p>
+One of Ken's specific complaints was about the complexity of <code>Enum&lt;E extends Enum&lt;E&gt;&gt;</code>, the abstract parent of all Java enums. This particular class interacts closely with the compiler, jumping through some high hoops to give us enums of Objects instead of short integers. It's powerful, but impossible to explain without guessing the java compiler developers' intent. The compiler will specify using your enum class for E. So
+</p><p><pre><code>
+public enum YourEnums
+</code></pre></p><p>
+becomes something like
+</p><p><pre><code>
+public class YourEnums
+    extends Enum&lt;YourEnum&gt;
+</code></pre></p><p>
+so that YourEnums is always an Enum of YourEnums. To define the Enum class, it'd be great if someone at Sun could just code
+</p><p><pre><code>
+public abstract class Enum&lt;E is this.getClass()&gt;
+</code></pre></p><p>
+and remove the guesswork. It's a corner case. I ran into something similar while I was generifying JDigraph's HasState interface. HasState provides a method to compare two objects with different representations, but share a defining principle interface that defines the interesting part of the state. For example, Digraphs and Subgraphs have the same principle interface, Digraph. Two Subgraphs are not equal if they are Subgraphs of different Digraphs. However, if the Subgraphs have the same nodes connected by the same edges then they have the same interesting internal state.
+</p><p>
+I'd love to say
+</p><p><pre><code>
+public interface HasState&lt;HasS is this.getPrincipleInterface() which better extend HasState&lt;HasS>>
+</code></pre></p><p>
+but had to limit the generic type parameters to 
+</p><p><pre><code>
+public interface HasState&lt;HasS extends HasState&lt;HasS>>
+</code></pre></p><p>
+and hope that a developer implementing HasState doesn't do something diabolically mismatched between the type specification and the filling for 
+</p><p><pre><code>
+        public Class getPrincipleInterface();
+</code></pre></p><p>
+The compiler has all the pieces to sort out Enum and HasState puzzles, but there's no way in the language to direct the compiler to do the right thing in the code for the abstract class or the interface. Since <code>this.getPrincipleInterface()</code> and <code>this.getClass()</code> return hard-coded Classes, maybe something could be done with annotations interacting with generics. However, I think these two examples really are corner cases and don't rate a change in the language. Others might disagree, citing last Summer's venting of the spleens.
+</p><p>
+In contrast, I do think we need something to help us avoid generics mismatch Hell. I think just having dot access to type parameters' type parameters would work well. It would look and feel about the same as using inner classes. 
+</p><p>
+The JDigraph project is my demonstration of reusable directed graph algorithms. It uses a general purpose graph containers inspired by the Java collections kit, built off of the Digraph interface. Here's the illustration, with examples from JDigraph:
+</p><p><pre><code>
+public interface Digraph&lt;Node,Edge>
+</code></pre></p><p>
+is fine. You can specify any class to be Node, and any class to be Edge. Generics actually make the code easier to follow, as people stop confusing nodes with edges. (IndexedDigraph is a Digraph with indexed access to the nodes and edges. You'll see that in a few paragraphs.)
+</p><p>
+Generics mismatch Hell starts innocuously enough. Subgraph is an interface for directed graphs that hold subsets of the nodes and edges of some Supergraph. Someone using Subgraph has to match up the Node and Edge type specifications for a Subgraph with the Supergraph.
+</p><p><pre><code>
+public interface Subgraph&lt;Node,Edge,Supergraph extends Digraph&lt;Node,Edge>>
+    extends Digraph&lt;Node,Edge>
+</code></pre></p><p>
+could be a bit simpler with dot access, because the compiler knows that Supergraph is a Digraph, and has type parameters for Node and Edge.
+</p><p><pre><code>
+public interface Subgraph&lt;Supergraph extends Digraph>
+    extends Digraph&lt;Supergraph.Node,Supergraph.Edge>
+</code></pre></p><p>
+It's not a huge difference, and in fact takes more characters. However, Subgraph's definition could do the work to line up the type parameters. Also, Subgraph would only need one type parameter, not the three required above. 
+</p><p>
+The complexity grows from there. OverlayDigraph is an interface for representing a Digraph that shares nodes with an underlying Digraph, but has its own edges. Think about it like someone laying a transparency sheet over a bunch of dots and connecting the dots her own way with a sharpie.
+</p><p><pre><code>
+public interface OverlayDigraph&lt;Node,Edge,UnderEdge,Undergraph extends Digraph&lt;Node,UnderEdge>>
+    extends Digraph&lt;Node,Edge>
+</code></pre></p><p>
+The compiler knows what Undergraph will be using for Node and Edge. This is just generics mismatch Heck. Someone using this interface has to get the Node and UnderEdge type specs correct. It'd be a lot nicer to be able to take advantage of the compiler's knowledge of Undergraph's type parameters with something like
+</p><p><pre><code>
+public interface OverlayDigraph&lt;Edge,Undergraph extends Digraph>
+    extends Digraph&lt;Undergraph.Node,Edge>
+</code></pre></p><p>
+and use Undergraph.Edge instead of UnderEdge in the code. That's two type parameters to fill in instead of four. (You're about to see IndexedMutableOverlayDigraph, which is an OverlayDigraph with indexed access to the nodes and mutators to add and remove edges.)
+</p><p>
+Semirings define a set of useful operators for general graph labeling and graph minimization algorithms that work on Digraphs. The theory is right out of <a href="http://mitpress.mit.edu/catalog/item/default.asp?ttype=2&tid=8570">CLRS</a> chapter 26.4. Semirings hold identity and annihilator label constants, and extension, summary and relax operators. The extension operator calculates the label to move from one node to another across an edge. The summary operator calculates the label combining two alternative labels. The relax operator calculates a new label by combining the existing label with a new, alternative label. These operators are the basic parts for building the Floyd-Warshall, Dijkstra, Prim's, Johnson's, Bellman-Ford and A* algorithms. I also made Semiring responsible for creating the initial OverlayDigraph of Labels. Encapsulating these things in Semiring has saved me writing the same tricky algorithm code for every new graph minimization problem.
+</p><p>
+Still with me? Hold on to your synapses. Semiring's declaration looks like this:
+</p><p><pre><code>
+public interface Semiring&lt;Node,
+                            Edge,
+                            Label,
+                            BaseDigraph extends IndexedDigraph&lt;Node,Edge>,
+                            LabelDigraph extends IndexedMutableOverlayDigraph&lt;Node,Label,Edge,BaseDigraph>>
+</code></pre></p><p>
+All five of the type specifiers have to line up correctly to compile code using this vile beast. It's hard for me to tame, and I wrote the thing. This is a big part of why JDigraph only does alpha releases. That's generics mismatch Hell. If the compiler were a bit smarter, Semiring's declaration could just be
+</p><p><pre><code>
+public interface Semiring&lt;LabelDigraph extends IndexedMutableOverlayDigraph>
+</code></pre></p><p>
+Five type specifiers could collapse to just one! You tell the compiler what to use for LabelDigraph. LabelDigraph knows Undergraph and Label. Undergraph knows Node and Edge. The Semiring interface and the compiler could do all the work to match up the types. Remember, Semiring's reason to exist is to encapsulate all those operators so I can write generic algorithms. Dot access to type parameters would let Semiring encapsulate all the gory details of type parameters, too.
+</p><p>
+The Floyd-Warshall is about the simplest graph minimization algorithm there is (three nested for() loops). Got any synapses left? Here's what its declaration looks like now:
+</p><p><pre><code>
+public class FloydWarshall&lt;Node,
+                            Edge,
+                            Label,
+                            BaseDigraph extends IndexedDigraph&lt;Node,Edge>,
+                            LabelDigraph extends IndexedMutableOverlayDigraph&lt;Node,Label,Edge,BaseDigraph>,
+                            SRing extends Semiring&lt;Node,Edge,Label,BaseDigraph,LabelDigraph>>
+</code></pre></p><p>
+Six! Six type parameters! Ah ha ha! I feel like <a href="http://pbskids.org/sesame/number/index.html">that vampire from Sesame Street</a>. (Dijkstra's algorithm and AStar need a Comparator, for a total of seven!) Letting dots access type parameters would let Semiring encapsulate all the type complexity, as well as the operators.
+</p><p><pre><code>
+public class FloydWarshall&lt;SRing extends Semiring>
+</code></pre></p><p>
+Using dots to access contained parameters would be a <a href="http://www.goohf.com/">Get out of Hell free card</a> for this sort of problem. As more people decide to use generics, it's likely to help a lot of people a little bit. It would help JDigraph immensely.
+</p><p>
+The next step is to figure out where in the community to propose the change. Graham Hamilton's <a href="http://weblogs.java.net/blog/kgh/archive/2004/09/evolving_the_ja.html">blog on language changes in Dolphin</a> is a bit dated. My own blog and a JavaOne community talk should be a good start. 
+</p>
+
+<div id="a004603more"><div id="more">
+
+</div></div>
+
+<br />
+Bookmark blog post: <a href="http://del.icio.us/post?title=Tilting at the Generics Windmill&amp;url=http://weblogs.java.net/blog/dwalend/archive/2006/05/tilting_at_the_1.html"><img src="/images/icons/delicious.gif" alt="del.icio.us" border="0" height="16" hspace="8" vspace="1" width="16" /></a> <a href="http://del.icio.us/post?title=Tilting at the Generics Windmill&amp;url=http://weblogs.java.net/blog/dwalend/archive/2006/05/tilting_at_the_1.html">del.icio.us</a> <a href="http://digg.com/submit?phase=2&amp;title=Tilting at the Generics Windmill"><img src="/images/icons/digg.gif" alt="Digg" border="0" height="14" hspace="8" width="16" /></a> <a href="http://digg.com/submit?phase=2&amp;title=Tilting at the Generics Windmill&amp;url=http://weblogs.java.net/blog/dwalend/archive/2006/05/tilting_at_the_1.html">Digg</a> <a href="http://www.dzone.com/links/add.html?url=http://weblogs.java.net/blog/dwalend/archive/2006/05/tilting_at_the_1.html&amp;title=Tilting at the Generics Windmill"><img src="/images/icons/dzone.gif" alt="DZone" border="0" height="16" hspace="8" width="16" /></a> <a href="http://www.dzone.com/links/add.html?url=http://weblogs.java.net/blog/dwalend/archive/2006/05/tilting_at_the_1.html&amp;title=Tilting at the Generics Windmill">DZone</a> <a href="http://www.furl.net/storeIt.jsp?t=Tilting at the Generics Windmill&amp;u=http://weblogs.java.net/blog/dwalend/archive/2006/05/tilting_at_the_1.html"><img src="/images/icons/furl.gif" alt="Furl" border="0" height="17" hspace="8" width="16" /></a> <a href="http://www.furl.net/storeIt.jsp?t=Tilting at the Generics Windmill&amp;u=http://weblogs.java.net/blog/dwalend/archive/2006/05/tilting_at_the_1.html">Furl</a>  <a href="http://reddit.com/submit?title=Tilting at the Generics Windmill&amp;url=http://weblogs.java.net/blog/dwalend/archive/2006/05/tilting_at_the_1.html"><img src="/images/icons/reddit.gif" alt="Reddit" border="0" height="18" hspace="8" width="18" /></a> <a href="http://reddit.com/submit?title=Tilting at the Generics Windmill&amp;url=http://weblogs.java.net/blog/dwalend/archive/2006/05/tilting_at_the_1.html">Reddit</a>
+<br />
+<div class="grayline"></div>
+
+<a name="comments"></a>
+<h5>Comments</h5>
+<span class="small">Comments are listed in date ascending order (oldest first) | <a href="#post">Post Comment</a></span>
+<br /><br />
+
+<ul>
+<li>
+<a name="14886"></a>
+<div id="c14886">
+I posted a list of what I think java generics needs to become more usable. It includes some of the issues you presented here. My post is at <a href="http://joust.kano.net/weblog/archive/2004/12/01/what-java-generics-needs/">What Java Generics Needs</a>
+<p class="posted"><span class="ltcaption1">Posted by: keithkml  on May 01, 2006 at 05:30 PM</span></p>
+</div>
+</li>
+</ul>
+<ul>
+<li>
+<a name="14919"></a>
+<div id="c14919">
+What generics needs is to go away. it doesn't do anything to make my life easier and learning it is a PITA. it just makes me more motivated to learn a different language.
+<p class="posted"><span class="ltcaption1">Posted by: feshenga  on May 03, 2006 at 06:03 AM</span></p>
+</div>
+</li>
+</ul>
+<ul>
+<li>
+<a name="14920"></a>
+<div id="c14920">
+David,
+
+I think you've nailed the problems and solutions right on the nose! Is there a RFE issue we can vote for for this change?<br />
+
+Thank you,<br />
+Gili
+<p class="posted"><span class="ltcaption1">Posted by: cowwoc  on May 03, 2006 at 06:18 AM</span></p>
+</div>
+</li>
+</ul>
+<ul>
+<li>
+<a name="14927"></a>
+<div id="c14927">
+Looking forward to your presentation David!  See you in the java.net Community Corner which is located at pod 523!
+
+Regards,
+Helen
+<p class="posted"><span class="ltcaption1">Posted by: helen  on May 03, 2006 at 12:49 PM</span></p>
+</div>
+</li>
+</ul>
+<ul>
+<li>
+<a name="14931"></a>
+<div id="c14931">
+<p>
+keithkmi, that's a good list. Did anyone at Sun see it?
+</p><p>
+Also, any thoughts for a specific solution to let us see the types specified in the generics? Right now all we get is the limits on the type parameters.
+</p>
+<p class="posted"><span class="ltcaption1">Posted by: dwalend  on May 03, 2006 at 06:58 PM</span></p>
+</div>
+</li>
+</ul>
+<ul>
+<li>
+<a name="14932"></a>
+<div id="c14932">
+<p>
+feshenga, check your spleen for leaks^H^H^H^H^H^H^H^H
+</p><p>
+feshenga, check out the beanshell language at beanshell.org. No generics, you can use the java class libraries, and can still compile your code into java's bytecodes.
+</p>
+<p class="posted"><span class="ltcaption1">Posted by: dwalend  on May 03, 2006 at 07:04 PM</span></p>
+</div>
+</li>
+</ul>
+<ul>
+<li>
+<a name="14933"></a>
+<div id="c14933">
+<p>
+Thanks for reminding me to do an RFE, Gill. I put in the RFE about an hour ago. (Had to go through a few hundred RFEs on generics to make sure it wasn't a duplicate.) I'll post the public bug number here when they send it.
+</p>
+<p class="posted"><span class="ltcaption1">Posted by: dwalend  on May 03, 2006 at 07:09 PM</span></p>
+</div>
+</li>
+</ul>
+<ul>
+<li>
+<a name="14959"></a>
+<div id="c14959">
+Yes David, you can see that Peter von der Ahé from the javac team posted a comment. I think Sun feels that generics are "good enough" for now though.
+<p class="posted"><span class="ltcaption1">Posted by: keithkml  on May 04, 2006 at 12:35 PM</span></p>
+</div>
+</li>
+</ul>
+
+
+<br /><br />
+
+
+
+<form method="post" action="http://weblogs.java.net/mt/comments" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="4603" />
+
+<a name="post"></a>
+
+<b>Only logged in users may post comments. <a href="/cs/user/login?x-redirect=http://weblogs.java.net/blog/dwalend/archive/2006/05/tilting_at_the_1.html">Login Here</a>.</b>
+
+<!--  TS: var-  -->
+<!--  TS: cfg-  -->
+<!--  TS: vars-  -->
+<!--  TS: test -   -->
+
+<!--  TS: cpt -   -->
+
+
+</form>
+
+</MTIfCommentsAllowed>
+
+
+
+
+<br />
+
+<div class="footer" align="right">This work is licensed under a
+<a href="http://creativecommons.org/licenses/by-nc-sa/2.0/">Creative Commons License</a>.<br />
+<a href="http://creativecommons.org/licenses/by-nc-sa/2.0/"><img src="http://creativecommons.org/images/public/somerights.gif" alt="Creative Commons License" border="0" height="31" width="88" hspace="2" vspace="2" /></a>
+</div>
+
+
+<br />
+<div id="powered" align="right">
+<b>Powered by</b><br />
+<a href="http://www.movabletype.org">Movable Type 3.01D</a><br />    
+</div>
+
+
+
+</td></tr></table>
+
+<!--  BEGIN VNV5 FOOTER   -->
+<!--  BEGIN VNV5 FOOTER   -->
+<table border="0" cellpadding="0" cellspacing="10" width="100%">
+<tr>
+<td>
+&nbsp;<a href="http://today.java.net/pub/q/java_net_rss"><img src="/images/icons/feed.png" border="0" width="16" height="16" alt="Feed" align="absmiddle"></a>&nbsp;<a href="http://today.java.net/pub/q/java_net_rss">java.net RSS Feeds</a><br />
+<div class="grayline"></div>
+<table border="0" cellpadding="0" cellspacing="0" width="100%" class="vatop">
+<tr>
+<td><img src="/im/a.gif" width="190" height="1" border="0" alt=" " /><br />
+<a href="http://www.sun.com"><img src="/im/logo_sun_small.gif" width="61" height="29" border="0" alt=" " vspace="5"/></a></td>
+<td width="60%" valign="top">
+<div class="footer">
+
+<!--  Start Quantcast tag  -->
+<script type="text/javascript" src="http://edge.quantserve.com/quant.js"></script>
+<script type="text/javascript">
+_qacct="p-20l78bOOCbhcg";quantserve();</script>
+<noscript>
+<img src="http://pixel.quantserve.com/pixel/p-20l78bOOCbhcg.gif" style="display: none" height="1" width="1" alt="Quantcast"/></noscript>
+<!--  End Quantcast tag  -->
+
+<a href="https://java-net.dev.java.net/feedback.html">Feedback</a> &nbsp;|&nbsp;<a href="http://java.net/faq.csp">FAQ</a> &nbsp;|&nbsp;<a href="http://java.net/presscenter/">Press</a>&nbsp;|&nbsp;<a href="http://java.net/terms.csp">Terms of Use</a><br />
+<a href="http://www.sun.com/privacy/">Privacy</a> &nbsp;|&nbsp;
+<a href="http://www.sun.com/suntrademarks/">Trademarks</a>&nbsp;|&nbsp;<a href="https://java-net.dev.java.net/sitemap.html">Site Map</a>
+<br /><span class="sp5">&nbsp;</span><br />
+Your use of this web site or any of its content or software indicates your agreement to be bound by these <a href="http://java.net/terms.csp">Terms of Participation</a>.<br />
+<span class="sp5">&nbsp;</span><br />
+Copyright &copy; 1995-2008 Sun Microsystems, Inc.
+</div></td>
+<td width="40%" valign="top" align="right"><div class="footer">
+<a href="http://www.oreilly.com"><img src="/images/montague_logo_oreilly.gif" width="74" height="19" border="0" alt="Oreilly Logo"></a><a href="http://www.collab.net/"><img src="/images/montague_logo_collabnet.gif" width="85" height="19" border="0" alt="Collabnet Logo"></a><br>
+Powered by Sun Microsystems, Inc.,<br /> O'Reilly and CollabNet
+</div></td></tr>
+<!--  <tr><td colspan="3" valign="top" class="grey3"><img src="/im/a.gif" width="1" height="2" border="0" alt=" " /></td></tr>  -->
+</table>
+<div class="grayline"></div>
+</td></tr>
+</table>
+<!--  END VNV5 FOOTER  -->
+
+<!--  Begin SiteCatalyst code  -->
+<script language="JavaScript" src="http://www.java.net/s_code_remote.js"></script>
+<!--  End SiteCatalyst code  -->
+
+
+</body>
+</html>

@@ -1185,3 +1185,72 @@ left alone - it is a record of what was believed at the time, and rewriting it
 would hide exactly the thing worth seeing.
 
 **When the plan states a position, check whether it was decided or inferred.**
+
+## 2026-08-25 - The java.net blog, recovered from Common Crawl
+
+`web.archive.org` was down all day. Thirty-three posts from 2003-2009 are now in
+`_archive-src/javanet/` anyway, fetched from Common Crawl, zero failures.
+
+### Asking a different question
+
+The whole day's framing was "when will the wayback machine come back." That is a
+waiting question, and it had no answer. The useful question was **which other
+archive has this**, which is answerable immediately.
+
+Four candidates, four minutes to check: `arquivo.pt` reachable but empty - it is
+a Portuguese national archive and the fuzzy text search returning Belgian music
+pages made that obvious; `web.archive.org.bibalex.org` down; `archive.today`
+reachable; **Common Crawl reachable and holding the material**.
+
+Worth naming the reflex that nearly lost the day: treating one archive as *the*
+archive because it is the famous one. The plan said "the wayback copy is the only
+copy" and that sentence went unchallenged for as long as the wayback machine was
+working.
+
+### The lucky part, and why it is not luck
+
+Common Crawl's oldest indexes are `CC-MAIN-2008-2009` and `CC-MAIN-2009-2010`,
+which look like they should only cover the last two years of a 2003-2009 blog.
+They hold the whole run, because the blog's monthly `/archive/` pages were still
+linked when the crawler came through in 2008.
+
+**A crawl date bounds when the crawler visited, not how old the content is.**
+Obvious once stated; it is the reason a 2008 crawl yields a 2003 post, and the
+reason it was worth querying at all rather than assuming the date ranges settled
+it.
+
+### Two filter traps, both mine, both caught by looking at output
+
+The first was already known: **articles live under `/archive/`**, so excluding
+that path drops every article while reporting success. That one was found by
+testing the filter against synthetic rows before any network call, and Common
+Crawl's index confirmed the URL shape exactly.
+
+The second was new. `/YYYY/MM/index.html` matches the article pattern perfectly
+well, and is a monthly listing rather than a post. The inventory said **58
+articles**; excluding index pages took it to **33**. Had the `--list` output not
+been read line by line, twenty-five archive listings would have been converted to
+Markdown and published as posts.
+
+Both are the same failure: a regex that matches more than intended, producing a
+plausible number. **A count is not a check.** 58 looked more impressive than the
+plan's expected ~37, which is precisely why it should have been suspicious.
+
+### What is in there
+
+Real posts with real threads. "Design For Exceptions" carries 25 comments,
+"Naming Generic Types" 16, "What Giants? - Vote For My Generics RFE" 14, "Better
+JavaDoc on http://java.net" 13. Those comments are in the recovered HTML, which
+turns section 3's Disqus judgement into a live question again at ten times the
+scale.
+
+And the article the retrospective was always meant to be built on:
+**"Coupling in Software Architecture," January 2004** - a spectrum from
+dissociated ubiquitous services assembled by discovery through known services
+assembled at run time by configuration. UDDI and topic-based messaging as the
+loose end.
+
+January 2004 makes it a **22-year** retrospective. The plan has said "20-year"
+since it was written, which was true when someone first typed it and quietly
+stopped being true two years ago. Same class of drift as the "no trackers"
+decision, minus the consequences.

@@ -1,0 +1,554 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="http://www.movabletype.org/" />
+
+<title>David Walend's Blog: Better JavaDoc on http://java.net</title>
+
+<link rel="stylesheet" href="http://weblogs.java.net/blog/styles-site.css" type="text/css" />
+<link rel="stylesheet" href="http://www.java.net/css/main.css" type="text/css">
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://weblogs.java.net/blog/dwalend/index.rdf" />
+<link rel="alternate" type="application/atom+xml" title="Atom" href="http://weblogs.java.net/blog/dwalend/atom.xml" />
+
+<link rel="start" href="http://weblogs.java.net/blog/dwalend/" title="Home" />
+<link rel="prev" href="http://weblogs.java.net/blog/dwalend/archive/2005/01/sharpening_the.html" title="Sharpening the Axe or Shaving the Yaks?" />
+
+<link rel="next" href="http://weblogs.java.net/blog/dwalend/archive/2005/04/a_trip_in_the_w.html" title="A Trip in the Way-Back Machine" />
+
+
+
+
+
+<!--  Begin SiteCatalyst code  -->
+<script language="JavaScript">
+<!--
+var s_channel="David Walend's Blog";
+//--></script>
+<!--  End SiteCatalyst code  -->
+
+</head>
+
+<body>
+
+<!--  Masthead  -->
+<div class="topline">
+<div class="topbar">
+<table border="0" cellpadding="0" cellspacing="0" width="100%" height="25">
+<tr>
+<td width="100%" rowspan="2"><a href="http://www.java.net"><img src="/images/header_jnet_new.jpg" width="500" height="60" border="0" alt="The Source for Java Technology Collaboration"></a></td>
+ <td nowrap="nowrap" style="vertical-align:middle">
+ <div id="login">
+ 
+  <form name="loginform" id="loginform" action="https://www.dev.java.net/servlets/TLogin" method="post">
+  <input type="hidden" name="redir" value="http://weblogs.java.net/blog/dwalend/archive/2005/03/better_javadoc.html">
+  <div>
+  <strong>User:</strong>
+   <input type="text" name="loginID" id="loginID" value="" size="7" maxlength="32" />
+   <strong>Password:</strong>
+
+   <input type="password" name="password" id="password" value="" size="7" maxlength="32" />
+   <input type="submit" name="Login" class="buttonred" id="Button" value="Login" /> </div>
+  <div class="small" align="right"><strong> <a href="https://www.dev.java.net/servlets/Join">Register</a>  | <a href="https://www.dev.java.net/servlets/TLogin">Login help</a>   &nbsp;&nbsp;&nbsp;</strong></div> 
+</form>
+ 
+</div>
+</td> 
+</tr>
+</table>
+</div>
+
+<!--  Tabs  -->
+
+
+<noindex>
+<div class="tabs" id="toptabs">
+<table cellspacing=0 cellpadding=4 border=0>
+<tbody>
+<tr>
+<td><a href="https://www.dev.java.net/servlets/StartPage">My       pages</a> </td>
+<td><a       href="http://community.java.net/projects/">Projects</a></td>
+<td><a href="http://community.java.net">Communities</a>   </td>
+<th><a href="http://www.java.net">java.net</a></th>
+</tr></tbody></table></div>
+</noindex>
+
+
+
+<table id="main" cellspacing="2" cellpadding="2" width="100%" border="0">
+  <tbody>
+  <tr valign=top>
+    <td id="leftcol" width="150" rowspan="2">
+	<img src="http://today.java.net/im/a.gif" width="150" height="1"><br />
+<div id="navcolumn">
+<!--   COMMUNITY LINKS   -->
+<noindex>
+<div class="toolgroup" id="communitylinks">
+<div class="label"><strong>Get Involved</strong></div>
+<div class="body">
+<div><a href="https://java-net.dev.java.net/">java-net Project</a></div>
+<div><a href="http://www.java.net/request_project.csp">Request a Project</a></div>
+<div><a href="http://community.java.net/help_wanted/">Project&nbsp;Help&nbsp;Wanted&nbsp;Ads</a></div>
+<div><a href="http://community.java.net/projects/publicize.csp">Publicize your Project</a></div>
+<!-- <div><a href="#">Success Stories</a></div>  -->
+<div><a href="http://today.java.net/cs/user/create/bl">Submit Content</a></div>
+<div><script language="JavaScript" type="text/javascript">
+<!--
+var name = "spamreport";
+var domain = "admin.dev.java.net";
+var display = "Report Inappropriate Content";
+var subject = "";
+var ending = "";
+var style = "";
+document.write('<a class="' + style + '" href="mailto:' + name + '&#64;' + domain + '?subject=' + subject + '">');
+if (display) {
+ document.write(display);
+} else {
+ document.write(name + '&#64;' + domain);
+}
+document.write('</a>' + ending);
+document.write('<!-- mailmunge bit -->');
+// -->
+</script>
+</div>
+</div>
+</div>
+
+<div class="toolgroup" id="communitylinks">
+<div class="label"><strong>Get Informed</strong></div>
+<div class="body">
+<div><a href="http://www.java.net/about.csp">About java.net</a></div>
+<div><a href="http://today.java.net/pub/q/articles">Articles</a></div>
+<div><a href="http://weblogs.java.net/">Blogs</a></div>
+<div><a href="http://www.java.net/events">Events</a></div>
+<div><a href="http://today.java.net/today/alsotoday.csp">Also in Java Today</a></div>
+<div><a href="http://safari.java.net">java.net Online Books</a></div>
+<div><a href="http://today.java.net/today/archive/">java.net Archives</a></div>
+</div>
+</div>
+
+<div class="toolgroup" id="communitylinks">
+<div class="label"><strong>Get Connected</strong></div>
+<div class="body">
+<div><a href="http://forums.java.net">java.net Forums</a></div>
+<div><a href="http://wiki.java.net/">Wiki</a> and <a href="http://wiki.java.net/bin/view/Javapedia/WebHome">Javapedia</a></div>
+<div><a href="http://wiki.java.net/bin/view/People/WebHome">People</a>, <a href="http://partners.java.net">Partners</a>, and <a href="http://wiki.java.net/bin/view/Javanet/JobsWiki">Jobs</a> </div>
+<div><a href="http://community.java.net/jugs/listing.csp">Java User Groups</a></div>
+<div><!--  <a href="https://java-net.dev.java.net/servlets/ProjectMailingListList">Newsletters</a> and  --><a href="http://today.java.net/pub/q/rsschannels">RSS Feeds</a></div>
+</div>
+</div>
+
+<div class="toolgroup" id="communitylinks">
+<div class="label"><b>Search</b></div>
+<div class="body">
+<form action="http://www.java.net/search_results.csp" id="cse-search-box">
+<div>Web and Projects:</div>
+<div><input type="text" name="q" class="medium" size="14" />
+<input type="hidden" name="cx" value="011656849246290948379:pdvwpzpb2di" />
+<input type="hidden" name="cof" value="FORID:9" />
+<input type="hidden" name="ie" value="UTF-8" />
+<input class="buttonred"  type="submit" name="sa" value=" &raquo;">
+</div>
+</form>
+<script type="text/javascript" src="http://www.google.com/coop/cse/brand?form=cse-search-box&lang=en"></script>
+
+<div>Online Books:</div>
+<form action="http://safari.java.net/search" method="post" name="searchForm" id="form_searchForm">
+<input name="__formName" value="searchForm" type="hidden" />
+<input value="simple" name="searchmode" id="searchmode" type="hidden" />
+<input value="0" name="page" id="page" type="hidden" />
+<input value="summary" name="searchview" id="searchview" type="hidden" />
+<input value="rank" name="sort" id="sort" type="hidden" />
+<input value="desc" name="order" id="order" type="hidden" />
+<input value="1" name="NewSearch" id="NewSearch" type="hidden" />
+<div>
+<input name="searchtextbox" id="searchtextbox" type="text" value="" class="medium" size="14" />
+<input class="buttonred" value=" &raquo; " border="0" type="submit"></div>
+</form>
+
+<div>java.net on <a href="http://markmail.org/">MarkMail</a>:</div>
+<form action="http://markmail.org/search/list:net.java">
+<div><input name="q" id="searchtextbox" type="text" value="" class="medium" size="14" />
+<input class="buttonred" value=" &raquo; " border="0" type="submit"></div>
+</form>
+
+<div><a href="http://www.java.net/search.csp">Advanced Search</a></div>
+</div>
+</div>
+</noindex>
+
+</div>
+<br />
+</td>
+<td height="3" colspan="2"><img src="http://today.java.net/images/a.gif" width="1" height="3"><br /></td>
+</tr>
+<tr> 
+<td width="10"><img src="http://today.java.net/images/a.gif" width="10" height="1"></td>
+<td width="100%" valign="top">
+
+
+
+
+<div class="link-note">
+<a href="http://weblogs.java.net/blog/dwalend/index.rdf"><img src="http://www.java.net/images/icons/feed.png" width="16" height="16" vspace="4" hspace="10" border="0" alt="Syndicate this blog (XML)" align="right" /></a><br />
+</div>
+
+
+
+<img src="/images/people/david_walend.jpg" border="0" height="68" width="99" alt="David Walend" align="left" vspace="3" hspace="6" />
+
+
+
+
+<h2><a href="http://weblogs.java.net/blog/dwalend/">David Walend's Blog</a></h2>
+
+<div class="small" align="right">
+<a href="http://weblogs.java.net/blog/dwalend/archive/2005/01/sharpening_the.html">&laquo;Sharpening the Axe or Shaving the Yaks?</a> |
+
+<a href="http://weblogs.java.net/blog/dwalend/">Main</a>
+| <a href="http://weblogs.java.net/blog/dwalend/archive/2005/04/a_trip_in_the_w.html">A Trip in the Way-Back Machine &raquo;</a>
+
+</div>
+
+<div class="grayline"></div>
+
+<h3>Better JavaDoc on http://java.net</h3>
+
+<span class="ltcaption1">Posted by <b>dwalend</b> on March 08, 2005 at 05:11 AM</a> | <a href="http://weblogs.java.net/blog/dwalend/archive/2005/03/better_javadoc.html#comments">Comments (13)</a>
+
+</span>
+
+<br /><br />
+
+Last August I posted a <a href="http://weblogs.java.net/blog/dwalend/archive/2004/08/moving_jdigraph.html">blog on setting up a project on http://java.net</a>. I spent a paragraph on how I posted my project's JavaDoc API. I've worked with that solution for seven months, but I'm not really happy with it. I'd like to ask the people who run java.net for a better way, but I'm not sure exactly what to ask for.
+<p>
+The Problems with using CVS for JavaDoc
+<p>
+I have two problems with using CVS to store JavaDoc. The first is philosophical -- CVS is a source code control system, and JavaDoc .html files are a derived product, not source code. If you can check out the source code, you can build the JavaDoc yourself. If you change the JavaDoc, it doesn't matter; next time you rebuild it, those changes are lost. The second problem is logistical -- I either have to remove all the JavaDoc from the last release and add all the new JavaDoc from the latest release. Or I have to put each release under a new directory; that saves me removing it, but means that everyone's links point to an old copy and grows the www subdirectory over time. Either way, I have to add several layers deep of JavaDoc directories. And I get a 15 MB cvs change log in email every time.
+<p>
+Sourceforge's Approach
+<p>
+Sourceforge gives each user a unix account and each project a public web directory. Back when I kept projects on Sourceforge, I ftped a tar ball of .html files for the web pages, including the JavaDoc. It worked, but was fairly primitive. Plus it relied on letting the users log in remotely to sourceforge's servers. That's probably more than Sun, O'reilly and Collabnet are willing to pay for.
+<p>
+I've thought of three alternatives, but don't know which would be the best.
+<p>
+Subversion
+<p>
+Collabnet, one of java.net's sponsors, paid to create <a href="http://subversion.tigris.org/">Subversion</a>, a replacement for CVS. I've used it at home for a while, and on a few projects at work. I'd rather use Subversion than CVS in any case; Subversion treats each commit as a transaction, linking all the changes together. Using Subversion to store source code and web pages would still not address my philosophical concerns. However, Subversion's ability to easily remove and add whole directory structures would be a huge improvement over CVS. I could even get rid of the top level v1, v2, v3, etc. directories.
+<p>
+.war Files
+<p>
+In the previous blog, straun suggested a separate repository of .war files for web sites. Using .war files would let us maintain project web sites the way Java developers are used to. The approach addresses both of my concerns. When I'm ready to release a new version of the web site, I build a .war file and post it in the appropriate place, instead of checking in the files as source code. And I handle the site as a single .war file instead of single files in directories. How close is http://java.net from being able to support that? What other pitfalls are involved? Would the administrators have to do something special to keep developers from putting executable code in the .war files?
+<p>
+Shared JavaDoc Database
+<p>
+A more compelling solution: Join with <a href="http://www.jdocs.com/">JDocs</a>, a shared cross-linked JavaDoc database, or to set up something similar on java.net hardware. The JavaDocs would be completely separate from source code. And over time, we would grow a large, cross-linked set of API docs that would help us use each others' work. The JDoc site hasn't added new material since September 7th. I don't know what would be involved for the java.net administrators to set up such a system, or the java.net sponsors to link up with JDoc.
+<p>
+Those are the options I've thought of. Which of these should we ask for? Is there some other option we should consider?
+<p>
+Thanks,
+<p>
+Dave
+
+<div id="a002145more"><div id="more">
+
+</div></div>
+
+<br />
+Bookmark blog post: <a href="http://del.icio.us/post?title=Better JavaDoc on http://java.net&amp;url=http://weblogs.java.net/blog/dwalend/archive/2005/03/better_javadoc.html"><img src="/images/icons/delicious.gif" alt="del.icio.us" border="0" height="16" hspace="8" vspace="1" width="16" /></a> <a href="http://del.icio.us/post?title=Better JavaDoc on http://java.net&amp;url=http://weblogs.java.net/blog/dwalend/archive/2005/03/better_javadoc.html">del.icio.us</a> <a href="http://digg.com/submit?phase=2&amp;title=Better JavaDoc on http://java.net"><img src="/images/icons/digg.gif" alt="Digg" border="0" height="14" hspace="8" width="16" /></a> <a href="http://digg.com/submit?phase=2&amp;title=Better JavaDoc on http://java.net&amp;url=http://weblogs.java.net/blog/dwalend/archive/2005/03/better_javadoc.html">Digg</a> <a href="http://www.dzone.com/links/add.html?url=http://weblogs.java.net/blog/dwalend/archive/2005/03/better_javadoc.html&amp;title=Better JavaDoc on http://java.net"><img src="/images/icons/dzone.gif" alt="DZone" border="0" height="16" hspace="8" width="16" /></a> <a href="http://www.dzone.com/links/add.html?url=http://weblogs.java.net/blog/dwalend/archive/2005/03/better_javadoc.html&amp;title=Better JavaDoc on http://java.net">DZone</a> <a href="http://www.furl.net/storeIt.jsp?t=Better JavaDoc on http://java.net&amp;u=http://weblogs.java.net/blog/dwalend/archive/2005/03/better_javadoc.html"><img src="/images/icons/furl.gif" alt="Furl" border="0" height="17" hspace="8" width="16" /></a> <a href="http://www.furl.net/storeIt.jsp?t=Better JavaDoc on http://java.net&amp;u=http://weblogs.java.net/blog/dwalend/archive/2005/03/better_javadoc.html">Furl</a>  <a href="http://reddit.com/submit?title=Better JavaDoc on http://java.net&amp;url=http://weblogs.java.net/blog/dwalend/archive/2005/03/better_javadoc.html"><img src="/images/icons/reddit.gif" alt="Reddit" border="0" height="18" hspace="8" width="18" /></a> <a href="http://reddit.com/submit?title=Better JavaDoc on http://java.net&amp;url=http://weblogs.java.net/blog/dwalend/archive/2005/03/better_javadoc.html">Reddit</a>
+<br />
+<div class="grayline"></div>
+
+<a name="comments"></a>
+<h5>Comments</h5>
+<span class="small">Comments are listed in date ascending order (oldest first) | <a href="#post">Post Comment</a></span>
+<br /><br />
+
+<ul>
+<li>
+<a name="6666"></a>
+<div id="c6666">
+<p>I'm keeping the javadoc for my java.net projects offsite, uploading them by FTP and pointing to them from the java.net site.<br />
+I find FTP a very easy way to do it.</p>
+
+<p>Using Internet Explorer (groan all you like - it works for me), I browse to the ftp directory where I keep the javadocs, delete the 'api' directory, then drag and drop the same directory from the latest build.<br />
+30 seconds later and I'm done.</p>
+
+<p>I'd love to be able to FTP them up to java.net.<br />
+I think it's sad that, at the moment, it's impractical for the whole project to be hosted here.</p>
+<p class="posted"><span class="ltcaption1">Posted by: grlea  on March 08, 2005 at 02:59 PM</span></p>
+</div>
+</li>
+</ul>
+<ul>
+<li>
+<a name="6673"></a>
+<div id="c6673">
+<p>You should be able to request JDocs.org to add your API, and to update it when it changes. There are links on their site to do that.</p>
+
+<p>JDocs uses the Ashkelon FOSS system, which stores APIs in a relational database. It should be easy to attach to a website (that was the original intent for the project), or for java.net to coordinate with JDocs to provide for easy updating, etc.</p>
+
+<p>Personally, if I'm going to use the API much, I prefer to have the APIs locally, and am migrating to using Ashkelon locally as well.</p>
+
+<p>Patrick</p>
+<p class="posted"><span class="ltcaption1">Posted by: pdoubleya  on March 09, 2005 at 05:26 AM</span></p>
+</div>
+</li>
+</ul>
+<ul>
+<li>
+<a name="6675"></a>
+<div id="c6675">
+<p>david,</p>
+
+<p>  i don't know whether you know this or not but jdocs is based on my open-source project 'ashkelon.'  they basically use ashkelon to populate their db.  when they got started they contacted me and i helped them get set up.  i even went as far as adding features to ashkelon to accomodate their needs.</p>
+
+<p>where it differs from ashkelon is the jsps's:  they wanted their ui to look just like javadocs did (monochromatic, html 3.2 stuff).  with the ashkelon base, it's _very_ easy to customize the ui for javadocs because they can all be templatized.</p>
+
+<p>anyhow, i'd be more than happy to work with the powers that be at java.net to make that happen.</p>
+
+<p>the ashkelon project is well-documented.  furthermore, i'm giving talks on ashkelon all across the country with the no fluff just stuff conferences.</p>
+
+<p> - eitan<br />
+</p>
+<p class="posted"><span class="ltcaption1">Posted by: eitan  on March 09, 2005 at 07:30 AM</span></p>
+</div>
+</li>
+</ul>
+<ul>
+<li>
+<a name="6682"></a>
+<div id="c6682">
+<p>grlea,</p>
+
+<p>Maybe if they opened up the "documents and files" segment to be a better match for javadoc, that would open up something that works more like ftp. I don't really want to have to hold the javadocs on a separate site. Worth considering, though.</p>
+
+<p>Thanks,</p>
+
+<p>Dave</p>
+<p class="posted"><span class="ltcaption1">Posted by: dwalend  on March 09, 2005 at 07:08 PM</span></p>
+</div>
+</li>
+</ul>
+<ul>
+<li>
+<a name="6683"></a>
+<div id="c6683">
+<p>eitan, Patrick,</p>
+
+<p>Do either of you know if the JDoc site is being kept up? The front page says they haven't added an API since September 7th, 2004. </p>
+
+<p>What's the overhead of running ashkelon? Does it jjust plug into a servlet engine? Any special security concerns? Anything that will make the java.net crew grind their teeth? </p>
+
+<p>Thanks,</p>
+
+<p>Dave<br />
+ </p>
+<p class="posted"><span class="ltcaption1">Posted by: dwalend  on March 09, 2005 at 07:18 PM</span></p>
+</div>
+</li>
+</ul>
+<ul>
+<li>
+<a name="6686"></a>
+<div id="c6686">
+<p>You should be able to browse the Javadoc, but the developer shouldn't have to muck around with uploading them and keeping them up to date - that should be automated.</p>
+
+<p>Here's how it should work:<br />
+Initial State = no javadoc stored<br />
+Someone clicks a "look at the javadoc" link, and as appropriate (depending on the link) the servlet responsible for handling that request checks to see if the Javadoc exists.  Also rather than compile the whole shebang, it should be smart enough to only make the relevant bits.  Eg if you're looking for the index, it should compile only what it needs to for that (perhaps just using the file names and packages of the .java files).  Or if I'm looking at a particular class it only needs to compile the Javadoc for that one class.<br />
+The second thing it should do is in case the existing javadoc is older than the class you're looking at it should compile a new one.<br />
+The third thing is that if noone's looked at a javadoc for a while, there should be a maintenance facility to maybe get rid of it (move it to cheaper storage maybe?) </p>
+
+<p>The point of all this is a not too smart automated facility could be quite quick, and not suck storage the way cvs would, while taking a lot of hassle off the coders, and also maximising the convenience for the viewers.</p>
+<p class="posted"><span class="ltcaption1">Posted by: rickcarson  on March 09, 2005 at 08:55 PM</span></p>
+</div>
+</li>
+</ul>
+<ul>
+<li>
+<a name="6688"></a>
+<div id="c6688">
+<p>Rick: automation is an absolute must for people. I'm happy to do a few manual things as long as they're easy (which checking javadoc into CVS is not). I have a colleague who will almost refuse to do anything unless it's automatable. I wish he'd write my Ant files for me.  : )</p>
+
+<p>David: I'd be pretty happy with any solution for putting javadocs onto java.net as long as:<br />
+ - it's strongly associated with the project (i.e. in the same subdomain)<br />
+ - it's not in CVS<br />
+ - it's easy to upload manually - akin to my single d'n'd with IE.<br />
+Automation would be good, but isn't a requirement for me. It is for some people, though, which probably means it SHOULD be a requirement (in case anyone with control over the site is reading this).</p>
+<p class="posted"><span class="ltcaption1">Posted by: grlea  on March 09, 2005 at 09:15 PM</span></p>
+</div>
+</li>
+</ul>
+<ul>
+<li>
+<a name="6690"></a>
+<div id="c6690">
+<p>Another thought on using Ashkelon. We could write a doclet for Ashkelon that outputs the docs in a standard XML format, which includes a version attribute. On request for a certain class, if not already in the central Ashkelon database, they are pulled in--and, if the version is different from that in the database, the newer version is pulled in. The load could be "chunked" using XPath to load by package, class, etc. Links would always go through the main servlet to allow for lazy loading.</p>
+
+<p>The generated XML can be uploaded to the project www directory, and overwrite whatever is currently in there, given a version change.</p>
+
+<p>Also, if the servlet can return either HTML or XML, using the XML one can write a rich client browser (one of my pet projects) or submit different XSL for different styled layouts.</p>
+
+<p>I think Ashkelon or something like it is the best solution for managing multiple JavaDoc sets. It is stable code and works well.</p>
+
+<p>Patrick</p>
+<p class="posted"><span class="ltcaption1">Posted by: pdoubleya  on March 10, 2005 at 02:05 AM</span></p>
+</div>
+</li>
+</ul>
+<ul>
+<li>
+<a name="6694"></a>
+<div id="c6694">
+<p>Surely the sensible answer is for java.net to use your project's build script to create the javadocs form the checked-in version of the code. I'm absolutely with you being against checking in derived artifacts. We use cruisecontrol to run regular builds from our repository and make the generated reports, including javadoc, available. Jakarta also provide regular builds via gump.</p>
+<p class="posted"><span class="ltcaption1">Posted by: mgladdish  on March 10, 2005 at 07:47 AM</span></p>
+</div>
+</li>
+</ul>
+<ul>
+<li>
+<a name="6708"></a>
+<div id="c6708">
+<p>rickcarson, </p>
+
+<p>Great suggestions on how the world should be. That might be putting too much burden on the java.net service. I'd be surprised if they had the resources to build out a new piece of software. And it'd be hard to justify in light of Ashkelon. (You could sign on with the Ashkelon project and pull the world toward your vision...)</p>
+
+<p>Dave<br />
+</p>
+<p class="posted"><span class="ltcaption1">Posted by: dwalend  on March 11, 2005 at 05:20 AM</span></p>
+</div>
+</li>
+</ul>
+<ul>
+<li>
+<a name="6709"></a>
+<div id="c6709">
+<p>grlea, Patrick, mgladdish,</p>
+
+<p>Great ideas on automating this stuff. </p>
+
+<p>The project automation tools mgladdish suggests aren't widely accepted yet. (I've found them a bit restrictive.) Ant seems to be universal enough, so that got me thinking...</p>
+
+<p>Perhaps what we need is a standard ant Task to hand off javadoc to a remote instance of Ashkelon. I'd slip it into my big release target, just after the tag task. Others could link it up with cruisecontrol or maven or what-comes-next.</p>
+
+<p>We'd need to convince the java.net crew to host an Ashkelon instance, and open the firewall enough to let us talk to it. Eitan said he could help. </p>
+
+<p>How's that sound?</p>
+
+<p>Dave</p>
+<p class="posted"><span class="ltcaption1">Posted by: dwalend  on March 11, 2005 at 05:28 AM</span></p>
+</div>
+</li>
+</ul>
+<ul>
+<li>
+<a name="6752"></a>
+<div id="c6752">
+<p><br />
+sorry it took me a few days to get back to this thread.  yall have some terrific ideas.  i think we could do our community a great service by setting this up for all java.net projects.  i have some initial ideas which i'll outline here for starters. </p>
+
+<p>the ashkelon repository manager stuffs apis into a db.  ashkelon supports either mysql or postgres.  every project maps nicely to a single api.  we'll need to figure out how long it will take ashkelon to populate all java.net projects and how the viewer performs on that level/scale.  my idea is to start simple:  have the repository manager rebuild the database nightly so that every morning all projects have fresh javadocs, and this would all be automated.  there is one piece that project developers would have to supply:  the api.xml file which lists the packages to be documented (and the api name, and a few other tidbits).  we can get the source code from cvs.  we can also get much of the information that is traditionally supplied in api.xml directly from the java.net project information, so that the requirement from project leaders/developers would be minimal (possibly nil).  once we get this working, we could then start refactoring:  making ashkelon a little smarter so it doesn't have to rebuild the docs for an api if the source hasn't changed.  also ashkelon supports a per-api add/remove feature so that updating an api can be performed independently of the others.</p>
+
+<p>it looks like a number of you are ready and willing to help out with setting this up, which would be terrific.  we could surely use your help.  a community effort!<br />
+</p>
+<p class="posted"><span class="ltcaption1">Posted by: eitan  on March 15, 2005 at 03:22 PM</span></p>
+</div>
+</li>
+</ul>
+<ul>
+<li>
+<a name="6781"></a>
+<div id="c6781">
+<p>Dave wrote:</p>
+
+<p>> Do either of you know if the JDoc site is being kept up? The front page <br />
+> says they haven't added an API since September 7th, 2004.</p>
+
+<p>I don't really keep up with what goes on at javalobby these days.  But you must realize that they're a small team.  Also once the top 100+ APIs are documented, you pretty much have things covered for the community...with the exception of updating the APIs with newer version releases.</p>
+
+<p><br />
+> What's the overhead of running ashkelon? Does it just plug into a <br />
+> servlet engine? Any special security concerns? Anything that will <br />
+> make the java.net crew grind their teeth?</p>
+
+<p><br />
+the viewer is a war file you drop into a servlet/jsp container.  security concerns should be minimal as the viewer is essentially read-only.  though i really think we should think through various scenarios, possible vulnerabilities.</p>
+<p class="posted"><span class="ltcaption1">Posted by: eitan  on March 16, 2005 at 08:16 PM</span></p>
+</div>
+</li>
+</ul>
+
+
+<br /><br />
+
+
+
+
+<br />
+
+<div class="footer" align="right">This work is licensed under a
+<a href="http://creativecommons.org/licenses/by-nc-sa/2.0/">Creative Commons License</a>.<br />
+<a href="http://creativecommons.org/licenses/by-nc-sa/2.0/"><img src="http://creativecommons.org/images/public/somerights.gif" alt="Creative Commons License" border="0" height="31" width="88" hspace="2" vspace="2" /></a>
+</div>
+
+
+<br />
+<div id="powered" align="right">
+<b>Powered by</b><br />
+<a href="http://www.movabletype.org">Movable Type 3.01D</a><br />    
+</div>
+
+
+
+</td></tr></table>
+
+<!--  BEGIN VNV5 FOOTER   -->
+<!--  BEGIN VNV5 FOOTER   -->
+<table border="0" cellpadding="0" cellspacing="10" width="100%">
+<tr>
+<td>
+&nbsp;<a href="http://today.java.net/pub/q/java_net_rss"><img src="/images/icons/feed.png" border="0" width="16" height="16" alt="Feed" align="absmiddle"></a>&nbsp;<a href="http://today.java.net/pub/q/java_net_rss">java.net RSS Feeds</a><br />
+<div class="grayline"></div>
+<table border="0" cellpadding="0" cellspacing="0" width="100%" class="vatop">
+<tr>
+<td><img src="/im/a.gif" width="190" height="1" border="0" alt=" " /><br />
+<a href="http://www.sun.com"><img src="/im/logo_sun_small.gif" width="61" height="29" border="0" alt=" " vspace="5"/></a></td>
+<td width="60%" valign="top">
+<div class="footer">
+
+<!--  Start Quantcast tag  -->
+<script type="text/javascript" src="http://edge.quantserve.com/quant.js"></script>
+<script type="text/javascript">
+_qacct="p-20l78bOOCbhcg";quantserve();</script>
+<noscript>
+<img src="http://pixel.quantserve.com/pixel/p-20l78bOOCbhcg.gif" style="display: none" height="1" width="1" alt="Quantcast"/></noscript>
+<!--  End Quantcast tag  -->
+
+<a href="https://java-net.dev.java.net/feedback.html">Feedback</a> &nbsp;|&nbsp;<a href="http://java.net/faq.csp">FAQ</a> &nbsp;|&nbsp;<a href="http://java.net/presscenter/">Press</a>&nbsp;|&nbsp;<a href="http://java.net/terms.csp">Terms of Use</a><br />
+<a href="http://www.sun.com/privacy/">Privacy</a> &nbsp;|&nbsp;
+<a href="http://www.sun.com/suntrademarks/">Trademarks</a>&nbsp;|&nbsp;<a href="https://java-net.dev.java.net/sitemap.html">Site Map</a>
+<br /><span class="sp5">&nbsp;</span><br />
+Your use of this web site or any of its content or software indicates your agreement to be bound by these <a href="http://java.net/terms.csp">Terms of Participation</a>.<br />
+<span class="sp5">&nbsp;</span><br />
+Copyright &copy; 1995-2008 Sun Microsystems, Inc.
+</div></td>
+<td width="40%" valign="top" align="right"><div class="footer">
+<a href="http://www.oreilly.com"><img src="/images/montague_logo_oreilly.gif" width="74" height="19" border="0" alt="Oreilly Logo"></a><a href="http://www.collab.net/"><img src="/images/montague_logo_collabnet.gif" width="85" height="19" border="0" alt="Collabnet Logo"></a><br>
+Powered by Sun Microsystems, Inc.,<br /> O'Reilly and CollabNet
+</div></td></tr>
+<!--  <tr><td colspan="3" valign="top" class="grey3"><img src="/im/a.gif" width="1" height="2" border="0" alt=" " /></td></tr>  -->
+</table>
+<div class="grayline"></div>
+</td></tr>
+</table>
+<!--  END VNV5 FOOTER  -->
+
+<!--  Begin SiteCatalyst code  -->
+<script language="JavaScript" src="http://www.java.net/s_code_remote.js"></script>
+<!--  End SiteCatalyst code  -->
+
+
+</body>
+</html>

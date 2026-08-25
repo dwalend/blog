@@ -1,0 +1,450 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="http://www.movabletype.org/" />
+
+<title>David Walend's Blog: SalutafugiJMS -- Java Messaging Service on ZeroConf</title>
+
+<link rel="stylesheet" href="http://weblogs.java.net/blog/styles-site.css" type="text/css" />
+<link rel="stylesheet" href="http://www.java.net/css/main.css" type="text/css">
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://weblogs.java.net/blog/dwalend/index.rdf" />
+<link rel="alternate" type="application/atom+xml" title="Atom" href="http://weblogs.java.net/blog/dwalend/atom.xml" />
+
+<link rel="start" href="http://weblogs.java.net/blog/dwalend/" title="Home" />
+<link rel="prev" href="http://weblogs.java.net/blog/dwalend/archive/2007/05/preparing_for_j.html" title="Preparing for JavaOne" />
+
+<link rel="next" href="http://weblogs.java.net/blog/dwalend/archive/2007/11/the_thing_about.html" title="How big is that boolean[]?" />
+
+
+
+
+
+<!--  Begin SiteCatalyst code  -->
+<script language="JavaScript">
+<!--
+var s_channel="David Walend's Blog";
+//--></script>
+<!--  End SiteCatalyst code  -->
+
+</head>
+
+<body>
+
+<!--  Masthead  -->
+<div class="topline">
+<div class="topbar">
+<table border="0" cellpadding="0" cellspacing="0" width="100%" height="25">
+<tr>
+<td width="100%" rowspan="2"><a href="http://www.java.net"><img src="/images/header_jnet_new.jpg" width="500" height="60" border="0" alt="The Source for Java Technology Collaboration"></a></td>
+ <td nowrap="nowrap" style="vertical-align:middle">
+ <div id="login">
+ 
+  <form name="loginform" id="loginform" action="https://www.dev.java.net/servlets/TLogin" method="post">
+  <input type="hidden" name="redir" value="http://weblogs.java.net/blog/dwalend/archive/2007/06/salutafugijms_j_1.html">
+  <div>
+  <strong>User:</strong>
+   <input type="text" name="loginID" id="loginID" value="" size="7" maxlength="32" />
+   <strong>Password:</strong>
+
+   <input type="password" name="password" id="password" value="" size="7" maxlength="32" />
+   <input type="submit" name="Login" class="buttonred" id="Button" value="Login" /> </div>
+  <div class="small" align="right"><strong> <a href="https://www.dev.java.net/servlets/Join">Register</a>  | <a href="https://www.dev.java.net/servlets/TLogin">Login help</a>   &nbsp;&nbsp;&nbsp;</strong></div> 
+</form>
+ 
+</div>
+</td> 
+</tr>
+</table>
+</div>
+
+<!--  Tabs  -->
+
+
+<noindex>
+<div class="tabs" id="toptabs">
+<table cellspacing=0 cellpadding=4 border=0>
+<tbody>
+<tr>
+<td><a href="https://www.dev.java.net/servlets/StartPage">My       pages</a> </td>
+<td><a       href="http://community.java.net/projects/">Projects</a></td>
+<td><a href="http://community.java.net">Communities</a>   </td>
+<th><a href="http://www.java.net">java.net</a></th>
+</tr></tbody></table></div>
+</noindex>
+
+
+
+<table id="main" cellspacing="2" cellpadding="2" width="100%" border="0">
+  <tbody>
+  <tr valign=top>
+    <td id="leftcol" width="150" rowspan="2">
+	<img src="http://today.java.net/im/a.gif" width="150" height="1"><br />
+<div id="navcolumn">
+<!--   COMMUNITY LINKS   -->
+<noindex>
+<div class="toolgroup" id="communitylinks">
+<div class="label"><strong>Get Involved</strong></div>
+<div class="body">
+<div><a href="https://java-net.dev.java.net/">java-net Project</a></div>
+<div><a href="http://www.java.net/request_project.csp">Request a Project</a></div>
+<div><a href="http://community.java.net/help_wanted/">Project&nbsp;Help&nbsp;Wanted&nbsp;Ads</a></div>
+<div><a href="http://community.java.net/projects/publicize.csp">Publicize your Project</a></div>
+<!-- <div><a href="#">Success Stories</a></div>  -->
+<div><a href="http://today.java.net/cs/user/create/bl">Submit Content</a></div>
+<div><script language="JavaScript" type="text/javascript">
+<!--
+var name = "spamreport";
+var domain = "admin.dev.java.net";
+var display = "Report Inappropriate Content";
+var subject = "";
+var ending = "";
+var style = "";
+document.write('<a class="' + style + '" href="mailto:' + name + '&#64;' + domain + '?subject=' + subject + '">');
+if (display) {
+ document.write(display);
+} else {
+ document.write(name + '&#64;' + domain);
+}
+document.write('</a>' + ending);
+document.write('<!-- mailmunge bit -->');
+// -->
+</script>
+</div>
+</div>
+</div>
+
+<div class="toolgroup" id="communitylinks">
+<div class="label"><strong>Get Informed</strong></div>
+<div class="body">
+<div><a href="http://www.java.net/about.csp">About java.net</a></div>
+<div><a href="http://today.java.net/pub/q/articles">Articles</a></div>
+<div><a href="http://weblogs.java.net/">Blogs</a></div>
+<div><a href="http://www.java.net/events">Events</a></div>
+<div><a href="http://today.java.net/today/alsotoday.csp">Also in Java Today</a></div>
+<div><a href="http://safari.java.net">java.net Online Books</a></div>
+<div><a href="http://today.java.net/today/archive/">java.net Archives</a></div>
+</div>
+</div>
+
+<div class="toolgroup" id="communitylinks">
+<div class="label"><strong>Get Connected</strong></div>
+<div class="body">
+<div><a href="http://forums.java.net">java.net Forums</a></div>
+<div><a href="http://wiki.java.net/">Wiki</a> and <a href="http://wiki.java.net/bin/view/Javapedia/WebHome">Javapedia</a></div>
+<div><a href="http://wiki.java.net/bin/view/People/WebHome">People</a>, <a href="http://partners.java.net">Partners</a>, and <a href="http://wiki.java.net/bin/view/Javanet/JobsWiki">Jobs</a> </div>
+<div><a href="http://community.java.net/jugs/listing.csp">Java User Groups</a></div>
+<div><!--  <a href="https://java-net.dev.java.net/servlets/ProjectMailingListList">Newsletters</a> and  --><a href="http://today.java.net/pub/q/rsschannels">RSS Feeds</a></div>
+</div>
+</div>
+
+<div class="toolgroup" id="communitylinks">
+<div class="label"><b>Search</b></div>
+<div class="body">
+<form action="http://www.java.net/search_results.csp" id="cse-search-box">
+<div>Web and Projects:</div>
+<div><input type="text" name="q" class="medium" size="14" />
+<input type="hidden" name="cx" value="011656849246290948379:pdvwpzpb2di" />
+<input type="hidden" name="cof" value="FORID:9" />
+<input type="hidden" name="ie" value="UTF-8" />
+<input class="buttonred"  type="submit" name="sa" value=" &raquo;">
+</div>
+</form>
+<script type="text/javascript" src="http://www.google.com/coop/cse/brand?form=cse-search-box&lang=en"></script>
+
+<div>Online Books:</div>
+<form action="http://safari.java.net/search" method="post" name="searchForm" id="form_searchForm">
+<input name="__formName" value="searchForm" type="hidden" />
+<input value="simple" name="searchmode" id="searchmode" type="hidden" />
+<input value="0" name="page" id="page" type="hidden" />
+<input value="summary" name="searchview" id="searchview" type="hidden" />
+<input value="rank" name="sort" id="sort" type="hidden" />
+<input value="desc" name="order" id="order" type="hidden" />
+<input value="1" name="NewSearch" id="NewSearch" type="hidden" />
+<div>
+<input name="searchtextbox" id="searchtextbox" type="text" value="" class="medium" size="14" />
+<input class="buttonred" value=" &raquo; " border="0" type="submit"></div>
+</form>
+
+<div>java.net on <a href="http://markmail.org/">MarkMail</a>:</div>
+<form action="http://markmail.org/search/list:net.java">
+<div><input name="q" id="searchtextbox" type="text" value="" class="medium" size="14" />
+<input class="buttonred" value=" &raquo; " border="0" type="submit"></div>
+</form>
+
+<div><a href="http://www.java.net/search.csp">Advanced Search</a></div>
+</div>
+</div>
+</noindex>
+
+</div>
+<br />
+</td>
+<td height="3" colspan="2"><img src="http://today.java.net/images/a.gif" width="1" height="3"><br /></td>
+</tr>
+<tr> 
+<td width="10"><img src="http://today.java.net/images/a.gif" width="10" height="1"></td>
+<td width="100%" valign="top">
+
+
+
+
+<div class="link-note">
+<a href="http://weblogs.java.net/blog/dwalend/index.rdf"><img src="http://www.java.net/images/icons/feed.png" width="16" height="16" vspace="4" hspace="10" border="0" alt="Syndicate this blog (XML)" align="right" /></a><br />
+</div>
+
+
+
+<img src="/images/people/david_walend.jpg" border="0" height="68" width="99" alt="David Walend" align="left" vspace="3" hspace="6" />
+
+
+
+
+<h2><a href="http://weblogs.java.net/blog/dwalend/">David Walend's Blog</a></h2>
+
+<div class="small" align="right">
+<a href="http://weblogs.java.net/blog/dwalend/archive/2007/05/preparing_for_j.html">&laquo;Preparing for JavaOne</a> |
+
+<a href="http://weblogs.java.net/blog/dwalend/">Main</a>
+| <a href="http://weblogs.java.net/blog/dwalend/archive/2007/11/the_thing_about.html">How big is that boolean[]? &raquo;</a>
+
+</div>
+
+<div class="grayline"></div>
+
+<h3>SalutafugiJMS -- Java Messaging Service on ZeroConf</h3>
+
+<span class="ltcaption1">Posted by <b>dwalend</b> on June 24, 2007 at 09:34 AM</a> | <a href="http://weblogs.java.net/blog/dwalend/archive/2007/06/salutafugijms_j_1.html#comments">Comments (5)</a>
+
+</span>
+
+<br /><br />
+
+<p>
+<a href="https://salutafugijms.dev.java.net/">SalutafugiJMS</a> is a peer-to-peer implementation of the <a href="http://jcp.org/en/jsr/detail?id=914">Java Messaging Service specification</a> that uses <a href="http://www.dns-sd.org/">ZeroConf DNS-SD discovery</a> and TCP sockets to communicate in a distributed computing system. I built it after seeing <a href="http://developers.sun.com/learning/javaoneonline/2007/pdf/TS-1916.pdf">Daniel Steinberg's JavaOne talk on ZeroConf</a>. SalutafugiJMS uses <a href="https://somnifugijms.dev.java.net/">SomnifugiJMS</a> as a skeleton and <a href="http://developer.apple.com/networking/bonjour/">Apple's Bonjour implementation of ZeroConf</a> for muscle inside special SomnifugiJMS <a href="https://somnifugijms.dev.java.net/nonav/api/net/walend/somnifugi/channel/FanOut.html">FanOuts</a> and <a href="https://somnifugijms.dev.java.net/nonav/api/net/walend/somnifugi/channel/Channel.html">Channels</a>. SalutafugiJMS eliminates the central (or federated or clustered) message broker found in traditional JMS implementations and the need to manage specific services required by traditional DNS-SD systems. Name the JMS Queues and Topics for information your system needs to exchange. Your system consumes what your system needs. Your system sends out what it chooses. SalutafugiJMS takes care of the rest, leaving your system very loosely coupled.
+</p><p>
+<b>Broker-Free JMS</b>
+</p><p>
+In a traditional JMS application, message producers and message consumers don't have to know about each other. That feature creates <a href="http://today.java.net/pub/a/today/2006/04/04/understanding-service-oriented-architecture.html#share-message-bus">highly decoupled systems</a>. However, message producers and consumers all have to get connections to the same JMS message broker. That shared knowledge about the JMS broker usually comes from magic connection url strings to summon objects out of JNDI servers. Getting those magic strings correct is tedious; many elaborate projects focus on abstracting away those strings, sometimes to the point of programming in XML. SalutafugiJMS is a peer-to-peer system -- producers send messages directly to consumers -- while remaining highly decoupled. The only magic string for you to wrangle is the name of the JMS Topic or Queue. No central broker exists; the system can handle failures in any single service and keep going. 
+</p><p>
+<b>Anonymous ZeroConf</b>
+</p><p>
+In a traditional ZeroConf system, ZeroConf provides <a href="http://today.java.net/pub/a/today/2006/04/04/understanding-service-oriented-architecture.html#discover-dynamically">service discovery</a>; a service registers itself so that applications can discover and use it. Those applications browse for the services they need, and resolve them by name. The system is loosely coupled at build time, but becomes very tightly coupled as soon as the application resolves the services at runtime. If the application depends on a service that fails midway through a run, that application suffers. SalutafugiJMS adds JMS' anonymous endpoints to ZeroConf to eliminate that tight coupling. Behind the curtain, SalutafugiJMS consumers register what Queue or Topic they wish to receive messages from. SalutafugiJMS manages browsing and resolving the services inside the producers. Your applications simply produce and consume messages in the system when they need to. 
+</p><p>
+<b>Building SalutafugiJMS</b>
+</p><p>
+I spent about thirty hours' total reading, designing and coding to get messages flowing between JMS Topic Publishers and Subscribers. Bonjour's programmers' interface is a little call-back heavy. Stopping all the services' monitor threads took some thought and a little reworking of SomnifugiJMS. Daniel and Stuart Cheshire's book was very good; everything worked like they said it would. Getting to the initial release was easy and fun. I'd hoped to be able to mine the effort for half-a-dozen blogs, but I think I'll only get two -- one on Thread.sleep(), and one comparing ZeroConf, JXTA and JINI.
+</p><p>
+The only aggravating part was getting the Bonjour dns_sd.jar from Apple. I do most of my work on an older G4 Mac (amazingly long battery life). Apple's Bonjour page provided a windows .exe installer to get at that dns_sd.jar. I got the jar from a friend with a newer Intel Mac. Daniel tells me I could have pulled in the <a href="http://developer.apple.com/opensource/internet/bonjour.html">Bonjour source code</a> and built the dns_sd.jar myself after all. I've gotten very used to Java's jar-based library distribution. I normally only pull in source code to help fix problems and add features. I didn't even think to look.
+</p><p>
+SalutafugiJMS' first release is very much alpha-0-1, JMS Topics-only, and missing many features. SalutafugiJMS seems a little slow and I haven't looked into why. I haven't used SalutafugiJMS in any of my own applications yet, so downloader beware. Alpha-0-2 will focus on logging and fault management, alpha-0-3 on filling in features for Topics.
+</p><p>
+If you're more interested in broker-free JMS now and can swallow a GPL (or maybe MPL) license, have a look at <a href="http://sourceforge.net/projects/mantaray/">MantaRay</a>. I think they use a proprietary multicast protocol, not ZeroConf. They've had a working peer-to-peer JMS for a few years.
+</p>
+
+<div id="a007724more"><div id="more">
+
+</div></div>
+
+<br />
+Bookmark blog post: <a href="http://del.icio.us/post?title=SalutafugiJMS -- Java Messaging Service on ZeroConf&amp;url=http://weblogs.java.net/blog/dwalend/archive/2007/06/salutafugijms_j_1.html"><img src="/images/icons/delicious.gif" alt="del.icio.us" border="0" height="16" hspace="8" vspace="1" width="16" /></a> <a href="http://del.icio.us/post?title=SalutafugiJMS -- Java Messaging Service on ZeroConf&amp;url=http://weblogs.java.net/blog/dwalend/archive/2007/06/salutafugijms_j_1.html">del.icio.us</a> <a href="http://digg.com/submit?phase=2&amp;title=SalutafugiJMS -- Java Messaging Service on ZeroConf"><img src="/images/icons/digg.gif" alt="Digg" border="0" height="14" hspace="8" width="16" /></a> <a href="http://digg.com/submit?phase=2&amp;title=SalutafugiJMS -- Java Messaging Service on ZeroConf&amp;url=http://weblogs.java.net/blog/dwalend/archive/2007/06/salutafugijms_j_1.html">Digg</a> <a href="http://www.dzone.com/links/add.html?url=http://weblogs.java.net/blog/dwalend/archive/2007/06/salutafugijms_j_1.html&amp;title=SalutafugiJMS -- Java Messaging Service on ZeroConf"><img src="/images/icons/dzone.gif" alt="DZone" border="0" height="16" hspace="8" width="16" /></a> <a href="http://www.dzone.com/links/add.html?url=http://weblogs.java.net/blog/dwalend/archive/2007/06/salutafugijms_j_1.html&amp;title=SalutafugiJMS -- Java Messaging Service on ZeroConf">DZone</a> <a href="http://www.furl.net/storeIt.jsp?t=SalutafugiJMS -- Java Messaging Service on ZeroConf&amp;u=http://weblogs.java.net/blog/dwalend/archive/2007/06/salutafugijms_j_1.html"><img src="/images/icons/furl.gif" alt="Furl" border="0" height="17" hspace="8" width="16" /></a> <a href="http://www.furl.net/storeIt.jsp?t=SalutafugiJMS -- Java Messaging Service on ZeroConf&amp;u=http://weblogs.java.net/blog/dwalend/archive/2007/06/salutafugijms_j_1.html">Furl</a>  <a href="http://reddit.com/submit?title=SalutafugiJMS -- Java Messaging Service on ZeroConf&amp;url=http://weblogs.java.net/blog/dwalend/archive/2007/06/salutafugijms_j_1.html"><img src="/images/icons/reddit.gif" alt="Reddit" border="0" height="18" hspace="8" width="18" /></a> <a href="http://reddit.com/submit?title=SalutafugiJMS -- Java Messaging Service on ZeroConf&amp;url=http://weblogs.java.net/blog/dwalend/archive/2007/06/salutafugijms_j_1.html">Reddit</a>
+<br />
+<div class="grayline"></div>
+
+<a name="comments"></a>
+<h5>Comments</h5>
+<span class="small">Comments are listed in date ascending order (oldest first) | <a href="#post">Post Comment</a></span>
+<br /><br />
+
+<ul>
+<li>
+<a name="27360"></a>
+<div id="c27360">
+<p>FWIW Apache ActiveMQ can work in a peer to peer mode; using its own multicast discovery or zeroconf...</p>
+
+<p>http://activemq.apache.org/discovery.html</p>
+
+<p>http://activemq.apache.org/peer-transport-reference.html</p>
+
+<p>You can use discovery in a peer to peer architecture, or in a federated cluster architecture; so you've the best of both worlds. Typically if you want reliable messaging and persistence, you probably don't want peer to peer; as thats a lot of disks to worry about backing up etc :)<br />
+</p>
+<p class="posted"><span class="ltcaption1">Posted by: jstrachan  on June 25, 2007 at 02:50 AM</span></p>
+</div>
+</li>
+</ul>
+<ul>
+<li>
+<a name="27367"></a>
+<div id="c27367">
+<p><br />
+Thanks. I spotted their federated cluster business, but not the peer-to-peer. </p>
+
+<p>At some point I'll write a blog about reliable messaging's detrimental effects on system reliability...<br />
+</p>
+<p class="posted"><span class="ltcaption1">Posted by: dwalend  on June 25, 2007 at 05:40 AM</span></p>
+</div>
+</li>
+</ul>
+<ul>
+<li>
+<a name="27429"></a>
+<div id="c27429">
+<p>you said: "At some point I'll write a blog about reliable messaging's detrimental effects on system reliability..."</p>
+
+<p>Yeah I was actually on a project a few years ago that got cancelled because someones' "reliable" eb-xml messaging didn't work.  The prototype worked in production for a year using dumb-ole-http-post without missing a beat.</p>
+
+<p>However some genius thought we needed "reliable messaging" and so we modified everything to use eb-xml.  Unfortunately, due to an interop problem between endpoints (both using the same libs) the sender always threw an exception, even though the messages were "reliably" delivered.</p>
+
+<p>So since there was no way to distinguish between a real message failure, and the bogus exception which always occurred, "reliable" sending was declared unachievable and the project was canned.</p>
+
+<p>Go figure...<br />
+</p>
+<p class="posted"><span class="ltcaption1">Posted by: geoffh  on June 27, 2007 at 06:02 AM</span></p>
+</div>
+</li>
+</ul>
+<ul>
+<li>
+<a name="27529"></a>
+<div id="c27529">
+<p><br />
+geoffh,</p>
+
+<p>Wow. That's a terrible war story. </p>
+
+<p>Most of what I've seen is systemic failure caused by the demands of reliable messaging: big latencies, databases filling up, big message backlogs, nasty interactions with timeouts, thrash and churn sorts of problems.<br />
+</p>
+<p class="posted"><span class="ltcaption1">Posted by: dwalend  on July 01, 2007 at 08:13 AM</span></p>
+</div>
+</li>
+</ul>
+<ul>
+<li>
+<a name="49032"></a>
+<div id="c49032">
+<p>I'm so grateful  for all that you've done. Thanks again  for that nice essay and I would be most grateful if you would send me the latter ones....</p>
+
+<p><br />
+mirc <br />
+mırc <br />
+mirç<br />
+mırç <br />
+mirc indir <br />
+chat yap <br />
+islami sohbet <br />
+dini sohbet <br />
+kelebek <br />
+kelebek sohbet <br />
+kelebek mirc <br />
+kameralı mirc <br />
+kameralı sohbet<br />
+chat yap<br />
+çet <br />
+çet odaları <br />
+sohbet kanalları <br />
+sohbet odaları <br />
+yarışma<br />
+sevgili<br />
+arkadaş<br />
+arkadaş ara<br />
+arkadaşlık</p>
+<p class="posted"><span class="ltcaption1">Posted by: jklmno  on June 19, 2008 at 08:56 AM</span></p>
+</div>
+</li>
+</ul>
+
+
+<br /><br />
+
+
+
+<form method="post" action="http://weblogs.java.net/mt/comments" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="7724" />
+
+<a name="post"></a>
+
+<b>Only logged in users may post comments. <a href="/cs/user/login?x-redirect=http://weblogs.java.net/blog/dwalend/archive/2007/06/salutafugijms_j_1.html">Login Here</a>.</b>
+
+<!--  TS: var-  -->
+<!--  TS: cfg-  -->
+<!--  TS: vars-  -->
+<!--  TS: test -   -->
+
+<!--  TS: cpt -   -->
+
+
+</form>
+
+</MTIfCommentsAllowed>
+
+
+
+
+<br />
+
+<div class="footer" align="right">This work is licensed under a
+<a href="http://creativecommons.org/licenses/by-nc-sa/2.0/">Creative Commons License</a>.<br />
+<a href="http://creativecommons.org/licenses/by-nc-sa/2.0/"><img src="http://creativecommons.org/images/public/somerights.gif" alt="Creative Commons License" border="0" height="31" width="88" hspace="2" vspace="2" /></a>
+</div>
+
+
+<br />
+<div id="powered" align="right">
+<b>Powered by</b><br />
+<a href="http://www.movabletype.org">Movable Type 3.01D</a><br />    
+</div>
+
+
+
+</td></tr></table>
+
+<!--  BEGIN VNV5 FOOTER   -->
+<!--  BEGIN VNV5 FOOTER   -->
+<table border="0" cellpadding="0" cellspacing="10" width="100%">
+<tr>
+<td>
+&nbsp;<a href="http://today.java.net/pub/q/java_net_rss"><img src="/images/icons/feed.png" border="0" width="16" height="16" alt="Feed" align="absmiddle"></a>&nbsp;<a href="http://today.java.net/pub/q/java_net_rss">java.net RSS Feeds</a><br />
+<div class="grayline"></div>
+<table border="0" cellpadding="0" cellspacing="0" width="100%" class="vatop">
+<tr>
+<td><img src="/im/a.gif" width="190" height="1" border="0" alt=" " /><br />
+<a href="http://www.sun.com"><img src="/im/logo_sun_small.gif" width="61" height="29" border="0" alt=" " vspace="5"/></a></td>
+<td width="60%" valign="top">
+<div class="footer">
+
+<!--  Start Quantcast tag  -->
+<script type="text/javascript" src="http://edge.quantserve.com/quant.js"></script>
+<script type="text/javascript">
+_qacct="p-20l78bOOCbhcg";quantserve();</script>
+<noscript>
+<img src="http://pixel.quantserve.com/pixel/p-20l78bOOCbhcg.gif" style="display: none" height="1" width="1" alt="Quantcast"/></noscript>
+<!--  End Quantcast tag  -->
+
+<a href="https://java-net.dev.java.net/feedback.html">Feedback</a> &nbsp;|&nbsp;<a href="http://java.net/faq.csp">FAQ</a> &nbsp;|&nbsp;<a href="http://java.net/presscenter/">Press</a>&nbsp;|&nbsp;<a href="http://java.net/terms.csp">Terms of Use</a><br />
+<a href="http://www.sun.com/privacy/">Privacy</a> &nbsp;|&nbsp;
+<a href="http://www.sun.com/suntrademarks/">Trademarks</a>&nbsp;|&nbsp;<a href="https://java-net.dev.java.net/sitemap.html">Site Map</a>
+<br /><span class="sp5">&nbsp;</span><br />
+Your use of this web site or any of its content or software indicates your agreement to be bound by these <a href="http://java.net/terms.csp">Terms of Participation</a>.<br />
+<span class="sp5">&nbsp;</span><br />
+Copyright &copy; 1995-2008 Sun Microsystems, Inc.
+</div></td>
+<td width="40%" valign="top" align="right"><div class="footer">
+<a href="http://www.oreilly.com"><img src="/images/montague_logo_oreilly.gif" width="74" height="19" border="0" alt="Oreilly Logo"></a><a href="http://www.collab.net/"><img src="/images/montague_logo_collabnet.gif" width="85" height="19" border="0" alt="Collabnet Logo"></a><br>
+Powered by Sun Microsystems, Inc.,<br /> O'Reilly and CollabNet
+</div></td></tr>
+<!--  <tr><td colspan="3" valign="top" class="grey3"><img src="/im/a.gif" width="1" height="2" border="0" alt=" " /></td></tr>  -->
+</table>
+<div class="grayline"></div>
+</td></tr>
+</table>
+<!--  END VNV5 FOOTER  -->
+
+<!--  Begin SiteCatalyst code  -->
+<script language="JavaScript" src="http://www.java.net/s_code_remote.js"></script>
+<!--  End SiteCatalyst code  -->
+
+
+</body>
+</html>

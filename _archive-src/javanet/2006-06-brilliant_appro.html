@@ -1,0 +1,398 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" /> 
+<title>Brilliant Approach to Optional Data Design? Wicked Hack? Source of Horrible Suffering? | Java.net</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="alternate" type="application/atom+xml" title="Java.net Atom" href="/node/235657/atom/feed" />
+<meta name="description" content="I've finally added message selector support for Topics in SomnifugiJMS, a single-process implementation of a Java Messaging Service. It's SomnifugiJMS's 14th alpha release. (Message selectors for Queues will be more difficult, but is the last piece" />
+<meta name="robots" content="index,follow" />
+<meta name="DC.title" content="Brilliant Approach to Optional Data Design? Wicked Hack? Source of Horrible Suffering?" />
+<link rel="shortcut icon" href="/misc/favicon.ico" type="image/x-icon" />
+<link type="text/css" rel="stylesheet" media="all" href="/sites/default/files/css/css_af4e7d6b9b2939fd69526c5b49804d2a.css" />
+<!--[if IE]>
+<link rel="stylesheet" href="/sites/all/themes/java/ie.css" />
+<![endif]-->
+
+<style>
+#edit-taxonomy-6-wrapper{display:none} /*feed category*/
+</style>
+
+<style>
+#edit-taxonomy-4-wrapper{display:none} /*comm homepage*/
+</style>
+
+
+<link rel="shortcut icon" href="http://community.java.net/favicon.ico">
+<!--  Begin SiteCatalyst code  -->
+<script language="JavaScript">
+<!--
+var s_channel="other";
+//--></script>
+<!--  End SiteCatalyst code  -->
+</head>
+<body id="page-body" leftmargin="0" topmargin="0" rightmargin="0" bgcolor="#ffffff" marginheight="0" marginwidth="0">
+<a name="top"></a>
+<div class="topline">
+  <div class="topbar">
+    <table border="0" cellpadding="0" cellspacing="0" height="25" width="100%">
+      <tbody>
+        <tr>
+          <td rowspan="2" width="100%"><a href="http://www.java.net/"><img src="/images/header_jnet_new.jpg" alt="The Source for Java Technology Collaboration" border="0" height="60" width="500"></a></td>
+          <td style="vertical-align: middle;" nowrap="nowrap"><div id="login">
+          	              <form name="loginform" id="loginform" action="https://www.dev.java.net/servlets/TLogin" method="post">
+                <input name="redir" value="http://www.java.net/blog/dwalend/archive/2006/06/brilliant_appro.html" type="hidden">
+                <div> <strong>User:</strong>
+                  <input name="loginID" id="loginID" value="" size="7" maxlength="32" type="text">
+                  <strong>Password:</strong>
+                  <input name="password" id="password" value="" size="7" maxlength="32" type="password">
+                  <input name="Login" class="buttonred" id="Button" value="Login" type="submit">
+                </div>
+                <div class="small" align="right"><strong> <a href="https://www.dev.java.net/servlets/Join">Register</a> | <a href="https://www.dev.java.net/servlets/TLogin">Login help</a> &nbsp;&nbsp;&nbsp;</strong>
+						</div>
+              </form>
+            </div></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <noindex>
+    <div class="tabs" id="toptabs">
+      <table border="0" cellpadding="4" cellspacing="0">
+        <tbody>
+          <tr>
+            <!-- make the active tab a TH instead of TD -->
+            <td><a href="https://www.dev.java.net/servlets/StartPage">My pages</a> </td>
+            								<td><a href="http://www.java.net/projects/">Projects</a></td>
+                <td><a href="http://www.java.net/community">Communities</a> </td>
+                <th><a href="http://www.java.net/">java.net</a></th>
+							          </tr>
+        </tbody>
+      </table>
+    </div>
+  </noindex>
+
+  <table id="main" border="0" cellpadding="2" cellspacing="2" width="100%">
+    <tbody>
+      <tr valign="top">
+        <td id="leftcol" rowspan="2" width="170">
+           <div id="block-menu-menu-get-involved" class="clear-block block block-menu">
+
+  <h2>Get Involved</h2>
+
+  <div class="content"><ul class="menu"><li class="leaf first"><a href="/about-javanet" title="About java.net">About java.net</a></li>
+<li class="leaf"><a href="/request-project" title="Request a Project">Request a Project</a></li>
+<li class="leaf"><a href="/publicize-your-project" title="Publicize your Project">Publicize your Project</a></li>
+<li class="leaf"><a href="/submit-content" title="Submit Content">Submit Content</a></li>
+<li class="leaf"><a href="https://java-net.dev.java.net/" title="">java-net Project</a></li>
+<li class="leaf"><a href="/enhancements" title="">Java.net Enhancements</a></li>
+<li class="leaf"><a href="https://www.dev.java.net/servlets/OpenCollabNet" title="">Site Help</a></li>
+<li class="leaf last"><a href="/form/report-inappropriate-content" title="Report Inappropriate Content">Report Inappropriate Content</a></li>
+</ul></div>
+</div>
+<div id="block-menu-menu-get-informed" class="clear-block block block-menu">
+
+  <h2>Get Informed</h2>
+
+  <div class="content"><ul class="menu"><li class="leaf first"><a href="/articles" title="">Articles</a></li>
+<li class="leaf"><a href="/blogfront" title="">Blogs</a></li>
+<li class="leaf"><a href="/events" title="">Events</a></li>
+<li class="leaf"><a href="http://safari.java.net/" title="">java.net Online Books</a></li>
+<li class="leaf last"><a href="/today/archive" title="Archive">java.net Archives</a></li>
+</ul></div>
+</div>
+<div id="block-menu-menu-get-connected" class="clear-block block block-menu">
+
+  <h2>Get Connected</h2>
+
+  <div class="content"><ul class="menu"><li class="leaf first"><a href="http://forums.java.net/" title="">java.net Forums</a></li>
+<li class="leaf"><a href="http://wiki.java.net" title="">Wiki</a></li>
+<li class="leaf"><a href="http://wiki.java.net/bin/view/Javapedia/WebHome" title="">Javapedia</a></li>
+<li class="leaf"><a href="http://wiki.java.net/bin/view/People/WebHome" title="">People</a></li>
+<li class="leaf"><a href="/partners" title="">Partners</a></li>
+<li class="leaf"><a href="http://wiki.java.net/bin/view/Javanet/JobsWiki" title="">Jobs</a></li>
+<li class="leaf"><a href="/pub/q/rsschannels" title="">RSS Feeds</a></li>
+<li class="leaf last"><a href="/jugs-list">Java User Groups</a></li>
+</ul></div>
+</div>
+<div id="block-block-1" class="clear-block block block-block">
+
+  <h2>Search</h2>
+
+  <div class="content"><form action="http://www.google.com/cse" id="cse-search-box">
+                  <div>Web and Projects:</div>
+                  <div>
+                   <input type="text" name="q" size="22" />
+                   <input type="hidden" name="cx" value="017555676512375062942:o5-kz1r0m2s" />
+                   <input type="hidden" name="ie" value="UTF-8" />
+                    <input type="submit" name="sa" value="Search" />
+                  </div>
+                </form>
+<script type="text/javascript" src="http://www.google.com/cse/brand?form=cse-search-box&lang=en"></script>
+
+
+
+            <!--<script type="text/javascript" src="/images/brand.htm"></script>-->
+                <div>Online Books:</div>
+                <form action="http://safari.java.net/search" method="post" name="searchForm" id="form_searchForm">
+                  <input name="__formName" value="searchForm" type="hidden">
+                  <input value="simple" name="searchmode" id="searchmode" type="hidden">
+                  <input value="0" name="page" id="page" type="hidden">
+                  <input value="summary" name="searchview" id="searchview" type="hidden">
+                  <input value="rank" name="sort" id="sort" type="hidden">
+                  <input value="desc" name="order" id="order" type="hidden">
+                  <input value="1" name="NewSearch" id="NewSearch" type="hidden">
+                  <div>
+                    <input name="searchtextbox" id="searchtextbox" value="" class="medium" size="14" type="text">
+                    <input class="buttonred" value=" » " border="0" type="submit">
+                  </div>
+                </form>
+                <div>java.net on <a href="http://markmail.org/">MarkMail</a>:</div>
+                <form action="http://markmail.org/search/list:net.java">
+                  <div>
+                    <input name="q" id="searchtextbox" value="" class="medium" size="14" type="text">
+                    <input class="buttonred" value=" » " border="0" type="submit">
+                  </div>
+                </form>
+                <div><a href="http://www.java.net/search">Advanced Search</a></div>
+</div>
+</div>
+        </td>
+        <td colspan="2" height="3"><img src="/images/a.gif" height="3" width="1"><br></td>
+      </tr>
+      <tr>
+        <td width="10"><img src="/images/a.gif" height="1" width="10"></td>
+        <td valign="top" width="100%">
+          <br>
+          <a name="skip2content"></a>
+          	            	<div id="content-top">
+              	<div id="block-block-20" class="clear-block block block-block">
+
+
+  <div class="content"><div id="blog-author-top"><table><tr><td><div id="blog-author-body"><img align="left" src="/images/people/david_walend.jpg" border="0" /></div></td><td valign="top"><h2><a href="/blog/7120">David Walend</a></h2><div id="blog-nav-links"><a href="/blog/2006/05/30/no-giant-or-windmill-just-deranged-muppet">No Giant or Windmill, Just a Deranged Muppet</a> | <a href="/blog/7120">Main</a> | <a href="/blog/2006/06/19/our-grass-greenest-ognl-and-linq">Our Grass is Greenest: OGNL and LINQ</a></div></td></tr></table><div id="blog-author-feedlink2"><a href="/blog/7120/feed"><img src="/misc/feed.png" border="0" /></a></div></div><div style="clear:both"></div><div style="border-bottom: 4px #eee solid;">&nbsp;</div></div>
+</div>
+              </div>
+            						                          <h2 class="title">Brilliant Approach to Optional Data Design? Wicked Hack? Source of Horrible Suffering?</h2>
+                                                <style>
+#edit-taxonomy-6-wrapper{display:none} /*feed category*/
+</style>
+
+<style>
+#edit-taxonomy-4-wrapper{display:none} /*comm homepage*/
+</style>
+
+  <div class="blog-node node">
+          <div id="blog-submitted">Posted by <a href="/blog/7120">dwalend</a> on June 5, 2006 at 7:11 PM PDT</div>  
+  <div class="content"><span class='print-link'></span><p>
+I've finally added message selector support for Topics in <a href="https://somnifugijms.dev.java.net/">SomnifugiJMS</a>, a single-process implementation of a Java Messaging Service. It's SomnifugiJMS's 14th alpha release. (Message selectors for Queues will be more difficult, but is the last piece keeping SomnifugiJMS in alpha releases. I think I can get it to work with j.u.c.Conditions and some extra work, but haven't had the time to design it yet.)
+<p></p>
+At JavaOne, I met up with Linda Schneider, one of the key people working on <a href="https://mq.dev.java.net/">https://mq.dev.java.net/</a>, at JavaOne. She sent me a pointer to the message selector implementation in the JMS reference implementation. The JMS RI just switched to <a href="http://www.sun.com/cddl/">CDDL</a>, which is <a href="http://www.opensolaris.org/os/about/faq/licensing_faq/#CDDL-combo">a file-based license</a>, so I picked up their code, edited it to play nice with my own, and now have message selectors for Topics. They even have a good set of tests in a main method; the JMS RI predates JUnit by a year or so.
+</p><p>
+The only snag I hit was that I use member fields in SomniMessage to hold information that every message should hold, but the JMS RI Selector API expects a Map.
+</p><p>
+<code><pre>
+public class SomniMessage 
+    implements Message
+{
+...
+    private String messageID;
+    private long timeStamp=0;
+    private String correlationID;
+    private Destination replyTo;
+    private Destination destination;
+    private int deliveryMode;
+    private long expirationTime;
+    private int priority=0;
+    private int producerCount=Integer.MIN_VALUE;
+    private String producerConnectionClientID;
+    private boolean readOnly=false;
+    private boolean redelivered=false;
+...
+}
+</pre></code>
+</p><p>
+<code><pre>
+    public synchronized boolean match(Map properties, Map fields)
+        throws SelectorFormatException
+    { ... }
+</pre></code>
+</p><p>
+My first thought was to recode the JMS RI Selector to use javax.jms.Message-specific getters. That sounded tedious; I'm not familiar with the code, and am not overly interested in writing or modifying an SQL92 parser. Linda emailed, "[Selector.java is] huge because there is a lot of different items to parse," which seems to say it all. My second thought was to recode SomniMessage to use a Map to store this sort of information. In SomnifugiJMS these fields always have some value, so a Map just seems wrong. SomnifugiJMS is supposed to be faster and simpler than database JMS implementations, especially for small-scale work (which rarely needs message selectors). I didn't want to loose that simplicity to get the message selectors working. 
+</p><p>
+I pondered a bit and came up with a third option: use reflection to implement a Map that calls getters when given a field name as a key:
+</p><p>
+<code><pre>
+class ReflectingMap
+    implements Map
+{
+    private static final String GETTERPREFIX = "get";
+    
+    private Object hasGetters;
+    
+    ReflectingMap(Object hasGetters)
+    {
+        this.hasGetters = hasGetters;
+    }
+    
+    private String getterNameForKey(String key)
+    {
+        return GETTERPREFIX+key;
+    }
+    
+    public boolean containsKey(Object key)
+    {
+        if(!(key instanceof String))
+        {
+            return false;
+        }
+        try
+        {
+            hasGetters.getClass().getMethod(getterNameForKey((String)key));
+            return true;
+        }
+        catch(NoSuchMethodException nsme)
+        {
+            return false;
+        }
+    }
+
+    public Object get(Object key)
+    {
+        if(!(key instanceof String))
+        {
+            return null;
+        }
+        try
+        {
+            Method method = hasGetters.getClass().getMethod(getterNameForKey((String)key));
+            return method.invoke(hasGetters);
+        }
+        catch(NoSuchMethodException nsme)
+        {
+            return null;
+        }
+        catch(IllegalAccessException iae)
+        {
+            throw new SomniRuntimeException(iae);
+        }
+        catch(InvocationTargetException ite)
+        {
+            throw new SomniRuntimeException(ite);
+        }
+    }
+    
+    public Object put(String key,Object value)
+    {
+        throw new UnsupportedOperationException("I haven't done this yet. Maybe someday when I think about setters.");
+    }
+  
+    public Object remove(Object key)
+    {
+        throw new UnsupportedOperationException("This will never work. What are you doing?");
+    }
+
+    //All other methods throw new UnsupportedOperationException("I haven't done this yet.");
+}
+</pre></code>
+</p><p>
+I could implement a general purpose put() method by slipping another Map inside this one, and delegating put()s and get()s to that map for keys that hasGetters does not have. I can't implement the whole Map interface this way because there's no way to remove arbitrary keys. What would removing a field even mean?
+</p><p>
+I think that's an interesting piece of code, especially given the talk of invokeDynamic's evil partner, "changing the members of an object," at a <a href="https://www28.cplan.com/javaone06_cv_124_1/sessions_catalog.jsp?ilc=124-1&ilg=english&isort=1&is=%3CISEARCH%3E&ip=no&itrack=+&isession_type=+&isession_id=TS-3886&iabstract=&ispeaker=&ispk_company=">JavaOne talk</a>. It's an interesting choice for sometimes-optional fields when designing data structures. 
+</p><p>
+However, "Interesting" might mean that it'll be a source of horrible suffering. 
+</p><p>
+First, code that works this way will have to have <code>if(containsKey())</code> or <code>if(yourRef==null)</code> forks everywhere, will have to handle NullPointerExceptions, or (worst and most likely) will spew NullPointerExceptions. I'll predict the same problems as I've seen using <a href="http://beanshell.org/">BeanShell's</a> <a href="http://beanshell.org/manual/specialvarsvalues.html#Undefined_Variables">voids</a>. Variables that don't exist in the a BeanShell name space are void (instead of null or some default value). Developers sometimes should check <code>if(hisRef==void)</code>, but usually don't. 
+</p><p>
+Second, the keys are Strings, so there's no great way to predict what might be a key. For message selectors, I know from the JMS specification that the keys will be a small, defined set of Strings that happen to match method names. Perhaps an Enum of possible keys would better define the universe of possible optional members, but that shifts back toward the unsatisfying "this member hasn't been set yet" pattern for accessors. I can live with these problems in my own code, but I want to know these land mines are out there, especially after a decade of trying to avoid using nulls as magic error codes. 
+</p><p>
+In my ears: Beethoven's Missa Solimnis. Wow.
+</p></div>
+    <div class="links">&raquo; <ul class="links inline"><li class="blog_usernames_blog first"><a href="/blogs/dwalend" title="Read dwalend&#039;s latest blog entries.">dwalend&#039;s blog</a></li>
+<li class="comment_forbidden"><span><a href="/user/login?destination=comment/reply/235657%2523comment-form">Login</a> or <a href="/user/register?destination=comment/reply/235657%2523comment-form">register</a> to post comments</span></li>
+<li class="statistics_counter"><span>105 visits</span></li>
+<li class="print_html last"><a href="/print/235657" title="Display a printer-friendly version of this page." class="print-page" rel="nofollow">Printer-friendly version</a></li>
+</ul></div>      </div>
+  <div id="comment-header">Comments</div>
+  <div id="comment-header2">Comments are listed in date ascending order (oldest first)</div>
+                                        <div id="content-bottomdiv2">
+                	                </div>
+                            
+        </td>
+              </tr>
+      <tr>
+        <td rowspan="2" valign="bottom"><img src="/images/a.gif" alt=" " border="0" height="1" width="170"><br>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <br>
+  <img src="/images/a.gif" alt=" " border="0" height="1" width="170"><br>
+  <img src="/images/a.gif" alt=" " border="0" height="1" width="170"><br>
+
+  <table border="0" cellpadding="0" cellspacing="10" width="100%">
+    <tbody>
+      <tr>
+        <td>&nbsp;
+          <div class="grayline"></div>
+          <table class="vatop" border="0" cellpadding="0" cellspacing="0" width="100%">
+            <tbody>
+              <tr>
+                <td><img src="/images/a.gif" alt=" " border="0" height="1" width="190"><br>
+                  <a href="http://www.sun.com/"><img src="/images/logo_sun_small.gif" alt=" " border="0" height="29" vspace="5" width="61"></a></td>
+                <td valign="top" width="60%"><div class="footer">
+                    <!--  Start Quantcast tag  -->
+                    <script type="text/javascript" src="/images/quant.js"></script> 
+                    <script type="text/javascript">
+											_qacct="p-20l78bOOCbhcg";
+											quantserve(); 
+                    </script>
+                    <noscript>
+                    <img src="http://pixel.quantserve.com/pixel/p-20l78bOOCbhcg.gif" style="display: none" height="1" width="1" alt="Quantcast"/>
+                    </noscript>
+                    <!--  End Quantcast tag  -->
+                    <a href="https://java-net.dev.java.net/feedback.html">Feedback</a> &nbsp;|&nbsp;<a href="/javanet-faq">FAQ</a> &nbsp;|&nbsp;<a href="http://java.net/presscenter/">Press</a>&nbsp;|&nbsp;<a href="/javanet-web-site-terms-use">Terms of Use</a><br>
+                    <a href="http://www.sun.com/privacy/">Privacy</a> &nbsp;|&nbsp; <a href="http://www.sun.com/suntrademarks/">Trademarks</a>&nbsp;|&nbsp;<a href="https://java-net.dev.java.net/sitemap.html">Site Map</a> <br>
+                    <span class="sp5">&nbsp;</span><br>
+                    Your use of this web site or any of its content or software indicates your agreement to be bound by these <a href="/javanet-web-site-terms-use">Terms of Participation</a>.<br>
+                    <span class="sp5">&nbsp;</span><br>
+                    Copyright &copy; 1995-2008 Sun Microsystems, Inc. </div></td>
+                <td align="right" valign="top" width="40%"><div class="footer"> 
+		<a href="http://www.collab.net/"><img src="/images/montague_logo_collabnet.gif" alt="Collabnet Logo" border="0" height="19" width="85"></a>
+		<a href="http://www.cognisync.com/"><img src="/images/cognisync.jpg" alt="Cognisync Communities" border="0"></a>
+<br>
+                    Powered by Sun Microsystems, Inc.,<br>
+                    CollabNet and Cognisync </div></td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="grayline"></div></td>
+      </tr>
+    </tbody>
+  </table>
+  <!--  Begin SiteCatalyst code  
+  <script language="JavaScript" src="/images/s_code_remote.js"></script>
+  <script type="text/javascript" src="/images/metrics_group1.js"></script> 
+   End SiteCatalyst code  -->
+</div>
+<div style="display:none"> </div>
+<script type="text/javascript" src="/sites/default/files/js/js_44eb2ff930a1455efe1931bab6efb04e.js"></script>
+<script type="text/javascript">
+<!--//--><![CDATA[//><!--
+jQuery.extend(Drupal.settings, { "basePath": "/", "extlink": { "extTarget": "_blank", "extClass": 0, "extSubdomains": 1, "extExclude": "", "extInclude": "", "extAlert": 0, "extAlertText": "This link will take you to an external web site. We are not responsible for their content.", "mailtoClass": 0 }, "fivestar": { "titleUser": "Your rating: ", "titleAverage": "Average: ", "feedbackSavingVote": "Saving your vote...", "feedbackVoteSaved": "Your vote has been saved.", "feedbackDeletingVote": "Deleting your vote...", "feedbackVoteDeleted": "Your vote has been deleted." } });
+//--><!]]>
+</script>
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-10612840-1");
+pageTracker._trackPageview();
+} catch(err) {}
+</script>
+</body>
+</html>
+

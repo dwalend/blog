@@ -1,0 +1,405 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="http://www.movabletype.org/" />
+
+<title>David Walend's Blog: Test Driving Generics</title>
+
+<link rel="stylesheet" href="http://weblogs.java.net/blog/styles-site.css" type="text/css" />
+<link rel="stylesheet" href="http://www.java.net/css/main.css" type="text/css">
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://weblogs.java.net/blog/dwalend/index.rdf" />
+<link rel="alternate" type="application/atom+xml" title="Atom" href="http://weblogs.java.net/blog/dwalend/atom.xml" />
+
+<link rel="start" href="http://weblogs.java.net/blog/dwalend/" title="Home" />
+<link rel="prev" href="http://weblogs.java.net/blog/dwalend/archive/2004/06/somnifugijms_fo_4.html" title="SomnifugiJMS for User Interfaces, Now With Example Code" />
+
+<link rel="next" href="http://weblogs.java.net/blog/dwalend/archive/2004/08/moving_jdigraph.html" title="Moving JDigraph" />
+
+
+
+
+
+<!--  Begin SiteCatalyst code  -->
+<script language="JavaScript">
+<!--
+var s_channel="David Walend's Blog";
+//--></script>
+<!--  End SiteCatalyst code  -->
+
+</head>
+
+<body>
+
+<!--  Masthead  -->
+<div class="topline">
+<div class="topbar">
+<table border="0" cellpadding="0" cellspacing="0" width="100%" height="25">
+<tr>
+<td width="100%" rowspan="2"><a href="http://www.java.net"><img src="/images/header_jnet_new.jpg" width="500" height="60" border="0" alt="The Source for Java Technology Collaboration"></a></td>
+ <td nowrap="nowrap" style="vertical-align:middle">
+ <div id="login">
+ 
+  <form name="loginform" id="loginform" action="https://www.dev.java.net/servlets/TLogin" method="post">
+  <input type="hidden" name="redir" value="http://weblogs.java.net/blog/dwalend/archive/2004/07/test_driving_ge.html">
+  <div>
+  <strong>User:</strong>
+   <input type="text" name="loginID" id="loginID" value="" size="7" maxlength="32" />
+   <strong>Password:</strong>
+
+   <input type="password" name="password" id="password" value="" size="7" maxlength="32" />
+   <input type="submit" name="Login" class="buttonred" id="Button" value="Login" /> </div>
+  <div class="small" align="right"><strong> <a href="https://www.dev.java.net/servlets/Join">Register</a>  | <a href="https://www.dev.java.net/servlets/TLogin">Login help</a>   &nbsp;&nbsp;&nbsp;</strong></div> 
+</form>
+ 
+</div>
+</td> 
+</tr>
+</table>
+</div>
+
+<!--  Tabs  -->
+
+
+<noindex>
+<div class="tabs" id="toptabs">
+<table cellspacing=0 cellpadding=4 border=0>
+<tbody>
+<tr>
+<td><a href="https://www.dev.java.net/servlets/StartPage">My       pages</a> </td>
+<td><a       href="http://community.java.net/projects/">Projects</a></td>
+<td><a href="http://community.java.net">Communities</a>   </td>
+<th><a href="http://www.java.net">java.net</a></th>
+</tr></tbody></table></div>
+</noindex>
+
+
+
+<table id="main" cellspacing="2" cellpadding="2" width="100%" border="0">
+  <tbody>
+  <tr valign=top>
+    <td id="leftcol" width="150" rowspan="2">
+	<img src="http://today.java.net/im/a.gif" width="150" height="1"><br />
+<div id="navcolumn">
+<!--   COMMUNITY LINKS   -->
+<noindex>
+<div class="toolgroup" id="communitylinks">
+<div class="label"><strong>Get Involved</strong></div>
+<div class="body">
+<div><a href="https://java-net.dev.java.net/">java-net Project</a></div>
+<div><a href="http://www.java.net/request_project.csp">Request a Project</a></div>
+<div><a href="http://community.java.net/help_wanted/">Project&nbsp;Help&nbsp;Wanted&nbsp;Ads</a></div>
+<div><a href="http://community.java.net/projects/publicize.csp">Publicize your Project</a></div>
+<!-- <div><a href="#">Success Stories</a></div>  -->
+<div><a href="http://today.java.net/cs/user/create/bl">Submit Content</a></div>
+</div>
+</div>
+
+<div class="toolgroup" id="communitylinks">
+<div class="label"><strong>Get Informed</strong></div>
+<div class="body">
+<div><a href="http://www.java.net/about.csp">About java.net</a></div>
+<div><a href="http://today.java.net/pub/q/articles">Articles</a></div>
+<div><a href="http://weblogs.java.net/">Blogs</a></div>
+<div><a href="http://www.java.net/events">Events</a></div>
+<div><a href="http://today.java.net/today/alsotoday.csp">Also in Java Today</a></div>
+<div><a href="http://safari.java.net">java.net Online Books</a></div>
+<div><a href="http://today.java.net/today/archive/">java.net Archives</a></div>
+</div>
+</div>
+
+<div class="toolgroup" id="communitylinks">
+<div class="label"><strong>Get Connected</strong></div>
+<div class="body">
+<div><a href="http://forums.java.net">java.net Forums</a></div>
+<div><a href="http://wiki.java.net/">Wiki</a> and <a href="http://wiki.java.net/bin/view/Javapedia/WebHome">Javapedia</a></div>
+<div><a href="http://wiki.java.net/bin/view/People/WebHome">People</a>, <a href="http://partners.java.net">Partners</a>, and <a href="http://wiki.java.net/bin/view/Javanet/JobsWiki">Jobs</a> </div>
+<div><a href="http://community.java.net/jugs/listing.csp">Java User Groups</a></div>
+<div><!--  <a href="https://java-net.dev.java.net/servlets/ProjectMailingListList">Newsletters</a> and  --><a href="http://today.java.net/pub/q/rsschannels">RSS Feeds</a></div>
+</div>
+</div>
+
+<div class="toolgroup" id="communitylinks">
+<div class="label"><b>Search</b></div>
+<div class="body">
+<form action="http://www.java.net/search_results.csp" id="cse-search-box">
+<div>Web and Projects:</div>
+<div><input type="text" name="q" class="medium" size="14" />
+<input type="hidden" name="cx" value="011656849246290948379:pdvwpzpb2di" />
+<input type="hidden" name="cof" value="FORID:9" />
+<input type="hidden" name="ie" value="UTF-8" />
+<input class="buttonred"  type="submit" name="sa" value=" &raquo;">
+</div>
+</form>
+<form action="http://onesearch.sun.com/search/onesearch/index.jsp">
+<div>Web and Projects:</div>
+<div><input name="qt" class="medium" size="14" onfocus="if( this.value==this.defaultValue ) this.value='';" value="" type="text">
+<input name="col" value="all-unfiltered" type="hidden">
+<input name="qt" value="+url:java.net" type="hidden">
+<input class="buttonred" value=" &raquo; " border="0" type="submit"></div>
+</form>
+<script type="text/javascript" src="http://www.google.com/coop/cse/brand?form=cse-search-box&lang=en"></script>
+
+<div>Online Books:</div>
+<form action="http://safari.java.net/search" method="post" name="searchForm" id="form_searchForm">
+<input name="__formName" value="searchForm" type="hidden" />
+<input value="simple" name="searchmode" id="searchmode" type="hidden" />
+<input value="0" name="page" id="page" type="hidden" />
+<input value="summary" name="searchview" id="searchview" type="hidden" />
+<input value="rank" name="sort" id="sort" type="hidden" />
+<input value="desc" name="order" id="order" type="hidden" />
+<input value="1" name="NewSearch" id="NewSearch" type="hidden" />
+<div>
+<input name="searchtextbox" id="searchtextbox" type="text" value="" class="medium" size="14" />
+<input class="buttonred" value=" &raquo; " border="0" type="submit"></div>
+</form>
+
+<div>java.net on <a href="http://markmail.org/">MarkMail</a>:</div>
+<form action="http://markmail.org/search/list:net.java">
+<div><input name="q" id="searchtextbox" type="text" value="" class="medium" size="14" />
+<input class="buttonred" value=" &raquo; " border="0" type="submit"></div>
+</form>
+
+<div><a href="http://www.java.net/search.csp">Advanced Search</a></div>
+</div>
+</div>
+</noindex>
+
+</div>
+<br />
+</td>
+<td height="3" colspan="2"><img src="http://today.java.net/images/a.gif" width="1" height="3"><br /></td>
+</tr>
+<tr> 
+<td width="10"><img src="http://today.java.net/images/a.gif" width="10" height="1"></td>
+<td width="100%" valign="top">
+
+
+
+
+<div class="link-note">
+<a href="http://weblogs.java.net/blog/dwalend/index.rdf"><img src="http://www.java.net/images/icons/feed.png" width="16" height="16" vspace="4" hspace="10" border="0" alt="Syndicate this blog (XML)" align="right" /></a><br />
+</div>
+
+
+
+<img src="/images/people/david_walend.jpg" border="0" height="68" width="99" alt="David Walend" align="left" vspace="3" hspace="6" />
+
+
+
+
+<h2><a href="http://weblogs.java.net/blog/dwalend/">David Walend's Blog</a></h2>
+
+<div class="small" align="right">
+<a href="http://weblogs.java.net/blog/dwalend/archive/2004/06/somnifugijms_fo_4.html">&laquo;SomnifugiJMS for User Interfaces, Now With Example Code</a> |
+
+<a href="http://weblogs.java.net/blog/dwalend/">Main</a>
+| <a href="http://weblogs.java.net/blog/dwalend/archive/2004/08/moving_jdigraph.html">Moving JDigraph &raquo;</a>
+
+</div>
+
+<div class="grayline"></div>
+
+<h3>Test Driving Generics</h3>
+
+<span class="ltcaption1">Posted by <b>dwalend</b> on July 14, 2004 at 09:53 PM</a> | <a href="http://weblogs.java.net/blog/dwalend/archive/2004/07/test_driving_ge.html#comments">Comments (4)</a>
+
+</span>
+
+<br /><br />
+
+I'm impressed that people can blog while attending JavaOne. My head's just clearing up from all the new ideas slamming into the old ones. To relax on the way home, I started stitching generics into <a href="http://jdigraph.sourceforge.net/">JDigraph</a>, a general library for representing directed graphs. The effort mostly went smoothly, with a few hiccups.
+<p>
+<b>Scouting</b>
+<p>
+The documentation for generics in the jdk 1.5 beta is pretty thin. "This long-awaited enhancement to the type system allows a type or method to operate on objects of various types while providing compile-time type safety. It adds compile-time type safety to the Collections Framework and eliminates the drudgery of casting. Refer to JSR 14." That's right, it says read the spec for JSR-14. JSR-14 was pretty easy to read even though it's primarily for compiler writers. However, it didn't have any advice on how or when to use generics. I wound up unzipping the jdk 1.5 src.zip file and looking at the examples in java.util's collection kit.
+<p>
+<b>Bags -- Something Easy First</b>
+<p>
+The net.walend.collection package has the <a href="http://cvs.sourceforge.net/viewcvs.py/jdigraph/v1/collection/source/net/walend/collection/Bag.java?rev=1.4&view=auto">Bag</a> interface and <a href="http://cvs.sourceforge.net/viewcvs.py/jdigraph/v1/collection/source/net/walend/collection/MapBag.java?rev=1.6&view=auto">MapBag</a> implementation. Bag is a multi set -- an implementation of <a href="http://java.sun.com/j2se/1.5.0/docs/api/java/util/Collection.html">Collection</a> that can contain zero or more of an Object in no particular order. I used generics to create a Bag that contains a specific type of thing, much the way the rest of the collections kit works. It was pretty straightforward. I changed the Bag interface to Bag&lt;Elem> extending Collection&lt;Elem>, and the MapBag class to MapBag&lt;Elem> implementing Bag&lt;Elem>. MapBag uses an internal Counter class to track how many times an Elem appears in the Bag, so I made the internal Map be a Map&lt;Elem,Counter>. Then I replaced all the Object parameters and return types to Elem parameters, and all the inbound Collections to Collection&lt;Elem>s. From there, I let the compiler do most of the work, pointing out places where Collection's use of generics didn't match my own. The only remotely tricky part was the inner class BagIterator. It turns out that the outer class' generics are available to the inner class, so I caused myself some grief by declaring BagIterator&lt;Elem> instead of just leaving it alone. I wound up changing it back.
+<p>
+The other thing I stumbled on was the exactness of the match for methods in the interface and implementation. I had thought that &lt;?> was basically a no-op that I could leave it out, and that &lt;? extends E> was as the same as &lt;E>. I may be missing some subtlety here; they seem to mean the same thing to me. But they don't look the same to the compiler. Where Collection asks for &lt;?>, I had to use a &lt;?>, and where Collection specifies a &lt;? extends E> I had use &lt;? extends E> instead of &lt;E>. 
+<p>
+The crew updating the collections kit at Sun seems to have used generics only where they could save a cast. For example Collection's boolean contains(Object o) did not change to boolean contains(E o). The compiler won't balk at a developer coding a contains() call with the wrong type, but will balk if a code calls add() with the wrong type. This change breaks code only when the type safety is an issue. I'd argue that calling contains with the wrong type is probably a problem in the code, but it's a tough choice either way. The other odd thing were the toArray() methods. Colleciton.toArray() still returns Object[], not E[]. Collection.toArray(T[] array) returns an array of Ts (also not Es). The source code has a nice trick for getting the class of T out and constructing an array of Ts.
+<p>
+<b>Heaps -- Something More Complex</b>
+<p>
+The net.walend.collection package also defines a <a href="http://cvs.sourceforge.net/viewcvs.py/jdigraph/v1/collection/source/net/walend/collection/Heap.java?rev=1.2&view=auto">Heap</a> interface, and a <a href="http://cvs.sourceforge.net/viewcvs.py/jdigraph/v1/collection/source/net/walend/collection/FibHeap.java?rev=1.2&view=auto">Fibonacci Heap</a> implementation. A Fibonacci heap is a fairly complex animal. I wanted to make sure I could use generics to create general implementations of algorithms, and use generics to unite a family of specific classes designed to work together. (My long-term hope is to use generics to define semirings, but that's a different blog.) My Heap code required the Heap and <a href="http://cvs.sourceforge.net/viewcvs.py/jdigraph/v1/collection/source/net/walend/collection/HeapComparator.java?rev=1.2&view=auto">HeapComparator</a> interfaces, plus the FibHeap and <a href="http://cvs.sourceforge.net/viewcvs.py/jdigraph/v1/collection/source/net/walend/collection/HeapMember.java?rev=1.2&view=auto">HeapMember</a> classes. Heap has three type variables: &lt;Key>, the key in the heap. &lt;Comp>, a HeapComparator that works on &lt;Key>s. And &lt;Memb>, a HeapMember that works with &lt;Key>, &lt;Comp> and &lt;Memb> (oddly enough). Now someone can use a FibHeap that uses doubles as &lt;Key>s, largest double first. Someone else can use a FibHeap that uses BigDecimals as &lt;Key>s, smallest first. And someone else can use Strings as &lt;Key>s, last in alphabet first. All three use the same FibHeap algorithm code.
+<p>
+The Heap system works well, but has a strange feel to it. &lt;Key> can be any class (provided the class can support HeapComparator's getMinimumPossible() method). &lt;Comp> has to be a HeapComparator that works with &lt;Key>s. &lt;Memb> is the strange one; &lt;Memb> has to know a bit about the Heap that contains it, plus it has to know about itself. I didn't find a way to say that this specific HeapMember must be &lt;Memb>. I might have just missed a way to make this circular declaration. 
+<p>
+Both interfaces and superclasses in the type parameters list use the "extends" key word (not implements). In this system of objects with three type parameters, one-letter-name type parameters quickly gave me a headache. The java.util package uses mostly T and E. I had to leave that behind to keep things straight. There's an art to naming the type parameters that I have yet to master.
+<p>
+<b>Digraphs -- A Big System of Classes</b>
+<p>
+The net.walend.digraph and net.walend.digraph.path packages define three families of directed graph representations. This package shows the boundary for sane use of interfaces. I want to be able to have generified Objects for Nodes and Edges (where they exist). <a href="http://cvs.sourceforge.net/viewcvs.py/jdigraph/v1/digraph/source/net/walend/digraph/Digraph.java?rev=1.2&view=auto">Digraph&lt;Node></a> is the top-level interface for directed graphs. <a href="http://cvs.sourceforge.net/viewcvs.py/jdigraph/v1/digraph/source/net/walend/digraph/GEDigraph.java?rev=1.4&view=auto">GEDigraph&lt;Node></a> (all the edges are identical) and <a href="http://cvs.sourceforge.net/viewcvs.py/jdigraph/v1/digraph/source/net/walend/digraph/CEDigraph.java?rev=1.7&view=auto">CEDigraph&lt;Node,Edge></a> (edges can repeat, but are individual objects and have to be represented as such) extend Digraph&lt;Node>. Interfaces that describe mutable versions of GEDigraph and CEDigraph extend those interfaces, followed by implementations. The path subpackage includes interfaces for <a href="http://cvs.sourceforge.net/viewcvs.py/jdigraph/v1/digraph/source/net/walend/digraph/path/Path.java?rev=1.6&view=auto">Path&lt;Node></a> (which extends Digraph&lt;Node>), <a href="http://cvs.sourceforge.net/viewcvs.py/jdigraph/v1/digraph/source/net/walend/digraph/path/GEPath.java?rev=1.6&view=auto">GEPath&lt;Node></a> (which extends Path&lt;Node> and GEDigraph&lt;Node>) and <a href="http://cvs.sourceforge.net/viewcvs.py/jdigraph/v1/digraph/source/net/walend/digraph/path/CEPath.java?rev=1.7&view=auto">CEPath&lt;Node,Edge></a> (which extends Path&lt;Node> and CEDigraph&lt;Node,Edge>), plus mutable versions of these interfaces, and implementations built on List and a Digraph of Paths (useful for path algorithms). It's a big system. Generics should let me eventually convert the net.walend.measured package from shortest (double) path algorithms that operate on CEDigraphs into semiring algorithms that operate on any Digraph.
+<p>
+While retrofitting net.walend.digraph, I found starting at the most general interface (Digraph) and working my way toward the most specific worked best. I think that's a side effect of generics being grafted on Java late; a subclass or subinterface can simply ignore the super's generics and still compile. I was able to work with just the &lt;Node> type parameter first, then move through the classes where the &lt;Edge> type parameter should exist. However, I was not able to mix the two approaches well; if a subclass uses one type parameter, it needed to recognize both. To mitigate that, I found I could set the extra type parameter to &lt;Object> and change it later. I was disappointed that Throwables can't have type parameters. NodeMissingException can hold the missing node as an Object, but not a Node. And I found a strange interaction between inner classes, type parameters and instanceof that I still haven't puzzled through. The outer class' type parameters carry through to the inner classes, and work fine for everything I tried except instanceof. I had to add a type parameter to the NodePair inner class in AbstractCEHashMap and AbstractGEHashMap.
+<p>
+Overall, generics worked well and promise to let us build powerful libraries of general algorithms.
+<p>
+Reading <i>Version Control With Subversion</i>, Pilato, Collins-Sussman, and Fitzpatrick (Thanks, Helen. When do we get Subversion on java.net?)<br>
+Hearing <i>9th Symphony</i> , Beethoven (on Boston Common)
+
+
+<div id="a000260more"><div id="more">
+
+</div></div>
+
+<br />
+Bookmark blog post: <a href="http://del.icio.us/post?title=Test Driving Generics&amp;url=http://weblogs.java.net/blog/dwalend/archive/2004/07/test_driving_ge.html"><img src="/images/icons/delicious.gif" alt="del.icio.us" border="0" height="16" hspace="8" vspace="1" width="16" /></a> <a href="http://del.icio.us/post?title=Test Driving Generics&amp;url=http://weblogs.java.net/blog/dwalend/archive/2004/07/test_driving_ge.html">del.icio.us</a> <a href="http://digg.com/submit?phase=2&amp;title=Test Driving Generics"><img src="/images/icons/digg.gif" alt="Digg" border="0" height="14" hspace="8" width="16" /></a> <a href="http://digg.com/submit?phase=2&amp;title=Test Driving Generics&amp;url=http://weblogs.java.net/blog/dwalend/archive/2004/07/test_driving_ge.html">Digg</a> <a href="http://www.dzone.com/links/add.html?url=http://weblogs.java.net/blog/dwalend/archive/2004/07/test_driving_ge.html&amp;title=Test Driving Generics"><img src="/images/icons/dzone.gif" alt="DZone" border="0" height="16" hspace="8" width="16" /></a> <a href="http://www.dzone.com/links/add.html?url=http://weblogs.java.net/blog/dwalend/archive/2004/07/test_driving_ge.html&amp;title=Test Driving Generics">DZone</a> <a href="http://www.furl.net/storeIt.jsp?t=Test Driving Generics&amp;u=http://weblogs.java.net/blog/dwalend/archive/2004/07/test_driving_ge.html"><img src="/images/icons/furl.gif" alt="Furl" border="0" height="17" hspace="8" width="16" /></a> <a href="http://www.furl.net/storeIt.jsp?t=Test Driving Generics&amp;u=http://weblogs.java.net/blog/dwalend/archive/2004/07/test_driving_ge.html">Furl</a>  <a href="http://reddit.com/submit?title=Test Driving Generics&amp;url=http://weblogs.java.net/blog/dwalend/archive/2004/07/test_driving_ge.html"><img src="/images/icons/reddit.gif" alt="Reddit" border="0" height="18" hspace="8" width="18" /></a> <a href="http://reddit.com/submit?title=Test Driving Generics&amp;url=http://weblogs.java.net/blog/dwalend/archive/2004/07/test_driving_ge.html">Reddit</a>
+<br />
+<div class="grayline"></div>
+
+<a name="comments"></a>
+<h5>Comments</h5>
+<span class="small">Comments are listed in date ascending order (oldest first) | <a href="#post">Post Comment</a></span>
+<br /><br />
+
+<ul>
+<li>
+<a name="4034"></a>
+<div id="c4034">
+<p>Wildcards<br />
+I don't quite understand  (I don't know how it's different than ) but the idea behind the "? extends" and "? super" is that generic types are not "variant" in the way normal Java types are.</p>
+
+<p>For example, you can say:<br />
+Object s = "hi";<br />
+because String extends Object. However, for certain reasons, you can not say:<br />
+List&lt;Object&gt; l = new ArrayList&lt;String&gt;();<br />
+Because then, you could  break that ArrayList's type safety by saying:<br />
+l.add(new Object());<br />
+Instead, you can do:<br />
+List&lt;? extends Object&gt; l = new ArrayList&lt;String&gt;();<br />
+Now you can't call l.add() at all, because Java couldn't know what type is needed. All you can do is get and remove elements from the list.</p>
+
+<p>"? super" works similarly, but in the opposite direction (it works up the type hierarchy instead of down it).</p>
+<p class="posted"><span class="ltcaption1">Posted by: keithkml  on July 15, 2004 at 03:28 AM</span></p>
+</div>
+</li>
+</ul>
+<ul>
+<li>
+<a name="4048"></a>
+<div id="c4048">
+<p>About Subversion<br />
+Hi David - </p>
+
+<p>Subversion is something that is supported in future versions of Source Cast, the engine that powers the project area. </p>
+
+<p> The java.net leadership team will have to decide if it will be implemented on this site. It's great to hear that you are interested in using Subversion.  If others are interested, I'd love to hear from you at https://java-net.dev.java.net/servlets/ProjectForumMessageView?forumID=93&messageID=2956. </p>
+
+<p><br />
+It was great meeting you at JavaOne and getting a chance to chat!</p>
+
+<p>Regards,<br />
+Helen</p>
+<p class="posted"><span class="ltcaption1">Posted by: helen  on July 16, 2004 at 09:09 AM</span></p>
+</div>
+</li>
+</ul>
+<ul>
+<li>
+<a name="4054"></a>
+<div id="c4054">
+<p>Wildcards<br />
+My understanding is that Blah b = new Blah; means that b is a Blah parameterized by any type (and we don't care what type it is).</p>
+
+<p>Blah b = new Blah means that b is a Blah parameterized by any type that extends Object (and we don't care what type it is except that it extends Object).</p>
+
+<p>Since all types extend Object, then Blah and Blah are equivalent.</p>
+
+<p>Blah is used when you don't need to constrain the type you're parameterizing on.</p>
+
+<p><br />
+</p>
+<p class="posted"><span class="ltcaption1">Posted by: sparkee  on July 18, 2004 at 08:19 AM</span></p>
+</div>
+</li>
+</ul>
+<ul>
+<li>
+<a name="4160"></a>
+<div id="c4160">
+<p>Wildcards<br />
+That seems right. But the compiler cares about the difference.</p>
+
+<p>Dave</p>
+<p class="posted"><span class="ltcaption1">Posted by: dwalend  on July 27, 2004 at 02:56 AM</span></p>
+</div>
+</li>
+</ul>
+
+
+<br /><br />
+
+
+
+
+<br />
+
+<div class="footer" align="right">This work is licensed under a
+<a href="http://creativecommons.org/licenses/by-nc-sa/2.0/">Creative Commons License</a>.<br />
+<a href="http://creativecommons.org/licenses/by-nc-sa/2.0/"><img src="http://creativecommons.org/images/public/somerights.gif" alt="Creative Commons License" border="0" height="31" width="88" hspace="2" vspace="2" /></a>
+</div>
+
+
+<br />
+<div id="powered" align="right">
+<b>Powered by</b><br />
+<a href="http://www.movabletype.org">Movable Type 3.01D</a><br />    
+</div>
+
+
+
+</td></tr></table>
+
+<!--  BEGIN VNV5 FOOTER   -->
+<!--  BEGIN VNV5 FOOTER   -->
+<table border="0" cellpadding="0" cellspacing="10" width="100%">
+<tr>
+<td>
+&nbsp;<a href="http://today.java.net/pub/q/java_net_rss"><img src="/images/icons/feed.png" border="0" width="16" height="16" alt="Feed" align="absmiddle"></a>&nbsp;<a href="http://today.java.net/pub/q/java_net_rss">java.net RSS Feeds</a><br />
+<div class="grayline"></div>
+<table border="0" cellpadding="0" cellspacing="0" width="100%" class="vatop">
+<tr>
+<td><img src="/im/a.gif" width="190" height="1" border="0" alt=" " /><br />
+<a href="http://www.sun.com"><img src="/im/logo_sun_small.gif" width="61" height="29" border="0" alt=" " vspace="5"/></a></td>
+<td width="60%" valign="top">
+<div class="footer">
+
+<!--  Start Quantcast tag  -->
+<script type="text/javascript" src="http://edge.quantserve.com/quant.js"></script>
+<script type="text/javascript">
+_qacct="p-20l78bOOCbhcg";quantserve();</script>
+<noscript>
+<img src="http://pixel.quantserve.com/pixel/p-20l78bOOCbhcg.gif" style="display: none" height="1" width="1" alt="Quantcast"/></noscript>
+<!--  End Quantcast tag  -->
+
+<a href="https://java-net.dev.java.net/feedback.html">Feedback</a> &nbsp;|&nbsp;<a href="http://java.net/faq.csp">FAQ</a> &nbsp;|&nbsp;<a href="http://java.net/presscenter/">Press</a>&nbsp;|&nbsp;<a href="http://java.net/terms.csp">Terms of Use</a><br />
+<a href="http://www.sun.com/privacy/">Privacy</a> &nbsp;|&nbsp;
+<a href="http://www.sun.com/suntrademarks/">Trademarks</a>&nbsp;|&nbsp;<a href="https://java-net.dev.java.net/sitemap.html">Site Map</a>
+<br /><span class="sp5">&nbsp;</span><br />
+Your use of this web site or any of its content or software indicates your agreement to be bound by these <a href="http://java.net/terms.csp">Terms of Participation</a>.<br />
+<span class="sp5">&nbsp;</span><br />
+Copyright &copy; 1995-2008 Sun Microsystems, Inc.
+</div></td>
+<td width="40%" valign="top" align="right"><div class="footer">
+<a href="http://www.oreilly.com"><img src="/images/montague_logo_oreilly.gif" width="74" height="19" border="0" alt="Oreilly Logo"></a><a href="http://www.collab.net/"><img src="/images/montague_logo_collabnet.gif" width="85" height="19" border="0" alt="Collabnet Logo"></a><br>
+Powered by Sun Microsystems, Inc.,<br /> O'Reilly and CollabNet
+</div></td></tr>
+<!--  <tr><td colspan="3" valign="top" class="grey3"><img src="/im/a.gif" width="1" height="2" border="0" alt=" " /></td></tr>  -->
+</table>
+<div class="grayline"></div>
+</td></tr>
+</table>
+<!--  END VNV5 FOOTER  -->
+
+<!--  Begin SiteCatalyst code  -->
+<script language="JavaScript" src="http://www.java.net/s_code_remote.js"></script>
+<!--  End SiteCatalyst code  -->
+
+
+</body>
+</html>

@@ -1,0 +1,836 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+	<title>java.net: Understanding Service Oriented Architecture</title>
+	<meta name="description" content="David Walend cuts through the SOA hype by defining the traits that epitomize service oriented architectures, and spells out what they can do for you." />
+	<meta name="keywords" content="java.net,service oriented architecture,soa,service,jms,jini,jndi,Web Services and XML,David Walend," >
+	<meta name="date" content="Apr. 04, 2006" />
+
+<!--  CSS stylesheet  -->
+<link rel="stylesheet" href="/css/main.css" type="text/css">
+
+<link rel="shortcut icon" href="/favicon.ico" >
+</head>
+<!-- stopindex -->
+<!--  Common body tag  -->
+<body leftmargin="0" topmargin="0" marginheight="0" marginwidth="0" rightmargin="0" bgcolor="#ffffff">
+<a name="top"></a>
+
+<!--  Masthead  -->
+<div class="topline">
+<div class="topbar">
+<table border="0" cellpadding="0" cellspacing="0" width="100%" height="25">
+<tr>
+<td width="100%" rowspan="2"><a href="http://www.java.net"><img src="/images/header_jnet_new.jpg" width="500" height="60" border="0" alt="The Source for Java Technology Collaboration"></a></td>
+ <td nowrap="nowrap" style="vertical-align:middle">
+ <div id="login">
+ 
+  <form name="loginform" id="loginform" action="https://www.dev.java.net/servlets/TLogin" method="post">
+  <input type="hidden" name="redir" value="http://today.java.net/pub/a/today/2006/04/04/understanding-service-oriented-architecture.html">
+  <div>
+  <strong>User:</strong>
+   <input type="text" name="loginID" id="loginID" value="" size="7" maxlength="32" />
+   <strong>Password:</strong>
+
+   <input type="password" name="password" id="password" value="" size="7" maxlength="32" />
+   <input type="submit" name="Login" class="buttonred" id="Button" value="Login" /> </div>
+  <div class="small" align="right"><strong> <a href="https://www.dev.java.net/servlets/Join">Register</a>  | <a href="https://www.dev.java.net/servlets/TLogin">Login help</a>   &nbsp;&nbsp;&nbsp;</strong></div> 
+</form>
+ 
+</div>
+</td> 
+</tr>
+</table>
+</div>
+
+<!--  Tabs  -->
+
+
+<noindex>
+<div class="tabs" id="toptabs">
+<table cellspacing=0 cellpadding=4 border=0>
+<tbody>
+<tr>
+<td><a href="https://www.dev.java.net/servlets/StartPage">My       pages</a> </td>
+<td><a       href="http://community.java.net/projects/">Projects</a></td>
+<td><a href="http://community.java.net">Communities</a>   </td>
+<th><a href="http://www.java.net">java.net</a></th>
+</tr></tbody></table></div>
+</noindex>
+
+
+
+<table id="main" cellspacing="2" cellpadding="2" width="100%" border="0">
+  <tbody>
+  <tr valign=top>
+    <td id="leftcol" width="150" rowspan="2">
+	<img src="/im/a.gif" width="150" height="1"><br />
+<div id="navcolumn">
+<!--   COMMUNITY LINKS   -->
+<noindex>
+<div class="toolgroup" id="communitylinks">
+<div class="label"><strong>Get Involved</strong></div>
+<div class="body">
+<div><a href="https://java-net.dev.java.net/">java-net Project</a></div>
+<div><a href="http://www.java.net/request_project.csp">Request a Project</a></div>
+<div><a href="http://community.java.net/help_wanted/">Project&nbsp;Help&nbsp;Wanted&nbsp;Ads</a></div>
+<div><a href="http://community.java.net/projects/publicize.csp">Publicize your Project</a></div>
+<!-- <div><a href="#">Success Stories</a></div>  -->
+<div><a href="http://today.java.net/cs/user/create/bl">Submit Content</a></div>
+</div>
+</div>
+
+<div class="toolgroup" id="communitylinks">
+<div class="label"><strong>Get Informed</strong></div>
+<div class="body">
+<div><a href="http://www.java.net/about.csp">About java.net</a></div>
+<div><a href="http://today.java.net/pub/q/articles">Articles</a></div>
+<div><a href="http://weblogs.java.net/">Blogs</a></div>
+<div><a href="http://www.java.net/events">Events</a></div>
+<div><a href="http://today.java.net/today/alsotoday.csp">Also in Java Today</a></div>
+<div><a href="http://safari.java.net">java.net Online Books</a></div>
+<div><a href="http://today.java.net/today/archive/">java.net Archives</a></div>
+</div>
+</div>
+
+<div class="toolgroup" id="communitylinks">
+<div class="label"><strong>Get Connected</strong></div>
+<div class="body">
+<div><a href="http://forums.java.net">java.net Forums</a></div>
+<div><a href="http://wiki.java.net/">Wiki</a> and <a href="http://wiki.java.net/bin/view/Javapedia/WebHome">Javapedia</a></div>
+<div><a href="http://wiki.java.net/bin/view/People/WebHome">People</a>, <a href="http://partners.java.net">Partners</a>, and <a href="http://wiki.java.net/bin/view/Javanet/JobsWiki">Jobs</a> </div>
+<div><a href="http://community.java.net/jugs/listing.csp">Java User Groups</a></div>
+<div><!--  <a href="https://java-net.dev.java.net/servlets/ProjectMailingListList">Newsletters</a> and  --><a href="http://today.java.net/pub/q/rsschannels">RSS Feeds</a></div>
+</div>
+</div>
+
+<div class="toolgroup" id="communitylinks">
+<div class="label"><b>Search</b></div>
+<div class="body">
+<form action="http://onesearch.sun.com/search/onesearch/index.jsp">
+<div>Web and Projects:</div>
+<div><input type="text" name="qt" class="medium" size="14" onfocus="if( this.value==this.defaultValue ) this.value='';" value=""/>
+<input type="hidden" name="col" value="all-unfiltered">
+<input type="hidden" name="qt" value="+url:java.net">
+<input type="submit" border="0" class="buttonred" value=" &raquo; "></div>
+</form>
+<div>Online Books:</div>
+<form action="http://safari.java.net/search" method="post" name="searchForm" id="form_searchForm">
+<input name="__formName" value="searchForm" type="hidden" />
+<input value="simple" name="searchmode" id="searchmode" type="hidden" />
+<input value="0" name="page" id="page" type="hidden" />
+<input value="summary" name="searchview" id="searchview" type="hidden" />
+<input value="rank" name="sort" id="sort" type="hidden" />
+<input value="desc" name="order" id="order" type="hidden" />
+<input value="1" name="NewSearch" id="NewSearch" type="hidden" />
+<div>
+<input name="searchtextbox" id="searchtextbox" type="text" value="" class="medium" size="14" />
+<input class="buttonred" value=" &raquo; " border="0" type="submit"></div>
+</form>
+<div><a href="http://www.java.net/search.csp">Advanced Search</a></div>
+</div>
+</div>
+</noindex>
+
+</div>
+<br />
+</td>
+<td height="3" colspan="2"><img src="/im/a.gif" width="1" height="3"><br /></td>
+</tr>
+<tr> 
+<td width="10"><img src="/im/a.gif" width="10" height="1"></td>
+<td width="100%" valign="top">
+
+<!-- startindex -->
+<!--  Begin SiteCatalyst code  -->
+<script language="JavaScript">
+<!--
+var s_channel="technical articles";
+//--></script>
+<!--  End SiteCatalyst code  -->
+
+<!--  begin discuss-print-email-blog options  -->
+<noindex>
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td class="smaller" valign="top">&nbsp;</td>
+<td width="10">&nbsp;</td>
+<td align="right" valign="bottom"><div class="sitelinks" style="padding:0px;">
+<table border="0" cellpadding="0" cellspacing="0">
+<tr>
+<!--  email option  -->
+<td valign="bottom" align="right"><img src="/im/ic_email.gif" width="14" height="12" border="0" hspace="4" vspace="1" alt=" " /></td>
+<td valign="bottom" class="smaller" nowrap="nowrap"><a href="mailto:?subject=Understanding Service Oriented Architecture&body=http://today.java.net/pub/a/today/2006/04/04/understanding-service-oriented-architecture.html">E-mail</a></td>
+
+<!--  print option  -->
+<td>&nbsp;&nbsp;</td>
+<td valign="bottom" align="right"><img src="/im/ic_print.gif" width="14" height="12" hspace="4" border="0" alt=" " /></td>
+<td valign="bottom" class="smaller" nowrap="nowrap"><a href="/lpt/a/279">Print</a></td>
+
+<!--  discuss  -->
+<td>&nbsp;&nbsp;</td>
+
+<td valign="bottom" align="right"><img src="/im/ic_discuss.gif" width="13" height="12" hspace="4" border="0" alt=" " /></td>
+<td valign="bottom" class="smaller" nowrap="nowrap"><a href="/pub/a/today/2006/04/04/understanding-service-oriented-architecture.html?page=last#thread">Discuss</a></td>
+
+
+<!--  blog  -->
+<td>&nbsp;&nbsp;</td>
+<td valign="bottom" align="right"><img src="/im/ic_blog.gif" width="14" height="12" hspace="4" border="0" alt=" " /></td>
+<td valign="bottom" class="smaller" nowrap="nowrap"><a href="/cs/user/print/a/279?x-t=blog_link.view&x-layout=blank" onClick="window.open('/cs/user/print/a/279?x-t=blog_link.view&x-layout=blank','Blog','toolbar=no,width=600,height=400,status=no,location=no,scrollbars=yes,resizable=yes,menubar=yes');return false">Blog</a></td> 
+</tr>
+</table></div>
+</td></tr>
+</table>
+</noindex>
+<!--  end discuss-print-email-blog options  -->
+
+<div style="clear:both"></div>
+<div class="contentdivider"><table border="0" cellpadding="0" cellspacing="0" width="100%" class="grey4">
+<tr><td><img src="/im/a.gif" width="1" height="4" border="0" alt=" " /></td></tr></table></div>
+
+<!--  content here  -->
+<!-- CS_PAGE_BREAK -->
+<h2>
+<img src="/images/tiles/111-service_architecture.gif" height="91" width="111" alt="Understanding Service Oriented Architecture" border="0" align="left" hspace="10" vspace="0">
+Understanding Service Oriented Architecture</h2>
+by <a href="/pub/au/95">David Walend</a><br />
+04/04/2006<br clear="all" />
+<!--  sidebar begins  -->
+<!--  don't move sidebars  -->
+<!--  sidebar ends  -->
+
+<!--  Begin TOC  -->
+<div class="jumpnav">
+<ul>
+  <li><strong>Contents</strong></li>
+  <li><a href="#strong-software-contracts">Services Have Strong Software Contracts</a></li>
+  <li><a href="#services-are-encapsulated">Services Are Encapsulated</a></li>
+  <li><a href="#atomic-documents">Message Contents Are Atomic Documents</a></li>
+  <li><a href="#share-message-bus">Services Share a Message Bus</a></li>
+  <li><a href="#loosely-coupled">Services Are Loosely Coupled</a></li>
+  <li><a href="#independent-life-cycles">Services Have Independent Life Cycles</a></li>
+  <li><a href="#runtime">Orchestrators Assemble Services into Systems at Runtime</a></li>
+  <li><a href="#discover-dynamically">Orchestrators Can Discover other Services Dynamically</a></li>
+  <li><a href="#grow">Systems of Services Grow into Systems of Systems</a></li>
+  <li><a href="#standards-zoo">Life in the Standards Zoo</a></li>
+  <li><a href="#wrapping-up">Wrapping Up</a></li>  
+</ul>
+</div>
+<!--  End TOC  -->
+<p>Service Oriented Architecture (SOA) promises to provide us with the ability to assemble complex, distributed systems by selecting and creating compatible parts called services. So far, SOA has delivered a lot of hyperbole to the Web. Gartner recognized it as <a href="http://www.gartner.com/DisplayDocument?doc_cd=125868">one of the five hottest IT trends in 2005</a>, claiming that "By 2008, SOA will provide the basis for 80 percent of development projects." At JavaOne 2005, 82 of the 168 technical session PDFs contained "SOA." In July of 2005, there were 1.4 million Google hits for "service oriented architecture." By February, 2006, there were 72 million. SOA is riding a rising tide as the next big thing for enterprise developers.</p>
+
+<p>Unfortunately, most developers find it hard to cut through this tide of hype to learn just what service oriented architecture is about. Forests of three-letter acronym (TLA) standards sprout, bloom, and are overgrown before any of us can learn enough about them to decide if they are appropriate for our own projects. The standards compete for our attention and allegiance. Further, most articles and presentations focus on a specific TLA, and how to make some legacy system fit within someone else's favorite web service plumbing. "Legacy" seems to mean "the software that has to keep working to keep the system alive and useful to the business."</p>
+
+<p>I started working with distributed messaging systems in 1995 and can understand most of the articles, but I find the volume of hype daunting and largely irrelevant. This article focuses on what you can get out of SOA to make developing and maintaining software easy, and help your businesses run better. Here's what you can get out of service oriented architecture:</p>
+
+<ul>
+<li>Better understanding of the system being developed.</li>
+
+<li>Better-organized, better-focused incremental development.</li>
+
+<li>Easier integration with each others' systems.</li>
+
+<li>Well-defined boundaries for tests.</li>
+
+<li>More big-block reuse of code by reusing services.</li>
+
+<li>Scaling up by creating systems of systems.</li>
+
+<li>More reliability via restartable services.</li>
+
+<li>Development focused on executable business plans.</li>
+</ul>
+
+<p>That list is a huge promise. No wonder there's so much hype. Unfortunately, the list doesn't hold anything we can code. Aside from being able to restart a service, it's not specific at all. Service oriented architectures bring together specific good ideas from the 1980s and 1990s to create a complex system from simple parts. Service oriented architectures have these characteristics:</p>
+
+<ul>
+<li>Services have strong software contracts.</li>
+
+<li>Services are encapsulated.</li>
+
+<li>Messages are documents.</li>
+
+<li>Services share a message bus.</li>
+
+<li>Services are loosely coupled.</li>
+
+<li>Services have a life cycle.</li>
+
+<li>Systems of services are assembled at runtime.</li>
+
+<li>Services can be discovered.</li>
+
+<li>Systems of services can grow into systems of systems.</li>
+</ul>
+
+<h2><a name="strong-software-contracts" id="strong-software-contracts"></a>Services Have Strong Software Contracts</h2>
+
+<p>A strong software contract defines the role that the service plays. Services are a realization of <a href="http://en.wikipedia.org/wiki/Design_by_contract">software design-by-contract</a>. A service's contract describes what messages a service will receive, what messages a service will send, and what error signals a service will send when things go wrong. In service oriented architecture contracts, hidden state invariants tend to be less important. High-level descriptions of any side effects-- especially changes in exposed internal state--take center stage. The software contract serves as a design guide, test plan, and programmer's interface. Share the service's software contract with people when they ask you what the service does. Use the software contract to help your managers decide which services to build first, to address some immediate needs of your business.</p>
+
+<p>Java's <a href="http://java.sun.com/j2se/javadoc/writingdoccomments/index.html">JavaDoc</a> provides a nice start for software contracts. By using JavaDoc, especially <a href="http://java.sun.com/j2se/javadoc/writingapispecs/index.html#package"><em>package.html</em></a> files, you can guide other developers to the important parts of your code and share the important details. Most Java developers have learned to read the JavaDoc if they read anything at all, so it is your best bet for describing your contract to them. <a href="http://www.w3.org/TR/wsdl">WSDL</a> files include a very precise description of a service's programming interface in a computer-readable format. However, WSDL files are separate from code (so they won't be found) and hard on the eyes (so important details will be missed). I like to create <a href="http://java.sun.com/docs/books/tutorial/java/concepts/interface.html">Java interfaces</a> to hold specific details of services in my system. JDK 5 <a href="http://java.sun.com/j2se/1.5.0/docs/guide/language/annotations.html">annotations</a> can help, too, especially those from <a href="http://jcp.org/en/jsr/detail?id=181">JSR-181</a>, which will be standard in JDK 6. Annotations are computer-readable, available in JavaDoc, and are embedded in code. I think they are the best choice for the structural part of a software contract, but are no substitute for a solid written description.</p>
+
+<h2><a name="services-are-encapsulated" id="services-are-encapsulated"></a>Services Are Encapsulated</h2>
+
+<p>Services are encapsulated. A service only exposes the behaviors in its contract. Nothing outside the service can observe internal state and state transitions. How a service fulfills the contract remains hidden. No interesting service can achieve ideal encapsulation; even a service on dedicated hardware will still share limited bandwidth on a network. The best way to handle these details is to add them to the contract; if something that matters to the rest of the system is not in the contract, then the service's contract is incomplete. Fixing bugs in your contract is much easier than fixing encapsulation. Observing and enforcing encapsulation helps prevent creeping complexity growth, a maintenance nightmare.</p>
+
+<p>The goals of encapsulation line up well with the original promise of object oriented programming: <a href="http://www.javaworld.com/javaworld/jw-09-2003/jw-0905-toolbox.html">keep responsibility localized and defined</a>. I'm not sure there can be a positive standard for encapsulation, a feature defined by an absence. I have used some existing language features to set boundaries. Java's <a href="http://java.sun.com/developer/onlineTraining/Programming/BasicJava2/oo.html#access">access keywords (<code>public</code>, <code>protected</code>, <code>default</code>, and <code>private</code>)</a> and <a href="http://java.sun.com/j2se/javadoc/writingdoccomments/">JavaDoc</a> provide a nice start. By controlling accessibility, you can keep some parts of the programmer's interface hidden. Language designers at Sun have muttered about some kind of <a href="http://weblogs.java.net/blog/kgh/archive/2004/09/evolving_the_ja.html"><code>friends</code> keyword in JDK 7</a>, but I haven't seen anything concrete yet.</p>
+
+<h2><a name="atomic-documents" id="atomic-documents"></a>Message Contents Are Atomic Documents</h2>
+
+<p>Part of service oriented architecture is <a href="http://www.mnot.net/blog/2004/08/05/document_oriented">document oriented architecture</a>. The contents of the messages that flow in the system are well-defined data structures--like documents. Sending a message effectively makes a copy of a data structure. Once sent, the message can not generally be pulled back and changed. Message data structures need to be complete and compact, and have consistent rules for how to maintain referential integrity. You can easily and directly reference one part of this document data structure from another, but referencing something outside of the structure means extra work with foreign keys. The <a href="http://jcp.org/aboutJava/communityprocess/pfd/jsr243/index.html">Java Data Object</a> specification section 6.3 describes this dichotomy well. Good JDO first-class objects are like documents, constructed of subordinate second-class objects. XML uses a slightly more implicit approach. XML files are documents that use <!-- a href="http://www.xfront.com/GlobalVersusLocal.html" -->IDs and IDREFs<!-- /a --> or <a href="http://www.w3.org/TR/xpath20/">XPath expressions</a> for internal references. Most systems of services have a small local service responsible for finding the right document using foreign keys.</p>
+
+<p>Obviously, one service needs to be able to understand messages received by another. Agreeing on syntax is the easy part; try Java's <a href="http://java.sun.com/developer/technicalArticles/Programming/serialization/">serialization</a> if you've got Java on both ends, XML otherwise. If you pick XML, decide how your system will handle referential integrity inside the document. <a href="http://xstream.codehaus.org/">XStream</a> provides a very simple solution that plays havoc with <code>XMLSchema</code>. <a href="http://java.sun.com/webservices/jaxb/">JAXB 2.0</a> does a very good job. If you are trying to get services produced by separate groups to communicate for the first time, expect to spend an extraordinary amount of time getting the services to understand each other. Sorting out semantic meaning and corner cases is far more difficult than deciding on syntax.</p>
+
+<h2><a name="share-message-bus" id="share-message-bus"></a>Services Share a Message Bus</h2>
+
+<p>Services communicate with each other by sending messages over a shared message bus. SOA proscribes messages to avoid the coupling that comes from services sharing a call stack; if the called service fails silently, the calling service has to wait for it to return. Services use messages in three main styles: request/reply, commands, and events. In request/reply, one service sends a request to another, and dedicates resources, usually a thread, to waiting for the reply. This style leads to coupling almost as tight as when sharing a call stack. One service can send another service a command: a fire-and-forget instruction to do something. The command style leads to modest coupling; the commanding service expects some other service to fulfill the command eventually, but does not dedicate any resources to make sure. A service can simply publish events--notifications that something of interest has happened--without depending on any service to receive the message. Event-based systems of services are very loosely coupled, and can scale up to the limit of the message bus. Monitoring the message bus provides great insight into how well the system works, and creates a reassuring picture for your manager.</p>
+
+<p>My favorite API for messaging is the <a href="http://jcp.org/aboutJava/communityprocess/final/jsr914/index.html">Java Messaging Service</a> standard. There are <a href="http://www.manageability.org/blog/stuff/open-source-jms-java">many implementations</a>, most of which focus on reliability in enterprise-scale environments, and some of which include APIs for non-Java systems. Some JMS implementations use peer-to-peer technologies to survive transitory internet and wireless networks. I created <a href="http://somnifugijms.dev.java.net">SomnifugiJMS</a> for messaging between threads in a single Java process for small-scale systems. If you need to scale to something even smaller, try using <a href="http://java.sun.com/j2se/1.5.0/docs/api/java/util/concurrent/BlockingQueue.html"><code>BlockingQueue</code></a>s from <code>java.util.concurrent</code>. For large-scale systems on unreliable networks, try using <a href="http://www.jxta.org/">JXTA</a> to construct a reliable network.</p>
+
+<h2><a name="loosely-coupled" id="loosely-coupled"></a>Services Are Loosely Coupled</h2>
+
+<p>Ideally, services only interact by fulfilling their contracts over the message bus. The closer you can come to that ideal, the better. Try to discover and record hidden dependencies like shared call stacks, static tunnels in singletons, and shared processors, memory, disks, databases, and networks. Any dependency can lurk in the background, waiting to break your system. Be aware of coupling between services on the message bus. A service that issues commands and requests is assuming that some other service will fulfill these commands and requests. Even services that expect only events assume that some other service will publish the event. Try to catalog potential problems, but focus your energy on decoupling specific trouble spots before they matter. Loose coupling between services makes replacing one service with another possible. When your manager asks what will be involved in integrating a replacement service, you will have a sound answer.</p>
+
+<p>A service's reaction to a message should be an atomic action, so services work best as optimistic transaction engines that record and attempt to fix problems. Two-phase-commit transactions across services tightly couple those services. Luckily, most systems larger than a database rarely need to roll back the transaction. Instead, a troubleshooting service in the system needs to be alerted to the problems so that the problems can be sorted out. The troubleshooting service fits surprisingly well into most business workflows because the business wants to reroute the problem transaction instead of wiping it out of existence.</p>
+
+<h2><a name="independent-life-cycles" id="independent-life-cycles"></a>Services Have Independent Life Cycles</h2>
+
+<p>Each service has its own life and life cycle independent of other services. Individual services may be stopped, restarted, and replaced without stopping the whole system. Batching services like end-of-day processes can start, process all pending messages, and stop. A service can join a wireless network briefly, when a connection is available, and then disconnect later without causing harm. You can even replace an obsolete service with a new version without downtime. I haven't found a good standard for turning services on and off, but it isn't that hard to build. Simple volatile flags in a <a href="http://java.sun.com/j2se/1.5.0/docs/api/java/lang/Runnable.html"><code>Runnable</code></a>'s main loop have worked fine so far. <a href="http://www.w3.org/TR/wslc/">W3C</a> has a description of possible states and transitions, but it seems like overkill to me. If you start building your own elaborate system, steer towards that W3C standard. The feature you want is the ability to stop one service and start another to replace it, without stopping the whole system.</p>
+
+<h2><a name="runtime" id="runtime"></a>Orchestrators Assemble Services into Systems at Runtime</h2>
+
+<p>Orchestrators are special services that gather and assemble services into larger systems at runtime. Some orchestrators match contracts to orchestration instructions to registered services. Orchestrators often start the services they need. Assembling a service this way is a lot like using <a href="http://www.mathworks.com/products/simulink/description1.html">Simulink</a> blocks; you choose the parts, connect them to a message bus, and sometimes stimulate the system with an initial message. <a href="http://www-128.ibm.com/developerworks/library/specification/ws-bpel/">BPEL</a> and workflow engines like <a href="https://dalma.dev.java.net/nonav/maven/index.html">Dalma</a> hold a lot of promise for orchestrating large systems, but I haven't used either for more than simple experiments. The java.net website uses Dalma to coordinate registering new projects. For the systems I have actually built, I used simpler, more general-purpose tools like <a href="http://www.jython.org/">Jython</a> and <a href="http://beanshell.org/">Beanshell</a> scripts, and simple Java code to orchestrate the services. I haven't found a language I like that lets me specify a workflow yet, although I am hopeful.</p>
+
+<h2><a name="discover-dynamically" id="discover-dynamically"></a>Orchestrators Can Discover other Services Dynamically</h2>
+
+<p>Services generally register themselves with a <a href="http://www.martinfowler.com/articles/injection.html#UsingAServiceLocator">service locator</a>. An orchestrator can then use the service locator to find the services it needs dynamically, at runtime. The idea is similar to using the <a href="http://java.sun.com/products/jndi/">Java Naming and Directory Interface</a> (JNDI) to find the right database connection. I have found service locators much more useful within a single process than on a large scale. I think that's because small systems tend to have a lot of diverse parts, and the larger scale systems I design use events, meaning there's less for them to look up. Systems where distributed services appear and vanish, like the battlefield, the internet, and wireless networks, need reliable large-scale service locators. <a href="http://java.sun.com/products/jndi/">JNDI</a> works quite well as a service locator on a small scale. <a href="http://www.jini.org/">Jini</a> works great on a larger scale. Jini can find services that implement a specific Java interface, which is very close to finding services by contract. Others report success with <a href="http://www.uddi.org/">Universal Description, Discovery, and Integration</a> (UDDI) when some services are not in Java.</p>
+
+<h2><a name="grow" id="grow"></a>Systems of Services Grow into Systems of Systems</h2>
+
+<p>A system composed of services can be a service in its own right. The more that messages are treated like events (instead of requests), the better your system can scale up. Scaling up this way can be the technology jewel in a business plan, and is the most interesting feature for academics and hobbyists. We software engineers need to avoid being too charmed by it. We have to stay focused on the problems at hand. However, compatibility and stability on a large scale will make our next project more gentle.</p>
+
+<p>To make sure that your system of services can be a service in its own right, make sure the larger system has all of the features that a service should have. The larger system should have a strong service contract, be encapsulated, use atomic messages to communicate, be decoupled from other services, have an independent life cycle, and be discoverable. If all of that is true, a larger-scale orchestrator can use your system as service to assemble something bigger.</p>
+
+<h2><a name="standards-zoo" id="standards-zoo"></a>Life in the Standards Zoo</h2>
+
+<p>A large zoo of standards already exists for Java coders. If you can use some of these standards, you will save yourself some effort now. With a little luck, your choice will help you be compatible with some undiscovered service later. WSDL and Java interfaces help define software contracts and encapsulation. Shared messaging busses can come from an ESB, JMS, or <code>java.concurrent.BlockingQueue</code>s. Messages as documents can come from XML or serializable objects. Assembly at runtime can come from business languages or scripting, plus a service locator like JNDI, Jini, or UDDI. New standards roll out every week. I use <a href="http://developers.sun.com/learning/javaoneonline/">JavaOne Online</a> as a starting point, since these days, Google turns up too many pages trying to sell you something.</p>
+
+<p>Practice some suspicion when you shop for <a href="http://www.artima.com/weblogs/viewpost.jsp?thread=4840">standards</a>. New standards generally haven't been tried in the field. They may solve problems you don't have, and may not solve the problems you care about. Learning how to get the most out of a standard requires some investment of your time; you won't have time to learn many of the standards before the next batch comes out. Welding your project to some new standard involves risk. If you pick the wrong one, you may wind up maintaining a useless, complex layer for a long time. Enterprise computing pundits battle for control of the standards bodies; they want your attention, your participation, and ultimately, want your money.</p>
+
+<p>Getting encapsulated, well-designed services to fit behind some new standard is relatively easy. The standard tools get better in leaps and bounds. My own career shows the evolution. From 1998 to 2000 my team created an SOA framework ourselves. Needing three days to explain what we were selling contributed to the company's demise. In 2001, I was part of a contracting team that built a system of services using JMS, Perl and databases. In 2003 at a new job, we wrote our own WSDL to use with WSIF, JMS, and Jython, and put together a demonstration system of services in about a month. Converting an existing system has taken about a year. We ultimately dropped the WSDL in favor of Java interfaces, and stopped using WSIF. Restructuring the code was wonderfully straightforward, and will get easier over time. In June 2005 (post-JSR-181), creating a Java web service involved adding Sun's reference implementation JARs and adding <code>@webmethod</code> annotations to existing code. When JDK 6 provides JSR-181, we get the supporting parts just by adding the annotations.</p>
+
+<h2><a name="wrapping-up" id="wrapping-up"></a>Wrapping Up</h2>
+
+<p>Service oriented architecture is a collection of ideas and patterns from the 1980s that survived the 1990s. The concepts behind SOA are sound, solid, tested, and proven. SOA ideas directly address details in business plans about how you will deploy, grow, and evolve your system. Creating encapsulated, loosely coupled software that obeys a clear contract requires discipline, but shows immediate benefits. Getting loosely coupled, encapsulated software behind some new web services standard will be easy.</p>
+
+<p><em><a href="/pub/au/95">David Walend</a> started learning Java with the alpha 3 release in 1994 after a kind computer science professor at Tufts University overheard his tantrum on distributed simulations, memory management, multithreaded code and meteorologists of questionable parentage. </em></p>
+
+
+<div class="pad3x0">
+<table border="0" cellpadding="0" cellspacing="0" width="100%" bgcolor="#000000"><tr><td><img src="http://today.java.net/im/a.gif"
+width="1" height="1" border="0" alt=" " /></td></tr></table></div>
+
+
+<!--  end content  -->
+
+
+
+
+<p>View all <a href="http://today.java.net/pub/q/articles">java.net Articles</a>.</p>
+
+
+<a name="thread"></a>
+
+<div class="feedback">
+<div class="rbox">
+<div class="rboxtop"><div></div></div>
+<div class="rbcontent">
+<b>What sorts of features are you getting out of your architecture? What tools and frameworks are you using to get them? And how is it working out?</b><br />
+<div class="clear"></div>
+<div class="tb_left"><a href="/cs/user/create/cs_msg?x-lr=cs_disc/2193&x-lr2=a/279&page="><img src="/images/button_post.gif" border="0" width="118" height="20" vspace="4" alt="Post Comment" /></a>
+</div>
+<!--  rbcontent & rbox closed in cs_disc/thread_header.view  -->
+<div class="tb_right">
+
+<a href="/pub/a/today/2006/04/04/understanding-service-oriented-architecture.html?page=last&x-maxdepth=0#thread"><img src="/images/button_main_threads.gif" hspace="6" vspace="4" alt="Full Threads" title="Display main threads only" border="0"/></a>
+<a href="/pub/a/today/2006/04/04/understanding-service-oriented-architecture.html?page=last&x-order=date#thread"><img src="/images/button_old.gif" alt="Oldest First" title="Sort oldest posts first" border="0" vspace="4"/></a>
+
+</div>
+<div class="clear"></div>
+<!--  closing divs from a/print.view, et al  -->
+
+</div>
+<div class="rboxbot"><div></div></div>
+</div>
+
+
+
+<p>Showing messages 1 through 17 of 17.
+
+</p>
+<ul>
+
+<li>
+<a name="18502"></a>
+<b>great article</b><br />
+2006-05-16 00:01:37&nbsp;richardqr
+
+
+
+[<a href="/cs/user/create/cs_msg?x-lr=cs_msg/18502&x-lr2=a/279" title="Reply to this message">Reply</a> | <a href="/cs/user/view/cs_msg/18502">View</a>] 
+
+<br />
+<br />
+true indeed.  programmers really are at a lost on what this hype/buzz is all about.  i for one is at lost.  at least now, I am guided.  thanks.</li>
+
+</ul>
+<ul>
+
+<li>
+<a name="18282"></a>
+<b>Brilliant article</b><br />
+2006-04-27 19:15:25&nbsp;yogibear15
+
+
+
+[<a href="/cs/user/create/cs_msg?x-lr=cs_msg/18282&x-lr2=a/279" title="Reply to this message">Reply</a> | <a href="/cs/user/view/cs_msg/18282">View</a>] 
+
+<br />
+<br />
+David - my compliments on one of the best articles on SOA I have ever found.   It is concise, accurate & actually has detail  :)<br />
+<br />
+matthew</li>
+
+<ul>
+
+<li>
+<a name="18299"></a>
+<b>Brilliant article</b><br />
+2006-04-29 11:44:40&nbsp;dwalend
+
+
+
+[<a href="/cs/user/create/cs_msg?x-lr=cs_msg/18299&x-lr2=a/279" title="Reply to this message">Reply</a> | <a href="/cs/user/view/cs_msg/18299">View</a>] 
+
+<br />
+<br />
+&lt;span color="red"&gt;Blush&lt;/span&gt;</li>
+
+</ul>
+</ul>
+<ul>
+
+<li>
+<a name="18030"></a>
+<b>A valiant try but irrelevant....</b><br />
+2006-04-10 10:57:00&nbsp;threadweaver
+
+
+
+[<a href="/cs/user/create/cs_msg?x-lr=cs_msg/18030&x-lr2=a/279" title="Reply to this message">Reply</a> | <a href="/cs/user/view/cs_msg/18030">View</a>] 
+
+<br />
+<br />
+<b>Part of service oriented architecture is document oriented architecture. </b> Not really, but people in this industry tend to think that way since that is how web services work and they are very confused.<br />
+<br />
+Other than that, the rest of your argument is logical and very well done but:<br />
+<br />
+I don't think that there is any value in trying to define a vacuous term like SOA. If its originators had intended to provide a useful solution instead of a buzz word on which they could sell products they would not have intentionally left its definition so vague and ambiguous.<br />
+<br />
+Trying to define SOA as something useful in the real world, rather than coming up with something useful in the real world and giving it a name is confused pedagogy and exactly the opposite of what we should be doing. Coming up with a model that fits the real world is science. Trying to make the real world fit the imaginary model is religion.<br />
+<br />
+Like every cult before it the SOA cult is going to fall flat on its face because it is comprised of a bunch of wackos who have abandonded reality.</li>
+
+<ul>
+
+<li>
+<a name="18032"></a>
+<b>A valiant try but irrelevant....</b><br />
+2006-04-10 12:25:56&nbsp;vfrisina
+
+
+
+[<a href="/cs/user/create/cs_msg?x-lr=cs_msg/18032&x-lr2=a/279" title="Reply to this message">Reply</a> | <a href="/cs/user/view/cs_msg/18032">View</a>] 
+
+<br />
+<br />
+"Coming up with a model that fits the real world is science. Trying to make the real world fit the imaginary model is religion."<br />
+<br />
+I beg to differ.  Trying to make the real world fit the imaginary model is the basis of all technology and progress.  We look at what currently exists, imagine something better, and then create it. <br />
+<br />
+I am not just being pedantic.  Part of the impatience that many developers show feel about SOA seems to be that one cannot point to a piece of code and say "That is SOA".  Unfortunately, it is still a concept rather than a code library, so there is legitimate debate about what SOA is and should be.  This is analogous to the long ago debates about what an object is.  The existence of the debates did not mean that OO is just marketing fluff (although there were plenty of marketers exploiting the ambiguity).  Rather the concept was still being hammered out.  We are in roughly the same situation with SOA.</li>
+
+<ul>
+
+<li>
+<a name="18048"></a>
+<b>A valiant try but irrelevant....</b><br />
+2006-04-11 21:16:55&nbsp;threadweaver
+
+
+
+[<a href="/cs/user/create/cs_msg?x-lr=cs_msg/18048&x-lr2=a/279" title="Reply to this message">Reply</a> | <a href="/cs/user/view/cs_msg/18048">View</a>] 
+
+<br />
+<br />
+Ok. I guess that wasn't very straight forward. You are refering to physical acts of creation. I am refering to what is actually going on irrespective of people's imaginations. <br />
+<br />
+SOA is not a technology, it is a buzz word that a few marketers created. It is no more a piece of technology than the word "dajslfkjsladjflsjafljas". <br />
+<br />
+In order for something to be useful, it must hold up to real world empirical analysis. An example of a so-called technology that has failed like CMP-EJB. SOA is not even as close to technology as CMP-EJB because although CMP-EJB failed, at least it had a definition in the real world. In other words, even though EJB-CMP was a step backward or at best a lateral step, it had more value than SOA.<br />
+<br />
+If I said, I had a new paradigm that was going to revolutionize software development called "Pluggable Popsicles" and didn't bother to define it, no one would pay attention. But when Oracle and BEA come up with a new meaningless term in order to sell their crappy products everyone jumps on board because Oracle and BEA are assumed to be experts. Sorry, but I refuse to believe that anyone at IBM, Oracle, Sun, or BEA is the messiah because in most cases they are even dumber than I am. Web Services is a technology (a poor one). SOA is hype.<br />
+<br />
+SOA as most people define it (and as this article defines it) is pretty much the same as CORBA which, after 20 years of experiment, has proven to be a mess. </li>
+
+<ul>
+
+<li>
+<a name="18068"></a>
+<b>A valiant try but irrelevant....</b><br />
+2006-04-13 10:00:47&nbsp;vfrisina
+
+
+
+[<a href="/cs/user/create/cs_msg?x-lr=cs_msg/18068&x-lr2=a/279" title="Reply to this message">Reply</a> | <a href="/cs/user/view/cs_msg/18068">View</a>] 
+
+<br />
+<br />
+> SOA is not a technology, it is a buzz word that a few marketers created.<br />
+<br />
+Not quite.  SOA is not an API or  code library.  There is no referenece implemenation or specification.  If there were, I would agree that is is worthless BS simply because we are nowhere near the point of defining a spec.  Instead SOA is a concept, and idea about how to structure distributed systems.  As you noted, there have been many, many years of spectacular failures.  However, I would say that the reason CORBA and DCOM systems failed was not because they are inherently awful technologies (athough they certainly have their warts), but rather because of the way they were used.  Service-oriented architecture is an idea currently being hammered to fix that part of the problem, regardless of what technology you use to implement it. Because it is essentially an on-going argument, there is not currently a consensus position that you can point to and call The  One True Definition of SOA.<br />
+<br />
+Again, I remember the same arguments when OO was first introduced to the masses (as opposed to the LISP and Smalltalk gurus who always knew everything before the rest of us unwashed barbarians).  Many people claimed that OO was just marketing fluff because there was nothing there that could not be done in C or even assembly, given the right discipline.  They were missing the point.  OO was not the language or dev tools, it was the discipline and the approach to building software.  The real debate was not about languages.  Instead it was about what consistituted object orientation, what its strengths and weaknesses were, and how to apply it.  That took years of arguing and experiementing to work out, and frankly we are still learning.<br />
+<br />
+It seems that part of the issue is that there is no official standard for SOA. I think one of the worst things for our industry is the idea that as soon as someone has an idea, there must be a standard for it. even if the problem is not yet understood.  Sun and other large vendors are among the worst offenders in that they create standards to fit their latest tools as soon as they come out.  I point to EJB and JSF in the Java space.  Standardize from a consensus of best practices and a good understanding of the solution, rather than just declaring one by fiat so you can claim your product is "standards compliant".  I already ranted about spec-envy in <a href="http://jroller.com/trackback/vfrisina/Weblog/gathered_vs_declared_standards_in">my blog</a></li>
+
+<ul>
+
+<li>
+<a name="18231"></a>
+<b>A valiant try but irrelevant....</b><br />
+2006-04-23 09:51:38&nbsp;dwalend
+
+
+
+[<a href="/cs/user/create/cs_msg?x-lr=cs_msg/18231&x-lr2=a/279" title="Reply to this message">Reply</a> | <a href="/cs/user/view/cs_msg/18231">View</a>] 
+
+<br />
+<br />
+vfrisina, I think you're on to something comparing SOA to OO. In OO there are simple but deep concepts to grok, followed by things to experiment with and practice before it works. I think SOA is the same sort of thing. Instead of the cells of the system being objects, they are services.<br />
+<br />
+A lot of OO and SOA is marketing fluff. Marketing is good; business guys learn what we can do for them and pay us for our work. Fluff is annoying because you have to chop through it to get to something solid. SOA is currently snowed under fluff, just like OO in 1994.<br />
+<br />
+I think its valiant to define some standards to help with SOA, so long as people realize that today's standards probably won't be the ones we use next year. They are handy for coordinating productions of big systems built by big teams, even if only to shorten debates. I share Dr. Waldo's fear that the standards will quash innovation, but so far innovation seems quite healthy. Older good things like JINI seem to rise to the top. I don't know of anything bad that's been lost yet.</li>
+
+</ul>
+</ul>
+<ul>
+
+<li>
+<a name="18050"></a>
+<b>A philosophical argument?</b><br />
+2006-04-12 07:27:24&nbsp;dwalend
+
+
+
+[<a href="/cs/user/create/cs_msg?x-lr=cs_msg/18050&x-lr2=a/279" title="Reply to this message">Reply</a> | <a href="/cs/user/view/cs_msg/18050">View</a>] 
+
+<br />
+<br />
+Wow... I didn't expect a philosophical discussion. I was hoping more for comments like, "I'm using technology X to get feature A," so I could skip over the drab also-ran technologies to the good stuff. <br />
+&lt;p/&gt;<br />
+Threadweaver, you've told us you don't like CMP-EJB and don't like CORBA. What do you like to use?<br />
+&lt;p/&gt;<br />
+Threadweaver, treating your data-bearing objects as immutable documents works wonders in concurrent systems. Less-gifted developers understand just what they're dealing with. Throwing them into thread-aware thread-safe transactional code is inviting disaster. In a distributed system, you get half of DOA just because each process gets its own deep copy of the data.<br />
+&lt;p/&gt;<br />
+Vfrisina, I'm with you. The working title was <i>Smells like SOA</i>. At one start-up, we figured out how to make this stuff work, but it was very hard to describe. There is value to having solid definitions. Industry was distracted by academia's traveling computing agents in the late 1990s. If they'd focused on messaging instead, we wouldn't have needed a week-long seminar to make the pitch. Now I can go to a customer and pitch "a distributed system of services." The customer nods his head, refers to his own strategic initiative and we dive into details.<br />
+&lt;p/&gt;<br />
+Threadweaver, you've uncovered an interesting dichotomy between concepts and bits, and dived into the problem of making them match up. CMP-EJB is bits. It comes in a .jar file, and has a fat PDF spec. (New EJB specs are like a bad sequel to a bad movie, "EJB 4: CMP -- The Apology.") Vfrisina is right. Using WS-2 standards is as likely to get SOA benefits as using Java is to get good OO benefits. If someone shortcuts your architecture, things will break.<br />
+&lt;p/&gt;<br />
+I see new conceptual approaches to coding coming from two sources: academia and industry. LISP university labs created object-oriented programming (and constantly point out how we got it wrong and they got it right) and now are pushing aspects. Universities came up with web agents. Industry is for profit; either they want to sell us something expensive or they want us to build something interesting. The former results in application servers and the later results in brilliant things like JINI.<br />
+&lt;p/&gt;<br />
+CORBA has some serious problems. I started working with this thing in 1995. Some of the people we work with still use it. The biggest problem in CORBA is its reliance on IDL. Basically the IDL rigidly defines the pipe that the data flows through. If the IDL changes, the code through the entire pipe has to change. (Anything relying on XMLSchema in the pipes risks the same sort of woe.) Other serious problems I've observed are an over-reliance on RPC-style programming and on hard addresses for distributed parts. When the system makes a jump in scale, it tends to fly apart. Later add-ons to the spec try to fix these problems, but the culture already jelled into weaker forms. <br />
+&lt;p/&gt;<br />
+I always have trouble naming my projects. "Pluggable Popsicles" would be a great name for a persistence engine. Can I steal it? </li>
+
+<ul>
+
+<li>
+<a name="18056"></a>
+<b>A philosophical argument?</b><br />
+2006-04-12 10:15:40&nbsp;threadweaver
+
+
+
+[<a href="/cs/user/create/cs_msg?x-lr=cs_msg/18056&x-lr2=a/279" title="Reply to this message">Reply</a> | <a href="/cs/user/view/cs_msg/18056">View</a>] 
+
+<br />
+<br />
+>> I always have trouble naming my projects. "Pluggable Popsicles" would be a great name for a persistence engine. Can I steal it?<br />
+<br />
+Sure go ahead. ;P<br />
+<br />
+I agree with everything you said. I just think we ought to be focusing on what creates value (technology) and not on buzzwords.<br />
+<br />
+>> Threadweaver, you've told us you don't like CMP-EJB and don't like CORBA. What do you like to use?<br />
+<br />
+For persistence, Hibernate, which I think has held up very well in the real world. For services, I still like EJB although I have not had time to really play with Jini or anything other than RMI (JRMP) yet. What about you?<br />
+<br />
+>>(New EJB specs are like a bad sequel to a bad movie, "EJB 4: CMP -- The Apology.") LMFAO.<br />
+<br />
+>> Threadweaver, treating your data-bearing objects as immutable documents works wonders in concurrent systems. Agreed. I was just saying that is not required in strict-english interpretation of the term SOA since, any service could represent SOA under the terms defined in the dictionary.<br />
+<br />
+>> Wow... I didn't expect a philosophical discussion. I was hoping more for comments like, "I'm using technology X to get feature A," so I could skip over the drab also-ran technologies to the good stuff.<br />
+<br />
+I have been attacked for that in other circles (if you want more info let me know). Ultimately, I think that people that are good natured generally want answers rather than to cling to some dogma. I want working answers as well, but it seems logical to me that it is impossible to arrive at a result other than confusion without a mutual definition of terms at the outset. In other words, I think it will be easier to arrive at things that work in the real world if we are speaking the same language.</li>
+
+<ul>
+
+<li>
+<a name="18059"></a>
+<b>A philosophical argument?</b><br />
+2006-04-12 18:54:17&nbsp;dwalend
+
+
+
+[<a href="/cs/user/create/cs_msg?x-lr=cs_msg/18059&x-lr2=a/279" title="Reply to this message">Reply</a> | <a href="/cs/user/view/cs_msg/18059">View</a>] 
+
+<br />
+<br />
+>>For persistence, Hibernate, which I think has held up very well in the real world. For services, I still like EJB although I have not had time to really play with JINI or anything other than RMI (JRMP) yet. What about you?<br />
+<br />
+Current project is very lightweight: JMS for comms (both between threads and between remote processes). Mostly immutable objects flowing between things via serialization. For the moment, we're using serialization for persistence. (I'm trying to keep a database out of our part of the system.) We've just hard-coded the orchestration in Java for now. JNDI for a service locator. We might eventually use JINI to build up a larger system. <br />
+<br />
+EJB was originally for coordinating transactions over multiple XA resources. Are you actually using it for that? It does a great job, but the problem doesn't come up that often. I gave up tracking the spec after it passed 800 pages.<br />
+<br />
+>>I agree with everything you said. I just think we ought to be focusing on what creates value (technology) and not on buzzwords.<br />
+<br />
+I'm interested in what makes one technology useful, and another just resume crud. I think those things can be characterized, and the characterization can be collected into something that makes sense as a whole. <br />
+<br />
+Buzzwords are an interesting facet of the problem, along with things in "util," things named "*Manager" and "*tion" words. People imagine them to mean whatever fits their view of the universe, then are disappointed when things don't work out. (Think of experiences with the word "documentation." Does it mean writing documents, reading documents, or doing something vague, not coding? How do you know when you're done?)<br />
+<br />
+I think we're just now getting to the point where we can define what we want and start asking for it. I'm hoping we'll recognize it when we see it. JINI's an example of something great that most of us missed.</li>
+
+<ul>
+
+<li>
+<a name="18067"></a>
+<b>A philosophical argument?</b><br />
+2006-04-13 09:56:09&nbsp;threadweaver
+
+
+
+[<a href="/cs/user/create/cs_msg?x-lr=cs_msg/18067&x-lr2=a/279" title="Reply to this message">Reply</a> | <a href="/cs/user/view/cs_msg/18067">View</a>] 
+
+<br />
+<br />
+>>People imagine them to mean whatever fits their view of the universe, then are disappointed when things don't work out.<br />
+<br />
+I could not have said it better. That's why I thought your article was noble to a large extent. <br />
+<br />
+I agree that we ought to take what works and abandon things that do not. At the same time, I think we need to always be pushing to simplify things so that we can solve bigger problems. No one should have to read a 800 page spec. <br />
+<br />
+I have been stuggling with coming up with a system to accomplish this. I wanted to devise and formalize a method for "How to approach Computer Science as a Scientist." If you would like to participate, I would love that, but if not, you have already helped me greatly and given me hope.<br />
+<br />
+You will probably never know how much your article and this conversation has meant to me, but this has been the first real, rational conversation I have had with someone in IT since graduating from college. Thank you. It has been like breathing fresh air for the first time.<br />
+<br />
+>> EJB was originally for coordinating transactions over multiple XA resources. Are you actually using it for that? <br />
+<br />
+Yes and no.<br />
+<br />
+We have multiple databases on which the application depends but no JCA or anything like that. EJB is used for remoting specifically. I wrote our transaction API to be an abstract factory. The current implementation is based on JTA. The problem that I saw with using both BMT and CMT is that it couples your transaction logic to EJB.<br />
+<br />
+>> I think we're just now getting to the point where we can define what we want and start asking for it. <br />
+<br />
+I hope you are right and I hope you reply again. Thank you.</li>
+
+<ul>
+
+<li>
+<a name="18230"></a>
+<b>A philosophical argument?</b><br />
+2006-04-23 09:23:14&nbsp;dwalend
+
+
+
+[<a href="/cs/user/create/cs_msg?x-lr=cs_msg/18230&x-lr2=a/279" title="Reply to this message">Reply</a> | <a href="/cs/user/view/cs_msg/18230">View</a>] 
+
+<br />
+<br />
+Sorry for not getting back to this sooner. Vacation.<br />
+<br />
+Watch out for the seduction of simplicity. Some things, especially physical things, really do rate an 800 page spec. An example: i can solve bigger problems by using multiple threads and multiple processes. However, doing that means giving up the simplicity of the stack. A few generations of EJB specs got wrapped around this idea of defining roles instead of transactions.<br />
+<br />
+"How to approach Computer Science as a Scientist." sounds interesting. Are you more interested in observing systems, like a naturalist, or setting up experiments like a chemist? I've always seen myself as an engineer; I build stuff.</li>
+
+<ul>
+
+<li>
+<a name="18232"></a>
+<b>A philosophical argument?</b><br />
+2006-04-23 10:39:02&nbsp;threadweaver
+
+
+
+[<a href="/cs/user/create/cs_msg?x-lr=cs_msg/18232&x-lr2=a/279" title="Reply to this message">Reply</a> | <a href="/cs/user/view/cs_msg/18232">View</a>] 
+
+<br />
+<br />
+Watch out for the seduction of simplicity.  - Certainly we don't want to be <i>overly</i> simple.<br />
+<br />
+Essentially the job of software developers is to create models. I haven't found good criteria yet for evaluation of models. In physics, a model is considered valid it reflects what is going on in the realm of our sensory experience. I would also add the criteria: inclusion, coherence, simplicity, and flexibility.<br />
+<br />
+So, in my mind the method for determining the best model for a particular problem would be:<br />
+<br />
+1. Realization that there are no paradoxes in nature. Paradoxes exist only in our constructs.<br />
+2. Throw away all invalid models.<br />
+3. Whatever is the most inclusive, coherent, simple, flexible out of what remains the best choice.<br />
+<br />
+All of this caught up in the bi-directional communication (requirements gathering) between the development team and the people who are sponsoring  the development. I am working on formalizing all of this as well. I have a real problem with both use cases and user stories which are fundementally the same thing: the description of a single isolated event.<br />
+<br />
+"How to approach Computer Science as a Scientist." - I can email you a copy of what I have going in a few weeks, but it will be a rough draft. Unfortunately, at this point in time I don't know enough about probablity theory and statistics to make it really powerful yet (it's a matter of detail) but I still think that it is useful.<br />
+<br />
+I've always seen myself as an engineer; I build stuff.<br />
+<br />
+If by engineer, you mean that you use scientific knowledge to modify your environment, we all are.<br />
+<br />
+Every sentance spoken is an act of engineering and creation. A technology is just an application of science in our 4(+)D sensory world.</li>
+
+<ul>
+
+<li>
+<a name="18300"></a>
+<b>A philosophical argument?</b><br />
+2006-04-29 12:01:40&nbsp;dwalend
+
+
+
+[<a href="/cs/user/create/cs_msg?x-lr=cs_msg/18300&x-lr2=a/279" title="Reply to this message">Reply</a> | <a href="/cs/user/view/cs_msg/18300">View</a>] 
+
+<br />
+<br />
+<p>
+threadweaver, have you had a look at the <a href="https://sdlc1b.sun.com:443/ECom/EComActionServlet/DownloadPage:~:com.sun.sunit.sdlc.content.DownloadPageInfo;jsessionid=CF7126AD7835DE40F690D827AD148A22;jsessionid=CF7126AD7835DE40F690D827AD148A22">latest EJB spec?</a> The page count seems to have stabilized, they've chopped it into three, and they've added features to keep us from having to make so much boiler plate. I might wade back in if I get a project that can have the overhead of an application server.
+</p><p>
+You're in for a great journey trying to define what we do with that kind of rigor. You're more ambitious than Dijkstra. I'd love to look over your shoulder from time to time to see how it's going.
+</p><p>
+I'll a gree that every sentence spoken is an act of creation. The world would be a better place if every sentence were all an act of engineering.
+</p></li>
+
+<ul>
+
+<li>
+<a name="18325"></a>
+<b>A philosophical argument?</b><br />
+2006-05-03 09:31:19&nbsp;threadweaver
+
+
+
+[<a href="/cs/user/create/cs_msg?x-lr=cs_msg/18325&x-lr2=a/279" title="Reply to this message">Reply</a> | <a href="/cs/user/view/cs_msg/18325">View</a>] 
+
+<br />
+<br />
+I haven't read the EJB 3 spec yet. Unfortunately, I just don't have time to read everything that I would like so I have to make sacrifices. I think I will let some other people try it out first and see what they think. Let me know what you think. I hope the ORM works out better this time. It's hard to get into everything early and be a generalist at the same time.<br />
+<br />
+>> You're in for a great journey trying to define what we do with that kind of rigor. You're more ambitious than Dijkstra. <br />
+<br />
+No kidding. I'm just trying to make things better any way that I can.<br />
+<br />
+>>I'd love to look over your shoulder from time to time to see how it's going.<br />
+<br />
+Sure. I'll email you what I am working on in a few weeks if you want.<br />
+<br />
+>>I'll agree that every sentence spoken is an act of creation. The world would be a better place if every sentence were all an act of engineering.<br />
+<br />
+Ha. Ha! I love it. Can I quote that?</li>
+
+<ul>
+
+<li>
+<a name="18451"></a>
+<b>A philosophical argument?</b><br />
+2006-05-11 05:02:57&nbsp;dwalend
+
+
+
+[<a href="/cs/user/create/cs_msg?x-lr=cs_msg/18451&x-lr2=a/279" title="Reply to this message">Reply</a> | <a href="/cs/user/view/cs_msg/18451">View</a>] 
+
+<br />
+<br />
+>>Ha. Ha! I love it. Can I quote that?<br />
+<br />
+Only if you fix the grammar. Ug.</li>
+
+</ul>
+</ul>
+</ul>
+</ul>
+</ul>
+</ul>
+</ul>
+</ul>
+</ul>
+</ul>
+</ul>
+</ul>
+
+
+</div>
+
+
+<!-- stopindex -->
+
+</td></tr></table>
+
+<!--  BEGIN VNV5 FOOTER   -->
+<!--  BEGIN VNV5 FOOTER   -->
+<table border="0" cellpadding="0" cellspacing="10" width="100%">
+<tr>
+<td>
+&nbsp;<a href="http://today.java.net/pub/q/java_net_rss"><img src="/images/icons/feed.png" border="0" width="16" height="16" alt="Feed" align="absmiddle"></a>&nbsp;<a href="http://today.java.net/pub/q/java_net_rss">java.net RSS Feeds</a><br />
+<div class="grayline"></div>
+<table border="0" cellpadding="0" cellspacing="0" width="100%" class="vatop">
+<tr>
+<td><img src="/im/a.gif" width="190" height="1" border="0" alt=" " /><br />
+<a href="http://www.sun.com"><img src="/im/logo_sun_small.gif" width="61" height="29" border="0" alt=" " vspace="5"/></a></td>
+<td width="60%" valign="top">
+<div class="footer">
+
+<!--  Start Quantcast tag  -->
+<script type="text/javascript" src="http://edge.quantserve.com/quant.js"></script>
+<script type="text/javascript">
+_qacct="p-20l78bOOCbhcg";quantserve();</script>
+<noscript>
+<img src="http://pixel.quantserve.com/pixel/p-20l78bOOCbhcg.gif" style="display: none" height="1" width="1" alt="Quantcast"/></noscript>
+<!--  End Quantcast tag  -->
+
+<a href="https://java-net.dev.java.net/feedback.html">Feedback</a> &nbsp;|&nbsp;<a href="http://java.net/faq.csp">FAQ</a> &nbsp;|&nbsp;<a href="http://java.net/presscenter/">Press</a>&nbsp;|&nbsp;<a href="http://java.net/terms.csp">Terms of Use</a><br />
+<a href="http://www.sun.com/privacy/">Privacy</a> &nbsp;|&nbsp;
+<a href="http://www.sun.com/suntrademarks/">Trademarks</a>&nbsp;|&nbsp;<a href="https://java-net.dev.java.net/sitemap.html">Site Map</a>
+<br /><span class="sp5">&nbsp;</span><br />
+Your use of this web site or any of its content or software indicates your agreement to be bound by these <a href="http://java.net/terms.csp">Terms of Participation</a>.<br />
+<span class="sp5">&nbsp;</span><br />
+Copyright &copy; 1995-2008 Sun Microsystems, Inc.
+</div></td>
+<td width="40%" valign="top" align="right"><div class="footer">
+<a href="http://www.oreilly.com"><img src="/images/montague_logo_oreilly.gif" width="74" height="19" border="0" alt="Oreilly Logo"></a><a href="http://www.collab.net/"><img src="/images/montague_logo_collabnet.gif" width="85" height="19" border="0" alt="Collabnet Logo"></a><br>
+Powered by Sun Microsystems, Inc.,<br /> O'Reilly and CollabNet
+</div></td></tr>
+<!--  <tr><td colspan="3" valign="top" class="grey3"><img src="/im/a.gif" width="1" height="2" border="0" alt=" " /></td></tr>  -->
+</table>
+<div class="grayline"></div>
+</td></tr>
+</table>
+<!--  END VNV5 FOOTER  -->
+
+<!--  Begin SiteCatalyst code  -->
+<script language="JavaScript" src="http://www.java.net/s_code_remote.js"></script>
+<!--  End SiteCatalyst code  --></body>
+
+
+</html>
+
+

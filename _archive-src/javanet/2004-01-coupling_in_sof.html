@@ -1,0 +1,309 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" /> 
+<title>Coupling in Software Architecture | Java.net</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="alternate" type="application/atom+xml" title="Java.net Atom" href="/node/232295/atom/feed" />
+<meta name="description" content="Coupling in software architecture seems to form a spectrum, based on what has to change to make the system do something different. At one end of the spectrum are dissociated ubiquitous services, like those envisioned by JXTA. At the other end are the" />
+<meta name="robots" content="index,follow" />
+<meta name="DC.title" content="Coupling in Software Architecture" />
+<link rel="shortcut icon" href="/misc/favicon.ico" type="image/x-icon" />
+<link type="text/css" rel="stylesheet" media="all" href="/sites/default/files/css/css_0334aa4df81f5afeeb4417d97fecf9d9.css" />
+<!--[if IE]>
+<link rel="stylesheet" href="/sites/all/themes/java/ie.css" />
+<![endif]-->
+
+<style>
+#edit-taxonomy-6-wrapper{display:none} /*feed category*/
+</style>
+
+<style>
+#edit-taxonomy-4-wrapper{display:none} /*comm homepage*/
+</style>
+
+
+<link rel="shortcut icon" href="http://community.java.net/favicon.ico">
+<!--  Begin SiteCatalyst code  -->
+<script language="JavaScript">
+<!--
+var s_channel="other";
+//--></script>
+<!--  End SiteCatalyst code  -->
+</head>
+<body id="page-body" leftmargin="0" topmargin="0" rightmargin="0" bgcolor="#ffffff" marginheight="0" marginwidth="0">
+<a name="top"></a>
+<div class="topline">
+  <div class="topbar">
+    <table border="0" cellpadding="0" cellspacing="0" height="25" width="100%">
+      <tbody>
+        <tr>
+          <td rowspan="2" width="100%"><a href="http://www.java.net/"><img src="/images/header_jnet_new.jpg" alt="The Source for Java Technology Collaboration" border="0" height="60" width="500"></a></td>
+          <td style="vertical-align: middle;" nowrap="nowrap"><div id="login">
+          	              <form name="loginform" id="loginform" action="https://www.dev.java.net/servlets/TLogin" method="post">
+                <input name="redir" value="http://www.java.net/blog/dwalend/archive/2004/01/coupling_in_sof.html" type="hidden">
+                <div> <strong>User:</strong>
+                  <input name="loginID" id="loginID" value="" size="7" maxlength="32" type="text">
+                  <strong>Password:</strong>
+                  <input name="password" id="password" value="" size="7" maxlength="32" type="password">
+                  <input name="Login" class="buttonred" id="Button" value="Login" type="submit">
+                </div>
+                <div class="small" align="right"><strong> <a href="https://www.dev.java.net/servlets/Join">Register</a> | <a href="https://www.dev.java.net/servlets/TLogin">Login help</a> &nbsp;&nbsp;&nbsp;</strong>
+						</div>
+              </form>
+            </div></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <noindex>
+    <div class="tabs" id="toptabs">
+      <table border="0" cellpadding="4" cellspacing="0">
+        <tbody>
+          <tr>
+            <!-- make the active tab a TH instead of TD -->
+            <td><a href="https://www.dev.java.net/servlets/StartPage">My pages</a> </td>
+            								<td><a href="http://www.java.net/projects/">Projects</a></td>
+                <td><a href="http://www.java.net/community">Communities</a> </td>
+                <th><a href="http://www.java.net/">java.net</a></th>
+							          </tr>
+        </tbody>
+      </table>
+    </div>
+  </noindex>
+
+  <table id="main" border="0" cellpadding="2" cellspacing="2" width="100%">
+    <tbody>
+      <tr valign="top">
+        <td id="leftcol" rowspan="2" width="170">
+           <div id="block-menu-menu-get-involved" class="clear-block block block-menu">
+
+  <h2>Get Involved</h2>
+
+  <div class="content"><ul class="menu"><li class="leaf first"><a href="/about-javanet" title="About java.net">About java.net</a></li>
+<li class="leaf"><a href="/request-project" title="Request a Project">Request a Project</a></li>
+<li class="leaf"><a href="/publicize-your-project" title="Publicize your Project">Publicize your Project</a></li>
+<li class="leaf"><a href="/submit-content" title="Submit Content">Submit Content</a></li>
+<li class="leaf"><a href="https://java-net.dev.java.net/" title="">java-net Project</a></li>
+<li class="leaf"><a href="/enhancements" title="">Java.net Enhancements</a></li>
+<li class="leaf"><a href="https://www.dev.java.net/servlets/OpenCollabNet" title="">Site Help</a></li>
+<li class="leaf last"><a href="/form/report-inappropriate-content" title="Report Inappropriate Content">Report Inappropriate Content</a></li>
+</ul></div>
+</div>
+<div id="block-menu-menu-get-informed" class="clear-block block block-menu">
+
+  <h2>Get Informed</h2>
+
+  <div class="content"><ul class="menu"><li class="leaf first"><a href="/articles" title="">Articles</a></li>
+<li class="leaf"><a href="/blogfront" title="">Blogs</a></li>
+<li class="leaf"><a href="/events" title="">Events</a></li>
+<li class="leaf"><a href="http://safari.java.net/" title="">java.net Online Books</a></li>
+<li class="leaf last"><a href="/today/archive" title="Archive">java.net Archives</a></li>
+</ul></div>
+</div>
+<div id="block-menu-menu-get-connected" class="clear-block block block-menu">
+
+  <h2>Get Connected</h2>
+
+  <div class="content"><ul class="menu"><li class="leaf first"><a href="http://forums.java.net/" title="">java.net Forums</a></li>
+<li class="leaf"><a href="http://wiki.java.net" title="">Wiki</a></li>
+<li class="leaf"><a href="http://wiki.java.net/bin/view/Javapedia/WebHome" title="">Javapedia</a></li>
+<li class="leaf"><a href="http://wiki.java.net/bin/view/People/WebHome" title="">People</a></li>
+<li class="leaf"><a href="/partners" title="">Partners</a></li>
+<li class="leaf"><a href="http://wiki.java.net/bin/view/Javanet/JobsWiki" title="">Jobs</a></li>
+<li class="leaf"><a href="/pub/q/rsschannels" title="">RSS Feeds</a></li>
+<li class="leaf last"><a href="/jugs-list">Java User Groups</a></li>
+</ul></div>
+</div>
+<div id="block-block-1" class="clear-block block block-block">
+
+  <h2>Search</h2>
+
+  <div class="content"><form action="http://www.google.com/cse" id="cse-search-box">
+                  <div>Web and Projects:</div>
+                  <div>
+                   <input type="text" name="q" size="22" />
+                   <input type="hidden" name="cx" value="017555676512375062942:o5-kz1r0m2s" />
+                   <input type="hidden" name="ie" value="UTF-8" />
+                    <input type="submit" name="sa" value="Search" />
+                  </div>
+                </form>
+<script type="text/javascript" src="http://www.google.com/cse/brand?form=cse-search-box&lang=en"></script>
+
+
+
+            <!--<script type="text/javascript" src="/images/brand.htm"></script>-->
+                <div>Online Books:</div>
+                <form action="http://safari.java.net/search" method="post" name="searchForm" id="form_searchForm">
+                  <input name="__formName" value="searchForm" type="hidden">
+                  <input value="simple" name="searchmode" id="searchmode" type="hidden">
+                  <input value="0" name="page" id="page" type="hidden">
+                  <input value="summary" name="searchview" id="searchview" type="hidden">
+                  <input value="rank" name="sort" id="sort" type="hidden">
+                  <input value="desc" name="order" id="order" type="hidden">
+                  <input value="1" name="NewSearch" id="NewSearch" type="hidden">
+                  <div>
+                    <input name="searchtextbox" id="searchtextbox" value="" class="medium" size="14" type="text">
+                    <input class="buttonred" value=" » " border="0" type="submit">
+                  </div>
+                </form>
+                <div>java.net on <a href="http://markmail.org/">MarkMail</a>:</div>
+                <form action="http://markmail.org/search/list:net.java">
+                  <div>
+                    <input name="q" id="searchtextbox" value="" class="medium" size="14" type="text">
+                    <input class="buttonred" value=" » " border="0" type="submit">
+                  </div>
+                </form>
+                <div><a href="http://www.java.net/search">Advanced Search</a></div>
+</div>
+</div>
+        </td>
+        <td colspan="2" height="3"><img src="/images/a.gif" height="3" width="1"><br></td>
+      </tr>
+      <tr>
+        <td width="10"><img src="/images/a.gif" height="1" width="10"></td>
+        <td valign="top" width="100%">
+          <br>
+          <a name="skip2content"></a>
+          	            	<div id="content-top">
+              	<div id="block-block-20" class="clear-block block block-block">
+
+
+  <div class="content"><div id="blog-author-top"><table><tr><td><div id="blog-author-body"><img align="left" src="/images/people/david_walend.jpg" border="0" /></div></td><td valign="top"><h2><a href="/blog/7120">David Walend</a></h2><div id="blog-nav-links"><a href="/blog/2003/10/26/reviewing-java-community-process-v-26-jsr-215">Reviewing the Java Community Process v. 2.6 (JSR-215)</a> | <a href="/blog/7120">Main</a> | <a href="/blog/2004/05/09/shutdown-hooks">Shutdown Hooks</a></div></td></tr></table><div id="blog-author-feedlink2"><a href="/blog/7120/feed"><img src="/misc/feed.png" border="0" /></a></div></div><div style="clear:both"></div><div style="border-bottom: 4px #eee solid;">&nbsp;</div></div>
+</div>
+              </div>
+            						                          <h2 class="title">Coupling in Software Architecture</h2>
+                                                <style>
+#edit-taxonomy-6-wrapper{display:none} /*feed category*/
+</style>
+
+<style>
+#edit-taxonomy-4-wrapper{display:none} /*comm homepage*/
+</style>
+
+  <div class="blog-node node">
+          <div id="blog-submitted">Posted by <a href="/blog/7120">dwalend</a> on January 11, 2004 at 7:18 PM PST</div>  
+  <div class="content"><span class='print-link'></span>Coupling in software architecture seems to form a spectrum, based on what has to change to make the system do something different. At one end of the spectrum are dissociated ubiquitous services, like those envisioned by JXTA. At the other end are the highly-coupled systems of architectural nightmares. In between I've identified configured services, component systems, and client-server systems. Are there other styles in the spectrum? Is this a valid view of them, or should I be thinking about something else entirely?
+<p>
+<b>Dissociated Ubiquitous Services are Assembled On-the-fly by Discovery</b>
+<p>
+Dissociated ubiquitous services are services that are simply put in place and act in a responsive role. A master program assembles the software system by finding the needed parts in-situ, and has to handle cases when the services are not available. The services have a very simple, very well defined API established in advance, and communicate with simple protocols that meet simple contracts. Substituting one service for another with an identical contract is effortless and generally unnoticed. These substitutions are assumed to be unimportant and can be difficult to control. Understanding the system requires
+understanding the assumptions about the ubiquitous resources and how they should be used.
+<p>
+One example of this is a topic-based messaging system: The message producers launch messages out into the world, even if nothing is consuming them. Another example is web services coordinated with UDDI lookups: The orchestration describes what contracts the services need to obey. An interpreter tries to locate the services, then call them in order. As I understand it, JXTA is designed to work the same way.
+<p>
+<b>Known Services are Assembled at Run Time by Configuration</b>
+<p>
+Known services can be assembled at run time using a configuration script, usually without restarting the system. To support this, related services will feature a common protocol, usually the same protocol used in ubiquitous services. Families of services have simple, well defined APIs that use the common protocol for input and output. Substituting one service for another with an identical contract is trivial and easy to control by changing the configuration. Understanding the system requires understanding the service contracts and how the services are called. This is probably the easiest
+model to understand. However, it forces the system to fit a simple procedural model with tightly controlled system state.
+<p>
+An example of a system of services is a queue-based messaging federation: One service can pass messages through a gateway, another can monitor message
+flow in the system, and another can emit or receive messages. A central coordinator starts, stops and monitors the services. Another example is web services where the orchestration does not use UDDI lookups: A central script tells how to construct the system and how XML documents flow through it. A third example is Mathworks Simulink building blocks: each block accepts input signals from other blocks, and produces its own signal. Constructing the system is a matter of assembling the blocks visually.
+<p>
+<b>Components are Integrated at Compile Time by Glue Code</b>
+<p>
+Components are easy to work with at a code level: their API is well defined, and families of components will share some objects used in API. To link components together, a developer creates glue code to translate the output of one component into the input of the next. Understanding the system requires understanding the input and output of the components, and how they should link together. Changing the system requires modifying the glue code and recompiling. Because the components can be isolated from each other and their inputs make sense, testing is a matter of setting up the input and
+checking the output. Most object-oriented architecture aims for this level of coupling. I think the component level of decoupling is the bottom limit for reusability.
+<p>
+An example of a system of components is Java's Swing framework: A developer can create a rich user interface by selecting widgets (like buttons and text fields) from a library, and writing glue code to combine the widgets inside container objects. The containers use LayoutManagers (also chosen by the developer) to decide where to place the widgets. A developer can assemble a user interface quickly. But changing the user interface means changing the code and recompiling.
+<p>
+<b>Client-Server systems are integrated at Design Time by Well-Defined API</b>
+<p>
+The client-server model focuses decoupling at a specific layer of the system, between the client and the server. The API is well defined and specific to the details of talking across the layer. Any client should work with any server, provided both meet the contract of the layer. Everywhere else, the system is tightly coupled. A developer decides what he's creating -- either a client or a server -- and implements the contract for that side of the layer. Understanding the system means understanding the layer, plus what a given client and a given server are doing. The system can be changed by working with the ad-hoc code in an existing client or server, or by creating a new client or server. Testing is easy at the client-server boundary, but difficult everywhere else. Clients and servers are hard to reperpose; problems with similar requirements for these larger parts are rare.
+<p>
+An example of a client-server system is a custom report generator (the client) for a database (the server): The database's tables are fixed and well-defined, so the report can send SQL queries to the database and build reports out of the result sets. Other clients might allow data entry or analysis of the database. Because the database's protocol is well-defined, another brand of database could be substituted as a server with little impact for the clients. (At least that's the theory. Database vendors almost always tweak SQL just a little to lock in their customers. These tweaks adjust the protocols at the client - server layer, breaking the contract.)
+<p>
+<b>More Coupled Systems Must be Redesigned or Hacked</b>
+<p>
+Some systems are so tightly coupled that no layer exists where the system can be tested. The system is too interdependent to break into smaller pieces. Testing is limited to testing the whole system all-at-once. Understanding the system requires understanding all of the interdependencies. Changing the system means revisiting the original design and propagating all the changes through the dependencies. For large systems, no developer will understand the whole system. We will program by coincidence -- if it doesn't crash, it must be OK. I won't list examples for these because I think we've all seen them. I have heard claims that the system got built this way because of strict performance requirements, but haven't seen that in practice.
+<p></div>
+    <div class="links">&raquo; <ul class="links inline"><li class="blog_usernames_blog first"><a href="/blogs/dwalend" title="Read dwalend&#039;s latest blog entries.">dwalend&#039;s blog</a></li>
+<li class="comment_forbidden"><span><a href="/user/login?destination=comment/reply/232295%2523comment-form">Login</a> or <a href="/user/register?destination=comment/reply/232295%2523comment-form">register</a> to post comments</span></li>
+<li class="statistics_counter"><span>189 visits</span></li>
+<li class="print_html last"><a href="/print/232295" title="Display a printer-friendly version of this page." class="print-page" rel="nofollow">Printer-friendly version</a></li>
+</ul></div>    <div class="taxonomy">Related Topics &gt;&gt; 
+	<a href="/blogs/topic/20">Programming</a> &nbsp; &nbsp; &nbsp;    </div>  </div>
+  <div id="comment-header">Comments</div>
+  <div id="comment-header2">Comments are listed in date ascending order (oldest first)</div>
+                                        <div id="content-bottomdiv2">
+                	                </div>
+                            
+        </td>
+              </tr>
+      <tr>
+        <td rowspan="2" valign="bottom"><img src="/images/a.gif" alt=" " border="0" height="1" width="170"><br>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <br>
+  <img src="/images/a.gif" alt=" " border="0" height="1" width="170"><br>
+  <img src="/images/a.gif" alt=" " border="0" height="1" width="170"><br>
+
+  <table border="0" cellpadding="0" cellspacing="10" width="100%">
+    <tbody>
+      <tr>
+        <td>&nbsp;
+          <div class="grayline"></div>
+          <table class="vatop" border="0" cellpadding="0" cellspacing="0" width="100%">
+            <tbody>
+              <tr>
+                <td><img src="/images/a.gif" alt=" " border="0" height="1" width="190"><br>
+                  <a href="http://www.sun.com/"><img src="/images/logo_sun_small.gif" alt=" " border="0" height="29" vspace="5" width="61"></a></td>
+                <td valign="top" width="60%"><div class="footer">
+                    <!--  Start Quantcast tag  -->
+                    <script type="text/javascript" src="/images/quant.js"></script> 
+                    <script type="text/javascript">
+											_qacct="p-20l78bOOCbhcg";
+											quantserve(); 
+                    </script>
+                    <noscript>
+                    <img src="http://pixel.quantserve.com/pixel/p-20l78bOOCbhcg.gif" style="display: none" height="1" width="1" alt="Quantcast"/>
+                    </noscript>
+                    <!--  End Quantcast tag  -->
+                    <a href="https://java-net.dev.java.net/feedback.html">Feedback</a> &nbsp;|&nbsp;<a href="/javanet-faq">FAQ</a> &nbsp;|&nbsp;<a href="http://java.net/presscenter/">Press</a>&nbsp;|&nbsp;<a href="/javanet-web-site-terms-use">Terms of Use</a><br>
+                    <a href="http://www.sun.com/privacy/">Privacy</a> &nbsp;|&nbsp; <a href="http://www.sun.com/suntrademarks/">Trademarks</a>&nbsp;|&nbsp;<a href="https://java-net.dev.java.net/sitemap.html">Site Map</a> <br>
+                    <span class="sp5">&nbsp;</span><br>
+                    Your use of this web site or any of its content or software indicates your agreement to be bound by these <a href="/javanet-web-site-terms-use">Terms of Participation</a>.<br>
+                    <span class="sp5">&nbsp;</span><br>
+                    Copyright &copy; 1995-2008 Sun Microsystems, Inc. </div></td>
+                <td align="right" valign="top" width="40%"><div class="footer"> 
+		<a href="http://www.collab.net/"><img src="/images/montague_logo_collabnet.gif" alt="Collabnet Logo" border="0" height="19" width="85"></a>
+		<a href="http://www.cognisync.com/"><img src="/images/cognisync.jpg" alt="Cognisync Communities" border="0"></a>
+<br>
+                    Powered by Sun Microsystems, Inc.,<br>
+                    CollabNet and Cognisync </div></td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="grayline"></div></td>
+      </tr>
+    </tbody>
+  </table>
+  <!--  Begin SiteCatalyst code  
+  <script language="JavaScript" src="/images/s_code_remote.js"></script>
+  <script type="text/javascript" src="/images/metrics_group1.js"></script> 
+   End SiteCatalyst code  -->
+</div>
+<div style="display:none"> </div>
+<script type="text/javascript" src="/sites/default/files/js/js_f189d5c1ad40c9aa68b747c2c7284e5b.js"></script>
+<script type="text/javascript">
+<!--//--><![CDATA[//><!--
+jQuery.extend(Drupal.settings, { "basePath": "/", "extlink": { "extTarget": "_blank", "extClass": 0, "extSubdomains": 1, "extExclude": "", "extInclude": "", "extAlert": 0, "extAlertText": "This link will take you to an external web site. We are not responsible for their content.", "mailtoClass": 0 }, "fivestar": { "titleUser": "Your rating: ", "titleAverage": "Average: ", "feedbackSavingVote": "Saving your vote...", "feedbackVoteSaved": "Your vote has been saved.", "feedbackDeletingVote": "Deleting your vote...", "feedbackVoteDeleted": "Your vote has been deleted." } });
+//--><!]]>
+</script>
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-10612840-1");
+pageTracker._trackPageview();
+} catch(err) {}
+</script>
+</body>
+</html>
+

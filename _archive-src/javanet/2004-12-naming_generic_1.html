@@ -1,0 +1,540 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="http://www.movabletype.org/" />
+
+<title>David Walend's Blog: Naming Generic Types</title>
+
+<link rel="stylesheet" href="http://weblogs.java.net/blog/styles-site.css" type="text/css" />
+<link rel="stylesheet" href="http://www.java.net/css/main.css" type="text/css">
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://weblogs.java.net/blog/dwalend/index.rdf" />
+<link rel="alternate" type="application/atom+xml" title="Atom" href="http://weblogs.java.net/blog/dwalend/atom.xml" />
+
+<link rel="start" href="http://weblogs.java.net/blog/dwalend/" title="Home" />
+<link rel="prev" href="http://weblogs.java.net/blog/dwalend/archive/2004/11/amazing_xlint.html" title="Amazing -Xlint" />
+
+<link rel="next" href="http://weblogs.java.net/blog/dwalend/archive/2005/01/did_i_miss_gene.html" title="Did I Miss Generic Array Creation?" />
+
+
+
+
+
+<!--  Begin SiteCatalyst code  -->
+<script language="JavaScript">
+<!--
+var s_channel="David Walend's Blog";
+//--></script>
+<!--  End SiteCatalyst code  -->
+
+</head>
+
+<body>
+
+<!--  Masthead  -->
+<div class="topline">
+<div class="topbar">
+<table border="0" cellpadding="0" cellspacing="0" width="100%" height="25">
+<tr>
+<td width="100%" rowspan="2"><a href="http://www.java.net"><img src="/images/header_jnet_new.jpg" width="500" height="60" border="0" alt="The Source for Java Technology Collaboration"></a></td>
+ <td nowrap="nowrap" style="vertical-align:middle">
+ <div id="login">
+ 
+  <form name="loginform" id="loginform" action="https://www.dev.java.net/servlets/TLogin" method="post">
+  <input type="hidden" name="redir" value="http://weblogs.java.net/blog/dwalend/archive/2004/12/naming_generic_1.html">
+  <div>
+  <strong>User:</strong>
+   <input type="text" name="loginID" id="loginID" value="" size="7" maxlength="32" />
+   <strong>Password:</strong>
+
+   <input type="password" name="password" id="password" value="" size="7" maxlength="32" />
+   <input type="submit" name="Login" class="buttonred" id="Button" value="Login" /> </div>
+  <div class="small" align="right"><strong> <a href="https://www.dev.java.net/servlets/Join">Register</a>  | <a href="https://www.dev.java.net/servlets/TLogin">Login help</a>   &nbsp;&nbsp;&nbsp;</strong></div> 
+</form>
+ 
+</div>
+</td> 
+</tr>
+</table>
+</div>
+
+<!--  Tabs  -->
+
+
+<noindex>
+<div class="tabs" id="toptabs">
+<table cellspacing=0 cellpadding=4 border=0>
+<tbody>
+<tr>
+<td><a href="https://www.dev.java.net/servlets/StartPage">My       pages</a> </td>
+<td><a       href="http://community.java.net/projects/">Projects</a></td>
+<td><a href="http://community.java.net">Communities</a>   </td>
+<th><a href="http://www.java.net">java.net</a></th>
+</tr></tbody></table></div>
+</noindex>
+
+
+
+<table id="main" cellspacing="2" cellpadding="2" width="100%" border="0">
+  <tbody>
+  <tr valign=top>
+    <td id="leftcol" width="150" rowspan="2">
+	<img src="http://today.java.net/im/a.gif" width="150" height="1"><br />
+<div id="navcolumn">
+<!--   COMMUNITY LINKS   -->
+<noindex>
+<div class="toolgroup" id="communitylinks">
+<div class="label"><strong>Get Involved</strong></div>
+<div class="body">
+<div><a href="https://java-net.dev.java.net/">java-net Project</a></div>
+<div><a href="http://www.java.net/request_project.csp">Request a Project</a></div>
+<div><a href="http://community.java.net/help_wanted/">Project&nbsp;Help&nbsp;Wanted&nbsp;Ads</a></div>
+<div><a href="http://community.java.net/projects/publicize.csp">Publicize your Project</a></div>
+<!-- <div><a href="#">Success Stories</a></div>  -->
+<div><a href="http://today.java.net/cs/user/create/bl">Submit Content</a></div>
+</div>
+</div>
+
+<div class="toolgroup" id="communitylinks">
+<div class="label"><strong>Get Informed</strong></div>
+<div class="body">
+<div><a href="http://www.java.net/about.csp">About java.net</a></div>
+<div><a href="http://today.java.net/pub/q/articles">Articles</a></div>
+<div><a href="http://weblogs.java.net/">Blogs</a></div>
+<div><a href="http://www.java.net/events">Events</a></div>
+<div><a href="http://today.java.net/today/alsotoday.csp">Also in Java Today</a></div>
+<div><a href="http://safari.java.net">java.net Online Books</a></div>
+<div><a href="http://today.java.net/today/archive/">java.net Archives</a></div>
+</div>
+</div>
+
+<div class="toolgroup" id="communitylinks">
+<div class="label"><strong>Get Connected</strong></div>
+<div class="body">
+<div><a href="http://forums.java.net">java.net Forums</a></div>
+<div><a href="http://wiki.java.net/">Wiki</a> and <a href="http://wiki.java.net/bin/view/Javapedia/WebHome">Javapedia</a></div>
+<div><a href="http://wiki.java.net/bin/view/People/WebHome">People</a>, <a href="http://partners.java.net">Partners</a>, and <a href="http://wiki.java.net/bin/view/Javanet/JobsWiki">Jobs</a> </div>
+<div><a href="http://community.java.net/jugs/listing.csp">Java User Groups</a></div>
+<div><!--  <a href="https://java-net.dev.java.net/servlets/ProjectMailingListList">Newsletters</a> and  --><a href="http://today.java.net/pub/q/rsschannels">RSS Feeds</a></div>
+</div>
+</div>
+
+<div class="toolgroup" id="communitylinks">
+<div class="label"><b>Search</b></div>
+<div class="body">
+<form action="http://onesearch.sun.com/search/onesearch/index.jsp">
+<div>Web and Projects:</div>
+<div><input type="text" name="qt" class="medium" size="14" onfocus="if( this.value==this.defaultValue ) this.value='';" value=""/>
+<input type="hidden" name="col" value="all-unfiltered">
+<input type="hidden" name="qt" value="+url:java.net">
+<input type="submit" border="0" class="buttonred" value=" &raquo; "></div>
+</form>
+<div>Online Books:</div>
+<form action="http://safari.java.net/search" method="post" name="searchForm" id="form_searchForm">
+<input name="__formName" value="searchForm" type="hidden" />
+<input value="simple" name="searchmode" id="searchmode" type="hidden" />
+<input value="0" name="page" id="page" type="hidden" />
+<input value="summary" name="searchview" id="searchview" type="hidden" />
+<input value="rank" name="sort" id="sort" type="hidden" />
+<input value="desc" name="order" id="order" type="hidden" />
+<input value="1" name="NewSearch" id="NewSearch" type="hidden" />
+<div>
+<input name="searchtextbox" id="searchtextbox" type="text" value="" class="medium" size="14" />
+<input class="buttonred" value=" &raquo; " border="0" type="submit"></div>
+</form>
+<div><a href="http://www.java.net/search.csp">Advanced Search</a></div>
+</div>
+</div>
+</noindex>
+
+</div>
+<br />
+</td>
+<td height="3" colspan="2"><img src="http://today.java.net/images/a.gif" width="1" height="3"><br /></td>
+</tr>
+<tr> 
+<td width="10"><img src="http://today.java.net/images/a.gif" width="10" height="1"></td>
+<td width="100%" valign="top">
+
+
+
+
+<div class="link-note">
+<a href="http://weblogs.java.net/blog/dwalend/index.rdf"><img src="http://www.java.net/images/icons/feed.png" width="16" height="16" vspace="4" hspace="10" border="0" alt="Syndicate this blog (XML)" align="right" /></a><br />
+</div>
+
+
+
+<img src="/images/people/david_walend.jpg" border="0" height="68" width="99" alt="David Walend" align="left" vspace="3" hspace="6" />
+
+
+
+
+<h2><a href="http://weblogs.java.net/blog/dwalend/">David Walend's Blog</a></h2>
+
+<div class="small" align="right">
+<a href="http://weblogs.java.net/blog/dwalend/archive/2004/11/amazing_xlint.html">&laquo;Amazing -Xlint</a> |
+
+<a href="http://weblogs.java.net/blog/dwalend/">Main</a>
+| <a href="http://weblogs.java.net/blog/dwalend/archive/2005/01/did_i_miss_gene.html">Did I Miss Generic Array Creation? &raquo;</a>
+
+</div>
+
+<div class="grayline"></div>
+
+<h3>Naming Generic Types</h3>
+
+<span class="ltcaption1">Posted by <b>dwalend</b> on December 05, 2004 at 04:55 PM</a> | <a href="http://weblogs.java.net/blog/dwalend/archive/2004/12/naming_generic_1.html#comments">Comments (16)</a>
+
+</span>
+
+<br /><br />
+
+Naming Generic Types
+<p>
+We've had blogs covering DRY and magic Strings in the last week. I'm going to blog about generic type names, specifically using names longer than one letter.
+<p>
+Some of us are old enough to have used systems with a limit the length of variable names. But I haven't seen anyone use "x" as a generic double name in years (caveat coordinates). We left that habit behind because of the confusion it caused. We now teach people to write self-documenting code with descriptive variable names.
+<p>
+The <a href="http://java.sun.com/j2se/1.5/pdf/generics-tutorial.pdf">generics tutorial</a> that comes with JDK 5 suggests using one capitol letter to represent generic types: "A note on naming conventions. We recommend that you use pithy (single character if possible) yet evocative names for formal type parameters. It’s best to avoid lower case characters in those names, making it easy to distinguish formal type parameters from ordinary classes and interfaces. Many container types use E, for element, as in the examples above." I tried to follow this advice; I used N for the node type and E for the edge type.
+
+<pre><code>
+public interface IndexedDigraph&lt;N,E> 
+    extends Digraph&lt;N,E>
+</code></pre>
+
+wasn't so bad. But the typespec for Semirings has five generic types.
+
+<pre><code>
+public interface Semiring&lt;N,E,L,B extends IndexedDigraph&lt;N,E>,LD extends IndexedMutableDigraph&lt;N,L>>
+</code></pre>
+
+It got painful quickly. What's L? What was E again? Element? 
+<p>
+Using fully spelled out names removes the guessing from Digraph:
+<pre><code>
+public interface IndexedDigraph&lt;Node,Edge> 
+    extends Digraph&lt;Node,Edge>
+</code></pre>
+and changes Semiring from cryptically intimidating to merely complex:
+<pre><code>
+public interface Semiring&lt;Node,
+                          Edge,
+                          Label,
+                          BaseDigraph extends IndexedDigraph&lt;Node,Edge>,
+                          LabelDigraph extends IndexedMutableDigraph&lt;Node,Label>>
+</code></pre>
+<p>
+Changing "E"s to "Edges", etc. was mindless drudgery. "E"s and "N"s are much more common than "x"s. I made mistakes during the cleanup. Changing full names would have been much easier for me. Reading full names should be easier for everyone else.
+<p>
+I like to name generics after the role they play in code. I didn't have any problem distinguishing the generic names from interfaces or classes. JDigraph doesn't have a Node, Edge or Label class (which is much easier to figure out now that I've used generics to cut the number of classes in half). 
+<p>
+To avoid abbreviations in code, I keep a thesaurus on my desk. My thesaurus is probably the right tool to clear up any confusion between generic typespecs, classes and interfaces.
+
+<div id="a001794more"><div id="more">
+
+</div></div>
+
+<br />
+Bookmark blog post: <a href="http://del.icio.us/post?title=Naming Generic Types&amp;url=http://weblogs.java.net/blog/dwalend/archive/2004/12/naming_generic_1.html"><img src="/images/icons/delicious.gif" alt="del.icio.us" border="0" height="16" hspace="8" vspace="1" width="16" /></a> <a href="http://del.icio.us/post?title=Naming Generic Types&amp;url=http://weblogs.java.net/blog/dwalend/archive/2004/12/naming_generic_1.html">del.icio.us</a> <a href="http://digg.com/submit?phase=2&amp;title=Naming Generic Types"><img src="/images/icons/digg.gif" alt="Digg" border="0" height="14" hspace="8" width="16" /></a> <a href="http://digg.com/submit?phase=2&amp;title=Naming Generic Types&amp;url=http://weblogs.java.net/blog/dwalend/archive/2004/12/naming_generic_1.html">Digg</a> <a href="http://www.dzone.com/links/add.html?url=http://weblogs.java.net/blog/dwalend/archive/2004/12/naming_generic_1.html&amp;title=Naming Generic Types"><img src="/images/icons/dzone.gif" alt="DZone" border="0" height="16" hspace="8" width="16" /></a> <a href="http://www.dzone.com/links/add.html?url=http://weblogs.java.net/blog/dwalend/archive/2004/12/naming_generic_1.html&amp;title=Naming Generic Types">DZone</a> <a href="http://www.furl.net/storeIt.jsp?t=Naming Generic Types&amp;u=http://weblogs.java.net/blog/dwalend/archive/2004/12/naming_generic_1.html"><img src="/images/icons/furl.gif" alt="Furl" border="0" height="17" hspace="8" width="16" /></a> <a href="http://www.furl.net/storeIt.jsp?t=Naming Generic Types&amp;u=http://weblogs.java.net/blog/dwalend/archive/2004/12/naming_generic_1.html">Furl</a>  <a href="http://reddit.com/submit?title=Naming Generic Types&amp;url=http://weblogs.java.net/blog/dwalend/archive/2004/12/naming_generic_1.html"><img src="/images/icons/reddit.gif" alt="Reddit" border="0" height="18" hspace="8" width="18" /></a> <a href="http://reddit.com/submit?title=Naming Generic Types&amp;url=http://weblogs.java.net/blog/dwalend/archive/2004/12/naming_generic_1.html">Reddit</a>
+<br />
+<div class="grayline"></div>
+
+<a name="comments"></a>
+<h5>Comments</h5>
+<span class="small">Comments are listed in date ascending order (oldest first) | <a href="#post">Post Comment</a></span>
+<br /><br />
+
+<ul>
+<li>
+<a name="5621"></a>
+<div id="c5621">
+<p>I could not agree more. I've never understood why they always used single characters to represent types in C++ templates, and I *really* couldn't understand why they were doing it in java. I expected more legibility in java.</p>
+
+<p>I still don't understand why they do it, but at least now I now that I'm not the only one who thought full type names would be better. :-)</p>
+<p class="posted"><span class="ltcaption1">Posted by: paulrivers  on December 05, 2004 at 10:28 PM</span></p>
+</div>
+</li>
+</ul>
+<ul>
+<li>
+<a name="5624"></a>
+<div id="c5624">
+<p>Well in JDK it's not so bad because they do not use really complex generic types. Most complex one is Map with K as key and V as value. So what's the deal? It's readable.</p>
+
+<p>However, iI agree that if you design your own complex generic types such as the mentioned example, it really makes sense to avoid acronyms and on-letter type aliases.</p>
+<p class="posted"><span class="ltcaption1">Posted by: patrikbeno  on December 06, 2004 at 03:51 AM</span></p>
+</div>
+</li>
+</ul>
+<ul>
+<li>
+<a name="5626"></a>
+<div id="c5626">
+<p>I don't agree completely with your solution because now I look at Edge on a member variable or method and think, Class or Interface.  David remarks that this isn't a problem because the classes don't exist, but at the same time you are losing the intrinsic value of Java's naming scheme.</p>
+<p class="posted"><span class="ltcaption1">Posted by: jhook  on December 06, 2004 at 07:45 AM</span></p>
+</div>
+</li>
+</ul>
+<ul>
+<li>
+<a name="5627"></a>
+<div id="c5627">
+<p>The problem with the JDK naming is that most people will copy that style because it is in the JDK.<br />
+</p>
+<p class="posted"><span class="ltcaption1">Posted by: jtr  on December 06, 2004 at 08:09 AM</span></p>
+</div>
+</li>
+</ul>
+<ul>
+<li>
+<a name="5628"></a>
+<div id="c5628">
+<p>If physicists always used long variable names, Einsteins equation would be energy = mass * Math.pow(speed_of_light, 2). It is "self-documenting", but have you ever heard of physicists who want to ditch e, m, and c?</p>
+
+<p>Provided they are unambigous in a given context, short variable names are better than long variable names. For example, the Java collections library uses E, K, V, T, for type variables--unambiguius and easy on the eyes. </p>
+
+<p>In a graph program, I see nothing wrong with using N and E for node and edge types. I do not know what a Label type is, so maybe a longer type parameter would be better in that case. </p>
+
+<p>I find an overly verbose style oppressive, hard to read and hard to type. Use short names wisely, but by all means, use them when you can.</p>
+
+<p>Cheers,</p>
+
+<p>Cay</p>
+
+<p><br />
+</p>
+<p class="posted"><span class="ltcaption1">Posted by: cayhorstmann  on December 06, 2004 at 08:15 AM</span></p>
+</div>
+</li>
+</ul>
+<ul>
+<li>
+<a name="5632"></a>
+<div id="c5632">
+<p>It's ironic that you had so much trouble renaming E to Edge. The point of naming things with one capital letter is so that you can tell instantly what you're looking at. Few classes fit on one page and when someone else comes along and sees "Edge" they're naturally going to think - ok this is a class or an interface - because that's the rule! By violating the recommendation of the JLS, you're also violating the Principle of Least Astonishment. Yes, it's a tradeoff. B is not as nice as BaseDigraph, but it's actually *more clear*.<br />
+The irony is that it would have been easy to rename E to Edge if you were using a modern IDE, while an IDE would have obviated the need to rename by making it immediately clear what E is (through a quick inline popup of its javadoc or jump to its definition and accompanying comments) or even what Edge would be (via syntax highlighting).<br />
+</p>
+<p class="posted"><span class="ltcaption1">Posted by: cypherpunks  on December 06, 2004 at 09:36 AM</span></p>
+</div>
+</li>
+</ul>
+<ul>
+<li>
+<a name="5641"></a>
+<div id="c5641">
+<p>Cay,</p>
+
+<p>Wow -- years ago I abandoned single letter abbreviations in physics code -- particle collider simulations -- starting by replacing "c" with "LIGHT_SPEED"! ("c" was too many other things. It was "speed of wave propagation in a material" before it was the speed of light, and a materials researcher wanted to use it as a coefficient of heat or somesuch.)</p>
+
+<p>Maybe the thing to focus on is "pithy" instead of single letter. I found "'E' is the same sort of thing as 'T'" jarring. "E" and "E1" would have been better. How about "Elem" and "Elem1"?</p>
+
+<p>N to me is permanently part of O(N). People unfamiliar with graphs will have a leap to get from N to Node and from E to Edge. People unfamiliar with graph algorithms (or at least Cormen's treatment of them) will have trouble getting from L to Label. I suppose our code is for some audience. </p>
+
+<p>The reason to use longer names is to get self-documenting code. It's much more robust than comments. The thing to avoid is names like</p>
+
+<p><br />
+public void temporaryMethodToInitializeTheSystemForTodaysCrisis(String xmlStringToGetThingsGoing)</p>
+
+<p><br />
+ while avoiding</p>
+
+<p><br />
+public void init(String arg)</p>
+
+<p><br />
+Hope that helps,</p>
+
+<p>Dave</p>
+<p class="posted"><span class="ltcaption1">Posted by: dwalend  on December 07, 2004 at 05:10 AM</span></p>
+</div>
+</li>
+</ul>
+<ul>
+<li>
+<a name="5642"></a>
+<div id="c5642">
+<p>I find E, K, V, T hugely confusing. However, I do note that using Edge does look like a Class and while it</p>
+<p class="posted"><span class="ltcaption1">Posted by: markswanson  on December 07, 2004 at 06:20 AM</span></p>
+</div>
+</li>
+</ul>
+<ul>
+<li>
+<a name="5643"></a>
+<div id="c5643">
+<p>Sorry, Konqueror seems to have snipped away part of my last post....<br />
+I find E, K, V, T hugely confusing. However, I do note that using Edge does look like a Class and while it's better I still don't like the confusion. The solution: perhaps take a lesson from interfaces and use EdgeType the way some folks use EdgeIfc. Does anyone see anything wrong with this?</p>
+<p class="posted"><span class="ltcaption1">Posted by: markswanson  on December 07, 2004 at 06:20 AM</span></p>
+</div>
+</li>
+</ul>
+<ul>
+<li>
+<a name="5649"></a>
+<div id="c5649">
+<p>"Principle of Least Astonishment" my arse.</p>
+
+<p>Astonishment, seriously. Perhaps there should be some sort of naming convention, or specific IDE coloring  for template types to differentiate them.</p>
+
+<p>BUT, writing "N value;" tells you nothing about N without having previous knowledge of the context. Oh, you mean we have Nodes? I though it was Number. Or Name. Or Network.</p>
+
+<p>Java is supposed to be readable. A single letter for a type is not readable.</p>
+<p class="posted"><span class="ltcaption1">Posted by: paulrivers  on December 07, 2004 at 08:50 AM</span></p>
+</div>
+</li>
+</ul>
+<ul>
+<li>
+<a name="5656"></a>
+<div id="c5656">
+<p>"N value; tells you nothing about N without having previous knowledge of the context."<br />
+Not true at all - and that's the point. N tells you that what you're looking at is a TypeParameter! Ok, maybe you don't know what N stands for but as I say, it's a trade-off. Unfortunately the thing you're trading off against are the common practices that the JLS practically *mandates*. All things being equals, you might choose long Names for TypeParameters, but in this case, the trade-off has already been made by the language designers and you're going against it.</p>
+<p class="posted"><span class="ltcaption1">Posted by: cypherpunks  on December 07, 2004 at 09:57 PM</span></p>
+</div>
+</li>
+</ul>
+<ul>
+<li>
+<a name="5657"></a>
+<div id="c5657">
+<p>How about NodeType or GNodeType, GEdgeType or GenNodeType to differentiate class from generics.</p>
+<p class="posted"><span class="ltcaption1">Posted by: parthav  on December 07, 2004 at 10:24 PM</span></p>
+</div>
+</li>
+</ul>
+<ul>
+<li>
+<a name="5658"></a>
+<div id="c5658">
+<p>It looks like in order to violate the least astonishment for the most people, we would have to choose something other than a capital letter, since people see the capital letter and straight away think 'ah, its a class'.</p>
+
+<p>But if we start things out with a lower case letter, then people will parse that as some kind of variable...  tricky.</p>
+
+<p>Maybe we should use 'anti camel casing'? eg:<br />
+eDGE or <br />
+nODEtYPE <br />
+Oh sure, its a little ugly, but you won't get it confused with anything else.<br />
+First letter Caps, rest lower (camelled) is taken (for classnames) <br />
+All Caps is taken (for consts)<br />
+All lower case is taken (keywords)<br />
+First letter lower, rest lower (camelled), is taken (for variable and method names)</p>
+
+<p>Looks like the only thing left is the reverse of variable/method naming.   :D</p>
+
+<p>Personally, I'm a little surprised they didn't shove a symbol on the front of them, like @ or #.  Given that @ would get confused with metadata (which... in a way... generics are...) I'd consider it a likely candidate (we've got to avoid paying too much 'keyboard symbol tax' after all).</p>
+<p class="posted"><span class="ltcaption1">Posted by: rickcarson  on December 07, 2004 at 11:27 PM</span></p>
+</div>
+</li>
+</ul>
+<ul>
+<li>
+<a name="5659"></a>
+<div id="c5659">
+<p>And we're only one step away from hungarian notation. I hoped and thought I never had to see it again and that it outlived it's purpose, guess I was wrong. Hmmmmz, generics, maybe I haven't spent enough time on it, but I've got the creeping feeling this monster is going to turn around and bite us in the ###.</p>
+<p class="posted"><span class="ltcaption1">Posted by: salp  on December 08, 2004 at 12:59 AM</span></p>
+</div>
+</li>
+</ul>
+<ul>
+<li>
+<a name="5672"></a>
+<div id="c5672">
+<p>The problem seems to be that we've introduced a new type into the system.  We had classes, methods, and variables before and conventions on naming them.  Now we have generic typing and we need a convention for how to name it such.</p>
+
+<p>Personally, single character names are atrocious.  Frankly, I'm stunned the Java team followed such a 1960's coding style on that.  It's already common practice to distinguish types of variables via a naming convention (constants, static, and instance).  It's not a big stretch to think we simple need a similar decision for generics:</p>
+
+<p>g_GenericName<br />
+_GenericName_<br />
+__GenericName</p>
+
+<p>Seems like there's a plethora of possible conventions that would clearly denote a Generic vs. a Class name and still allow useful names for generic types. </p>
+<p class="posted"><span class="ltcaption1">Posted by: ckessel  on December 09, 2004 at 08:26 AM</span></p>
+</div>
+</li>
+</ul>
+<ul>
+<li>
+<a name="10070"></a>
+<div id="c10070">
+<p>Desciptive type names is the right way to go.  I agree it's a shame that Sun set a bad example.  If you want to see by inspection in stone-age tools or colorless printing that something is a parameter, then what's wrong with KeyT, ValueT, etc.?</p>
+
+<p>I've filed an IDEA enhancement request with Jetbrains for settable coloration for generic types.  I was surprised they don't yet have that feature.</p>
+<p class="posted"><span class="ltcaption1">Posted by: daveyost  on August 26, 2005 at 08:29 PM</span></p>
+</div>
+</li>
+</ul>
+
+
+<br /><br />
+
+
+
+
+<br />
+
+<div class="footer" align="right">This work is licensed under a
+<a href="http://creativecommons.org/licenses/by-nc-sa/2.0/">Creative Commons License</a>.<br />
+<a href="http://creativecommons.org/licenses/by-nc-sa/2.0/"><img src="http://creativecommons.org/images/public/somerights.gif" alt="Creative Commons License" border="0" height="31" width="88" hspace="2" vspace="2" /></a>
+</div>
+
+
+<br />
+<div id="powered" align="right">
+<b>Powered by</b><br />
+<a href="http://www.movabletype.org">Movable Type 3.01D</a><br />    
+</div>
+
+
+
+</td></tr></table>
+
+<!--  BEGIN VNV5 FOOTER   -->
+<!--  BEGIN VNV5 FOOTER   -->
+<table border="0" cellpadding="0" cellspacing="10" width="100%">
+<tr>
+<td>
+&nbsp;<a href="http://today.java.net/pub/q/java_net_rss"><img src="/images/icons/feed.png" border="0" width="16" height="16" alt="Feed" align="absmiddle"></a>&nbsp;<a href="http://today.java.net/pub/q/java_net_rss">java.net RSS Feeds</a><br />
+<div class="grayline"></div>
+<table border="0" cellpadding="0" cellspacing="0" width="100%" class="vatop">
+<tr>
+<td><img src="/im/a.gif" width="190" height="1" border="0" alt=" " /><br />
+<a href="http://www.sun.com"><img src="/im/logo_sun_small.gif" width="61" height="29" border="0" alt=" " vspace="5"/></a></td>
+<td width="60%" valign="top">
+<div class="footer">
+
+<!--  Start Quantcast tag  -->
+<script type="text/javascript" src="http://edge.quantserve.com/quant.js"></script>
+<script type="text/javascript">
+_qacct="p-20l78bOOCbhcg";quantserve();</script>
+<noscript>
+<img src="http://pixel.quantserve.com/pixel/p-20l78bOOCbhcg.gif" style="display: none" height="1" width="1" alt="Quantcast"/></noscript>
+<!--  End Quantcast tag  -->
+
+<a href="https://java-net.dev.java.net/feedback.html">Feedback</a> &nbsp;|&nbsp;<a href="http://java.net/faq.csp">FAQ</a> &nbsp;|&nbsp;<a href="http://java.net/presscenter/">Press</a>&nbsp;|&nbsp;<a href="http://java.net/terms.csp">Terms of Use</a><br />
+<a href="http://www.sun.com/privacy/">Privacy</a> &nbsp;|&nbsp;
+<a href="http://www.sun.com/suntrademarks/">Trademarks</a>&nbsp;|&nbsp;<a href="https://java-net.dev.java.net/sitemap.html">Site Map</a>
+<br /><span class="sp5">&nbsp;</span><br />
+Your use of this web site or any of its content or software indicates your agreement to be bound by these <a href="http://java.net/terms.csp">Terms of Participation</a>.<br />
+<span class="sp5">&nbsp;</span><br />
+Copyright &copy; 1995-2008 Sun Microsystems, Inc.
+</div></td>
+<td width="40%" valign="top" align="right"><div class="footer">
+<a href="http://www.oreilly.com"><img src="/images/montague_logo_oreilly.gif" width="74" height="19" border="0" alt="Oreilly Logo"></a><a href="http://www.collab.net/"><img src="/images/montague_logo_collabnet.gif" width="85" height="19" border="0" alt="Collabnet Logo"></a><br>
+Powered by Sun Microsystems, Inc.,<br /> O'Reilly and CollabNet
+</div></td></tr>
+<!--  <tr><td colspan="3" valign="top" class="grey3"><img src="/im/a.gif" width="1" height="2" border="0" alt=" " /></td></tr>  -->
+</table>
+<div class="grayline"></div>
+</td></tr>
+</table>
+<!--  END VNV5 FOOTER  -->
+
+<!--  Begin SiteCatalyst code  -->
+<script language="JavaScript" src="http://www.java.net/s_code_remote.js"></script>
+<!--  End SiteCatalyst code  -->
+
+
+</body>
+</html>

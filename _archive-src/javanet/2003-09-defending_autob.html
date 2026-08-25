@@ -1,0 +1,513 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="http://www.movabletype.org/" />
+
+<title>David Walend's Blog: Defending Autoboxing (or Save Us From the Preprocessor)</title>
+
+<link rel="stylesheet" href="http://weblogs.java.net/blog/styles-site.css" type="text/css" />
+<link rel="stylesheet" href="http://www.java.net/css/main.css" type="text/css">
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://weblogs.java.net/blog/dwalend/index.rdf" />
+<link rel="alternate" type="application/atom+xml" title="Atom" href="http://weblogs.java.net/blog/dwalend/atom.xml" />
+
+<link rel="start" href="http://weblogs.java.net/blog/dwalend/" title="Home" />
+<link rel="prev" href="http://weblogs.java.net/blog/dwalend/archive/2003/09/somnifugijms_fo_6.html" title="SomnifugiJMS for User Interfaces and Simple-Enough APIs" />
+
+<link rel="next" href="http://weblogs.java.net/blog/dwalend/archive/2003/09/design_for_reus.html" title="Design for Reuse: Source Directory Structures for Java Projects" />
+
+
+
+
+
+<!--  Begin SiteCatalyst code  -->
+<script language="JavaScript">
+<!--
+var s_channel="David Walend's Blog";
+//--></script>
+<!--  End SiteCatalyst code  -->
+
+</head>
+
+<body>
+
+<!--  Masthead  -->
+<div class="topline">
+<div class="topbar">
+<table border="0" cellpadding="0" cellspacing="0" width="100%" height="25">
+<tr>
+<td width="100%" rowspan="2"><a href="http://www.java.net"><img src="/images/header_jnet_new.jpg" width="500" height="60" border="0" alt="The Source for Java Technology Collaboration"></a></td>
+ <td nowrap="nowrap" style="vertical-align:middle">
+ <div id="login">
+ 
+  <form name="loginform" id="loginform" action="https://www.dev.java.net/servlets/TLogin" method="post">
+  <input type="hidden" name="redir" value="http://weblogs.java.net/blog/dwalend/archive/2003/09/defending_autob.html">
+  <div>
+  <strong>User:</strong>
+   <input type="text" name="loginID" id="loginID" value="" size="7" maxlength="32" />
+   <strong>Password:</strong>
+
+   <input type="password" name="password" id="password" value="" size="7" maxlength="32" />
+   <input type="submit" name="Login" class="buttonred" id="Button" value="Login" /> </div>
+  <div class="small" align="right"><strong> <a href="https://www.dev.java.net/servlets/Join">Register</a>  | <a href="https://www.dev.java.net/servlets/TLogin">Login help</a>   &nbsp;&nbsp;&nbsp;</strong></div> 
+</form>
+ 
+</div>
+</td> 
+</tr>
+</table>
+</div>
+
+<!--  Tabs  -->
+
+
+<noindex>
+<div class="tabs" id="toptabs">
+<table cellspacing=0 cellpadding=4 border=0>
+<tbody>
+<tr>
+<td><a href="https://www.dev.java.net/servlets/StartPage">My       pages</a> </td>
+<td><a       href="http://community.java.net/projects/">Projects</a></td>
+<td><a href="http://community.java.net">Communities</a>   </td>
+<th><a href="http://www.java.net">java.net</a></th>
+</tr></tbody></table></div>
+</noindex>
+
+
+
+<table id="main" cellspacing="2" cellpadding="2" width="100%" border="0">
+  <tbody>
+  <tr valign=top>
+    <td id="leftcol" width="150" rowspan="2">
+	<img src="http://today.java.net/im/a.gif" width="150" height="1"><br />
+<div id="navcolumn">
+<!--   COMMUNITY LINKS   -->
+<noindex>
+<div class="toolgroup" id="communitylinks">
+<div class="label"><strong>Get Involved</strong></div>
+<div class="body">
+<div><a href="https://java-net.dev.java.net/">java-net Project</a></div>
+<div><a href="http://www.java.net/request_project.csp">Request a Project</a></div>
+<div><a href="http://community.java.net/help_wanted/">Project&nbsp;Help&nbsp;Wanted&nbsp;Ads</a></div>
+<div><a href="http://community.java.net/projects/publicize.csp">Publicize your Project</a></div>
+<!-- <div><a href="#">Success Stories</a></div>  -->
+<div><a href="http://today.java.net/cs/user/create/bl">Submit Content</a></div>
+<div><script language="JavaScript" type="text/javascript">
+<!--
+var name = "spamreport";
+var domain = "admin.dev.java.net";
+var display = "Report Inappropriate Content";
+var subject = "";
+var ending = "";
+var style = "";
+document.write('<a class="' + style + '" href="mailto:' + name + '&#64;' + domain + '?subject=' + subject + '">');
+if (display) {
+ document.write(display);
+} else {
+ document.write(name + '&#64;' + domain);
+}
+document.write('</a>' + ending);
+document.write('<!-- mailmunge bit -->');
+// -->
+</script>
+</div>
+</div>
+</div>
+
+<div class="toolgroup" id="communitylinks">
+<div class="label"><strong>Get Informed</strong></div>
+<div class="body">
+<div><a href="http://www.java.net/about.csp">About java.net</a></div>
+<div><a href="http://today.java.net/pub/q/articles">Articles</a></div>
+<div><a href="http://weblogs.java.net/">Blogs</a></div>
+<div><a href="http://www.java.net/events">Events</a></div>
+<div><a href="http://today.java.net/today/alsotoday.csp">Also in Java Today</a></div>
+<div><a href="http://safari.java.net">java.net Online Books</a></div>
+<div><a href="http://today.java.net/today/archive/">java.net Archives</a></div>
+</div>
+</div>
+
+<div class="toolgroup" id="communitylinks">
+<div class="label"><strong>Get Connected</strong></div>
+<div class="body">
+<div><a href="http://forums.java.net">java.net Forums</a></div>
+<div><a href="http://wiki.java.net/">Wiki</a> and <a href="http://wiki.java.net/bin/view/Javapedia/WebHome">Javapedia</a></div>
+<div><a href="http://wiki.java.net/bin/view/People/WebHome">People</a>, <a href="http://partners.java.net">Partners</a>, and <a href="http://wiki.java.net/bin/view/Javanet/JobsWiki">Jobs</a> </div>
+<div><a href="http://community.java.net/jugs/listing.csp">Java User Groups</a></div>
+<div><!--  <a href="https://java-net.dev.java.net/servlets/ProjectMailingListList">Newsletters</a> and  --><a href="http://today.java.net/pub/q/rsschannels">RSS Feeds</a></div>
+</div>
+</div>
+
+<div class="toolgroup" id="communitylinks">
+<div class="label"><b>Search</b></div>
+<div class="body">
+<form action="http://www.java.net/search_results.csp" id="cse-search-box">
+<div>Web and Projects:</div>
+<div><input type="text" name="q" class="medium" size="14" />
+<input type="hidden" name="cx" value="011656849246290948379:pdvwpzpb2di" />
+<input type="hidden" name="cof" value="FORID:9" />
+<input type="hidden" name="ie" value="UTF-8" />
+<input class="buttonred"  type="submit" name="sa" value=" &raquo;">
+</div>
+</form>
+<script type="text/javascript" src="http://www.google.com/coop/cse/brand?form=cse-search-box&lang=en"></script>
+
+<div>Online Books:</div>
+<form action="http://safari.java.net/search" method="post" name="searchForm" id="form_searchForm">
+<input name="__formName" value="searchForm" type="hidden" />
+<input value="simple" name="searchmode" id="searchmode" type="hidden" />
+<input value="0" name="page" id="page" type="hidden" />
+<input value="summary" name="searchview" id="searchview" type="hidden" />
+<input value="rank" name="sort" id="sort" type="hidden" />
+<input value="desc" name="order" id="order" type="hidden" />
+<input value="1" name="NewSearch" id="NewSearch" type="hidden" />
+<div>
+<input name="searchtextbox" id="searchtextbox" type="text" value="" class="medium" size="14" />
+<input class="buttonred" value=" &raquo; " border="0" type="submit"></div>
+</form>
+
+<div>java.net on <a href="http://markmail.org/">MarkMail</a>:</div>
+<form action="http://markmail.org/search/list:net.java">
+<div><input name="q" id="searchtextbox" type="text" value="" class="medium" size="14" />
+<input class="buttonred" value=" &raquo; " border="0" type="submit"></div>
+</form>
+
+<div><a href="http://www.java.net/search.csp">Advanced Search</a></div>
+</div>
+</div>
+</noindex>
+
+</div>
+<br />
+</td>
+<td height="3" colspan="2"><img src="http://today.java.net/images/a.gif" width="1" height="3"><br /></td>
+</tr>
+<tr> 
+<td width="10"><img src="http://today.java.net/images/a.gif" width="10" height="1"></td>
+<td width="100%" valign="top">
+
+
+
+
+<div class="link-note">
+<a href="http://weblogs.java.net/blog/dwalend/index.rdf"><img src="http://www.java.net/images/icons/feed.png" width="16" height="16" vspace="4" hspace="10" border="0" alt="Syndicate this blog (XML)" align="right" /></a><br />
+</div>
+
+
+
+<img src="/images/people/david_walend.jpg" border="0" height="68" width="99" alt="David Walend" align="left" vspace="3" hspace="6" />
+
+
+
+
+<h2><a href="http://weblogs.java.net/blog/dwalend/">David Walend's Blog</a></h2>
+
+<div class="small" align="right">
+<a href="http://weblogs.java.net/blog/dwalend/archive/2003/09/somnifugijms_fo_6.html">&laquo;SomnifugiJMS for User Interfaces and Simple-Enough APIs</a> |
+
+<a href="http://weblogs.java.net/blog/dwalend/">Main</a>
+| <a href="http://weblogs.java.net/blog/dwalend/archive/2003/09/design_for_reus.html">Design for Reuse: Source Directory Structures for Java Projects &raquo;</a>
+
+</div>
+
+<div class="grayline"></div>
+
+<h3>Defending Autoboxing (or Save Us From the Preprocessor)</h3>
+
+<span class="ltcaption1">Posted by <b>dwalend</b> on September 18, 2003 at 05:14 AM</a> | <a href="http://weblogs.java.net/blog/dwalend/archive/2003/09/defending_autob.html#comments">Comments (8)</a>
+
+</span>
+
+<br /><br />
+
+I plan to use autoboxing in a project, so I'm responding to <a href="http://weblogs.java.net/pub/wlg/447">Erb Cooper's damning blog, "The Terror That Is Autoboxing."</a> I haven't read the spec yet -- Only JCP members have had the chance. I think we should reserve judgment at least until we can see what the <a href="http://jcp.org/en/jsr/detail?id=201">JSR expert group</a> has come up with. Under the eye-catching headline, Erb's complaint is that autoboxing could create a lot of objects for no good reason, use a lot of memory, and create a lot of garbage. I hope autoboxing will be a bit more sophisticated, and that developers will use the same care they show with Strings.
+<p>
+I want to solve a design problem using autoboxing and generics for <a href="http://jdigraph.sourceforge.net/">JDigraph</a> that I'll otherwise have to solve with a preprocessor, or Jython, or a compiler and ClassLoader hack that will basically repeat what the generics and autoboxing should do for me. I think autoboxing and generics will do the job, but won't know until I get a chance to read what the expert group has decided. I might even have to wait until the JSDK 1.5 betas are out to try it.
+<p>
+JDigraph's measured package has a collection of path optimization algorithms. Path optimization algorithms like Johnson's, Dijkstra's and Floyd-Warshall use a relax() procedure at their core. relax() compares the current cost to traverse between a "from" node and a "to" node to the cost of using a "through" node. The three indexes (fromIndex, throughIndex and toIndex) correspond with the nodes. safeLength() returns the lowest known cost to cross an edge between two nodes. Here's the the relax() method from AbstractShortestCEDistances.java.
+<p>
+<code>
+<pre>
+    private int[][] distances;
+
+    protected void relax(int fromIndex,int throughIndex,int toIndex) 
+    {
+        int fromThrough = safeLength(fromIndex,throughIndex); 
+        if(fromThrough==Integer.MAX_VALUE)
+        {
+            return;
+        }
+        
+        int throughTo = safeLength(throughIndex,toIndex); 
+        if(throughTo==Integer.MAX_VALUE)
+        {
+            return;
+        }
+        
+        int startLength = Integer.MAX_VALUE;
+        
+        int fromTo = safeLength(fromIndex,toIndex); 
+        if(fromTo<Integer.MAX_VALUE)
+        {
+            startLength = fromTo;
+        }
+        if(startLength > fromThrough+throughTo)
+        {
+            distances[fromIndex][toIndex]=fromThrough+throughTo;
+        }
+    }
+</pre>
+</code>
+<p>
+Right now this code uses an int[][] for distances. I would like to use autoboxing and generics to easily switch this class from ints to doubles or other Number subclasses. A generic should generate a subclass of the parent class with the correct types, which would be very efficient. I'm hoping that autoboxing will let me keep the efficiency of primitive types while letting me access that flexibility. A profiling investigation showed that the algorithm spent most of its time assigning new distances in that last if block, so this method should be a good test of efficiency. It will be easy to measure once the JSDK 1.5 betas start to come out; I've got the timing study ready.
+<p>
+One alternative approach is to use a preprocessor to change the primitives. (And to rename the class so that the same ClassLoader context can use versions for different primitives). But to do that I'd have to guess what all the possible child classes of Number should be at build time. (Plus I'd need to do the same thing to my Heap for Dijkstra's algorithm. Plus all the interfaces involving path length would have to run through the same process to have the right APIs.)
+<p>
+A second alternative is to use string substitution, code generation, and a compiler at runtime to build the .class files I need at runtime. Defining the interfaces for these would be difficult; I'd still have to do some tricks at compile time. That work would repeat what the generics feature does already.
+<p>
+A third alternative is to write the code in Jython. But I expect this numeric-intensive code would be much slower. A disappointing implementation of autoboxing would run at Jython speed. (Like Erb says, "Wouldn't I be just as well off using Python?") However, it would work and I could speed it up when it's important.
+<p>
+I hope and expect that autoboxing will be efficient enough to let this work well, instead of just work.
+
+
+
+<div id="a000018more"><div id="more">
+
+</div></div>
+
+<br />
+Bookmark blog post: <a href="http://del.icio.us/post?title=Defending Autoboxing (or Save Us From the Preprocessor)&amp;url=http://weblogs.java.net/blog/dwalend/archive/2003/09/defending_autob.html"><img src="/images/icons/delicious.gif" alt="del.icio.us" border="0" height="16" hspace="8" vspace="1" width="16" /></a> <a href="http://del.icio.us/post?title=Defending Autoboxing (or Save Us From the Preprocessor)&amp;url=http://weblogs.java.net/blog/dwalend/archive/2003/09/defending_autob.html">del.icio.us</a> <a href="http://digg.com/submit?phase=2&amp;title=Defending Autoboxing (or Save Us From the Preprocessor)"><img src="/images/icons/digg.gif" alt="Digg" border="0" height="14" hspace="8" width="16" /></a> <a href="http://digg.com/submit?phase=2&amp;title=Defending Autoboxing (or Save Us From the Preprocessor)&amp;url=http://weblogs.java.net/blog/dwalend/archive/2003/09/defending_autob.html">Digg</a> <a href="http://www.dzone.com/links/add.html?url=http://weblogs.java.net/blog/dwalend/archive/2003/09/defending_autob.html&amp;title=Defending Autoboxing (or Save Us From the Preprocessor)"><img src="/images/icons/dzone.gif" alt="DZone" border="0" height="16" hspace="8" width="16" /></a> <a href="http://www.dzone.com/links/add.html?url=http://weblogs.java.net/blog/dwalend/archive/2003/09/defending_autob.html&amp;title=Defending Autoboxing (or Save Us From the Preprocessor)">DZone</a> <a href="http://www.furl.net/storeIt.jsp?t=Defending Autoboxing (or Save Us From the Preprocessor)&amp;u=http://weblogs.java.net/blog/dwalend/archive/2003/09/defending_autob.html"><img src="/images/icons/furl.gif" alt="Furl" border="0" height="17" hspace="8" width="16" /></a> <a href="http://www.furl.net/storeIt.jsp?t=Defending Autoboxing (or Save Us From the Preprocessor)&amp;u=http://weblogs.java.net/blog/dwalend/archive/2003/09/defending_autob.html">Furl</a>  <a href="http://reddit.com/submit?title=Defending Autoboxing (or Save Us From the Preprocessor)&amp;url=http://weblogs.java.net/blog/dwalend/archive/2003/09/defending_autob.html"><img src="/images/icons/reddit.gif" alt="Reddit" border="0" height="18" hspace="8" width="18" /></a> <a href="http://reddit.com/submit?title=Defending Autoboxing (or Save Us From the Preprocessor)&amp;url=http://weblogs.java.net/blog/dwalend/archive/2003/09/defending_autob.html">Reddit</a>
+<br />
+<div class="grayline"></div>
+
+<a name="comments"></a>
+<h5>Comments</h5>
+<span class="small">Comments are listed in date ascending order (oldest first) | <a href="#post">Post Comment</a></span>
+<br /><br />
+
+<ul>
+<li>
+<a name="951"></a>
+<div id="c951">
+<p>I suspect you'll be disappointed<br />
+Obviously, I haven't seen the spec, either, but I suspect you'll be disappointed if you expect the same performance level as straight primitives.</p>
+
+<p>Autoboxing is merely going to convert between a primitive (e.g., int) and object (e.g., Integer) for you.  That much we know is true; that's the definition of autoboxing.  Beyond that, we can speculate, but I'd bet my first edition Duke Beanie-Baby* that this is the way it'll work:  The compiler will insert the appropriate new Integer() and intValue() calls (or the appropriate calls for long, float, double, etc.) automatically, saving you only the trouble of writing that code yourself.  This is reasonable speculation, both when you consider how this could be implemented, and Sun's stated goal of addressing the ease of coding and readability.  Nowhere in the public information is performancea stated goal.</p>
+
+<p>"I hope...that developers will use the same care they show with Strings"</p>
+
+<p>That's precisely my worry, and a perfect analogy for how this has the potential to create performance problems that slip under the radar, because it makes the object creation so hidden.  Consider String concatenation; many developers won't realize all the temporary StringBuffer and String objects being created and garbage collected.</p>
+
+<p>* I have no Duke Beanie-Baby, first edition or otherwise.  But if I did, I'd be willing to put him on the line.</p>
+<p class="posted"><span class="ltcaption1">Posted by: jimothy  on September 18, 2003 at 07:29 AM</span></p>
+</div>
+</li>
+</ul>
+<ul>
+<li>
+<a name="955"></a>
+<div id="c955">
+<p>Boxing slow and wasteful???<br />
+Combine Autoboxing with type inferencing that HotSpot uses and I think you'll be suprised.  For years people said that Lisp and Smalltalk were slow in numeric operations, but many times they were shown to be wrong, b/c the compilier could inference the optimal type and useage and then optimize the code.  </p>
+
+<p>It is my belief that these same things will be or can be applied to the new Autoboxing features of Java.</p>
+
+<p>It's funny, Java being byte-coded, etc. and in many, many situations, that type information doesn't give the solutions any more speed than Smalltalk programmers get with no types being specified at all.</p>
+<p class="posted"><span class="ltcaption1">Posted by: staypufd  on September 18, 2003 at 01:21 PM</span></p>
+</div>
+</li>
+</ul>
+<ul>
+<li>
+<a name="956"></a>
+<div id="c956">
+<p>Not what you want<br />
+You are not going to get what you are looking for.</p>
+
+<p>The JSR-014 generics do not "generate a subclass of the parent class with the correct types". There is only one implementation of each generic class, and that implementation serves for all generic instances by using ordinary polymorphism. Furthermore, when using a generic class, the actual type of the generic parameter cannot be a primitive, so it cannot be an int or a double.</p>
+
+<p>Java genericity is a compile-time feature that provides additional type-safety and coding convenience. It does NOT provide any additional run-time abilities.</p>
+
+<p>Similarly, I do not see that autoboxing will buy you anything. Like jimothy said, it's just saving you the effort of writing "new Integer(x)". It's nice for making the source code cleaner and easier to read (especially for method arguments), but again, it does not give you any new abilities.</p>
+<p class="posted"><span class="ltcaption1">Posted by: dougpardee  on September 18, 2003 at 02:40 PM</span></p>
+</div>
+</li>
+</ul>
+<ul>
+<li>
+<a name="960"></a>
+<div id="c960">
+<p>Shortcut to ...<br />
+I think the autoboxing feature comes only to implement the new 'printf' feature (almost-C-like variable parameter list):</p>
+
+<p>C's printf (String s, ...) == J's printf (String s, Object[] params)</p>
+
+<p>then: </p>
+
+<p>int age = 20;<br />
+printf ("%s is %d years old", { "Jack", 20 } ); //new shortcut syntax to new Object[]</p>
+
+<p>instead of </p>
+
+<p>printf ("%s is %d years old", { "Jack", new Integer(20) } );</p>
+
+<p>Autoboxing sux, and brings even more danger of hidding performance bottlenecks than Strings.</p>
+
+<p>Moreover, only autoboxing will be supported, not autounboxing, causing the code to handle the same value in different ways. Imagine:</p>
+
+<p>int a = 2;<br />
+ArrayList list = new ArrayList();<br />
+list.add(a); //add as int<br />
+a = list.get(0); //error<br />
+a = (int) list.get(0); //error<br />
+a = (Integer) list.get(0); //error<br />
+a = ((Integer) list.get(0)).intValue(); //get as Integer, cast and get int value</p>
+
+<p>or, with generics,<br />
+int a = 2;<br />
+ArrayList list = new ArrayList();<br />
+list.add(a);<br />
+a = list.get(0); //error<br />
+a = list.get(0).intValue();  //get as Integer, and then get int value</p>
+
+<p>This is the only code to change:<br />
+list.add(a); -> list.add(new Integer(a));<br />
+</p>
+<p class="posted"><span class="ltcaption1">Posted by: ronaldtm  on September 19, 2003 at 08:53 AM</span></p>
+</div>
+</li>
+</ul>
+<ul>
+<li>
+<a name="964"></a>
+<div id="c964">
+<p>I suspect you'll be disappointed<br />
+Profiler. Profiler. Profiler.  Performance only matters in small areas of the system and only after you know that you have a problem.  If I can make my code more understandable and less cluttered in 90% of the application for a 20% increase in performance debug time, I will do it in a nanosecond.  </p>
+
+<p>It brings back the original debate on Java versus compiled languages.  ?It is slower?, went the chant of compiled people.  It only matters if the user noticed and it is impossible to fix easily.  Outside of the UI, that has not been the case for Java, nor will it be the case for autoboxing.<br />
+</p>
+<p class="posted"><span class="ltcaption1">Posted by: gjhicks12  on September 21, 2003 at 03:04 PM</span></p>
+</div>
+</li>
+</ul>
+<ul>
+<li>
+<a name="968"></a>
+<div id="c968">
+<p>I suspect you'll be disappointed<br />
+You're absolutely right that diligent use of a profile will help spot performance problems, and that there is a trade off in performance versus readability.</p>
+
+<p>However, you can, with some degree of reliability, predict performance hotspots. David may know in advanced that his path-finding algorithm will be frequently called, so performance is vital.  Granted, a profile can and should be used to verify any assumptions.</p>
+
+<p>More importantly, things can be broken while performance tuning, and tuning itself takes development time.  There are good habits that developers can learn, such as using StringBuffer in a loop, so they can write effecient code from the beginning, lessening the need to go back and optimize.  I suspect we'll add a few points regarding autoboxing to that set of habits.</p>
+<p class="posted"><span class="ltcaption1">Posted by: jimothy  on September 22, 2003 at 09:46 AM</span></p>
+</div>
+</li>
+</ul>
+<ul>
+<li>
+<a name="1004"></a>
+<div id="c1004">
+<p>Autoboxing + Generics<br />
+Autoboxing is IMHO utter crap. It won't be efficient and will cause more problems. The only improvement will be on code appearance, since it is "cool" to write code like:</p>
+
+<p>int i = 1;<br />
+list.add(i);</p>
+
+<p>Generics, again IMHO, is a no-good feature. Why would you need generics when you have good-old polymorphism?</p>
+
+<p>Besides, my guess is generics support for Java will merely be automatically generating the necessary type casts...</p>
+
+<p>Vagelis.</p>
+<p class="posted"><span class="ltcaption1">Posted by: vgiannadakis  on September 24, 2003 at 03:45 AM</span></p>
+</div>
+</li>
+</ul>
+<ul>
+<li>
+<a name="1040"></a>
+<div id="c1040">
+<p>Will report when the jsdk 1.5 betas are out<br />
+I've thought a while about how to respond to the talk back on this article. I'd like to say I think most of the talk back is too pessimistic. But I don't know yet. </p>
+
+<p>I think the best answer I can come up with is this: When Sun starts shipping the betas for JSDK 1.5, I'll try out using autoboxing and generics in the JDigraph's Floyd-Warshall implementation, see how far I can take the language, and do a performance study. It's open source, so you'll all be able to see what I'm doing in the study. I'll report my results in a blog entry so we can have answers instead of speculation.</p>
+
+<p>Dave</p>
+<p class="posted"><span class="ltcaption1">Posted by: dwalend  on September 26, 2003 at 08:53 AM</span></p>
+</div>
+</li>
+</ul>
+
+
+<br /><br />
+
+
+
+
+<br />
+
+<div class="footer" align="right">This work is licensed under a
+<a href="http://creativecommons.org/licenses/by-nc-sa/2.0/">Creative Commons License</a>.<br />
+<a href="http://creativecommons.org/licenses/by-nc-sa/2.0/"><img src="http://creativecommons.org/images/public/somerights.gif" alt="Creative Commons License" border="0" height="31" width="88" hspace="2" vspace="2" /></a>
+</div>
+
+
+<br />
+<div id="powered" align="right">
+<b>Powered by</b><br />
+<a href="http://www.movabletype.org">Movable Type 3.01D</a><br />    
+</div>
+
+
+
+</td></tr></table>
+
+<!--  BEGIN VNV5 FOOTER   -->
+<!--  BEGIN VNV5 FOOTER   -->
+<table border="0" cellpadding="0" cellspacing="10" width="100%">
+<tr>
+<td>
+&nbsp;<a href="http://today.java.net/pub/q/java_net_rss"><img src="/images/icons/feed.png" border="0" width="16" height="16" alt="Feed" align="absmiddle"></a>&nbsp;<a href="http://today.java.net/pub/q/java_net_rss">java.net RSS Feeds</a><br />
+<div class="grayline"></div>
+<table border="0" cellpadding="0" cellspacing="0" width="100%" class="vatop">
+<tr>
+<td><img src="/im/a.gif" width="190" height="1" border="0" alt=" " /><br />
+<a href="http://www.sun.com"><img src="/im/logo_sun_small.gif" width="61" height="29" border="0" alt=" " vspace="5"/></a></td>
+<td width="60%" valign="top">
+<div class="footer">
+
+<!--  Start Quantcast tag  -->
+<script type="text/javascript" src="http://edge.quantserve.com/quant.js"></script>
+<script type="text/javascript">
+_qacct="p-20l78bOOCbhcg";quantserve();</script>
+<noscript>
+<img src="http://pixel.quantserve.com/pixel/p-20l78bOOCbhcg.gif" style="display: none" height="1" width="1" alt="Quantcast"/></noscript>
+<!--  End Quantcast tag  -->
+
+<a href="https://java-net.dev.java.net/feedback.html">Feedback</a> &nbsp;|&nbsp;<a href="http://java.net/faq.csp">FAQ</a> &nbsp;|&nbsp;<a href="http://java.net/presscenter/">Press</a>&nbsp;|&nbsp;<a href="http://java.net/terms.csp">Terms of Use</a><br />
+<a href="http://www.sun.com/privacy/">Privacy</a> &nbsp;|&nbsp;
+<a href="http://www.sun.com/suntrademarks/">Trademarks</a>&nbsp;|&nbsp;<a href="https://java-net.dev.java.net/sitemap.html">Site Map</a>
+<br /><span class="sp5">&nbsp;</span><br />
+Your use of this web site or any of its content or software indicates your agreement to be bound by these <a href="http://java.net/terms.csp">Terms of Participation</a>.<br />
+<span class="sp5">&nbsp;</span><br />
+Copyright &copy; 1995-2008 Sun Microsystems, Inc.
+</div></td>
+<td width="40%" valign="top" align="right"><div class="footer">
+<a href="http://www.oreilly.com"><img src="/images/montague_logo_oreilly.gif" width="74" height="19" border="0" alt="Oreilly Logo"></a><a href="http://www.collab.net/"><img src="/images/montague_logo_collabnet.gif" width="85" height="19" border="0" alt="Collabnet Logo"></a><br>
+Powered by Sun Microsystems, Inc.,<br /> O'Reilly and CollabNet
+</div></td></tr>
+<!--  <tr><td colspan="3" valign="top" class="grey3"><img src="/im/a.gif" width="1" height="2" border="0" alt=" " /></td></tr>  -->
+</table>
+<div class="grayline"></div>
+</td></tr>
+</table>
+<!--  END VNV5 FOOTER  -->
+
+<!--  Begin SiteCatalyst code  -->
+<script language="JavaScript" src="http://www.java.net/s_code_remote.js"></script>
+<!--  End SiteCatalyst code  -->
+
+
+</body>
+</html>

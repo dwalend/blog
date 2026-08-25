@@ -1,0 +1,857 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="http://www.movabletype.org/" />
+
+<title>David Walend's Blog: Design For Exceptions</title>
+
+<link rel="stylesheet" href="http://weblogs.java.net/blog/styles-site.css" type="text/css" />
+<link rel="stylesheet" href="http://www.java.net/css/main.css" type="text/css">
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://weblogs.java.net/blog/dwalend/index.rdf" />
+<link rel="alternate" type="application/atom+xml" title="Atom" href="http://weblogs.java.net/blog/dwalend/atom.xml" />
+
+<link rel="start" href="http://weblogs.java.net/blog/dwalend/" title="Home" />
+<link rel="prev" href="http://weblogs.java.net/blog/dwalend/archive/2003/09/design_for_reus.html" title="Design for Reuse: Source Directory Structures for Java Projects" />
+
+<link rel="next" href="http://weblogs.java.net/blog/dwalend/archive/2003/10/reviewing_the_j.html" title="Reviewing the Java Community Process v. 2.6 (JSR-215)" />
+
+
+
+
+
+<!--  Begin SiteCatalyst code  -->
+<script language="JavaScript">
+<!--
+var s_channel="David Walend's Blog";
+//--></script>
+<!--  End SiteCatalyst code  -->
+
+</head>
+
+<body>
+
+<!--  Masthead  -->
+<div class="topline">
+<div class="topbar">
+<table border="0" cellpadding="0" cellspacing="0" width="100%" height="25">
+<tr>
+<td width="100%" rowspan="2"><a href="http://www.java.net"><img src="/images/header_jnet_new.jpg" width="500" height="60" border="0" alt="The Source for Java Technology Collaboration"></a></td>
+ <td nowrap="nowrap" style="vertical-align:middle">
+ <div id="login">
+ 
+  <form name="loginform" id="loginform" action="https://www.dev.java.net/servlets/TLogin" method="post">
+  <input type="hidden" name="redir" value="http://weblogs.java.net/blog/dwalend/archive/2003/10/design_for_exce_1.html">
+  <div>
+  <strong>User:</strong>
+   <input type="text" name="loginID" id="loginID" value="" size="7" maxlength="32" />
+   <strong>Password:</strong>
+
+   <input type="password" name="password" id="password" value="" size="7" maxlength="32" />
+   <input type="submit" name="Login" class="buttonred" id="Button" value="Login" /> </div>
+  <div class="small" align="right"><strong> <a href="https://www.dev.java.net/servlets/Join">Register</a>  | <a href="https://www.dev.java.net/servlets/TLogin">Login help</a>   &nbsp;&nbsp;&nbsp;</strong></div> 
+</form>
+ 
+</div>
+</td> 
+</tr>
+</table>
+</div>
+
+<!--  Tabs  -->
+
+
+<noindex>
+<div class="tabs" id="toptabs">
+<table cellspacing=0 cellpadding=4 border=0>
+<tbody>
+<tr>
+<td><a href="https://www.dev.java.net/servlets/StartPage">My       pages</a> </td>
+<td><a       href="http://community.java.net/projects/">Projects</a></td>
+<td><a href="http://community.java.net">Communities</a>   </td>
+<th><a href="http://www.java.net">java.net</a></th>
+</tr></tbody></table></div>
+</noindex>
+
+
+
+<table id="main" cellspacing="2" cellpadding="2" width="100%" border="0">
+  <tbody>
+  <tr valign=top>
+    <td id="leftcol" width="150" rowspan="2">
+	<img src="http://today.java.net/im/a.gif" width="150" height="1"><br />
+<div id="navcolumn">
+<!--   COMMUNITY LINKS   -->
+<noindex>
+<div class="toolgroup" id="communitylinks">
+<div class="label"><strong>Get Involved</strong></div>
+<div class="body">
+<div><a href="https://java-net.dev.java.net/">java-net Project</a></div>
+<div><a href="http://www.java.net/request_project.csp">Request a Project</a></div>
+<div><a href="http://community.java.net/help_wanted/">Project&nbsp;Help&nbsp;Wanted&nbsp;Ads</a></div>
+<div><a href="http://community.java.net/projects/publicize.csp">Publicize your Project</a></div>
+<!-- <div><a href="#">Success Stories</a></div>  -->
+<div><a href="http://today.java.net/cs/user/create/bl">Submit Content</a></div>
+<div><script language="JavaScript" type="text/javascript">
+<!--
+var name = "spamreport";
+var domain = "admin.dev.java.net";
+var display = "Report Inappropriate Content";
+var subject = "";
+var ending = "";
+var style = "";
+document.write('<a class="' + style + '" href="mailto:' + name + '&#64;' + domain + '?subject=' + subject + '">');
+if (display) {
+ document.write(display);
+} else {
+ document.write(name + '&#64;' + domain);
+}
+document.write('</a>' + ending);
+document.write('<!-- mailmunge bit -->');
+// -->
+</script>
+</div>
+</div>
+</div>
+
+<div class="toolgroup" id="communitylinks">
+<div class="label"><strong>Get Informed</strong></div>
+<div class="body">
+<div><a href="http://www.java.net/about.csp">About java.net</a></div>
+<div><a href="http://today.java.net/pub/q/articles">Articles</a></div>
+<div><a href="http://weblogs.java.net/">Blogs</a></div>
+<div><a href="http://www.java.net/events">Events</a></div>
+<div><a href="http://today.java.net/today/alsotoday.csp">Also in Java Today</a></div>
+<div><a href="http://safari.java.net">java.net Online Books</a></div>
+<div><a href="http://today.java.net/today/archive/">java.net Archives</a></div>
+</div>
+</div>
+
+<div class="toolgroup" id="communitylinks">
+<div class="label"><strong>Get Connected</strong></div>
+<div class="body">
+<div><a href="http://forums.java.net">java.net Forums</a></div>
+<div><a href="http://wiki.java.net/">Wiki</a> and <a href="http://wiki.java.net/bin/view/Javapedia/WebHome">Javapedia</a></div>
+<div><a href="http://wiki.java.net/bin/view/People/WebHome">People</a>, <a href="http://partners.java.net">Partners</a>, and <a href="http://wiki.java.net/bin/view/Javanet/JobsWiki">Jobs</a> </div>
+<div><a href="http://community.java.net/jugs/listing.csp">Java User Groups</a></div>
+<div><!--  <a href="https://java-net.dev.java.net/servlets/ProjectMailingListList">Newsletters</a> and  --><a href="http://today.java.net/pub/q/rsschannels">RSS Feeds</a></div>
+</div>
+</div>
+
+<div class="toolgroup" id="communitylinks">
+<div class="label"><b>Search</b></div>
+<div class="body">
+<form action="http://www.java.net/search_results.csp" id="cse-search-box">
+<div>Web and Projects:</div>
+<div><input type="text" name="q" class="medium" size="14" />
+<input type="hidden" name="cx" value="011656849246290948379:pdvwpzpb2di" />
+<input type="hidden" name="cof" value="FORID:9" />
+<input type="hidden" name="ie" value="UTF-8" />
+<input class="buttonred"  type="submit" name="sa" value=" &raquo;">
+</div>
+</form>
+<script type="text/javascript" src="http://www.google.com/coop/cse/brand?form=cse-search-box&lang=en"></script>
+
+<div>Online Books:</div>
+<form action="http://safari.java.net/search" method="post" name="searchForm" id="form_searchForm">
+<input name="__formName" value="searchForm" type="hidden" />
+<input value="simple" name="searchmode" id="searchmode" type="hidden" />
+<input value="0" name="page" id="page" type="hidden" />
+<input value="summary" name="searchview" id="searchview" type="hidden" />
+<input value="rank" name="sort" id="sort" type="hidden" />
+<input value="desc" name="order" id="order" type="hidden" />
+<input value="1" name="NewSearch" id="NewSearch" type="hidden" />
+<div>
+<input name="searchtextbox" id="searchtextbox" type="text" value="" class="medium" size="14" />
+<input class="buttonred" value=" &raquo; " border="0" type="submit"></div>
+</form>
+
+<div>java.net on <a href="http://markmail.org/">MarkMail</a>:</div>
+<form action="http://markmail.org/search/list:net.java">
+<div><input name="q" id="searchtextbox" type="text" value="" class="medium" size="14" />
+<input class="buttonred" value=" &raquo; " border="0" type="submit"></div>
+</form>
+
+<div><a href="http://www.java.net/search.csp">Advanced Search</a></div>
+</div>
+</div>
+</noindex>
+
+</div>
+<br />
+</td>
+<td height="3" colspan="2"><img src="http://today.java.net/images/a.gif" width="1" height="3"><br /></td>
+</tr>
+<tr> 
+<td width="10"><img src="http://today.java.net/images/a.gif" width="10" height="1"></td>
+<td width="100%" valign="top">
+
+
+
+
+<div class="link-note">
+<a href="http://weblogs.java.net/blog/dwalend/index.rdf"><img src="http://www.java.net/images/icons/feed.png" width="16" height="16" vspace="4" hspace="10" border="0" alt="Syndicate this blog (XML)" align="right" /></a><br />
+</div>
+
+
+
+<img src="/images/people/david_walend.jpg" border="0" height="68" width="99" alt="David Walend" align="left" vspace="3" hspace="6" />
+
+
+
+
+<h2><a href="http://weblogs.java.net/blog/dwalend/">David Walend's Blog</a></h2>
+
+<div class="small" align="right">
+<a href="http://weblogs.java.net/blog/dwalend/archive/2003/09/design_for_reus.html">&laquo;Design for Reuse: Source Directory Structures for Java Projects</a> |
+
+<a href="http://weblogs.java.net/blog/dwalend/">Main</a>
+| <a href="http://weblogs.java.net/blog/dwalend/archive/2003/10/reviewing_the_j.html">Reviewing the Java Community Process v. 2.6 (JSR-215) &raquo;</a>
+
+</div>
+
+<div class="grayline"></div>
+
+<h3>Design For Exceptions</h3>
+
+<span class="ltcaption1">Posted by <b>dwalend</b> on October 06, 2003 at 04:57 AM</a> | <a href="http://weblogs.java.net/blog/dwalend/archive/2003/10/design_for_exce_1.html#comments">Comments (25)</a>
+
+</span>
+
+<br /><br />
+
+<p>
+I read <a href="http://www.artima.com/intv/solidP.html">Bill Venner's interview with James Gosling, "Failure and Exceptions,"</a> and with <a href="http://www.artima.com/intv/handcuffs.html">Anders Hejlsberg, "The Trouble with Checked Exceptions,"</a> and was a little surprised. I thought exceptions would be in .Net since .Net has taken so many other features from Java. I've never found checked exception clauses to be much of a burden. It's one of my favorite features of Java. Anyway, given all the talk about exceptions and exception handling, I thought I'd take a minute to describe what I do and ask how others use them.
+<p>
+I think the problems that Dr. Hejlsberg describes, versionability and scalability, are easy to contain if the development team decides how they're going to handle trouble before they get too deep into their work. Here's what I usually do:
+<p>
+When I start a package, I create a handful of support classes. These classes are simple, but having them there encourages developers to use them instead of creating custom solutions. One of these classes is an abstract exception, a parent for all the concrete exceptions in that package. When developers discover they need a new exception, they extend this exception. The API for the package only throws subclasses of this exception. The abstract exception from JDigraph's net.walend.digraph package looks like this:
+
+<code>
+<pre>
+package net.walend.digraph;
+
+import java.io.Serializable;
+
+/**
+An abstract parent for all caught exceptions in the net.walend.digraph package.
+
+@author @dwalend@
+*/
+
+public abstract class DigraphException 
+    extends Exception 
+    implements Serializable
+{
+    public DigraphException(String message)
+    {
+        super(message);
+    }
+
+    public DigraphException(Throwable wrapped)
+    {
+        super(wrapped);
+    }
+
+    public DigraphException(String message, Throwable wrapped)
+    {
+        super(message, wrapped);
+    }
+
+}
+
+/*
+@license@
+*/
+</pre>
+</code>
+
+Unlike the rest of the API, which gets defined during design, I've found exceptions tend to bubble up from implementation. Sometimes it's obvious that something will go wrong at design time, but often I need to create some new exceptions while implementing the code. Plus I like to create very descriptive subclasses of my abstract exception. Specific subclasses make it easier for code handling the exception to determined what failed and how to react. That's what Dr. Gosling means by, "... in a throws clause ... be as specific as possible." 
+<p>
+If I can't handle a checked exception, I like wrapping the exception with my own subclass of my package's abstract exception, then throw the wrapping exception. My API still only throws subclasses of my abstract exception. The overhead is just constructing the new exception. Wrapping exceptions bounds the scaling problem Dr. Hejlsberg describes by limiting what can appear in the throws clause.
+<p>
+Here's the part that's worth discussing: I like keeping my methods' throws list very specific, limited to the concrete exceptions actually thrown. This choice means that people writing code that calls these methods will be cognizant of each exception. If they like, they can still catch the common parent exception. 
+<p>
+The alternative is having all methods declare that they throw only the same abstract exception. If you believe your public API can never be changed, this is the way to go. This approach solves the versioning problem Dr. Hejlsberg describes by insulating code from changes in the exceptions actually thrown, but does not give great hints for how to handle the problem. 
+<p>
+For most of my work, the versioning problem is overstated. Most of the source code developers create stays small in scope. I understand that after some point in the development life cycle of code reused across many projects the throws clause in a method can't be changed anymore. If a project becomes popular enough, these detailed throws clauses will break down and having the parent exception in the throws clause is a better decision. I think that popularity is pretty rare: Interfaces from a JSR, or public methods in a popular apache project, or from a core software team at a big company should declare that they throw a general parent exception from day one. However, most code we write has a fairly small and well-defined group of developers. Changing the throws clause doesn't wag many lines of code. That code may need to be changed to handle the new exception in a thoughtful way. If the library is becoming more popular while it is still being developed, adding the parent exception to the end of the throws clauses is easy and well-received.
+<p>
+If that last paragraph doesn't generate some interesting talk back, the next two will.
+<p>
+When I've tried to use the standard exceptions available in java or javax packages, I've discovered that very few of these exceptions have constructors that take nested exceptions. Generally, developers will use constructors that take an exception, but will not use the initCause() method on their own. I usually have to subclass them to either call the initCause() method in the constructor or override getCause() (to stay compatible with JDK 1.3. See <a href="http://weblogs.java.net/pub/wlg/432">Felipe Leme's latest blog</a>.)
+<p>
+I avoid throwing my own RuntimeExceptions except at fairly high levels when it's time to stop or reset the application without cluttering the API. And I'll sometimes use them to mark states I think are impossible. If I control the main event loop, my code catches these exceptions and tries to bow out gracefully, whatever graceful means in the context. I've also used RuntimeExceptions when I was trying to make quick fixes to an existing code base. But I've regretted this shortcut in the past.
+<p>
+Do other people do anything radically different? Is it ever OK to use throws Exception in a declaration? Or, like .Net, to use all RuntimeExceptions no matter what?
+
+
+<div id="a000281more"><div id="more">
+
+</div></div>
+
+<br />
+Bookmark blog post: <a href="http://del.icio.us/post?title=Design For Exceptions&amp;url=http://weblogs.java.net/blog/dwalend/archive/2003/10/design_for_exce_1.html"><img src="/images/icons/delicious.gif" alt="del.icio.us" border="0" height="16" hspace="8" vspace="1" width="16" /></a> <a href="http://del.icio.us/post?title=Design For Exceptions&amp;url=http://weblogs.java.net/blog/dwalend/archive/2003/10/design_for_exce_1.html">del.icio.us</a> <a href="http://digg.com/submit?phase=2&amp;title=Design For Exceptions"><img src="/images/icons/digg.gif" alt="Digg" border="0" height="14" hspace="8" width="16" /></a> <a href="http://digg.com/submit?phase=2&amp;title=Design For Exceptions&amp;url=http://weblogs.java.net/blog/dwalend/archive/2003/10/design_for_exce_1.html">Digg</a> <a href="http://www.dzone.com/links/add.html?url=http://weblogs.java.net/blog/dwalend/archive/2003/10/design_for_exce_1.html&amp;title=Design For Exceptions"><img src="/images/icons/dzone.gif" alt="DZone" border="0" height="16" hspace="8" width="16" /></a> <a href="http://www.dzone.com/links/add.html?url=http://weblogs.java.net/blog/dwalend/archive/2003/10/design_for_exce_1.html&amp;title=Design For Exceptions">DZone</a> <a href="http://www.furl.net/storeIt.jsp?t=Design For Exceptions&amp;u=http://weblogs.java.net/blog/dwalend/archive/2003/10/design_for_exce_1.html"><img src="/images/icons/furl.gif" alt="Furl" border="0" height="17" hspace="8" width="16" /></a> <a href="http://www.furl.net/storeIt.jsp?t=Design For Exceptions&amp;u=http://weblogs.java.net/blog/dwalend/archive/2003/10/design_for_exce_1.html">Furl</a>  <a href="http://reddit.com/submit?title=Design For Exceptions&amp;url=http://weblogs.java.net/blog/dwalend/archive/2003/10/design_for_exce_1.html"><img src="/images/icons/reddit.gif" alt="Reddit" border="0" height="18" hspace="8" width="18" /></a> <a href="http://reddit.com/submit?title=Design For Exceptions&amp;url=http://weblogs.java.net/blog/dwalend/archive/2003/10/design_for_exce_1.html">Reddit</a>
+<br />
+<div class="grayline"></div>
+
+<a name="comments"></a>
+<h5>Comments</h5>
+<span class="small">Comments are listed in date ascending order (oldest first) | <a href="#post">Post Comment</a></span>
+<br /><br />
+
+<ul>
+<li>
+<a name="1116"></a>
+<div id="c1116">
+<p>Hey Toto, this isn't smalltalk anymore!</p>
+
+<p>First let me say I agree.</p>
+
+<p>I'm afraid what is happening is some ivory tower-type folks are finding that it is indeed easier to code with unchecked exceptions.  Wait until they find that they can use unchecked _types_ in languages such as VB! :)  Or that some other languages allow you to escape directly to an error handler via a goto!</p>
+
+<p>Seriously though, I've been reading artima.com with some interest and I have to agree that exceptions do cause a ripple affect.  And sometimes I actually do want all exceptions to rise to a single handler.  But it is just as often that I've thanked the compiler for telling me about an exception which I've missed.  And let me tell you, the test system would have missed it too.</p>
+
+<p>Anyway, that gets to the root of the issue.  These ivory tower-type folks are claiming that testing eliminates the need for typed exceptions.  I don't buy it.  I've yet to see a _really_ complete regression suite in the wild.  </p>
+
+<p>On the other hand, exceptions alert me that I should add a testcase for the condition, IF it is feasible to reproduce in the test system.  <br />
+</p>
+<p class="posted"><span class="ltcaption1">Posted by: jtr  on October 06, 2003 at 10:44 AM</span></p>
+</div>
+</li>
+</ul>
+<ul>
+<li>
+<a name="1120"></a>
+<div id="c1120">
+<p>The purpose of exceptions...<br />
+The difference between checked and runtime exceptions is that runtime exceptions say "Something went wrong I don't know how to fix", while checked exceptions say "Something went wrong you might know how to fix in a catch clause".</p>
+
+<p>A lot of the time people simply re-throw exceptions and don't think about that meaning. This can lead to encapsulation problems (e.g. a layer thats chock full of throws IOException, and/or throws SQLException, which, when implemented over "some other" data source doesn't throw any of those things - they were broken encapsulation from the original implementations)</p>
+
+<p>Checked exceptions that are created, not re-thrown , are more explicitly saying "I think you can fix this".  But to quote Gosling from that interview - "When you try to open a file and it's not there, you're coping strategy is really determined by what you were going for." note - what you were going for, not how it went wrong. He's describing handling "a failure" here, rather than handling "a specific kind of failure" - because the second case is pretty rare.</p>
+
+<p>An example of a justifiable checked exception would be the UnavailableException in the servlet API, which marks a servlet unavailable /temporarily/. Implementers can communicate usefulinformation to their callers using this exception, so its use is probably justified. </p>
+
+<p>So generally I would use checked exceptions when there is a behavioural contract associated with the exception, and use runtime exceptions elsewhere. Rethrowing checked exceptions from a lower layer breaks encapsulation and I'd avoid it unless I'm claiming to "be" that lower layer (e.g. in an I/O utility library I'd re-throw all java's IOExceptions). Instead lower layer's exceptions are thrown wrapped in the appropriate exception for /this/ layer (ie checked if I expect the client to behave differently, runtime otherwise).</p>
+
+<p>I found the Eiffel model interesting (see eg http://burks.brighton.ac.uk/burks/language/eiffel/oveiffel/exceptns.htm) . Eiffel doesn't have checked exceptions, because they explicitly have this notion of a contract being fulfilled or not. You can't "partly" fulfil a contract, throw a checked exception saying this, which would be the equivalent in java. Worth a look.</p>
+
+<p>(BTW there is another similar viewpoint on artima in the interview with Elliot Rusty Harold - http://www.artima.com/intv/jdom3.html)</p>
+<p class="posted"><span class="ltcaption1">Posted by: ba22a  on October 07, 2003 at 05:28 AM</span></p>
+</div>
+</li>
+</ul>
+<ul>
+<li>
+<a name="1126"></a>
+<div id="c1126">
+<p>The purpose of exceptions...<br />
+I think your taxonomy for checked Exceptions and RuntimeExceptions is interesting, and probably a useful one (though the JDK itself doesn't consistently follow this; consider NumberFormatException, which is a subclass of RuntimeException).</p>
+
+<p>The problem is that to the developer who is not diligent about exception handling (and, in my experience, the majority are not), the intuitive tendency when creating a new exception class is to subclass Exception ("I'm writing a new exception class, therefore it extends Exception").  The issue of whether it will be, in practice, a recoverable exception or not,  is not likely to be considered.</p>
+
+<p>The irony is, the developer who is cognizant of whether an exception is likely to be recoverable or not is also likely to be aware of good exception handling techniques in general.  They're not the type that will blindly code empty catch blocks or the other common exception handling bloopers we see too many times.</p>
+
+<p>My point is, checked exceptions are an aid to the experience developer who could just as well do without them, but an dagger to the inexperienced developer, because they tempt him to write empty catch blocks or "throws Exception" declarations to get the compiler off his back.</p>
+
+<p>Incidentally, had Sun chosen a different naming convention, we'd probably the opposite of the current situation:  The majority of custom exceptions would be unchecked.   Instead of RuntimeException and Exception, I would have liked to see Exception (unchecked) and RuntimeException. RuntimeException is a silly name anyway; show me an exception that DOESN'T occur at runtime.</p>
+
+<p>But that betrays my bias towards unchecked exceptions, a bias that Sun (at least initially) does not share.</p>
+<p class="posted"><span class="ltcaption1">Posted by: jimothy  on October 07, 2003 at 11:38 AM</span></p>
+</div>
+</li>
+</ul>
+<ul>
+<li>
+<a name="1127"></a>
+<div id="c1127">
+<p>Design For Exceptions<br />
+I was told that throwing exceptions in not a good habit. So we never throw excpetions in our application. We have methods where each method returns object to which we can say errorOccured and add the error id which is predefined.</p>
+
+<p>The caller of the method will check isErrorOccured(), if yes then it will invoke a method (getErrorList()) on the return type of the method invoked.</p>
+
+<p>I still cant understand why throwing exceptions is not a good habit? Anyone will help me</p>
+<p class="posted"><span class="ltcaption1">Posted by: javakishore  on October 07, 2003 at 11:43 AM</span></p>
+</div>
+</li>
+</ul>
+<ul>
+<li>
+<a name="1128"></a>
+<div id="c1128">
+<p>Design For Exceptions<br />
+Who ever told you that is mistaken.  Languages without exceptions, like C, usually indicate errors with return codes, which must be checked after calling each and every method.  But checking error codes is tedious and painful, and developers get lazy and cocky ("I KNOW this call won't fail"), so they leave out error checking.  And then things go break, and you can't track down where in the code things went wrong.</p>
+
+<p>Exceptions are a giant step forward for error detection and handling.  Rather than check for errors after every method call (as in C and your project), you can write a series of method calls you expect to run successfully ("The One True Path") in a try block, and place your exception handling code in the catch block.  And where its not appropriate to handle an exception in a method, you can simply not catch it, and let it "bubble-up" to the calling method, who can then handle it as appropriate.</p>
+
+<p>I'd be interested in hearing the reasons you were given that throwing exceptions are a bad habit.  I suspect that your mentor read once that exceptions can be overused to represent non exceptional conditions (this is true, and should be avoided), and took it to the illogical extreme, and so believes that exceptions should NEVER be used.  Your mentor is wrong, and is setting the develoment team's coding practices back a decade.</p>
+
+<p>It seems you already suspect that exceptions aren't really such a bad habit after all.  If you need more convincing, ask yourself (and your team) these questions:  Are you REALLY calling isErrorOccured() after every method you call?  Do you find doing so tedious?  When isErrorOccured() returns true, how is your application supposed to respond?  I suspect you'll find that you're not doing yourself any favors by following this misguided advice.</p>
+<p class="posted"><span class="ltcaption1">Posted by: jimothy  on October 07, 2003 at 01:24 PM</span></p>
+</div>
+</li>
+</ul>
+<ul>
+<li>
+<a name="1134"></a>
+<div id="c1134">
+<p>Design For Exceptions<br />
+jimothy's advice is spot-on. You've got code that would look like this:</p>
+
+<p></p>
+
+<p>ErrorVaule errorValue = yourMethod();</p>
+
+<p>if(errorValue.didErrorHappen()<br />
+{<br />
+    List errorList = errorValue.getErrorList();<br />
+    doSomething(errorList);<br />
+}</p>
+
+<p></p>
+
+<p>With exceptions, it'd look like this:</p>
+
+<p></p>
+
+<p>try<br />
+{<br />
+    yourMethod();<br />
+}<br />
+catch(YourException ye)<br />
+{<br />
+    doSomething(ye.getErrorList());<br />
+}</p>
+
+<p></p>
+
+<p>So basically someone has told you to use return codes to replace what exceptions do for you. </p>
+
+<p>What do you do when you want a method to return something? How unnatural does it feel?</p>
+
+<p>To be fair, you are miles ahead of projects with no thoughts about what to do when things go wrong.</p>
+
+<p>Dave</p>
+<p class="posted"><span class="ltcaption1">Posted by: dwalend  on October 07, 2003 at 06:42 PM</span></p>
+</div>
+</li>
+</ul>
+<ul>
+<li>
+<a name="1135"></a>
+<div id="c1135">
+<p>Design For Exceptions<br />
+I read that Exceptions are to be used to handle exceptional conditions.  Throwing an exception is a perfomance hit.  </p>
+
+<p>If the code expects certain situations or results those should be coded for, not handled with the exception mechanism.</p>
+
+<p>If this is not true or not really applicable in many situations, what is the real explanation?</p>
+<p class="posted"><span class="ltcaption1">Posted by: jbetancourt  on October 07, 2003 at 06:47 PM</span></p>
+</div>
+</li>
+</ul>
+<ul>
+<li>
+<a name="1136"></a>
+<div id="c1136">
+<p>Finding the exceptions...<br />
+jimothy, ba22a,</p>
+
+<p>I usually lean on the compiler to let me know what exceptions I need to worry about. RuntimeExceptions are hidden; I'm lucky to find them in the javadoc of a method. That is, if I think to look. </p>
+
+<p>Do you know good way of discovering that a method in a .jar might throw a RuntimeException?</p>
+
+<p>When you're creating the method, how do you tell if you're in a RuntimeException case ("Something went wrong I don't know how to fix") or a checked Exception case ("Something went wrong you might know how to fix in a catch clause")?  </p>
+
+<p>I generally give the next programmer down the line the benefit of the doubt, and give him a checked Exception. I try to save RuntimeExceptions for "Something terrible happened. Send me a bug report."</p>
+
+<p>Dave<br />
+</p>
+<p class="posted"><span class="ltcaption1">Posted by: dwalend  on October 07, 2003 at 06:55 PM</span></p>
+</div>
+</li>
+</ul>
+<ul>
+<li>
+<a name="1137"></a>
+<div id="c1137">
+<p>Performance Hit of Exceptions<br />
+jbetancourt,</p>
+
+<p>Entering a try{} block is about the same as entering an if(){} block. Throwing an exception is just a little more expensive than a jump point in C. The big hit is constructing the Exception, a new Object, usually with a new String inside it, and (high on the stack) logging the Exception in the catch clause (lots more Strings). </p>
+
+<p>If you're code has several likely branches that it'll follow, then coding those branches in if() or switch blocks makes sense. If it's got "one true path," exception handling makes your code much easier to read. I usually use if() checks to discover when to add "throw" statements. If nothing is wrong, I never create or throw the Exception.</p>
+
+<p>Throwing an exception makes the contract for the method much easier to write; the contract ends with "... or it has no effect on system state and throws YourException."</p>
+
+<p>Your flow of control entering catch blocks should be... um.. exceptional. Once things start breaking, performace is usually less important than fixing the problem or at least recording it so it can be fixed later. </p>
+
+<p>Hope that helps,</p>
+
+<p>Dave</p>
+<p class="posted"><span class="ltcaption1">Posted by: dwalend  on October 07, 2003 at 07:13 PM</span></p>
+</div>
+</li>
+</ul>
+<ul>
+<li>
+<a name="1140"></a>
+<div id="c1140">
+<p>Finding the exceptions...<br />
+Dave - </p>
+
+<p>"Do you know good way of discovering that a method in a .jar might throw a RuntimeException?" </p>
+
+<p>The answer is obvious if you think about it - you should /always/ expect them to throw a RuntimeException. <br />
+Think about NullPointerException, or ConcurrentModificationException. These get thrown from code when you least expect it. However you can also javadoc runtime exceptions, even if they're not in the throws clause (look at the documentation of Method.invoke()). </p>
+
+<p>The fact that RuntimeExceptions can and do happen all over the place speaks volumes about the lack of value of a checked exception that simply reports failure. Since the developer should be already be choosing to handle RuntimeExceptions (or not) - because they always expect them - all the "failed" checked exception does is force them to add a second catch clause.</p>
+
+<p>"When you're creating the method, how do you tell if you're in a RuntimeException case" </p>
+
+<p>It's a judgment call, I'll admit. However, it is easier to spot some things that should be checked exceptions, when there is some behaviour expected of the client when you throw it. I mentioned the servlet UAE before, there are other equally obvious examples: InvocationTargetException - "unwrap me!", InterruptedException - "wake up!", PropertyVetoException - "don't do it!". </p>
+
+<p>It's not entirely guesswork though. When you add an exception to a throws clause you are (usually) writing code for some client  to use - code also written by yourself, as a test harness or a real application. The question you have to answer is, does your own client code ever need to know the difference between exception A and exception B? If the answer is yes, it may need a checked exception. If the answer is no, use a runtime exception.</p>
+
+<p>-Baz</p>
+
+<p>PS I freely admit that I don't have all the answers and rules like the ones I gave are made to be broken. The only reason we're arguing the point is because the point is arguable :)</p>
+<p class="posted"><span class="ltcaption1">Posted by: ba22a  on October 08, 2003 at 05:50 AM</span></p>
+</div>
+</li>
+</ul>
+<ul>
+<li>
+<a name="1142"></a>
+<div id="c1142">
+<p>Design For Exceptions<br />
+You're absolutely right that  exceptions are used to handle exceptional conditions, and that  there is overhead involved in throwing an exception.  I suspect the developers javakishore is working with heard the same thing, and took this to mean that you should NEVER use exceptions (what I called in a previous post "the illogical extreme").</p>
+
+<p>Let me use an example to illustrate the difference between exceptional conditions and other "error" conditions.  Let's say you have a form (web based, Swing based, etc.) for a user to fill out, and some fields on this form are required.  If the user leaves a field blank, should you throw an exception?</p>
+
+<p>No, because this is not an exceptional condition; your program should expect that a user will enter invalid data or neglect to provide required information.  You can, and should, deal with these situations without throwing or catching an exception.</p>
+
+<p>Now, say you have a method, calculateShippingCharges() which is seperate from your UI code, and which is part of the "business logic" that processes the data that was collected from the form.  If the destination addess is null or invalid, it's perfectly reasonable and likely appropriate to throw an exception here (perhaps NullPointerException or a custom exception, InvalidAddressException).  Because calling calculateShippingCharges() with invalid data IS an exceptional condition.</p>
+
+<p>But this situation is handled best not with a try...catch structure, but to validate the user's input before calling calculateShippingCharges().  Error handling is not synonymous with exception handling; the latter is a subset of the former.</p>
+
+<p>To help remember this, use this rule of thumb:  Exceptions, and stack traces in particular, are excellent tools for developers, but are completely useless (and frightening) to the end user.  We've probably all used an application which presents an ugly stack trace on the screen when something goes wrong; heck, I'm guilty of writing such software myself.  But doing so hurts, not helps, the user experience.</p>
+<p class="posted"><span class="ltcaption1">Posted by: jimothy  on October 08, 2003 at 07:30 AM</span></p>
+</div>
+</li>
+</ul>
+<ul>
+<li>
+<a name="1143"></a>
+<div id="c1143">
+<p>Design For Exceptions<br />
+To add to Dave's points, exceptions become ever more convenient over error return codes when you call multiple methods, because you can place multiple dependent method calls in the same try block.  Error return codes don't scale well.  Instead of this:</p>
+
+<p>ErrorVaule errorValue = yourMethod();<br />
+if(errorValue.didErrorHappen()<br />
+{<br />
+    List errorList = errorValue.getErrorList();<br />
+    doSomething(errorList);<br />
+}<br />
+else<br />
+{<br />
+    //the first call was successful, so continue with<br />
+    //the second one<br />
+    errorValue = yourSecondMethod();<br />
+    if (errorValue.didErrorHappen())<br />
+    {<br />
+       List errorList = errorValue.getErrorList();<br />
+       doSomething(errorList);<br />
+    }<br />
+    else<br />
+    {<br />
+       //continue this pattern for your third, fourth, etc. methods<br />
+   }<br />
+}</p>
+
+<p>You can simply do this:</p>
+
+<p>try<br />
+{<br />
+   yourMethod();<br />
+   yourSecondMethod();<br />
+   yourThirdMethod();<br />
+   //etc....<br />
+}<br />
+catch (YourException e)<br />
+{<br />
+  //handle exception here<br />
+}<br />
+catch (YourOtherException e)<br />
+{<br />
+  //handle other exception type here<br />
+}</p>
+
+<p>If yourMethod() fails, yourSecondMethod() never gets called.  Or if yourSecondMethod() fails, yourThirdMethod() never gets called.  And this is exactly what you want, since yourSecondMethod() depends upon the success of yourMethod().  (When method calls are dependent on each other, and there is some way to recover from a failure, use separate try...catch blocks for increased granularity).</p>
+
+<p>Dealing with error return codes is so tedious and non-scaleable that eventually developers stop checking for every possible error.  And then things break and are hard to track down.  Contrast that with an exception, which is going to give you a stack trace of where the error occurred, and what calls lead up to it.</p>
+<p class="posted"><span class="ltcaption1">Posted by: jimothy  on October 08, 2003 at 07:47 AM</span></p>
+</div>
+</li>
+</ul>
+<ul>
+<li>
+<a name="1144"></a>
+<div id="c1144">
+<p>Finding the exceptions...<br />
+Maybe it comes down to this question:  how bulletproof do you need your code to be?</p>
+
+<p><br />
+realtime: your module better be able to handle almost any exception the base layers throw and be able to recover or your rocket is going to explode.   But most of us don't write code for avionics or pacemakers, but if we did we might have try/finally blocks everywhere.  Ada was designed for this.</p>
+
+<p>desktop apps:  some stuff is likely to go wrong.  The dog will chew the network wire, you'll walk out of the starbucks during an IM conversation.  This is what checked exceptions are for.   You'll want to recover, retry, etc....  These apps will also get NPE and OOMEs, but you can't reasonably expect to handle those, except at a highlevel try { ...} catch (Throwable t) { showError(t); }.  It just isn't worth the effort considering how likely these RuntimeExceptions will occur.  A failing of C/C++/C# is that they have only unchecked exception mechanisms.  C has return values and setjmp/longjmp, C++ has mostly unused (and unknown by many developers) unchecked exceptions, and C# suffers from the same problem.  </p>
+
+<p>scripting: lightweight coding for lightweight use,  almost no thinking goes into handling exception cases but it usually doesn't matter.  This essentially is using the highlevel exception catcher.  </p>
+
+<p>So, in my apps, I <br />
+ - use checked exceptions to alert me to likely problems.  IOException is a typical one.</p>
+
+<p> - if I can't intelligently handle it at the level I'm at, I send it one level up (possibly wrapped).  But I want to keep that checked exception around until I handle it.  </p>
+
+<p> - I handle it by retrying, recovering, or giving up, wrapping the exception in a unchecked exception and throwing it to a central handler.</p>
+
+<p>- all code which needs explicit closes uses a finally*</p>
+
+<p>Geez, I should create my own blog about this. :)</p>
+<p class="posted"><span class="ltcaption1">Posted by: jtr  on October 08, 2003 at 10:59 AM</span></p>
+</div>
+</li>
+</ul>
+<ul>
+<li>
+<a name="1150"></a>
+<div id="c1150">
+<p>The purpose of exceptions...<br />
+My gut for the two types of exceptions has always been a contract-style feel.  Runtime exceptions indicate that the caller has violated the contract calling the method (IllegalArgumentException, IllegalStateException) while a checked exception indicates the method could not fullfill the contract and return correct data (IOException, SQLException).</p>
+<p class="posted"><span class="ltcaption1">Posted by: jreed  on October 08, 2003 at 02:46 PM</span></p>
+</div>
+</li>
+</ul>
+<ul>
+<li>
+<a name="1151"></a>
+<div id="c1151">
+<p>The purpose of exceptions...<br />
+I like that...that's probably the best , and most easily followed, strategy that I've heard.  The other strategies, including ones that I've used myself, have "grey areas" where it seem you could go either way, but this one seems pretty clear-cut.</p>
+
+<p>I'm mentally collecting a list of "best practices" for exception handling, and I plan to eventually write them up.  I hope you don't mind if use your suggestion!</p>
+<p class="posted"><span class="ltcaption1">Posted by: jimothy  on October 08, 2003 at 04:26 PM</span></p>
+</div>
+</li>
+</ul>
+<ul>
+<li>
+<a name="1153"></a>
+<div id="c1153">
+<p>More Talkback<br />
+Thanks for all the great talk-back. Wow. And from relative beginners to people with lots of experience and strong opinions. That's what java.net is for. Thanks especially to jimothy, for the great examples and for keeping the discussion going.</p>
+
+<p>I limited the scope of the blog to "I keep Exceptions in throws clauses specific," but we're covering a lot more ground. Which is great. Perhaps I should have written more.<br />
+</p>
+<p class="posted"><span class="ltcaption1">Posted by: dwalend  on October 08, 2003 at 08:16 PM</span></p>
+</div>
+</li>
+</ul>
+<ul>
+<li>
+<a name="1154"></a>
+<div id="c1154">
+<p>The purpose of exceptions...<br />
+jreed, I like your breakdown, too. However, I encounter lots of unintentional NullPointerExceptions (RuntimeExceptions) from sloppy code with poorly documented contracts. How big do you think the disconnect is between the Exceptions we throw and the ones we handle?<br />
+</p>
+<p class="posted"><span class="ltcaption1">Posted by: dwalend  on October 08, 2003 at 08:17 PM</span></p>
+</div>
+</li>
+</ul>
+<ul>
+<li>
+<a name="1155"></a>
+<div id="c1155">
+<p>RuntimeExceptions<br />
+jimothy, ba22a, jtr, one of the big challenges I have is that people keep using my code long after I've left the project and moved on. I've been remarkably bad at predicting how and where my code will be used. I think I can state the problem this way -- I don't want my code's expected use to determine the level of exception handling. </p>
+
+<p>ba22a is right-- we need to decide up front that we need to handle RuntimeExceptions. However, I think that RuntimeExceptions coming up from code indicate a bug in the code somewhere. (As opposed to checked Exceptions, which usually indicate a resource problem, and Errors, which indicate a problem with the JVM.) That seems true for most of the RuntimeExceptions in the standard API. But some of the Swing classes seem out of line with it. CannotUndoException seems like it should be checked. (Or do Swing programmers just disable undo instead?)</p>
+<p class="posted"><span class="ltcaption1">Posted by: dwalend  on October 08, 2003 at 08:19 PM</span></p>
+</div>
+</li>
+</ul>
+<ul>
+<li>
+<a name="1159"></a>
+<div id="c1159">
+<p>Performance Hit of Exceptions<br />
+Thanks for the replies.  I agree with the comments.  And is what I tell others.</p>
+
+<p>However, I have the suspicion that Exceptions are overused and just may illustrate lazy programming; or its just vague writings on the subject.</p>
+
+<p>For example, whether a file exists or not is not an exception, but interruption of I/O streaming is.  Yet, I have seen the former being handled wth a throw.    Sure, exception use simplifies code but then I think that people who write on this subject be more precise in what they mean.   </p>
+
+<p>Further, if its simplification of control structures that are desired, then that should be addressed directly.  For example, Eiffel added Design-by-contract stuff to the language.  Now that is clean.</p>
+<p class="posted"><span class="ltcaption1">Posted by: jbetancourt  on October 09, 2003 at 06:30 AM</span></p>
+</div>
+</li>
+</ul>
+<ul>
+<li>
+<a name="1160"></a>
+<div id="c1160">
+<p>FileNotFoundException<br />
+You raise some interesting points, and provide another good example of when it is appropriate to use exceptions, and when other methods of error handling are appropriate.</p>
+
+<p>If you are right an application that asks the user for the name of a file, and then performs some operation on that file, you could deal with missing files in two ways:  First, you could just attempt to perform the operation, catch FileNotFoundException, and report to the user that the file does not exist.  Or, you could check whether the file exists BEFORE trying to perform the operation, and inform the user of the problem then.  The latter would be a better approach, since your identifying the problem closer to the source, and at a time when there's an appropriate way to inform the user.</p>
+
+<p>On the other hand, when you write the class and methods that actually perform the operation, throwing a FileNotFoundException is probably the appropriate thing to do.  If instead you were to check for the existence of the file and if it does not exist, return normally without doing anything, the client code mentioned earlier has no way of knowing that something went wrong.  If you pop-up a dialog at this point, you're tying your application logic to your user interface.  That same file processor could not be used in a web application or a batch process.</p>
+
+<p>And calling your file processor with a non-existent file IS a violation of the class or method contract, so an exception is appropriate here.  The client code should verify that its part of the contract is fullfilled before calling the file processor, but the file processor should go ahead and throw an exception is that contract is violated.</p>
+
+<p>I agree that writings to date on exceptions have been rather vague, and I'd say that exception handling is probably one of the most misunderstood aspects of Java, even among some very experienced developers I have worked with.  I've been meaning to write on this subject myself, and the blogs and comments on Java.net have given me some excellent ideas (and motivation).  The discussion of contracts has been especially insightful.  Thanks everyone, and sorry, David, if I've hijacked your blog!</p>
+<p class="posted"><span class="ltcaption1">Posted by: jimothy  on October 09, 2003 at 07:26 AM</span></p>
+</div>
+</li>
+</ul>
+<ul>
+<li>
+<a name="1167"></a>
+<div id="c1167">
+<p>FileNotFoundException<br />
+Your response has instigated a glimmer of thought in my humble noodle.  </p>
+
+<p>Perhaps, the degree of exception throwing is based on the tier, level, or componentness, of something.   But, since you don't know beforehand (sometimes) what that is, the try catch finally stuff is the safest way to go.</p>
+
+<p></p>
+
+<p><br />
+</p>
+<p class="posted"><span class="ltcaption1">Posted by: jbetancourt  on October 09, 2003 at 11:29 AM</span></p>
+</div>
+</li>
+</ul>
+<ul>
+<li>
+<a name="1172"></a>
+<div id="c1172">
+<p>FileNotFoundException<br />
+I'm glad you're all having fun and getting something out of the blog. I hadn't predicted it. The whole point of java.net is to get us to have this sort of conversation. Keep going. Jimothy. If you want to drive the conversation, that's great. I only get to check in about once a day and things have been moving faster.</p>
+
+<p>Have fun,</p>
+
+<p>Dave</p>
+<p class="posted"><span class="ltcaption1">Posted by: dwalend  on October 09, 2003 at 07:43 PM</span></p>
+</div>
+</li>
+</ul>
+<ul>
+<li>
+<a name="1173"></a>
+<div id="c1173">
+<p>FileNotFoundException<br />
+jbetancourt, do you think there's some way of putting it more tightly than "conservative pragmatism" on the Exception handling side, and "following a contract" on the throwing side?  Or does that say enought?<br />
+</p>
+<p class="posted"><span class="ltcaption1">Posted by: dwalend  on October 09, 2003 at 07:47 PM</span></p>
+</div>
+</li>
+</ul>
+<ul>
+<li>
+<a name="1611"></a>
+<div id="c1611">
+<p>FileNotFoundException<br />
+Hmmm.  I think that is on the right track.   The throwing side is pretty good.  But, the handling side 'must' react to the contract, so there is no real choice in the matter, unless one treats exception handling as the game 'hot potatoes' (which newbies and old, certainly do).</p>
+
+<p>I think we can coin a useful 'phrase' that addresses both sides, perhaps from the realm of the legal profession?   I can't think of any (I've yet to see one of those crime dramas on T.V).</p>
+<p class="posted"><span class="ltcaption1">Posted by: jbetancourt  on November 30, 2003 at 08:24 AM</span></p>
+</div>
+</li>
+</ul>
+<ul>
+<li>
+<a name="1756"></a>
+<div id="c1756">
+<p>Thinking alike<br />
+Hi, Dave.  Just stumbled across your article here.  Not surprisingly it reads very much like mine over here.</p>
+
+<p>Cheers,<br />
+Laird</p>
+<p class="posted"><span class="ltcaption1">Posted by: ljnelson  on December 17, 2003 at 01:09 PM</span></p>
+</div>
+</li>
+</ul>
+
+
+<br /><br />
+
+
+
+
+<br />
+
+<div class="footer" align="right">This work is licensed under a
+<a href="http://creativecommons.org/licenses/by-nc-sa/2.0/">Creative Commons License</a>.<br />
+<a href="http://creativecommons.org/licenses/by-nc-sa/2.0/"><img src="http://creativecommons.org/images/public/somerights.gif" alt="Creative Commons License" border="0" height="31" width="88" hspace="2" vspace="2" /></a>
+</div>
+
+
+<br />
+<div id="powered" align="right">
+<b>Powered by</b><br />
+<a href="http://www.movabletype.org">Movable Type 3.01D</a><br />    
+</div>
+
+
+
+</td></tr></table>
+
+<!--  BEGIN VNV5 FOOTER   -->
+<!--  BEGIN VNV5 FOOTER   -->
+<table border="0" cellpadding="0" cellspacing="10" width="100%">
+<tr>
+<td>
+&nbsp;<a href="http://today.java.net/pub/q/java_net_rss"><img src="/images/icons/feed.png" border="0" width="16" height="16" alt="Feed" align="absmiddle"></a>&nbsp;<a href="http://today.java.net/pub/q/java_net_rss">java.net RSS Feeds</a><br />
+<div class="grayline"></div>
+<table border="0" cellpadding="0" cellspacing="0" width="100%" class="vatop">
+<tr>
+<td><img src="/im/a.gif" width="190" height="1" border="0" alt=" " /><br />
+<a href="http://www.sun.com"><img src="/im/logo_sun_small.gif" width="61" height="29" border="0" alt=" " vspace="5"/></a></td>
+<td width="60%" valign="top">
+<div class="footer">
+
+<!--  Start Quantcast tag  -->
+<script type="text/javascript" src="http://edge.quantserve.com/quant.js"></script>
+<script type="text/javascript">
+_qacct="p-20l78bOOCbhcg";quantserve();</script>
+<noscript>
+<img src="http://pixel.quantserve.com/pixel/p-20l78bOOCbhcg.gif" style="display: none" height="1" width="1" alt="Quantcast"/></noscript>
+<!--  End Quantcast tag  -->
+
+<a href="https://java-net.dev.java.net/feedback.html">Feedback</a> &nbsp;|&nbsp;<a href="http://java.net/faq.csp">FAQ</a> &nbsp;|&nbsp;<a href="http://java.net/presscenter/">Press</a>&nbsp;|&nbsp;<a href="http://java.net/terms.csp">Terms of Use</a><br />
+<a href="http://www.sun.com/privacy/">Privacy</a> &nbsp;|&nbsp;
+<a href="http://www.sun.com/suntrademarks/">Trademarks</a>&nbsp;|&nbsp;<a href="https://java-net.dev.java.net/sitemap.html">Site Map</a>
+<br /><span class="sp5">&nbsp;</span><br />
+Your use of this web site or any of its content or software indicates your agreement to be bound by these <a href="http://java.net/terms.csp">Terms of Participation</a>.<br />
+<span class="sp5">&nbsp;</span><br />
+Copyright &copy; 1995-2008 Sun Microsystems, Inc.
+</div></td>
+<td width="40%" valign="top" align="right"><div class="footer">
+<a href="http://www.oreilly.com"><img src="/images/montague_logo_oreilly.gif" width="74" height="19" border="0" alt="Oreilly Logo"></a><a href="http://www.collab.net/"><img src="/images/montague_logo_collabnet.gif" width="85" height="19" border="0" alt="Collabnet Logo"></a><br>
+Powered by Sun Microsystems, Inc.,<br /> O'Reilly and CollabNet
+</div></td></tr>
+<!--  <tr><td colspan="3" valign="top" class="grey3"><img src="/im/a.gif" width="1" height="2" border="0" alt=" " /></td></tr>  -->
+</table>
+<div class="grayline"></div>
+</td></tr>
+</table>
+<!--  END VNV5 FOOTER  -->
+
+<!--  Begin SiteCatalyst code  -->
+<script language="JavaScript" src="http://www.java.net/s_code_remote.js"></script>
+<!--  End SiteCatalyst code  -->
+
+
+</body>
+</html>

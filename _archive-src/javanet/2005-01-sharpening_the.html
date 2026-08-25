@@ -1,0 +1,462 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="http://www.movabletype.org/" />
+
+<title>David Walend's Blog: Sharpening the Axe or Shaving the Yaks?</title>
+
+<link rel="stylesheet" href="http://weblogs.java.net/blog/styles-site.css" type="text/css" />
+<link rel="stylesheet" href="http://www.java.net/css/main.css" type="text/css">
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://weblogs.java.net/blog/dwalend/index.rdf" />
+<link rel="alternate" type="application/atom+xml" title="Atom" href="http://weblogs.java.net/blog/dwalend/atom.xml" />
+
+<link rel="start" href="http://weblogs.java.net/blog/dwalend/" title="Home" />
+<link rel="prev" href="http://weblogs.java.net/blog/dwalend/archive/2005/01/did_i_miss_gene.html" title="Did I Miss Generic Array Creation?" />
+
+<link rel="next" href="http://weblogs.java.net/blog/dwalend/archive/2005/03/better_javadoc.html" title="Better JavaDoc on http://java.net" />
+
+
+
+
+
+<!--  Begin SiteCatalyst code  -->
+<script language="JavaScript">
+<!--
+var s_channel="David Walend's Blog";
+//--></script>
+<!--  End SiteCatalyst code  -->
+
+</head>
+
+<body>
+
+<!--  Masthead  -->
+<div class="topline">
+<div class="topbar">
+<table border="0" cellpadding="0" cellspacing="0" width="100%" height="25">
+<tr>
+<td width="100%" rowspan="2"><a href="http://www.java.net"><img src="/images/header_jnet_new.jpg" width="500" height="60" border="0" alt="The Source for Java Technology Collaboration"></a></td>
+ <td nowrap="nowrap" style="vertical-align:middle">
+ <div id="login">
+ 
+  <form name="loginform" id="loginform" action="https://www.dev.java.net/servlets/TLogin" method="post">
+  <input type="hidden" name="redir" value="http://weblogs.java.net/blog/dwalend/archive/2005/01/sharpening_the.html">
+  <div>
+  <strong>User:</strong>
+   <input type="text" name="loginID" id="loginID" value="" size="7" maxlength="32" />
+   <strong>Password:</strong>
+
+   <input type="password" name="password" id="password" value="" size="7" maxlength="32" />
+   <input type="submit" name="Login" class="buttonred" id="Button" value="Login" /> </div>
+  <div class="small" align="right"><strong> <a href="https://www.dev.java.net/servlets/Join">Register</a>  | <a href="https://www.dev.java.net/servlets/TLogin">Login help</a>   &nbsp;&nbsp;&nbsp;</strong></div> 
+</form>
+ 
+</div>
+</td> 
+</tr>
+</table>
+</div>
+
+<!--  Tabs  -->
+
+
+<noindex>
+<div class="tabs" id="toptabs">
+<table cellspacing=0 cellpadding=4 border=0>
+<tbody>
+<tr>
+<td><a href="https://www.dev.java.net/servlets/StartPage">My       pages</a> </td>
+<td><a       href="http://community.java.net/projects/">Projects</a></td>
+<td><a href="http://community.java.net">Communities</a>   </td>
+<th><a href="http://www.java.net">java.net</a></th>
+</tr></tbody></table></div>
+</noindex>
+
+
+
+<table id="main" cellspacing="2" cellpadding="2" width="100%" border="0">
+  <tbody>
+  <tr valign=top>
+    <td id="leftcol" width="150" rowspan="2">
+	<img src="http://today.java.net/im/a.gif" width="150" height="1"><br />
+<div id="navcolumn">
+<!--   COMMUNITY LINKS   -->
+<noindex>
+<div class="toolgroup" id="communitylinks">
+<div class="label"><strong>Get Involved</strong></div>
+<div class="body">
+<div><a href="https://java-net.dev.java.net/">java-net Project</a></div>
+<div><a href="http://www.java.net/request_project.csp">Request a Project</a></div>
+<div><a href="http://community.java.net/help_wanted/">Project&nbsp;Help&nbsp;Wanted&nbsp;Ads</a></div>
+<div><a href="http://community.java.net/projects/publicize.csp">Publicize your Project</a></div>
+<!-- <div><a href="#">Success Stories</a></div>  -->
+<div><a href="http://today.java.net/cs/user/create/bl">Submit Content</a></div>
+<div><script language="JavaScript" type="text/javascript">
+<!--
+var name = "spamreport";
+var domain = "admin.dev.java.net";
+var display = "Report Inappropriate Content";
+var subject = "";
+var ending = "";
+var style = "";
+document.write('<a class="' + style + '" href="mailto:' + name + '&#64;' + domain + '?subject=' + subject + '">');
+if (display) {
+ document.write(display);
+} else {
+ document.write(name + '&#64;' + domain);
+}
+document.write('</a>' + ending);
+document.write('<!-- mailmunge bit -->');
+// -->
+</script>
+</div>
+</div>
+</div>
+
+<div class="toolgroup" id="communitylinks">
+<div class="label"><strong>Get Informed</strong></div>
+<div class="body">
+<div><a href="http://www.java.net/about.csp">About java.net</a></div>
+<div><a href="http://today.java.net/pub/q/articles">Articles</a></div>
+<div><a href="http://weblogs.java.net/">Blogs</a></div>
+<div><a href="http://www.java.net/events">Events</a></div>
+<div><a href="http://today.java.net/today/alsotoday.csp">Also in Java Today</a></div>
+<div><a href="http://safari.java.net">java.net Online Books</a></div>
+<div><a href="http://today.java.net/today/archive/">java.net Archives</a></div>
+</div>
+</div>
+
+<div class="toolgroup" id="communitylinks">
+<div class="label"><strong>Get Connected</strong></div>
+<div class="body">
+<div><a href="http://forums.java.net">java.net Forums</a></div>
+<div><a href="http://wiki.java.net/">Wiki</a> and <a href="http://wiki.java.net/bin/view/Javapedia/WebHome">Javapedia</a></div>
+<div><a href="http://wiki.java.net/bin/view/People/WebHome">People</a>, <a href="http://partners.java.net">Partners</a>, and <a href="http://wiki.java.net/bin/view/Javanet/JobsWiki">Jobs</a> </div>
+<div><a href="http://community.java.net/jugs/listing.csp">Java User Groups</a></div>
+<div><!--  <a href="https://java-net.dev.java.net/servlets/ProjectMailingListList">Newsletters</a> and  --><a href="http://today.java.net/pub/q/rsschannels">RSS Feeds</a></div>
+</div>
+</div>
+
+<div class="toolgroup" id="communitylinks">
+<div class="label"><b>Search</b></div>
+<div class="body">
+<form action="http://www.java.net/search_results.csp" id="cse-search-box">
+<div>Web and Projects:</div>
+<div><input type="text" name="q" class="medium" size="14" />
+<input type="hidden" name="cx" value="011656849246290948379:pdvwpzpb2di" />
+<input type="hidden" name="cof" value="FORID:9" />
+<input type="hidden" name="ie" value="UTF-8" />
+<input class="buttonred"  type="submit" name="sa" value=" &raquo;">
+</div>
+</form>
+<script type="text/javascript" src="http://www.google.com/coop/cse/brand?form=cse-search-box&lang=en"></script>
+
+<div>Online Books:</div>
+<form action="http://safari.java.net/search" method="post" name="searchForm" id="form_searchForm">
+<input name="__formName" value="searchForm" type="hidden" />
+<input value="simple" name="searchmode" id="searchmode" type="hidden" />
+<input value="0" name="page" id="page" type="hidden" />
+<input value="summary" name="searchview" id="searchview" type="hidden" />
+<input value="rank" name="sort" id="sort" type="hidden" />
+<input value="desc" name="order" id="order" type="hidden" />
+<input value="1" name="NewSearch" id="NewSearch" type="hidden" />
+<div>
+<input name="searchtextbox" id="searchtextbox" type="text" value="" class="medium" size="14" />
+<input class="buttonred" value=" &raquo; " border="0" type="submit"></div>
+</form>
+
+<div>java.net on <a href="http://markmail.org/">MarkMail</a>:</div>
+<form action="http://markmail.org/search/list:net.java">
+<div><input name="q" id="searchtextbox" type="text" value="" class="medium" size="14" />
+<input class="buttonred" value=" &raquo; " border="0" type="submit"></div>
+</form>
+
+<div><a href="http://www.java.net/search.csp">Advanced Search</a></div>
+</div>
+</div>
+</noindex>
+
+</div>
+<br />
+</td>
+<td height="3" colspan="2"><img src="http://today.java.net/images/a.gif" width="1" height="3"><br /></td>
+</tr>
+<tr> 
+<td width="10"><img src="http://today.java.net/images/a.gif" width="10" height="1"></td>
+<td width="100%" valign="top">
+
+
+
+
+<div class="link-note">
+<a href="http://weblogs.java.net/blog/dwalend/index.rdf"><img src="http://www.java.net/images/icons/feed.png" width="16" height="16" vspace="4" hspace="10" border="0" alt="Syndicate this blog (XML)" align="right" /></a><br />
+</div>
+
+
+
+<img src="/images/people/david_walend.jpg" border="0" height="68" width="99" alt="David Walend" align="left" vspace="3" hspace="6" />
+
+
+
+
+<h2><a href="http://weblogs.java.net/blog/dwalend/">David Walend's Blog</a></h2>
+
+<div class="small" align="right">
+<a href="http://weblogs.java.net/blog/dwalend/archive/2005/01/did_i_miss_gene.html">&laquo;Did I Miss Generic Array Creation?</a> |
+
+<a href="http://weblogs.java.net/blog/dwalend/">Main</a>
+| <a href="http://weblogs.java.net/blog/dwalend/archive/2005/03/better_javadoc.html">Better JavaDoc on http://java.net &raquo;</a>
+
+</div>
+
+<div class="grayline"></div>
+
+<h3>Sharpening the Axe or Shaving the Yaks?</h3>
+
+<span class="ltcaption1">Posted by <b>dwalend</b> on January 22, 2005 at 09:37 AM</a> | <a href="http://weblogs.java.net/blog/dwalend/archive/2005/01/sharpening_the.html#comments">Comments (8)</a>
+
+</span>
+
+<br /><br />
+
+I've got this great new project at work right now. The deadlines are very gentle and the boundaries are very vague. I am to "make the department's job [experimental planning systems research] easier" and I need to be done by September. I've started puzzling through what people in our group need by asking them questions and filling in a spreadsheet (more a letter to Santa), adding columns for my own thoughts, and sieving for things that look like real goals. 
+<p>
+And I started thinking through what sorts of tools might fit the problem well. Since we don't know what sorts of data structures we'll need, but do need to manage a lot of data early, XML:DB and xml binding technology looks like a good fit. JaxB 2.0 isn't ready, XStream comes close to doing what I want, XPath 2.0 isn't available yet, etc. I'm considering asking for time at work to pour into open source efforts. And I can switch the project to JDK 5, and swap out the source code control system to Subversion, and pretty print the whole works while I'm moving things around.
+<p>
+I took a break to discuss these ideas with a respected colleague. He said, "Be careful. You're talking about shaving a lot of yaks."
+<p>
+Yak shaving is what James Gosling is worried about in this <a href="http://weblogs.java.net/jag/page13.html#106">blog</a>:
+<p>
+"But for me, the big problem with "axe sharpening" is that it's recursive, in a Xeno's paradox kinda way ... to sharpen the axe, you need a sharpening stone. ... But to get there, you need to build a dog sled...."
+<p>
+But to use a dog sled I need snow, so I need to go to town to get a snow cone machine. I grab my trusty yak to help you haul the machine from town. But it'll be summer before I get to town, and I don't want the yak to get to hot, so I shave the yak. In mid February, I proudly lead my shining, bald, shivering yak into my quarterly progress review...
+<p>
+Yak shaving is downloading an old JDK and rearranging an open source project's code to run inside of Eclipse's debugger to fix a problem of automatically generating ant build.xml files to build a searchable version of your source code to help find cut-and-paste sections of code with a thready bug. When you need to upgrade your linux to get a new glibc, you should smell fresh Essence du Yurt aftershave. 
+<p>
+It's yak shaving when the people you work for have no hope of fathoming what you're doing. Sharpening an axe is fine; someone asked you to chop down trees, so explaining that you need a good sharp axe is easy. When they catch you shaving the yak, they get mad and you get embarrassed. Yak shaving is something to avoid, and something I think I'm wandering towards. 
+<p>
+Now for some technical content: Has anyone out there used a nice, well-heeled XML-database subsystem? How do things like Xindice and Xstream play with each other? Any way to make an XML database aware of java inheritance without waiting for XPath 2.0? Or is there a better general way to take on this sort of problem without "X" anywhere?
+<p>
+Meanwhile, my yak is looking a little stubbly. I better lather him up.
+
+<div id="a001960more"><div id="more">
+
+</div></div>
+
+<br />
+Bookmark blog post: <a href="http://del.icio.us/post?title=Sharpening the Axe or Shaving the Yaks?&amp;url=http://weblogs.java.net/blog/dwalend/archive/2005/01/sharpening_the.html"><img src="/images/icons/delicious.gif" alt="del.icio.us" border="0" height="16" hspace="8" vspace="1" width="16" /></a> <a href="http://del.icio.us/post?title=Sharpening the Axe or Shaving the Yaks?&amp;url=http://weblogs.java.net/blog/dwalend/archive/2005/01/sharpening_the.html">del.icio.us</a> <a href="http://digg.com/submit?phase=2&amp;title=Sharpening the Axe or Shaving the Yaks?"><img src="/images/icons/digg.gif" alt="Digg" border="0" height="14" hspace="8" width="16" /></a> <a href="http://digg.com/submit?phase=2&amp;title=Sharpening the Axe or Shaving the Yaks?&amp;url=http://weblogs.java.net/blog/dwalend/archive/2005/01/sharpening_the.html">Digg</a> <a href="http://www.dzone.com/links/add.html?url=http://weblogs.java.net/blog/dwalend/archive/2005/01/sharpening_the.html&amp;title=Sharpening the Axe or Shaving the Yaks?"><img src="/images/icons/dzone.gif" alt="DZone" border="0" height="16" hspace="8" width="16" /></a> <a href="http://www.dzone.com/links/add.html?url=http://weblogs.java.net/blog/dwalend/archive/2005/01/sharpening_the.html&amp;title=Sharpening the Axe or Shaving the Yaks?">DZone</a> <a href="http://www.furl.net/storeIt.jsp?t=Sharpening the Axe or Shaving the Yaks?&amp;u=http://weblogs.java.net/blog/dwalend/archive/2005/01/sharpening_the.html"><img src="/images/icons/furl.gif" alt="Furl" border="0" height="17" hspace="8" width="16" /></a> <a href="http://www.furl.net/storeIt.jsp?t=Sharpening the Axe or Shaving the Yaks?&amp;u=http://weblogs.java.net/blog/dwalend/archive/2005/01/sharpening_the.html">Furl</a>  <a href="http://reddit.com/submit?title=Sharpening the Axe or Shaving the Yaks?&amp;url=http://weblogs.java.net/blog/dwalend/archive/2005/01/sharpening_the.html"><img src="/images/icons/reddit.gif" alt="Reddit" border="0" height="18" hspace="8" width="18" /></a> <a href="http://reddit.com/submit?title=Sharpening the Axe or Shaving the Yaks?&amp;url=http://weblogs.java.net/blog/dwalend/archive/2005/01/sharpening_the.html">Reddit</a>
+<br />
+<div class="grayline"></div>
+
+<a name="comments"></a>
+<h5>Comments</h5>
+<span class="small">Comments are listed in date ascending order (oldest first) | <a href="#post">Post Comment</a></span>
+<br /><br />
+
+<ul>
+<li>
+<a name="6154"></a>
+<div id="c6154">
+<p>The balding yak stuff is quite distracting.   I thought I'd recommend you take a look at XMLBeans as an alternative to JAXB.  It's stable, and it rocks.   If you want to take a risk and use XPath 2.0 (I doubt it's a big risk), take a look at Saxon for a great implementation.</p>
+<p class="posted"><span class="ltcaption1">Posted by: jonmountjoy  on January 23, 2005 at 02:56 AM</span></p>
+</div>
+</li>
+</ul>
+<ul>
+<li>
+<a name="6155"></a>
+<div id="c6155">
+<p>Hi Jon,</p>
+
+<p>XMLBeans was a good suggestion. However, we found a few problems with it. </p>
+
+<p>First, it doesn't give us a way to preserve the reference graph beyond full containment and list order. We'd have to write some caching scheme that resolves any IDREFs. A small but shaggy yak.</p>
+
+<p>Second, I want to avoid having a separate layer of DAO all together if possible. We're going to be changing the data structures all the time (because we only have a vague idea of what we'll be doing with them). The team didn't have enough patience for a JaxB 1.0/.xsd approach and wants something better. "I'm building a data access object layer for XMLBeans" is not a great answer for, "How's the new scheduling algorithm coming?" Big fat hairy yak.</p>
+
+<p>The appeal of Xstream is that the team can work with the Java objects they prefer; the cost of mutating them is just breaking some test cases. (Might be able to fix that with xslt.) Scaling it up to handle interlinked xml documents in an xml:db would be some work, but looks straight forward.</p>
+
+<p>Saxon gives me XPath 2.0, but it's not integrated with anything. To use .xsd substitution groups to get inheritance in XPath, I need the 2.0 spec tied in with the persistence mechanism. Maybe needed. Definitely more work not in focused search algorithms.</p>
+
+<p>Thanks again,</p>
+
+<p>Dave<br />
+</p>
+<p class="posted"><span class="ltcaption1">Posted by: dwalend  on January 23, 2005 at 07:15 AM</span></p>
+</div>
+</li>
+</ul>
+<ul>
+<li>
+<a name="6156"></a>
+<div id="c6156">
+<p>If your goal is a persistence mechanism, then look to a persistence technology.  It's not clear why you need an XML database ... unless the data you will be manipulating is document-oriented to begin with.</p>
+
+<p>It seems as if you need a persistence mechanism that will let you start persisting things with only a minor amount of work - maybe even provide an abstraction that allows you to defer the question of which underlying database to use to a later date.</p>
+
+<p>Since you are already thinking XML, I will recommend a product first, and then justify why your investment in that product will not be mis-spent.  Take a look at Xcalia LiDO.  It is just one instance of a new class of products which provide persistence based on what have been termed 'plain old Java objects'.  I recommend Xcalia because they target XML databases, and I know them to produce decent software.</p>
+
+<p>Happily, your experience with Xcalia will give you experience with around twenty other products on the market which adhere to the Java Data Objects standard for transparent object persistence.  Your code will run un-modified (just some external mappings and factory-properties will change) even if you change database or JDO vendor</p>
+
+<p>Now the bulk of the JDO vendors (including Xcalia) target relational databases or object-databases.  And this is something you'll want to consider.  You seem to want to use XML for its low level of commitment to a given data-structure, but surely SQL is just as useful as XSL for evolvability that way?  It may be a pain stuffing an object graph into the relational paradigm, but it's an even bigger one sticking it into a hierarchical paradigm!  Not that you'll care much using JDO, except when you have to synch your already-persistent data with the latest rev of the object model ... and even then, most vendors provide tools that write the SQL (both initial and all updates) for you!</p>
+
+<p>Having been a user of JDO for over a year now, I can truly say that it helps you to forget about the persistence 'yak' and concentrate on the real problem at hand.  In the relational space I use MVCsoft's implementation, which has a nice homey fit (and price) for my needs as a solo developer.  For use in an enterprise situation (for example, where you farmed out the SQL mapping to someone who knew databases better than you), you might choose a bigger vendor.  Xcalia's market differentiation is that you can mix and match quite a range of persistence targets - not just relational databases.</p>
+
+<p>A good JDO resource is JDOCentral.</p>
+<p class="posted"><span class="ltcaption1">Posted by: dtbullock  on January 23, 2005 at 05:19 PM</span></p>
+</div>
+</li>
+</ul>
+<ul>
+<li>
+<a name="6159"></a>
+<div id="c6159">
+<p>Yak-shaving seems more of a displacement activity for someone without a real job to do.  A writer-in-residence who spends all day sharpening pencils is not the same as a lumberjack who takes a fews days off for tool honing.</p>
+<p class="posted"><span class="ltcaption1">Posted by: arae  on January 24, 2005 at 05:30 AM</span></p>
+</div>
+</li>
+</ul>
+<ul>
+<li>
+<a name="6161"></a>
+<div id="c6161">
+<p>arae,</p>
+
+<p>It's not so much that the job isn't real. It's more that the job is big and long term, and the would-be yak shaver has a free hand to decide how to do it. A writer-in-residence who spends a week learning to sing Russian folk songs when he's got a novel due in two years. Yak shaving seems to have something to do with explaining why you're doing what you're doing in the near term to reach a far term goal.</p>
+
+<p>dtbullock,</p>
+
+<p>Thanks for the pointer to Xcalia. I haven't got to pull out my JDO hammer in about two and a half years. JDO over XML is pretty close to what XStream gives me. (I'd point to my early, early FOSS JDO precursor, but some things are better left behind.)</p>
+
+<p>Dave</p>
+<p class="posted"><span class="ltcaption1">Posted by: dwalend  on January 24, 2005 at 07:25 AM</span></p>
+</div>
+</li>
+</ul>
+<ul>
+<li>
+<a name="6166"></a>
+<div id="c6166">
+<p>Since we don't know what sorts of data structures we'll need, but do need to manage a lot of data early, XML:DB and xml binding technology looks like a good fit.</p>
+
+<p>Have you thought of using Javaspaces, and throw your data structures in as Entries?</p>
+
+<p>--Calum</p>
+<p class="posted"><span class="ltcaption1">Posted by: calum  on January 25, 2005 at 05:40 AM</span></p>
+</div>
+</li>
+</ul>
+<ul>
+<li>
+<a name="6185"></a>
+<div id="c6185">
+<p>Yup, XStream will let you persist your entire object graph all at once.  JDO (more of a 'way' than a hammer, IMHO) would:</p>
+
+<p>  allow you to have only parts of your graph in memory at the one time<br />
+  provide a query language that fits naturally with a Java object model<br />
+  provide transactions should you need them</p>
+
+<p>You still haven't justified why XML deserves to be part of this picture?</p>
+<p class="posted"><span class="ltcaption1">Posted by: dtbullock  on January 27, 2005 at 08:36 PM</span></p>
+</div>
+</li>
+</ul>
+<ul>
+<li>
+<a name="6188"></a>
+<div id="c6188">
+<p>calum,</p>
+
+<p>Thanks for the suggestion. I'll have a look. We've talked about a blackboard-style system for keeping up with what's going on.</p>
+
+<p>dtbullock,</p>
+
+<p>Aha -- More details: XML's already in the picture. The inbound details and outbound details are XML. One of the receiving ends is a fairly limited device that already has to have core XML libraries on board, so a large part of the XML tax is already paid.</p>
+
+<p>It's got some benefits, too. Generating test cases and pretty pictures will be cheap. The management's bought in to it heavily to support long-term interroperability. etc. They'll see relational database technology as a yak. </p>
+
+<p>But you're right. The API and thought patterns I ultimately want to use line up well with JDO. I seem to fall back into the problem of a first class/second class object split no matter what.</p>
+
+<p>Thanks,</p>
+
+<p>Dave<br />
+</p>
+<p class="posted"><span class="ltcaption1">Posted by: dwalend  on January 28, 2005 at 08:54 AM</span></p>
+</div>
+</li>
+</ul>
+
+
+<br /><br />
+
+
+
+
+<br />
+
+<div class="footer" align="right">This work is licensed under a
+<a href="http://creativecommons.org/licenses/by-nc-sa/2.0/">Creative Commons License</a>.<br />
+<a href="http://creativecommons.org/licenses/by-nc-sa/2.0/"><img src="http://creativecommons.org/images/public/somerights.gif" alt="Creative Commons License" border="0" height="31" width="88" hspace="2" vspace="2" /></a>
+</div>
+
+
+<br />
+<div id="powered" align="right">
+<b>Powered by</b><br />
+<a href="http://www.movabletype.org">Movable Type 3.01D</a><br />    
+</div>
+
+
+
+</td></tr></table>
+
+<!--  BEGIN VNV5 FOOTER   -->
+<!--  BEGIN VNV5 FOOTER   -->
+<table border="0" cellpadding="0" cellspacing="10" width="100%">
+<tr>
+<td>
+&nbsp;<a href="http://today.java.net/pub/q/java_net_rss"><img src="/images/icons/feed.png" border="0" width="16" height="16" alt="Feed" align="absmiddle"></a>&nbsp;<a href="http://today.java.net/pub/q/java_net_rss">java.net RSS Feeds</a><br />
+<div class="grayline"></div>
+<table border="0" cellpadding="0" cellspacing="0" width="100%" class="vatop">
+<tr>
+<td><img src="/im/a.gif" width="190" height="1" border="0" alt=" " /><br />
+<a href="http://www.sun.com"><img src="/im/logo_sun_small.gif" width="61" height="29" border="0" alt=" " vspace="5"/></a></td>
+<td width="60%" valign="top">
+<div class="footer">
+
+<!--  Start Quantcast tag  -->
+<script type="text/javascript" src="http://edge.quantserve.com/quant.js"></script>
+<script type="text/javascript">
+_qacct="p-20l78bOOCbhcg";quantserve();</script>
+<noscript>
+<img src="http://pixel.quantserve.com/pixel/p-20l78bOOCbhcg.gif" style="display: none" height="1" width="1" alt="Quantcast"/></noscript>
+<!--  End Quantcast tag  -->
+
+<a href="https://java-net.dev.java.net/feedback.html">Feedback</a> &nbsp;|&nbsp;<a href="http://java.net/faq.csp">FAQ</a> &nbsp;|&nbsp;<a href="http://java.net/presscenter/">Press</a>&nbsp;|&nbsp;<a href="http://java.net/terms.csp">Terms of Use</a><br />
+<a href="http://www.sun.com/privacy/">Privacy</a> &nbsp;|&nbsp;
+<a href="http://www.sun.com/suntrademarks/">Trademarks</a>&nbsp;|&nbsp;<a href="https://java-net.dev.java.net/sitemap.html">Site Map</a>
+<br /><span class="sp5">&nbsp;</span><br />
+Your use of this web site or any of its content or software indicates your agreement to be bound by these <a href="http://java.net/terms.csp">Terms of Participation</a>.<br />
+<span class="sp5">&nbsp;</span><br />
+Copyright &copy; 1995-2008 Sun Microsystems, Inc.
+</div></td>
+<td width="40%" valign="top" align="right"><div class="footer">
+<a href="http://www.oreilly.com"><img src="/images/montague_logo_oreilly.gif" width="74" height="19" border="0" alt="Oreilly Logo"></a><a href="http://www.collab.net/"><img src="/images/montague_logo_collabnet.gif" width="85" height="19" border="0" alt="Collabnet Logo"></a><br>
+Powered by Sun Microsystems, Inc.,<br /> O'Reilly and CollabNet
+</div></td></tr>
+<!--  <tr><td colspan="3" valign="top" class="grey3"><img src="/im/a.gif" width="1" height="2" border="0" alt=" " /></td></tr>  -->
+</table>
+<div class="grayline"></div>
+</td></tr>
+</table>
+<!--  END VNV5 FOOTER  -->
+
+<!--  Begin SiteCatalyst code  -->
+<script language="JavaScript" src="http://www.java.net/s_code_remote.js"></script>
+<!--  End SiteCatalyst code  -->
+
+
+</body>
+</html>

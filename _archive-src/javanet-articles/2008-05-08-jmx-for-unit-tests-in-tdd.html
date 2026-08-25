@@ -1,0 +1,338 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" /> 
+<title>j1-2k8-mtW07: JMX for Unit Tests in Test-Driven Development | Java.net</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="alternate" type="application/atom+xml" title="Java.net Atom" href="/node/219878/atom/feed" />
+<meta name="description" content="Thu, 2008-05-08 David Walend" />
+<meta name="robots" content="index,follow" />
+<meta name="DC.title" content="j1-2k8-mtW07: JMX for Unit Tests in Test-Driven Development" />
+<link rel="shortcut icon" href="/misc/favicon.ico" type="image/x-icon" />
+<link type="text/css" rel="stylesheet" media="all" href="/sites/default/files/css/css_f1451140c8009921abb054588fbb33a2.css" />
+<!--[if IE]>
+<link rel="stylesheet" href="/sites/all/themes/java/ie.css" />
+<![endif]-->
+<link rel="shortcut icon" href="http://community.java.net/favicon.ico">
+<!--  Begin SiteCatalyst code  -->
+<script language="JavaScript">
+<!--
+var s_channel="article";
+//--></script>
+<!--  End SiteCatalyst code  -->
+</head>
+<body id="page-body" leftmargin="0" topmargin="0" rightmargin="0" bgcolor="#ffffff" marginheight="0" marginwidth="0">
+<a name="top"></a>
+<div class="topline">
+  <div class="topbar">
+    <table border="0" cellpadding="0" cellspacing="0" height="25" width="100%">
+      <tbody>
+        <tr>
+          <td rowspan="2" width="100%"><a href="http://www.java.net/"><img src="/images/header_jnet_new.jpg" alt="The Source for Java Technology Collaboration" border="0" height="60" width="500"></a></td>
+          <td style="vertical-align: middle;" nowrap="nowrap"><div id="login">
+          	              <form name="loginform" id="loginform" action="https://www.dev.java.net/servlets/TLogin" method="post">
+                <input name="redir" value="http://www.java.net/pub/a/today/2008/05/08/j1-2k8-mtW07.html" type="hidden">
+                <div> <strong>User:</strong>
+                  <input name="loginID" id="loginID" value="" size="7" maxlength="32" type="text">
+                  <strong>Password:</strong>
+                  <input name="password" id="password" value="" size="7" maxlength="32" type="password">
+                  <input name="Login" class="buttonred" id="Button" value="Login" type="submit">
+                </div>
+                <div class="small" align="right"><strong> <a href="https://www.dev.java.net/servlets/Join">Register</a> | <a href="https://www.dev.java.net/servlets/TLogin">Login help</a> &nbsp;&nbsp;&nbsp;</strong>
+						</div>
+              </form>
+            </div></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <noindex>
+    <div class="tabs" id="toptabs">
+      <table border="0" cellpadding="4" cellspacing="0">
+        <tbody>
+          <tr>
+            <!-- make the active tab a TH instead of TD -->
+            <td><a href="https://www.dev.java.net/servlets/StartPage">My pages</a> </td>
+            								<td><a href="http://www.java.net/projects/">Projects</a></td>
+                <td><a href="http://www.java.net/community">Communities</a> </td>
+                <th><a href="http://www.java.net/">java.net</a></th>
+							          </tr>
+        </tbody>
+      </table>
+    </div>
+  </noindex>
+
+  <table id="main" border="0" cellpadding="2" cellspacing="2" width="100%">
+    <tbody>
+      <tr valign="top">
+        <td id="leftcol" rowspan="2" width="170">
+           <div id="block-menu-menu-get-involved" class="clear-block block block-menu">
+
+  <h2>Get Involved</h2>
+
+  <div class="content"><ul class="menu"><li class="leaf first"><a href="/about-javanet" title="About java.net">About java.net</a></li>
+<li class="leaf"><a href="/request-project" title="Request a Project">Request a Project</a></li>
+<li class="leaf"><a href="/publicize-your-project" title="Publicize your Project">Publicize your Project</a></li>
+<li class="leaf"><a href="/submit-content" title="Submit Content">Submit Content</a></li>
+<li class="leaf"><a href="https://java-net.dev.java.net/" title="">java-net Project</a></li>
+<li class="leaf"><a href="/enhancements" title="">Java.net Enhancements</a></li>
+<li class="leaf"><a href="https://www.dev.java.net/servlets/OpenCollabNet" title="">Site Help</a></li>
+<li class="leaf last"><a href="/form/report-inappropriate-content" title="Report Inappropriate Content">Report Inappropriate Content</a></li>
+</ul></div>
+</div>
+<div id="block-menu-menu-get-informed" class="clear-block block block-menu">
+
+  <h2>Get Informed</h2>
+
+  <div class="content"><ul class="menu"><li class="leaf first"><a href="/articles" title="">Articles</a></li>
+<li class="leaf"><a href="/blogfront" title="">Blogs</a></li>
+<li class="leaf"><a href="/events" title="">Events</a></li>
+<li class="leaf"><a href="http://safari.java.net/" title="">java.net Online Books</a></li>
+<li class="leaf last"><a href="/today/archive" title="Archive">java.net Archives</a></li>
+</ul></div>
+</div>
+<div id="block-menu-menu-get-connected" class="clear-block block block-menu">
+
+  <h2>Get Connected</h2>
+
+  <div class="content"><ul class="menu"><li class="leaf first"><a href="http://forums.java.net/" title="">java.net Forums</a></li>
+<li class="leaf"><a href="http://wiki.java.net" title="">Wiki</a></li>
+<li class="leaf"><a href="http://wiki.java.net/bin/view/Javapedia/WebHome" title="">Javapedia</a></li>
+<li class="leaf"><a href="http://wiki.java.net/bin/view/People/WebHome" title="">People</a></li>
+<li class="leaf"><a href="/partners" title="">Partners</a></li>
+<li class="leaf"><a href="http://wiki.java.net/bin/view/Javanet/JobsWiki" title="">Jobs</a></li>
+<li class="leaf"><a href="/pub/q/rsschannels" title="">RSS Feeds</a></li>
+<li class="leaf last"><a href="/jugs-list">Java User Groups</a></li>
+</ul></div>
+</div>
+<div id="block-block-1" class="clear-block block block-block">
+
+  <h2>Search</h2>
+
+  <div class="content"><form action="http://www.google.com/cse" id="cse-search-box">
+                  <div>Web and Projects:</div>
+                  <div>
+                   <input type="text" name="q" size="22" />
+                   <input type="hidden" name="cx" value="017555676512375062942:o5-kz1r0m2s" />
+                   <input type="hidden" name="ie" value="UTF-8" />
+                    <input type="submit" name="sa" value="Search" />
+                  </div>
+                </form>
+<script type="text/javascript" src="http://www.google.com/cse/brand?form=cse-search-box&lang=en"></script>
+
+
+
+            <!--<script type="text/javascript" src="/images/brand.htm"></script>-->
+                <div>Online Books:</div>
+                <form action="http://safari.java.net/search" method="post" name="searchForm" id="form_searchForm">
+                  <input name="__formName" value="searchForm" type="hidden">
+                  <input value="simple" name="searchmode" id="searchmode" type="hidden">
+                  <input value="0" name="page" id="page" type="hidden">
+                  <input value="summary" name="searchview" id="searchview" type="hidden">
+                  <input value="rank" name="sort" id="sort" type="hidden">
+                  <input value="desc" name="order" id="order" type="hidden">
+                  <input value="1" name="NewSearch" id="NewSearch" type="hidden">
+                  <div>
+                    <input name="searchtextbox" id="searchtextbox" value="" class="medium" size="14" type="text">
+                    <input class="buttonred" value=" » " border="0" type="submit">
+                  </div>
+                </form>
+                <div>java.net on <a href="http://markmail.org/">MarkMail</a>:</div>
+                <form action="http://markmail.org/search/list:net.java">
+                  <div>
+                    <input name="q" id="searchtextbox" value="" class="medium" size="14" type="text">
+                    <input class="buttonred" value=" » " border="0" type="submit">
+                  </div>
+                </form>
+                <div><a href="http://www.java.net/search">Advanced Search</a></div>
+</div>
+</div>
+        </td>
+        <td colspan="2" height="3"><img src="/images/a.gif" height="3" width="1"><br></td>
+      </tr>
+      <tr>
+        <td width="10"><img src="/images/a.gif" height="1" width="10"></td>
+        <td valign="top" width="100%" id="article-td-main">
+          <br>
+          <a name="skip2content"></a>
+          								    <div id="article-topright-links">
+
+<img src="/im/ic_email.gif" width="14" height="12" border="0" hspace="4" vspace="1" alt=" " />
+<a href="mailto:?subject=j1-2k8-mtW07: JMX for Unit Tests in Test-Driven Development&body=http://today.java.net/pub/a/today/2008/05/08/j1-2k8-mtW07.html">E-mail</a>
+
+<img src="/im/ic_print.gif" width="14" height="12" hspace="4" border="0" alt=" " />
+<a href="/print/219878">Print</a>
+<!--
+<img src="/im/ic_discuss.gif" width="13" height="12" hspace="4" border="0" alt=" " />
+<a href="/comment/reply/219878#comment-form">Discuss</a>
+-->
+
+
+            </div>
+                          <h2 class="title">j1-2k8-mtW07: JMX for Unit Tests in Test-Driven Development</h2>
+                                                  <div class="article-node node">
+        	<img src="/sites/default/files/111-javaone_cc.jpg" align="left" border="0" />
+			    <div class="content"><span class='print-link'></span><div class="field field-type-date field-field-pub-date">
+    <div class="field-items">
+            <div class="field-item odd">
+                    <span class="date-display-single">Thu, 2008-05-08</span>        </div>
+        </div>
+</div>
+<div class="field field-type-nodereference field-field-author">
+    <div class="field-items">
+            <div class="field-item odd">
+                    <a href="/author/david-walend">David Walend</a>        </div>
+        </div>
+</div>
+<div id="node-author-date">
+	</div>
+<div id="clearboth" style="clear:both"></div><h2>
+<csinclude record="ct/{id_coltype}" template="ct/graphic_link.view">
+<csfield name="title"></h2>
+<csfield name="id_author" before="by " hrefaction="pub">
+<csfield name="id_author2" before=" and " hrefaction="pub"><br />
+<csfield name="date"><br clear="all" />
+<cs_comment  sidebar begins -->
+<cs_comment  don't move sidebars -->
+<cs_comment  sidebar ends -->
+
+<p>Test-driven development can help to build software better and faster.
+It offers more than just simple validation of correctness; it can also
+drive the design of a program. In object-oriented programming, good
+use of encapsulation can make observing and testing some design
+features difficult. Further, the developer has to define classes and
+methods before compiling tests that use those classes and methods.
+Using the Java Management Extensions -- JMX -- to observe internal
+state provides an elegant alternative to reflection and compiler hacks.
+As a byproduct it provides a JMX interface for the completed system.
+This talk will cover how to benefit from unit testing with
+JMX, and the code and overhead required to use the technique.
+</p>
+
+
+<p>Slides of this session are available <a href="https://java-net.dev.java.net/files/documents/29/95974/JMXforTestDrivenDevelopment.pdf">as a PDF file</a>.</p>
+
+<a href="http://download.java.net/general/podcasts/j1-2k8-mtW07.mp3"><img src="/images/icons/audio.jpg" width="41" height="39" alt="Download Audio" border="0" style="float:left;padding-right:10px;width:41px;" /></a>
+<p>You can <a href="http://download.java.net/general/podcasts/j1-2k8-mtW07.mp3">download the MP3</a> of this podcast episode directly, or copy and paste the <a href="http://feeds.feedburner.com/javanetJavaOnePodcasts">java.net Community Corner mini-talks feed</a> into a podcast client like Juice or iTunes.  You can also <a href="http://www.itunes.com/podcast?id=153368676">subscribe via the iTunes Store</a>.</p>
+
+<csinclude record="au/{cs.r.id_author}" template="short_bio.view" />
+<div class="pad3x0">
+<table border="0" cellpadding="0" cellspacing="0" width="100%" bgcolor="#000000"><tr><td><img src="http://today.java.net/im/a.gif"
+width="1" height="1" border="0" alt=" " /></td></tr></table></div>
+
+
+
+
+
+
+
+
+
+
+
+						<div id="author-info">
+							<a href="/author/david-walend">David Walend</a> started learning Java with the alpha 3 release in 1994. His active open source projects include JDigraph, SomnifugiJMS, and SalutafugiJMS. David works on high-performance parallel and distributed computing at MathWorks.
+						</div>
+					</div>
+    <div class="links">&raquo; <ul class="links inline"><li class="comment_forbidden first"><span><a href="/user/login?destination=comment/reply/219878%2523comment-form">Login</a> or <a href="/user/register?destination=comment/reply/219878%2523comment-form">register</a> to post comments</span></li>
+<li class="statistics_counter"><span>255 visits</span></li>
+<li class="print_html"><a href="/print/219878" title="Display a printer-friendly version of this page." class="print-page" rel="nofollow">Printer-friendly version</a></li>
+<li class="sharethis_link last"><a href="http://today.java.net/pub/a/today/2008/05/08/j1-2k8-mtW07.html" class="sharethis-link" title="j1-2k8-mtW07: JMX for Unit Tests in Test-Driven Development" rel="nofollow">ShareThis</a></li>
+</ul></div>    <div class="taxonomy">Related Topics &gt;&gt;
+        <a href="/articles/topic/15">JavaOne</a> &nbsp; &nbsp; &nbsp;    </div>
+  </div>
+  <div id="comment-header">Comments</div>
+  <div id="comment-header2">Comments are listed in date ascending order (oldest first)</div>
+                                        <div id="content-bottomdiv2">
+                	                </div>
+                            
+        </td>
+              </tr>
+      <tr>
+        <td rowspan="2" valign="bottom"><img src="/images/a.gif" alt=" " border="0" height="1" width="170"><br>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <br>
+  <img src="/images/a.gif" alt=" " border="0" height="1" width="170"><br>
+  <img src="/images/a.gif" alt=" " border="0" height="1" width="170"><br>
+
+  <table border="0" cellpadding="0" cellspacing="10" width="100%">
+    <tbody>
+      <tr>
+        <td>&nbsp;
+          <div class="grayline"></div>
+          <table class="vatop" border="0" cellpadding="0" cellspacing="0" width="100%">
+            <tbody>
+              <tr>
+                <td><img src="/images/a.gif" alt=" " border="0" height="1" width="190"><br>
+                  <a href="http://www.sun.com/"><img src="/images/logo_sun_small.gif" alt=" " border="0" height="29" vspace="5" width="61"></a></td>
+                <td valign="top" width="60%"><div class="footer">
+                    <!--  Start Quantcast tag  -->
+                    <script type="text/javascript" src="/images/quant.js"></script> 
+                    <script type="text/javascript">
+											_qacct="p-20l78bOOCbhcg";
+											quantserve(); 
+                    </script>
+                    <noscript>
+                    <img src="http://pixel.quantserve.com/pixel/p-20l78bOOCbhcg.gif" style="display: none" height="1" width="1" alt="Quantcast"/>
+                    </noscript>
+                    <!--  End Quantcast tag  -->
+                    <a href="https://java-net.dev.java.net/feedback.html">Feedback</a> &nbsp;|&nbsp;<a href="/javanet-faq">FAQ</a> &nbsp;|&nbsp;<a href="http://java.net/presscenter/">Press</a>&nbsp;|&nbsp;<a href="/javanet-web-site-terms-use">Terms of Use</a><br>
+                    <a href="http://www.sun.com/privacy/">Privacy</a> &nbsp;|&nbsp; <a href="http://www.sun.com/suntrademarks/">Trademarks</a>&nbsp;|&nbsp;<a href="https://java-net.dev.java.net/sitemap.html">Site Map</a> <br>
+                    <span class="sp5">&nbsp;</span><br>
+                    Your use of this web site or any of its content or software indicates your agreement to be bound by these <a href="/javanet-web-site-terms-use">Terms of Participation</a>.<br>
+                    <span class="sp5">&nbsp;</span><br>
+                    Copyright &copy; 1995-2008 Sun Microsystems, Inc. </div></td>
+                <td align="right" valign="top" width="40%"><div class="footer">
+                <a href="http://www.collab.net/"><img src="/images/montague_logo_collabnet.gif" alt="Collabnet Logo" border="0" height="19" width="85"></a>
+                <a href="http://www.cognisync.com/"><img src="/images/cognisync.jpg" alt="Cognisync Communities" border="0"></a>
+<br>
+                    Powered by Sun Microsystems, Inc.,<br>
+                    Cognisync and CollabNet </div></td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="grayline"></div></td>
+      </tr>
+    </tbody>
+  </table>
+  <!--  Begin SiteCatalyst code   -->
+  <script language="JavaScript" src="/images/s_code_remote.js"></script>
+  <!--  End SiteCatalyst code  -->
+</div>
+<div style="display:none"> </div>
+<script type="text/javascript" src="/sites/default/files/js/js_e3cef365cf4ce11f67226cf3788d7763.js"></script>
+<script type="text/javascript">
+<!--//--><![CDATA[//><!--
+jQuery.extend(Drupal.settings, { "basePath": "/", "extlink": { "extTarget": "_blank", "extClass": 0, "extSubdomains": 1, "extExclude": "", "extInclude": "", "extAlert": 0, "extAlertText": "This link will take you to an external web site. We are not responsible for their content.", "mailtoClass": 0 }, "fivestar": { "titleUser": "Your rating: ", "titleAverage": "Average: ", "feedbackSavingVote": "Saving your vote...", "feedbackVoteSaved": "Your vote has been saved.", "feedbackDeletingVote": "Deleting your vote...", "feedbackVoteDeleted": "Your vote has been deleted." } });
+//--><!]]>
+</script>
+<script language="javascript">
+	$('form#node-form input#form-submit').click(function(){
+		$(this).attr('disabled', 'disabled');
+		$('form#node-form').submit();
+	});
+	$('form#node-form input#edit-submit').click(function(){
+		$(this).attr('disabled', 'disabled');
+		$('form#node-form').submit();
+	});
+	</script>
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-10612840-1");
+pageTracker._trackPageview();
+} catch(err) {}
+</script>
+
+</body>
+</html>
+

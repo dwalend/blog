@@ -1,0 +1,531 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="http://www.movabletype.org/" />
+
+<title>David Walend's Blog: Shutdown Hooks</title>
+
+<link rel="stylesheet" href="http://weblogs.java.net/blog/styles-site.css" type="text/css" />
+<link rel="stylesheet" href="http://www.java.net/css/main.css" type="text/css">
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://weblogs.java.net/blog/dwalend/index.rdf" />
+<link rel="alternate" type="application/atom+xml" title="Atom" href="http://weblogs.java.net/blog/dwalend/atom.xml" />
+
+<link rel="start" href="http://weblogs.java.net/blog/dwalend/" title="Home" />
+<link rel="prev" href="http://weblogs.java.net/blog/dwalend/archive/2004/01/coupling_in_sof.html" title="Coupling in Software Architecture" />
+
+<link rel="next" href="http://weblogs.java.net/blog/dwalend/archive/2004/06/somnifugijms_fo_4.html" title="SomnifugiJMS for User Interfaces, Now With Example Code" />
+
+
+
+
+
+<!--  Begin SiteCatalyst code  -->
+<script language="JavaScript">
+<!--
+var s_channel="David Walend's Blog";
+//--></script>
+<!--  End SiteCatalyst code  -->
+
+</head>
+
+<body>
+
+<!--  Masthead  -->
+<div class="topline">
+<div class="topbar">
+<table border="0" cellpadding="0" cellspacing="0" width="100%" height="25">
+<tr>
+<td width="100%" rowspan="2"><a href="http://www.java.net"><img src="/images/header_jnet_new.jpg" width="500" height="60" border="0" alt="The Source for Java Technology Collaboration"></a></td>
+ <td nowrap="nowrap" style="vertical-align:middle">
+ <div id="login">
+ 
+  <form name="loginform" id="loginform" action="https://www.dev.java.net/servlets/TLogin" method="post">
+  <input type="hidden" name="redir" value="http://weblogs.java.net/blog/dwalend/archive/2004/05/shutdown_hooks_2.html">
+  <div>
+  <strong>User:</strong>
+   <input type="text" name="loginID" id="loginID" value="" size="7" maxlength="32" />
+   <strong>Password:</strong>
+
+   <input type="password" name="password" id="password" value="" size="7" maxlength="32" />
+   <input type="submit" name="Login" class="buttonred" id="Button" value="Login" /> </div>
+  <div class="small" align="right"><strong> <a href="https://www.dev.java.net/servlets/Join">Register</a>  | <a href="https://www.dev.java.net/servlets/TLogin">Login help</a>   &nbsp;&nbsp;&nbsp;</strong></div> 
+</form>
+ 
+</div>
+</td> 
+</tr>
+</table>
+</div>
+
+<!--  Tabs  -->
+
+
+<noindex>
+<div class="tabs" id="toptabs">
+<table cellspacing=0 cellpadding=4 border=0>
+<tbody>
+<tr>
+<td><a href="https://www.dev.java.net/servlets/StartPage">My       pages</a> </td>
+<td><a       href="http://community.java.net/projects/">Projects</a></td>
+<td><a href="http://community.java.net">Communities</a>   </td>
+<th><a href="http://www.java.net">java.net</a></th>
+</tr></tbody></table></div>
+</noindex>
+
+
+
+<table id="main" cellspacing="2" cellpadding="2" width="100%" border="0">
+  <tbody>
+  <tr valign=top>
+    <td id="leftcol" width="150" rowspan="2">
+	<img src="http://today.java.net/im/a.gif" width="150" height="1"><br />
+<div id="navcolumn">
+<!--   COMMUNITY LINKS   -->
+<noindex>
+<div class="toolgroup" id="communitylinks">
+<div class="label"><strong>Get Involved</strong></div>
+<div class="body">
+<div><a href="https://java-net.dev.java.net/">java-net Project</a></div>
+<div><a href="http://www.java.net/request_project.csp">Request a Project</a></div>
+<div><a href="http://community.java.net/help_wanted/">Project&nbsp;Help&nbsp;Wanted&nbsp;Ads</a></div>
+<div><a href="http://community.java.net/projects/publicize.csp">Publicize your Project</a></div>
+<!-- <div><a href="#">Success Stories</a></div>  -->
+<div><a href="http://today.java.net/cs/user/create/bl">Submit Content</a></div>
+</div>
+</div>
+
+<div class="toolgroup" id="communitylinks">
+<div class="label"><strong>Get Informed</strong></div>
+<div class="body">
+<div><a href="http://www.java.net/about.csp">About java.net</a></div>
+<div><a href="http://today.java.net/pub/q/articles">Articles</a></div>
+<div><a href="http://weblogs.java.net/">Blogs</a></div>
+<div><a href="http://www.java.net/events">Events</a></div>
+<div><a href="http://today.java.net/today/alsotoday.csp">Also in Java Today</a></div>
+<div><a href="http://safari.java.net">java.net Online Books</a></div>
+<div><a href="http://today.java.net/today/archive/">java.net Archives</a></div>
+</div>
+</div>
+
+<div class="toolgroup" id="communitylinks">
+<div class="label"><strong>Get Connected</strong></div>
+<div class="body">
+<div><a href="http://forums.java.net">java.net Forums</a></div>
+<div><a href="http://wiki.java.net/">Wiki</a> and <a href="http://wiki.java.net/bin/view/Javapedia/WebHome">Javapedia</a></div>
+<div><a href="http://wiki.java.net/bin/view/People/WebHome">People</a>, <a href="http://partners.java.net">Partners</a>, and <a href="http://wiki.java.net/bin/view/Javanet/JobsWiki">Jobs</a> </div>
+<div><a href="http://community.java.net/jugs/listing.csp">Java User Groups</a></div>
+<div><!--  <a href="https://java-net.dev.java.net/servlets/ProjectMailingListList">Newsletters</a> and  --><a href="http://today.java.net/pub/q/rsschannels">RSS Feeds</a></div>
+</div>
+</div>
+
+<div class="toolgroup" id="communitylinks">
+<div class="label"><b>Search</b></div>
+<div class="body">
+<form action="http://www.java.net/search_results.csp" id="cse-search-box">
+<div>Web and Projects:</div>
+<div><input type="text" name="q" class="medium" size="14" />
+<input type="hidden" name="cx" value="011656849246290948379:pdvwpzpb2di" />
+<input type="hidden" name="cof" value="FORID:9" />
+<input type="hidden" name="ie" value="UTF-8" />
+<input class="buttonred"  type="submit" name="sa" value=" &raquo;">
+</div>
+</form>
+<form action="http://onesearch.sun.com/search/onesearch/index.jsp">
+<div>Web and Projects:</div>
+<div><input name="qt" class="medium" size="14" onfocus="if( this.value==this.defaultValue ) this.value='';" value="" type="text">
+<input name="col" value="all-unfiltered" type="hidden">
+<input name="qt" value="+url:java.net" type="hidden">
+<input class="buttonred" value=" &raquo; " border="0" type="submit"></div>
+</form>
+<script type="text/javascript" src="http://www.google.com/coop/cse/brand?form=cse-search-box&lang=en"></script>
+
+<div>Online Books:</div>
+<form action="http://safari.java.net/search" method="post" name="searchForm" id="form_searchForm">
+<input name="__formName" value="searchForm" type="hidden" />
+<input value="simple" name="searchmode" id="searchmode" type="hidden" />
+<input value="0" name="page" id="page" type="hidden" />
+<input value="summary" name="searchview" id="searchview" type="hidden" />
+<input value="rank" name="sort" id="sort" type="hidden" />
+<input value="desc" name="order" id="order" type="hidden" />
+<input value="1" name="NewSearch" id="NewSearch" type="hidden" />
+<div>
+<input name="searchtextbox" id="searchtextbox" type="text" value="" class="medium" size="14" />
+<input class="buttonred" value=" &raquo; " border="0" type="submit"></div>
+</form>
+
+<div>java.net on <a href="http://markmail.org/">MarkMail</a>:</div>
+<form action="http://markmail.org/search/list:net.java">
+<div><input name="q" id="searchtextbox" type="text" value="" class="medium" size="14" />
+<input class="buttonred" value=" &raquo; " border="0" type="submit"></div>
+</form>
+
+<div><a href="http://www.java.net/search.csp">Advanced Search</a></div>
+</div>
+</div>
+</noindex>
+
+</div>
+<br />
+</td>
+<td height="3" colspan="2"><img src="http://today.java.net/images/a.gif" width="1" height="3"><br /></td>
+</tr>
+<tr> 
+<td width="10"><img src="http://today.java.net/images/a.gif" width="10" height="1"></td>
+<td width="100%" valign="top">
+
+
+
+
+<div class="link-note">
+<a href="http://weblogs.java.net/blog/dwalend/index.rdf"><img src="http://www.java.net/images/icons/feed.png" width="16" height="16" vspace="4" hspace="10" border="0" alt="Syndicate this blog (XML)" align="right" /></a><br />
+</div>
+
+
+
+<img src="/images/people/david_walend.jpg" border="0" height="68" width="99" alt="David Walend" align="left" vspace="3" hspace="6" />
+
+
+
+
+<h2><a href="http://weblogs.java.net/blog/dwalend/">David Walend's Blog</a></h2>
+
+<div class="small" align="right">
+<a href="http://weblogs.java.net/blog/dwalend/archive/2004/01/coupling_in_sof.html">&laquo;Coupling in Software Architecture</a> |
+
+<a href="http://weblogs.java.net/blog/dwalend/">Main</a>
+| <a href="http://weblogs.java.net/blog/dwalend/archive/2004/06/somnifugijms_fo_4.html">SomnifugiJMS for User Interfaces, Now With Example Code &raquo;</a>
+
+</div>
+
+<div class="grayline"></div>
+
+<h3>Shutdown Hooks</h3>
+
+<span class="ltcaption1">Posted by <b>dwalend</b> on May 09, 2004 at 04:38 PM</a> | <a href="http://weblogs.java.net/blog/dwalend/archive/2004/05/shutdown_hooks_2.html#comments">Comments (9)</a>
+
+</span>
+
+<br /><br />
+
+I just handed in my last assignment for my masters degree, completing a ten-year effort. Maybe there is a reason why they put a "Slow Children" sign in front of our house. And JSDK 1.5 is rolling out some time soon. It's a good week for a blog about finishing things -- time for an article about shutdown hooks.
+<p>
+A shutdown hook is a Thread designed to be run after a program receives a signal to exit, but before daemon threads stop, finalizers run, and the JVM goes poof. Shutdown hooks are great for clearing dirty caches, closing out open resources, and announcing this shutdown to other processes. 
+<p>
+In 1999 I sent Sun a "request for enhancement" for the equivalent of C's onexit() facility. I was building this funky distributed logging system and needed a way to record cached log messages if someone hit control-C or called System.exit(). The JSDK of the day, 1.2 I suppose, didn't offer me anything beyond runFinalizersOnExit(). I needed to write log messages and flush the system, which I couldn't do reliably if the objects were in the process of dissolving. The team found a hacky way to solve the immediate problem; we added our own way to shut down the system via messaging, and tried to reeducate the rest of the company to use it instead of control-C (but that's another blog).
+<p>
+Sun added the shutdown hook feature in JSDK 1.3, about eighteen months later. RFEs take patience, but make the system better for us all. The company that asked me to build that logging system is long gone, but I've used shutdown hooks on a dozen projects since they were introduced. 
+<p>
+Here's a code segment for setting up a shutdown hook to clean out an arbitrary Cache: 
+<p>
+<code>
+<pre>
+...
+//A static inner class Runnable.
+        private static class CacheCleaner
+            implements Runnable
+        {
+            private Cache cache
+            
+            private CacheCleaner(Cache cache)
+            {
+                this.cache = cache;
+            }
+            
+            public void run()
+            {
+                try
+                {
+                    cache.clean();
+                }
+                catch(CacheException ce)
+                {
+                    Log.IT.log(Level.SEVERE,"Unable to clean cache during shutdown",ce);
+                }
+            }    
+        }
+...
+//Inside the Cache class:
+    private CacheCleaner cleaner = new CacheCleaner(this);
+
+    public Runnable getShutdownRunnable()
+    {
+        return cleaner;
+    }
+...
+
+//in setup code somewhere.
+        Thread hook = new Thread(cache.getShutdownRunnable());
+        Runtime.getRuntime().addShutdownHook(hook);
+</pre>
+</code>
+<p>
+I like Runnable implementations for my shutdown hooks instead of extending Thread. It keeps the API for my stuff separate from the zoo of methods available for Thread. In the library side of the code, I make the shutdown Runnable accessible so that I can control the order that things shut down from another part of the code. I usually have to customize the shutdown order. It changes via negotiation with the rest of the system. I try to log what's going on if things go wrong; debugging as the system fades away can be frustrating. 
+<p>
+Shutdown hooks need to be quick, deadlock-safe and can not start new threads. Read through the JSKD API in the <a href="http://java.sun.com/j2se/1.4.2/docs/api/java/lang/Runtime.html#addShutdownHook(java.lang.Thread)">addShutdownHook()</a> method before trying this out.
+<p>
+Night school and RFEs exist on a different time scale. An RFE in the JSDK core kit may take a year or two to sort out, if it's accepted. Before posting an RFE for some core thing, make sure that the only way to add the feature is through the change you are suggesting.
+<p>
+Reading: <i>Chessmen of Mars</i>, Burroughs.<br>
+Hearing: <i>La Mort de Cleopatre</i>, Berlioz.<br>
+
+
+<div id="a001099more"><div id="more">
+
+</div></div>
+
+<br />
+Bookmark blog post: <a href="http://del.icio.us/post?title=Shutdown Hooks&amp;url=http://weblogs.java.net/blog/dwalend/archive/2004/05/shutdown_hooks_2.html"><img src="/images/icons/delicious.gif" alt="del.icio.us" border="0" height="16" hspace="8" vspace="1" width="16" /></a> <a href="http://del.icio.us/post?title=Shutdown Hooks&amp;url=http://weblogs.java.net/blog/dwalend/archive/2004/05/shutdown_hooks_2.html">del.icio.us</a> <a href="http://digg.com/submit?phase=2&amp;title=Shutdown Hooks"><img src="/images/icons/digg.gif" alt="Digg" border="0" height="14" hspace="8" width="16" /></a> <a href="http://digg.com/submit?phase=2&amp;title=Shutdown Hooks&amp;url=http://weblogs.java.net/blog/dwalend/archive/2004/05/shutdown_hooks_2.html">Digg</a> <a href="http://www.dzone.com/links/add.html?url=http://weblogs.java.net/blog/dwalend/archive/2004/05/shutdown_hooks_2.html&amp;title=Shutdown Hooks"><img src="/images/icons/dzone.gif" alt="DZone" border="0" height="16" hspace="8" width="16" /></a> <a href="http://www.dzone.com/links/add.html?url=http://weblogs.java.net/blog/dwalend/archive/2004/05/shutdown_hooks_2.html&amp;title=Shutdown Hooks">DZone</a> <a href="http://www.furl.net/storeIt.jsp?t=Shutdown Hooks&amp;u=http://weblogs.java.net/blog/dwalend/archive/2004/05/shutdown_hooks_2.html"><img src="/images/icons/furl.gif" alt="Furl" border="0" height="17" hspace="8" width="16" /></a> <a href="http://www.furl.net/storeIt.jsp?t=Shutdown Hooks&amp;u=http://weblogs.java.net/blog/dwalend/archive/2004/05/shutdown_hooks_2.html">Furl</a>  <a href="http://reddit.com/submit?title=Shutdown Hooks&amp;url=http://weblogs.java.net/blog/dwalend/archive/2004/05/shutdown_hooks_2.html"><img src="/images/icons/reddit.gif" alt="Reddit" border="0" height="18" hspace="8" width="18" /></a> <a href="http://reddit.com/submit?title=Shutdown Hooks&amp;url=http://weblogs.java.net/blog/dwalend/archive/2004/05/shutdown_hooks_2.html">Reddit</a>
+<br />
+<div class="grayline"></div>
+
+<a name="comments"></a>
+<h5>Comments</h5>
+<span class="small">Comments are listed in date ascending order (oldest first) | <a href="#post">Post Comment</a></span>
+<br /><br />
+
+<ul>
+<li>
+<a name="3302"></a>
+<div id="c3302">
+<p>Shutdown hooks and java.util.logging API<br />
+I have previously used shutdown hook threads to do cleanup and write final log messages for a couple of different daemon-style apps when they were killed.<br />
+However when I swapped over to using the java.util.logging.* APIs for all my logging (to centralize logging configuration apart from anything else) I found my final log messages were not being written to the logging.properties-configured logfile from the shutdown hook thread (or rather, some were and most weren't, in an unpredictable way that seemed to indicate threading problems).<br />
+Apparently the JDK logging API has it's own shutdown hook thread used to cleanup logfiles etc., and since all shutdown hook threads are run in parallel you can't reliably log from a shutdown hook thread (or any method called from it - e.g. my cleanup code) using the JDK1.4 logging API.<br />
+The workarounds I have used are either to use some other logging API  or shutdown the application using a message of some sort other than a kill signal, neither of which I particularly like - so if someone else has come up with a better workaround I'd like to hear it. My preference would be to be able to configure the FileLogger to cleanup logging when my code requests it, rather than as part of JDK logging cleanup.</p>
+<p class="posted"><span class="ltcaption1">Posted by: adbaxter  on May 10, 2004 at 05:05 AM</span></p>
+</div>
+</li>
+</ul>
+<ul>
+<li>
+<a name="3303"></a>
+<div id="c3303">
+<p>Shutdown hooks and java.util.logging API<br />
+Looks like someone suggested it at one point. http://developer.java.sun.com/developer/bugParade/bugs/4682478.html , http://developer.java.sun.com/developer/bugParade/bugs/4744270.html and http://developer.java.sun.com/developer/bugParade/bugs/4748132.html  .</p>
+
+<p>(Are those all from you?)</p>
+
+<p>I'll put in another RFE for exposing the hook and giving us control over it. Probably too late to get it into 1.5, and post a note here so we can get some votes behind it.</p>
+
+<p>Hope that helps,</p>
+
+<p>Dave</p>
+<p class="posted"><span class="ltcaption1">Posted by: dwalend  on May 10, 2004 at 07:27 AM</span></p>
+</div>
+</li>
+</ul>
+<ul>
+<li>
+<a name="3304"></a>
+<div id="c3304">
+<p>Be careful!<br />
+Ive had pretty bad experiences with shutdown listeners. Right now, I use them to close my JMS listeners and thats it! And even that I should probably change. </p>
+
+<p>In the past I've found them to be pretty unreliable. Sometimes they run, when the weather is nice, and things are happy. Other times...</p>
+
+<p>Anyway. For command line apps, I can see how the CTRL-C thing might be a problem. For UI apps though, you can trap all exit commands and control safe shutdown yourself. </p>
+
+<p>Word to the wise...</p>
+
+<p>-jonathan</p>
+<p class="posted"><span class="ltcaption1">Posted by: jonathansimon  on May 10, 2004 at 08:18 AM</span></p>
+</div>
+</li>
+</ul>
+<ul>
+<li>
+<a name="3305"></a>
+<div id="c3305">
+<p>Relevant RFE<br />
+While the shutdown hook API is far better than nothing, it really needs to be enhanced. </p>
+
+<p>See this RFE for a discussion of some of the other issues.</p>
+<p class="posted"><span class="ltcaption1">Posted by: coxcu  on May 10, 2004 at 08:29 AM</span></p>
+</div>
+</li>
+</ul>
+<ul>
+<li>
+<a name="3307"></a>
+<div id="c3307">
+<p>Shutdown hooks and java.util.logging API<br />
+That's a nice thought, bu I doubt this page will be generating many referral hits six months from now when your new RFE becomes publicly visible.</p>
+<p class="posted"><span class="ltcaption1">Posted by: coxcu  on May 10, 2004 at 10:52 AM</span></p>
+</div>
+</li>
+</ul>
+<ul>
+<li>
+<a name="3310"></a>
+<div id="c3310">
+<p>Shutdown hooks and java.util.logging API<br />
+http://developer.java.sun.com/developer/bugParade/bugs/5036297.html (your own?) seems to do a nice job of explaining things. Its only got one vote right now -- mine. You might want to take a minute to vote on it yourself. Votes seem to keep Sun from just brushing off RFEs they don't want to take on.</p>
+
+<p>In my experience, bugs show up after a few days, a week if I send one in during the holidays. The real time lag will be waiting for JSDK 1.6.</p>
+
+<p>Dave</p>
+<p class="posted"><span class="ltcaption1">Posted by: dwalend  on May 10, 2004 at 03:34 PM</span></p>
+</div>
+</li>
+</ul>
+<ul>
+<li>
+<a name="3311"></a>
+<div id="c3311">
+<p>Shutdown hooks and java.util.logging API<br />
+In parallel is not really true on a single CPU machine.</p>
+
+<p>Does giving your shutdown hook Thread a higher priority help?</p>
+
+<p> I haven't tried, but it would probably cause your shutdown hook to run before the logging one.</p>
+
+<p>Unless the logger code specifies a priority for its shutdown thread, it will inherit the priority of the thread that creates it - so you could also temporarily drop the priority while you call the logger API where the shutdown hook is set up - therefore encouraging it to be the last shutdown hook to run. Unless you have at least as many processors as there are shutdown hooks, the shutdown hooks must be scheduled, and changing the priorities can have a pretty strong influence on thread scheduling order.</p>
+
+<p>Bruce</p>
+<p class="posted"><span class="ltcaption1">Posted by: brucechapman  on May 10, 2004 at 04:56 PM</span></p>
+</div>
+</li>
+</ul>
+<ul>
+<li>
+<a name="3317"></a>
+<div id="c3317">
+<p>Shutdown hooks and java.util.logging API<br />
+The particular application was portable code running on single and multiple processor machines. The API says (with my emphasis)</p>
+
+<p>When the virtual machine begins its shutdown sequence it will start all registered shutdown hooks in some unspecified order and let them run concurrently.</p>
+
+<p>Of course concurrently does not necessarily actually mean in parallel, but I would not want to rely on manipulating the thread priority to get reliable and reproducible effects on different architectures (I always want to see my log messages...). Having said that I'll give it a go and see what happens.<br />
+</p>
+<p class="posted"><span class="ltcaption1">Posted by: adbaxter  on May 11, 2004 at 04:45 AM</span></p>
+</div>
+</li>
+</ul>
+<ul>
+<li>
+<a name="3322"></a>
+<div id="c3322">
+<p>Bug review times<br />
+Yep, I submitted that.  Thanks for the vote.  I would vote for it, but I only get three votes--just like everybody else, and they are all allocated to a different RFE.</p>
+
+<p>I think the turnaround time varies based on which review pile the bug ends up in.  My records (since I started keeping track due to multi-month review times) indicate that if a bug isn't reviewed within a week, it probably won't be reviewed within 100 days.</p>
+
+<p><br />
+153 days<br />
+dateCreated : 2002-09-06 16:01:59.5<br />
+dateEvaluated : 2003-02-06 12:21:59.402</p>
+
+<p><br />
+131 days<br />
+dateCreated : 2002-09-07 11:14:13.1<br />
+dateEvaluated : 2003-01-16 15:55:28.601</p>
+
+<p><br />
+133 days<br />
+dateCreated : 2003-11-26 10:51:48.2<br />
+dateEvaluated : 2004-04-07 13:38:41.609</p>
+
+<p><br />
+117 days<br />
+dateCreated : 2003-12-27 00:41:28.4<br />
+dateEvaluated : 2004-04-22 15:19:03.78</p>
+
+<p><br />
+50 days<br />
+dateCreated : 2002-11-27 09:21:47.1<br />
+dateEvaluated : 2003-01-16 12:51:54.113</p>
+
+<p><br />
+3 days<br />
+dateCreated : 2004-01-03 18:13:30.0<br />
+dateEvaluated : 2004-04-22 15:45:10.859</p>
+
+<p><br />
+1 day<br />
+dateCreated : 2004-04-11 10:11:26.9<br />
+dateEvaluated : 2004-04-12 10:58:55.390</p>
+
+<p><br />
+0 days</p>
+
+<p>dateCreated : 2003-02-06 10:06:29.3<br />
+dateEvaluated : 2003-02-06 12:23:32.85</p>
+<p class="posted"><span class="ltcaption1">Posted by: coxcu  on May 11, 2004 at 08:18 AM</span></p>
+</div>
+</li>
+</ul>
+
+
+<br /><br />
+
+
+
+
+<br />
+
+<div class="footer" align="right">This work is licensed under a
+<a href="http://creativecommons.org/licenses/by-nc-sa/2.0/">Creative Commons License</a>.<br />
+<a href="http://creativecommons.org/licenses/by-nc-sa/2.0/"><img src="http://creativecommons.org/images/public/somerights.gif" alt="Creative Commons License" border="0" height="31" width="88" hspace="2" vspace="2" /></a>
+</div>
+
+
+<br />
+<div id="powered" align="right">
+<b>Powered by</b><br />
+<a href="http://www.movabletype.org">Movable Type 3.01D</a><br />    
+</div>
+
+
+
+</td></tr></table>
+
+<!--  BEGIN VNV5 FOOTER   -->
+<!--  BEGIN VNV5 FOOTER   -->
+<table border="0" cellpadding="0" cellspacing="10" width="100%">
+<tr>
+<td>
+&nbsp;<a href="http://today.java.net/pub/q/java_net_rss"><img src="/images/icons/feed.png" border="0" width="16" height="16" alt="Feed" align="absmiddle"></a>&nbsp;<a href="http://today.java.net/pub/q/java_net_rss">java.net RSS Feeds</a><br />
+<div class="grayline"></div>
+<table border="0" cellpadding="0" cellspacing="0" width="100%" class="vatop">
+<tr>
+<td><img src="/im/a.gif" width="190" height="1" border="0" alt=" " /><br />
+<a href="http://www.sun.com"><img src="/im/logo_sun_small.gif" width="61" height="29" border="0" alt=" " vspace="5"/></a></td>
+<td width="60%" valign="top">
+<div class="footer">
+
+<!--  Start Quantcast tag  -->
+<script type="text/javascript" src="http://edge.quantserve.com/quant.js"></script>
+<script type="text/javascript">
+_qacct="p-20l78bOOCbhcg";quantserve();</script>
+<noscript>
+<img src="http://pixel.quantserve.com/pixel/p-20l78bOOCbhcg.gif" style="display: none" height="1" width="1" alt="Quantcast"/></noscript>
+<!--  End Quantcast tag  -->
+
+<a href="https://java-net.dev.java.net/feedback.html">Feedback</a> &nbsp;|&nbsp;<a href="http://java.net/faq.csp">FAQ</a> &nbsp;|&nbsp;<a href="http://java.net/presscenter/">Press</a>&nbsp;|&nbsp;<a href="http://java.net/terms.csp">Terms of Use</a><br />
+<a href="http://www.sun.com/privacy/">Privacy</a> &nbsp;|&nbsp;
+<a href="http://www.sun.com/suntrademarks/">Trademarks</a>&nbsp;|&nbsp;<a href="https://java-net.dev.java.net/sitemap.html">Site Map</a>
+<br /><span class="sp5">&nbsp;</span><br />
+Your use of this web site or any of its content or software indicates your agreement to be bound by these <a href="http://java.net/terms.csp">Terms of Participation</a>.<br />
+<span class="sp5">&nbsp;</span><br />
+Copyright &copy; 1995-2008 Sun Microsystems, Inc.
+</div></td>
+<td width="40%" valign="top" align="right"><div class="footer">
+<a href="http://www.oreilly.com"><img src="/images/montague_logo_oreilly.gif" width="74" height="19" border="0" alt="Oreilly Logo"></a><a href="http://www.collab.net/"><img src="/images/montague_logo_collabnet.gif" width="85" height="19" border="0" alt="Collabnet Logo"></a><br>
+Powered by Sun Microsystems, Inc.,<br /> O'Reilly and CollabNet
+</div></td></tr>
+<!--  <tr><td colspan="3" valign="top" class="grey3"><img src="/im/a.gif" width="1" height="2" border="0" alt=" " /></td></tr>  -->
+</table>
+<div class="grayline"></div>
+</td></tr>
+</table>
+<!--  END VNV5 FOOTER  -->
+
+<!--  Begin SiteCatalyst code  -->
+<script language="JavaScript" src="http://www.java.net/s_code_remote.js"></script>
+<!--  End SiteCatalyst code  -->
+
+
+</body>
+</html>

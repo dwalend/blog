@@ -1,0 +1,482 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="http://www.movabletype.org/" />
+
+<title>David Walend's Blog: Preparing for JavaOne</title>
+
+<link rel="stylesheet" href="http://weblogs.java.net/blog/styles-site.css" type="text/css" />
+<link rel="stylesheet" href="http://www.java.net/css/main.css" type="text/css">
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://weblogs.java.net/blog/dwalend/index.rdf" />
+<link rel="alternate" type="application/atom+xml" title="Atom" href="http://weblogs.java.net/blog/dwalend/atom.xml" />
+
+<link rel="start" href="http://weblogs.java.net/blog/dwalend/" title="Home" />
+<link rel="prev" href="http://weblogs.java.net/blog/dwalend/archive/2007/03/wild_winds_wres_1.html" title="Wild Winds Wrestling with the Restless Sea" />
+
+<link rel="next" href="http://weblogs.java.net/blog/dwalend/archive/2007/06/salutafugijms_j_1.html" title="SalutafugiJMS -- Java Messaging Service on ZeroConf" />
+
+
+
+
+
+<!--  Begin SiteCatalyst code  -->
+<script language="JavaScript">
+<!--
+var s_channel="David Walend's Blog";
+//--></script>
+<!--  End SiteCatalyst code  -->
+
+</head>
+
+<body>
+
+<!--  Masthead  -->
+<div class="topline">
+<div class="topbar">
+<table border="0" cellpadding="0" cellspacing="0" width="100%" height="25">
+<tr>
+<td width="100%" rowspan="2"><a href="http://www.java.net"><img src="/images/header_jnet_new.jpg" width="500" height="60" border="0" alt="The Source for Java Technology Collaboration"></a></td>
+ <td nowrap="nowrap" style="vertical-align:middle">
+ <div id="login">
+ 
+  <form name="loginform" id="loginform" action="https://www.dev.java.net/servlets/TLogin" method="post">
+  <input type="hidden" name="redir" value="http://weblogs.java.net/blog/dwalend/archive/2007/05/preparing_for_j.html">
+  <div>
+  <strong>User:</strong>
+   <input type="text" name="loginID" id="loginID" value="" size="7" maxlength="32" />
+   <strong>Password:</strong>
+
+   <input type="password" name="password" id="password" value="" size="7" maxlength="32" />
+   <input type="submit" name="Login" class="buttonred" id="Button" value="Login" /> </div>
+  <div class="small" align="right"><strong> <a href="https://www.dev.java.net/servlets/Join">Register</a>  | <a href="https://www.dev.java.net/servlets/TLogin">Login help</a>   &nbsp;&nbsp;&nbsp;</strong></div> 
+</form>
+ 
+</div>
+</td> 
+</tr>
+</table>
+</div>
+
+<!--  Tabs  -->
+
+
+<noindex>
+<div class="tabs" id="toptabs">
+<table cellspacing=0 cellpadding=4 border=0>
+<tbody>
+<tr>
+<td><a href="https://www.dev.java.net/servlets/StartPage">My       pages</a> </td>
+<td><a       href="http://community.java.net/projects/">Projects</a></td>
+<td><a href="http://community.java.net">Communities</a>   </td>
+<th><a href="http://www.java.net">java.net</a></th>
+</tr></tbody></table></div>
+</noindex>
+
+
+
+<table id="main" cellspacing="2" cellpadding="2" width="100%" border="0">
+  <tbody>
+  <tr valign=top>
+    <td id="leftcol" width="150" rowspan="2">
+	<img src="http://today.java.net/im/a.gif" width="150" height="1"><br />
+<div id="navcolumn">
+<!--   COMMUNITY LINKS   -->
+<noindex>
+<div class="toolgroup" id="communitylinks">
+<div class="label"><strong>Get Involved</strong></div>
+<div class="body">
+<div><a href="https://java-net.dev.java.net/">java-net Project</a></div>
+<div><a href="http://www.java.net/request_project.csp">Request a Project</a></div>
+<div><a href="http://community.java.net/help_wanted/">Project&nbsp;Help&nbsp;Wanted&nbsp;Ads</a></div>
+<div><a href="http://community.java.net/projects/publicize.csp">Publicize your Project</a></div>
+<!-- <div><a href="#">Success Stories</a></div>  -->
+<div><a href="http://today.java.net/cs/user/create/bl">Submit Content</a></div>
+</div>
+</div>
+
+<div class="toolgroup" id="communitylinks">
+<div class="label"><strong>Get Informed</strong></div>
+<div class="body">
+<div><a href="http://www.java.net/about.csp">About java.net</a></div>
+<div><a href="http://today.java.net/pub/q/articles">Articles</a></div>
+<div><a href="http://weblogs.java.net/">Blogs</a></div>
+<div><a href="http://www.java.net/events">Events</a></div>
+<div><a href="http://today.java.net/today/alsotoday.csp">Also in Java Today</a></div>
+<div><a href="http://safari.java.net">java.net Online Books</a></div>
+<div><a href="http://today.java.net/today/archive/">java.net Archives</a></div>
+</div>
+</div>
+
+<div class="toolgroup" id="communitylinks">
+<div class="label"><strong>Get Connected</strong></div>
+<div class="body">
+<div><a href="http://forums.java.net">java.net Forums</a></div>
+<div><a href="http://wiki.java.net/">Wiki</a> and <a href="http://wiki.java.net/bin/view/Javapedia/WebHome">Javapedia</a></div>
+<div><a href="http://wiki.java.net/bin/view/People/WebHome">People</a>, <a href="http://partners.java.net">Partners</a>, and <a href="http://wiki.java.net/bin/view/Javanet/JobsWiki">Jobs</a> </div>
+<div><a href="http://community.java.net/jugs/listing.csp">Java User Groups</a></div>
+<div><!--  <a href="https://java-net.dev.java.net/servlets/ProjectMailingListList">Newsletters</a> and  --><a href="http://today.java.net/pub/q/rsschannels">RSS Feeds</a></div>
+</div>
+</div>
+
+<div class="toolgroup" id="communitylinks">
+<div class="label"><b>Search</b></div>
+<div class="body">
+<form action="http://onesearch.sun.com/search/onesearch/index.jsp">
+<div>Web and Projects:</div>
+<div><input type="text" name="qt" class="medium" size="14" onfocus="if( this.value==this.defaultValue ) this.value='';" value=""/>
+<input type="hidden" name="col" value="all-unfiltered">
+<input type="hidden" name="qt" value="+url:java.net">
+<input type="submit" border="0" class="buttonred" value=" &raquo; "></div>
+</form>
+<div>Online Books:</div>
+<form action="http://safari.java.net/search" method="post" name="searchForm" id="form_searchForm">
+<input name="__formName" value="searchForm" type="hidden" />
+<input value="simple" name="searchmode" id="searchmode" type="hidden" />
+<input value="0" name="page" id="page" type="hidden" />
+<input value="summary" name="searchview" id="searchview" type="hidden" />
+<input value="rank" name="sort" id="sort" type="hidden" />
+<input value="desc" name="order" id="order" type="hidden" />
+<input value="1" name="NewSearch" id="NewSearch" type="hidden" />
+<div>
+<input name="searchtextbox" id="searchtextbox" type="text" value="" class="medium" size="14" />
+<input class="buttonred" value=" &raquo; " border="0" type="submit"></div>
+</form>
+<div><a href="http://www.java.net/search.csp">Advanced Search</a></div>
+</div>
+</div>
+</noindex>
+
+</div>
+<br />
+</td>
+<td height="3" colspan="2"><img src="http://today.java.net/images/a.gif" width="1" height="3"><br /></td>
+</tr>
+<tr> 
+<td width="10"><img src="http://today.java.net/images/a.gif" width="10" height="1"></td>
+<td width="100%" valign="top">
+
+
+
+
+<div class="link-note">
+<a href="http://weblogs.java.net/blog/dwalend/index.rdf"><img src="http://www.java.net/images/icons/feed.png" width="16" height="16" vspace="4" hspace="10" border="0" alt="Syndicate this blog (XML)" align="right" /></a><br />
+</div>
+
+
+
+<img src="/images/people/david_walend.jpg" border="0" height="68" width="99" alt="David Walend" align="left" vspace="3" hspace="6" />
+
+
+
+
+<h2><a href="http://weblogs.java.net/blog/dwalend/">David Walend's Blog</a></h2>
+
+<div class="small" align="right">
+<a href="http://weblogs.java.net/blog/dwalend/archive/2007/03/wild_winds_wres_1.html">&laquo;Wild Winds Wrestling with the Restless Sea</a> |
+
+<a href="http://weblogs.java.net/blog/dwalend/">Main</a>
+| <a href="http://weblogs.java.net/blog/dwalend/archive/2007/06/salutafugijms_j_1.html">SalutafugiJMS -- Java Messaging Service on ZeroConf &raquo;</a>
+
+</div>
+
+<div class="grayline"></div>
+
+<h3>Preparing for JavaOne</h3>
+
+<span class="ltcaption1">Posted by <b>dwalend</b> on May 01, 2007 at 08:19 PM</a> | <a href="http://weblogs.java.net/blog/dwalend/archive/2007/05/preparing_for_j.html#comments">Comments (6)</a>
+
+</span>
+
+<br /><br />
+
+<p>
+<a href="http://java.sun.com/javaone/sf/index.jsp">JavaOne</a> is an amazing conference. About 15,000 of us get together to exchange ideas, hear about new things, meet internet friends face-to-face, and explore the boundaries of Geekdom. I use the conference to learn about things far afield from my work, things I can't just read about, and tips for handling the crises I'll wade back into after being gone for a week. Midway through Tuesday, the ideas start mixing in my head. By Wednesday morning, new project ideas and solutions to old problems start percolating in my head. JavaOne is also a test of endurance. I typically loose five pounds and only get about five hours of sleep each night. Consider that carefully before taking my advice.
+</p><p>
+<b>Getting There</b>
+</p><p>
+If you're flying in, Oakland is as good as SFO. It's easy to get to the downtown hotels from the other side of San Francisco Bay via BART. Phone the hotel clerk to ask which stop is closest to them. Jet Blue had the best flights for me this year, possibly due to an embarrassing episode this winter. Travel light enough to skip the car. There's no room for cars in San Francisco and it's a great city for walking. 
+</p><p>
+<b>Sleeping There</b>
+</p><p>
+All I really do at the hotel is sleep, shower and monitor what the crew is up to back at work, so I pick an inexpensive hotel close to the convention center. Hotel service in San Francisco has always been pretty good. The people who work the desk tend to live somewhere in town, and know the place. I found hotel prices via the conference to be a little better, but hotel prices are pretty variable. Every year someone seems to have revamped an older hotel with funky art and all new furniture. For the first year after the revival these hotels have the best price, too. That's why I've never stayed in the same place two years in a row. 
+</p><p>
+Pick a hotel that's a good walk to Moscone. JavaOne has busses, but a walk feels good after days underground.
+</p><p>
+JavaOne is not a great time to sleep on a friend's couch for a week, unless your friend is also going to the conference. You won't be around enough to be a decent guest, and will be keeping some pretty intolerable hours. I usually fly out Friday or Saturday to visit with friends the weekend before the conference.
+</p><p>
+<b>Things to Bring</b>
+</p><p>
+The hotter the interior of California, the colder and soggier San Francisco gets. Two years ago, the conference sold out of sweat shirts. So did the Old Navy near Moscone, and every tourist vendor in town. Early afternoons in May tend to be deceptively perfect, evenings are cool and damp.
+</p><p>
+Moscone's floors are concrete or industrial carpet over concrete. I've got goat hoofs from a lifetime of hiking, but if your feet are tender you will want cushy shoes. My one caveat to traveling light: I take two pairs of shoes, and alternate days. I don't normally wear shoes for 18 hours straight.
+</p><p>
+JavaOne is guys to two sigmas, and coders to three sigmas, so you can pretty much come as you are. I shave most days out of habit, but I doubt anyone cares.
+</p><p>
+Every employer I've ever had has given me at least one box of 1000 business cards per job, promotion and move -- maybe 13000 cards so far. I have no idea why. The only place I've ever run out is JavaOne. Bring at least 50, maybe 200.
+</p><p>
+Gear for me: Notebook, 100 business cards, one lap top (my old power-savvy Mac G4, not the employer's twelve-pounder), two batteries for lap top, cell phone, charger, empty water bottle (filled after clearing airport security), book, shaving kit,  swimsuit, towel, fleece jacket, two pairs shoes, umbrella, carry-on backpack, checked duffle bag, two pairs kakis, good shirt for my presentation, enough underwear, socks and T shirts. 
+</p><p>
+Carried into the conference: Notebook, business cards, lap top, cell phone, backpack, umbrella, fleece jacket, water bottle, one set clothes. 
+</p><p>
+Yes, I bring a cell phone. No, I don't own it. It belongs to work.
+</p><p>
+<b>The Weekend and Monday</b>
+</p><p>
+Things happen over the weekend and Monday. Aside from frantic conference preparation, various expert groups and community groups meet Saturday and Sunday. Monday afternoon and evening were especially good to meet internet friends face to face. Try not to be shocked when we don't look like our internet pictures, or are especially short or tall, or no longer have a two-foot pony tail.
+</p><p>
+<a href="http://java.sun.com/javaone/sf/javauniversity.jsp">JavaOne University</a> runs during this time. It sounds like a good way for beginners to come up to speed on some new technology. This year, on Monday JavaOne is sponsoring <a href="http://developers.sun.com/events/communityone/">CommunityOne</a>. The <a href="http://developers.sun.com/events/communityone/track7.jsp">unconference</a> looks most interesting to me. I'm not sure what to expect from it, but I hope it brings back some of the spontaneity of earlier JavaOnes.
+</p><p>
+<b>Swag</b>
+</p><p>
+When you register, they send you into the basement to pick up conference swag. Expect a lap top case of some kind, so you don't need to bring extra luggage. Some of the things in the bag are useful for life on the road, like the miniature mouse on a spring cable. Typically there's a tee shirt or two, and a lot of developer CDs. There's more swag on the pavilion floor and the alumni room, some of it entertainingly weird. It's been a bit more practical in recent years -- no Pladough or dancing cows, but Google gave away good messenger bags two years ago if you solved their puzzles. I used to harvest swag in the pavilion, but now I only take stuff I plan to use.
+</p><p>
+I'll miss the tee shirt hurling contest this year. In past years, it was just luck -- good luck -- that they missed me. A shirt from some kind of home made air cannon nearly parted my hair.
+</p><p>
+<b>Food</b>
+</p><p>
+JavaOne is a test of endurance for me. I typically loose five pounds during the week. At the conference I sleep about six hours a night and cover about four miles during the day. Your milage may vary.
+</p><p>
+I drink a lot of water during the conference. Staying hydrated lets me stay up longer and helps me hold my beer and salty hours devours. It won't save my voice; I'll be hoarse by Wednesday night.
+</p><p>
+Most of the alumni perks have to do with food. The fire side chat dinner is more of a tasty snack than a dinner (too many alumni). The alumni room gets its own supply of muffins, pastries, juice and coffee in the mornings. The pavilion dinner is good eating. Java community receptions are appetizers. This year it looks like we've got a longer lunch break. Lunch varies in quality day to day. More interesting things are happening, so I'll probably short lunch. It's fine to grab something and take it with you to a keynote or technical session, provided you can eat it quietly and neatly. <a href="http://www.idlewords.com/2007/04/the_alameda-weehawken_burrito_tunnel.htm">Burritos</a>, not tacos, for example
+</p><p>
+I try to use dinner to meet up with friends at the conference I don't see often enough. San Francisco has great restaurants. I'll typically let the friends pick out a place I've never been before. The dinner break is pretty short, so I try and stay within a few blocks of the conference. 
+</p><p>
+<b>Plan the Day</b>
+</p><p>
+Start each day with a plan: Which sessions and BoFs will you attend? Go to a keynote or skip? What to do in the pavilion? Enter a contest? When will you touch base with work? When will you call your family?
+</p><p>
+Moscone is big. If its your first time there, take some time to study the map and know where things are. Don't waste time drifting about inside this combination conference hall and earthquake shelter.
+</p><p>
+<b>Keynotes</b>
+</p><p>
+First, the keynotes are about hype. They rev up the crowd for the day. Second, they're about information. You can learn a lot about what's coming in the next year just from the keynote. Last year Sun announced they were going to make Java open-source. The company has put tremendous work into that effort this year; surely they put off doing something else interesting (IMHO, probably more interesting). There's a lot of hype between the content. I enjoy the muffin, crank through work emails, and plan the day either before or at the keynote. If you need to skip something to catch up on work, skip the keynote and watch it later. Videos of the keynote are the first thing on line.
+</p><p>
+<b>Technical Sessions and BoFs</b>
+</p><p>
+There are ~400 talks at JavaOne. You only get to go to about 30 of them. You have to set priorities. I pick talks to ask questions for work or for my open source projects. I go to talks on topics about which I know very little. I go to talks on things I can't read about. Take the time to get some exposure to something you don't get to do at your current job.
+</p><p>
+Be aware that some talks have great abstracts, but will be weak. Other talks will be brilliant, but cover things you already know. Some sales pitch always sneaks through the selection process. Keep in mind that you are at JavaOne for your own benefit. You're at the talk to learn stuff. Have a backup plan of what to do if the talk is a bust. Slip quietly out the back, and head to another talk or to the pavilion.
+</p><p>
+I find Schedule Builder inadequate for planning my time at the conference. The one available a few years back let you pick out all the sessions you were interested in, then resolve all of the conflicts. The new version only lets you pick one session for each time slot and forces you to resolve conflicts immediately. (Circle with a red ! in it means you've got a conflict already.) The time-out on the application is far too short to read the descriptions of two talks and deciding between them. Schedule Builder tells you there are some repeated sessions (two arrows forming a circle), but doesn't tell you when the repeated session is. I resolve this problem by killing trees; I take notes on paper. My plan for the day, and the backup plan are on paper.
+</p><p>
+In the past, they'd used the food room and spare meeting halls as overflow rooms, piping in sound and video. It wasn't that good a fix -- you couldn't participate in the Q&A. Last year they started making conference attendees use Schedule Builder to sign up for sessions in advance, to guarantee seats to people who wanted to see specific talks. This year the conference planners are selling that as a <a href="http://weblogs.java.net/blog/webmink/archive/2007/04/reserve_seats_a.html">feature</a> that's gotten the appropriate response in the commentary. The obvious new problem is that some things (especially labs) filled up within 24 hours of their turning on Schedule Builder because they didn't get a big enough room. The less obvious problem with schedule builder is that it takes away the spontaneity and some of the social aspects of the conference. There are few conversations while waiting in line to get into a room other than, "waiting in line is lame." In the past, I've had great conversations in the overflow room.
+</p><p>
+Last year there was talk of a contest to improve Schedule Builder for 2007, but it didn't pan out. I think it'd make a good lab. Let the JSF people square off vs. the rich client crowd and give us something that benefits the conference. 
+</p><p>
+<b>Hands-on Labs</b>
+</p><p>
+I'm not a great fan of labs at the conference. Other people love them. For me, two hours is enough time to learn a bit about something, but if I try to do something with it I spend too much time typing and not enough time learning. Some labs go more smoothly than others. I actually get a great deal out of sitting next to someone else and following along. The lab materials tend to be very high quality and are worth picking up to read on the flight home. I'll make two exceptions: Labs that let us play with specific hardware we don't always have access to are really worth it. And if I've got a specific question to ask about something, I'll duck into a lab session to ask it. The crews running the labs often have a different perspective and experience than the people who develop the technology.
+</p><p>
+I'm not sure what to make of <a href="http://java.sun.com/javaone/sf/javaonecamp.jsp">JavaOne Camp</a> yet.
+</p><p>
+<b>Exhibit Pavilion</b>
+</p><p>
+Getting what you want out of the Pavilion takes some skill and daring, but can really pay off. 
+</p><p>
+First, the pavilion caters to those of you looking for swag. I may never need to buy another tee shirt in my life. (Booths tend to run out of huge shirts first, so plan accordingly if you're big. The smaller you are, the less rush.) I don't pick up anything I can't use, unless it's really odd -- a foam rubber dancing cow, for example. Bring a messenger bag or a backpack for the swag.
+</p><p>
+Second, the pavilion is the best place to meet experts and talk to them face-to-face. Come with specific questions in hand, or just listen in on the conversations if you want to learn something. Sun's booth farm tends to be packed, but packed with the right people. If you've got a question, or a list of questions, there's probably someone there who can answer it. They can suggest workarounds for bugs, and give advice on general approaches. You have to work to find the right person; the people who work the Sun booths are a sampling of Sun employees. They do tend to be just one or two hops from the right person. The vendor booths are a little less useful -- they are trying to sell you something. Vendors are much more likely to have a single layer of flappers to hand out swag. Serious technical questions cut right through to the technical people. 
+</p><p>
+A famous JEE application server's flapper: "Did you name your company that [BAE Systems] so that people would confuse you with us?" 
+</p><p>
+The java.net people run a <a href="http://wiki.java.net/bin/view/Javaone/CommunityCorner">miniconference</a> in the pavilion, where different people talk about their open source work. The speakers are enthusiastic. The topics are solid, and are sometimes more daring than the official JavaOne talks. They also have a great couch.
+</p><p>
+The pavilion floor runs at about 80 decibels; it's OK to lean toward someone and put your ear next to his mouth to hear. That's why I'm hoarse by Wednesday.
+</p><p>
+<b>Contests</b>
+</p><p>
+The contest topics tend to be very good, but take away from time for other things. I'd rather the contest coding happened before the conference. (I focus when I code; I hit a groove and drop out of the world for a while. I'd be missing something interesting at JavaOne.)
+</p><p>
+Teams of people win contests. Teams of people with good process and simple ideas win contests. For example, the crew who won last year's slot car challenge had a very simple program, and a process for waiting in line to get lots of track time.
+</p><p>
+<b>Organize the Follow-up</b>
+</p><p>
+I take notes. I collect contacts to follow up with. I capture new ideas during the conference. Afterwards, I have a few weeks' follow-up work. The important thing here is to keep enough of a record so that you know why you want to follow up with someone. I typically write a note on the back of people's business cards to remind myself why I have it.
+</p><p>
+I finish the conference with a mountain of ideas for new projects. One of the jobs on the plane ride home is to sort the projects by work/hobby, easy/hard, smart/crazy, then set priorities for what to do first. That feeds back into the follow-up and sets the focus for my next few months of hobby code.
+</p><p>
+<b>Burn Out</b>
+</p><p>
+I don't recover from red-eye flights well anymore, so I stay on an extra night and go home Saturday. I'll typically spend Friday evening not thinking too hard. I try to meet up with friends from the conference for dinner, maybe a movie, Friday night. Six hours' quiet coding on the plane, a two mile walk and I'm home.
+</p>
+
+<div id="a007202more"><div id="more">
+
+</div></div>
+
+<br />
+Bookmark blog post: <a href="http://del.icio.us/post?title=Preparing for JavaOne&amp;url=http://weblogs.java.net/blog/dwalend/archive/2007/05/preparing_for_j.html"><img src="/images/icons/delicious.gif" alt="del.icio.us" border="0" height="16" hspace="8" vspace="1" width="16" /></a> <a href="http://del.icio.us/post?title=Preparing for JavaOne&amp;url=http://weblogs.java.net/blog/dwalend/archive/2007/05/preparing_for_j.html">del.icio.us</a> <a href="http://digg.com/submit?phase=2&amp;title=Preparing for JavaOne"><img src="/images/icons/digg.gif" alt="Digg" border="0" height="14" hspace="8" width="16" /></a> <a href="http://digg.com/submit?phase=2&amp;title=Preparing for JavaOne&amp;url=http://weblogs.java.net/blog/dwalend/archive/2007/05/preparing_for_j.html">Digg</a> <a href="http://www.dzone.com/links/add.html?url=http://weblogs.java.net/blog/dwalend/archive/2007/05/preparing_for_j.html&amp;title=Preparing for JavaOne"><img src="/images/icons/dzone.gif" alt="DZone" border="0" height="16" hspace="8" width="16" /></a> <a href="http://www.dzone.com/links/add.html?url=http://weblogs.java.net/blog/dwalend/archive/2007/05/preparing_for_j.html&amp;title=Preparing for JavaOne">DZone</a> <a href="http://www.furl.net/storeIt.jsp?t=Preparing for JavaOne&amp;u=http://weblogs.java.net/blog/dwalend/archive/2007/05/preparing_for_j.html"><img src="/images/icons/furl.gif" alt="Furl" border="0" height="17" hspace="8" width="16" /></a> <a href="http://www.furl.net/storeIt.jsp?t=Preparing for JavaOne&amp;u=http://weblogs.java.net/blog/dwalend/archive/2007/05/preparing_for_j.html">Furl</a>  <a href="http://reddit.com/submit?title=Preparing for JavaOne&amp;url=http://weblogs.java.net/blog/dwalend/archive/2007/05/preparing_for_j.html"><img src="/images/icons/reddit.gif" alt="Reddit" border="0" height="18" hspace="8" width="18" /></a> <a href="http://reddit.com/submit?title=Preparing for JavaOne&amp;url=http://weblogs.java.net/blog/dwalend/archive/2007/05/preparing_for_j.html">Reddit</a>
+<br />
+<div class="grayline"></div>
+
+<a name="comments"></a>
+<h5>Comments</h5>
+<span class="small">Comments are listed in date ascending order (oldest first) | <a href="#post">Post Comment</a></span>
+<br /><br />
+
+<ul>
+<li>
+<a name="25601"></a>
+<div id="c25601">
+This will be my first JavaOne. So this information is really helpful to us newbies. Thank you.
+<p class="posted"><span class="ltcaption1">Posted by: jtp51  on May 02, 2007 at 06:44 AM</span></p>
+</div>
+</li>
+</ul>
+<ul>
+<li>
+<a name="25639"></a>
+<div id="c25639">
+also a newby .. thanks for the tips....
+<p class="posted"><span class="ltcaption1">Posted by: felipegaucho  on May 03, 2007 at 02:40 AM</span></p>
+</div>
+</li>
+</ul>
+<ul>
+<li>
+<a name="25646"></a>
+<div id="c25646">
+Glad to help.
+<p class="posted"><span class="ltcaption1">Posted by: dwalend  on May 03, 2007 at 05:44 AM</span></p>
+</div>
+</li>
+</ul>
+<ul>
+<li>
+<a name="25647"></a>
+<div id="c25647">
+Almost forgot -- pick up your badge before Tuesday morning. It'll let you dodge a huge line.
+
+
+<p class="posted"><span class="ltcaption1">Posted by: dwalend  on May 03, 2007 at 05:45 AM</span></p>
+</div>
+</li>
+</ul>
+<ul>
+<li>
+<a name="25728"></a>
+<div id="c25728">
+Also my first JavaOne conference. Excellent article with good info, thanks for the tips!
+
+Couple questions: I've seen pictures from past JavaOne's with people wearing JavaOne backpacks.  Are these given to each attendee or must you purchase them?
+
+What is your opinion of the BOF sessions?  Worth going to?
+
+Thanks!
+<p class="posted"><span class="ltcaption1">Posted by: dhergert  on May 05, 2007 at 02:34 PM</span></p>
+</div>
+</li>
+</ul>
+<ul>
+<li>
+<a name="25737"></a>
+<div id="c25737">
+<p>
+dhergert,
+</p><p>
+The backpack was a gift. Some years (like last year) they give us a really good computer bag. Some years it's something less ergonomic. 
+</p><p>
+I think the BoF sessions are the best of the conference. The BoF talks often cover more intriguing topics on less mature technology. The scale of the BoFs is smaller and closer to the speaker. The discussions after the BoFs tend to be extremely good. If I'm choosing between staying up late for BoFs or getting up early for key notes, I take the BoFs every time. 
+</p>
+<p class="posted"><span class="ltcaption1">Posted by: dwalend  on May 05, 2007 at 09:45 PM</span></p>
+</div>
+</li>
+</ul>
+
+
+<br /><br />
+
+
+
+<form method="post" action="http://weblogs.java.net/mt/comments" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="7202" />
+
+<a name="post"></a>
+
+<b>Only logged in users may post comments. <a href="/cs/user/login?x-redirect=http://weblogs.java.net/blog/dwalend/archive/2007/05/preparing_for_j.html">Login Here</a>.</b>
+
+<!--  TS: var-  -->
+<!--  TS: cfg-  -->
+<!--  TS: vars-  -->
+<!--  TS: test -   -->
+
+<!--  TS: cpt -   -->
+
+
+</form>
+
+</MTIfCommentsAllowed>
+
+
+
+
+<br />
+
+<div class="footer" align="right">This work is licensed under a
+<a href="http://creativecommons.org/licenses/by-nc-sa/2.0/">Creative Commons License</a>.<br />
+<a href="http://creativecommons.org/licenses/by-nc-sa/2.0/"><img src="http://creativecommons.org/images/public/somerights.gif" alt="Creative Commons License" border="0" height="31" width="88" hspace="2" vspace="2" /></a>
+</div>
+
+
+<br />
+<div id="powered" align="right">
+<b>Powered by</b><br />
+<a href="http://www.movabletype.org">Movable Type 3.01D</a><br />    
+</div>
+
+
+
+</td></tr></table>
+
+<!--  BEGIN VNV5 FOOTER   -->
+<!--  BEGIN VNV5 FOOTER   -->
+<table border="0" cellpadding="0" cellspacing="10" width="100%">
+<tr>
+<td>
+&nbsp;<a href="http://today.java.net/pub/q/java_net_rss"><img src="/images/icons/feed.png" border="0" width="16" height="16" alt="Feed" align="absmiddle"></a>&nbsp;<a href="http://today.java.net/pub/q/java_net_rss">java.net RSS Feeds</a><br />
+<div class="grayline"></div>
+<table border="0" cellpadding="0" cellspacing="0" width="100%" class="vatop">
+<tr>
+<td><img src="/im/a.gif" width="190" height="1" border="0" alt=" " /><br />
+<a href="http://www.sun.com"><img src="/im/logo_sun_small.gif" width="61" height="29" border="0" alt=" " vspace="5"/></a></td>
+<td width="60%" valign="top">
+<div class="footer">
+
+<!--  Start Quantcast tag  -->
+<script type="text/javascript" src="http://edge.quantserve.com/quant.js"></script>
+<script type="text/javascript">
+_qacct="p-20l78bOOCbhcg";quantserve();</script>
+<noscript>
+<img src="http://pixel.quantserve.com/pixel/p-20l78bOOCbhcg.gif" style="display: none" height="1" width="1" alt="Quantcast"/></noscript>
+<!--  End Quantcast tag  -->
+
+<a href="https://java-net.dev.java.net/feedback.html">Feedback</a> &nbsp;|&nbsp;<a href="http://java.net/faq.csp">FAQ</a> &nbsp;|&nbsp;<a href="http://java.net/presscenter/">Press</a>&nbsp;|&nbsp;<a href="http://java.net/terms.csp">Terms of Use</a><br />
+<a href="http://www.sun.com/privacy/">Privacy</a> &nbsp;|&nbsp;
+<a href="http://www.sun.com/suntrademarks/">Trademarks</a>&nbsp;|&nbsp;<a href="https://java-net.dev.java.net/sitemap.html">Site Map</a>
+<br /><span class="sp5">&nbsp;</span><br />
+Your use of this web site or any of its content or software indicates your agreement to be bound by these <a href="http://java.net/terms.csp">Terms of Participation</a>.<br />
+<span class="sp5">&nbsp;</span><br />
+Copyright &copy; 1995-2008 Sun Microsystems, Inc.
+</div></td>
+<td width="40%" valign="top" align="right"><div class="footer">
+<a href="http://www.oreilly.com"><img src="/images/montague_logo_oreilly.gif" width="74" height="19" border="0" alt="Oreilly Logo"></a><a href="http://www.collab.net/"><img src="/images/montague_logo_collabnet.gif" width="85" height="19" border="0" alt="Collabnet Logo"></a><br>
+Powered by Sun Microsystems, Inc.,<br /> O'Reilly and CollabNet
+</div></td></tr>
+<!--  <tr><td colspan="3" valign="top" class="grey3"><img src="/im/a.gif" width="1" height="2" border="0" alt=" " /></td></tr>  -->
+</table>
+<div class="grayline"></div>
+</td></tr>
+</table>
+<!--  END VNV5 FOOTER  -->
+
+<!--  Begin SiteCatalyst code  -->
+<script language="JavaScript" src="http://www.java.net/s_code_remote.js"></script>
+<!--  End SiteCatalyst code  -->
+
+
+</body>
+</html>

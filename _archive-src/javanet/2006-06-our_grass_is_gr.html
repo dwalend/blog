@@ -1,0 +1,283 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" /> 
+<title>Our Grass is Greenest: OGNL and LINQ | Java.net</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="alternate" type="application/atom+xml" title="Java.net Atom" href="/node/235745/atom/feed" />
+<meta name="description" content="About a month ago there was a flurry of blogs about LINQ (Langua" />
+<meta name="robots" content="index,follow" />
+<meta name="DC.title" content="Our Grass is Greenest: OGNL and LINQ" />
+<link rel="shortcut icon" href="/misc/favicon.ico" type="image/x-icon" />
+<link type="text/css" rel="stylesheet" media="all" href="/sites/default/files/css/css_af4e7d6b9b2939fd69526c5b49804d2a.css" />
+<!--[if IE]>
+<link rel="stylesheet" href="/sites/all/themes/java/ie.css" />
+<![endif]-->
+
+<style>
+#edit-taxonomy-6-wrapper{display:none} /*feed category*/
+</style>
+
+<style>
+#edit-taxonomy-4-wrapper{display:none} /*comm homepage*/
+</style>
+
+
+<link rel="shortcut icon" href="http://community.java.net/favicon.ico">
+<!--  Begin SiteCatalyst code  -->
+<script language="JavaScript">
+<!--
+var s_channel="other";
+//--></script>
+<!--  End SiteCatalyst code  -->
+</head>
+<body id="page-body" leftmargin="0" topmargin="0" rightmargin="0" bgcolor="#ffffff" marginheight="0" marginwidth="0">
+<a name="top"></a>
+<div class="topline">
+  <div class="topbar">
+    <table border="0" cellpadding="0" cellspacing="0" height="25" width="100%">
+      <tbody>
+        <tr>
+          <td rowspan="2" width="100%"><a href="http://www.java.net/"><img src="/images/header_jnet_new.jpg" alt="The Source for Java Technology Collaboration" border="0" height="60" width="500"></a></td>
+          <td style="vertical-align: middle;" nowrap="nowrap"><div id="login">
+          	              <form name="loginform" id="loginform" action="https://www.dev.java.net/servlets/TLogin" method="post">
+                <input name="redir" value="http://www.java.net/blog/dwalend/archive/2006/06/our_grass_is_gr.html" type="hidden">
+                <div> <strong>User:</strong>
+                  <input name="loginID" id="loginID" value="" size="7" maxlength="32" type="text">
+                  <strong>Password:</strong>
+                  <input name="password" id="password" value="" size="7" maxlength="32" type="password">
+                  <input name="Login" class="buttonred" id="Button" value="Login" type="submit">
+                </div>
+                <div class="small" align="right"><strong> <a href="https://www.dev.java.net/servlets/Join">Register</a> | <a href="https://www.dev.java.net/servlets/TLogin">Login help</a> &nbsp;&nbsp;&nbsp;</strong>
+						</div>
+              </form>
+            </div></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <noindex>
+    <div class="tabs" id="toptabs">
+      <table border="0" cellpadding="4" cellspacing="0">
+        <tbody>
+          <tr>
+            <!-- make the active tab a TH instead of TD -->
+            <td><a href="https://www.dev.java.net/servlets/StartPage">My pages</a> </td>
+            								<td><a href="http://www.java.net/projects/">Projects</a></td>
+                <td><a href="http://www.java.net/community">Communities</a> </td>
+                <th><a href="http://www.java.net/">java.net</a></th>
+							          </tr>
+        </tbody>
+      </table>
+    </div>
+  </noindex>
+
+  <table id="main" border="0" cellpadding="2" cellspacing="2" width="100%">
+    <tbody>
+      <tr valign="top">
+        <td id="leftcol" rowspan="2" width="170">
+           <div id="block-menu-menu-get-involved" class="clear-block block block-menu">
+
+  <h2>Get Involved</h2>
+
+  <div class="content"><ul class="menu"><li class="leaf first"><a href="/about-javanet" title="About java.net">About java.net</a></li>
+<li class="leaf"><a href="/request-project" title="Request a Project">Request a Project</a></li>
+<li class="leaf"><a href="/publicize-your-project" title="Publicize your Project">Publicize your Project</a></li>
+<li class="leaf"><a href="/submit-content" title="Submit Content">Submit Content</a></li>
+<li class="leaf"><a href="https://java-net.dev.java.net/" title="">java-net Project</a></li>
+<li class="leaf"><a href="/enhancements" title="">Java.net Enhancements</a></li>
+<li class="leaf"><a href="https://www.dev.java.net/servlets/OpenCollabNet" title="">Site Help</a></li>
+<li class="leaf last"><a href="/form/report-inappropriate-content" title="Report Inappropriate Content">Report Inappropriate Content</a></li>
+</ul></div>
+</div>
+<div id="block-menu-menu-get-informed" class="clear-block block block-menu">
+
+  <h2>Get Informed</h2>
+
+  <div class="content"><ul class="menu"><li class="leaf first"><a href="/articles" title="">Articles</a></li>
+<li class="leaf"><a href="/blogfront" title="">Blogs</a></li>
+<li class="leaf"><a href="/events" title="">Events</a></li>
+<li class="leaf"><a href="http://safari.java.net/" title="">java.net Online Books</a></li>
+<li class="leaf last"><a href="/today/archive" title="Archive">java.net Archives</a></li>
+</ul></div>
+</div>
+<div id="block-menu-menu-get-connected" class="clear-block block block-menu">
+
+  <h2>Get Connected</h2>
+
+  <div class="content"><ul class="menu"><li class="leaf first"><a href="http://forums.java.net/" title="">java.net Forums</a></li>
+<li class="leaf"><a href="http://wiki.java.net" title="">Wiki</a></li>
+<li class="leaf"><a href="http://wiki.java.net/bin/view/Javapedia/WebHome" title="">Javapedia</a></li>
+<li class="leaf"><a href="http://wiki.java.net/bin/view/People/WebHome" title="">People</a></li>
+<li class="leaf"><a href="/partners" title="">Partners</a></li>
+<li class="leaf"><a href="http://wiki.java.net/bin/view/Javanet/JobsWiki" title="">Jobs</a></li>
+<li class="leaf"><a href="/pub/q/rsschannels" title="">RSS Feeds</a></li>
+<li class="leaf last"><a href="/jugs-list">Java User Groups</a></li>
+</ul></div>
+</div>
+<div id="block-block-1" class="clear-block block block-block">
+
+  <h2>Search</h2>
+
+  <div class="content"><form action="http://www.google.com/cse" id="cse-search-box">
+                  <div>Web and Projects:</div>
+                  <div>
+                   <input type="text" name="q" size="22" />
+                   <input type="hidden" name="cx" value="017555676512375062942:o5-kz1r0m2s" />
+                   <input type="hidden" name="ie" value="UTF-8" />
+                    <input type="submit" name="sa" value="Search" />
+                  </div>
+                </form>
+<script type="text/javascript" src="http://www.google.com/cse/brand?form=cse-search-box&lang=en"></script>
+
+
+
+            <!--<script type="text/javascript" src="/images/brand.htm"></script>-->
+                <div>Online Books:</div>
+                <form action="http://safari.java.net/search" method="post" name="searchForm" id="form_searchForm">
+                  <input name="__formName" value="searchForm" type="hidden">
+                  <input value="simple" name="searchmode" id="searchmode" type="hidden">
+                  <input value="0" name="page" id="page" type="hidden">
+                  <input value="summary" name="searchview" id="searchview" type="hidden">
+                  <input value="rank" name="sort" id="sort" type="hidden">
+                  <input value="desc" name="order" id="order" type="hidden">
+                  <input value="1" name="NewSearch" id="NewSearch" type="hidden">
+                  <div>
+                    <input name="searchtextbox" id="searchtextbox" value="" class="medium" size="14" type="text">
+                    <input class="buttonred" value=" » " border="0" type="submit">
+                  </div>
+                </form>
+                <div>java.net on <a href="http://markmail.org/">MarkMail</a>:</div>
+                <form action="http://markmail.org/search/list:net.java">
+                  <div>
+                    <input name="q" id="searchtextbox" value="" class="medium" size="14" type="text">
+                    <input class="buttonred" value=" » " border="0" type="submit">
+                  </div>
+                </form>
+                <div><a href="http://www.java.net/search">Advanced Search</a></div>
+</div>
+</div>
+        </td>
+        <td colspan="2" height="3"><img src="/images/a.gif" height="3" width="1"><br></td>
+      </tr>
+      <tr>
+        <td width="10"><img src="/images/a.gif" height="1" width="10"></td>
+        <td valign="top" width="100%">
+          <br>
+          <a name="skip2content"></a>
+          	            	<div id="content-top">
+              	<div id="block-block-20" class="clear-block block block-block">
+
+
+  <div class="content"><div id="blog-author-top"><table><tr><td><div id="blog-author-body"><img align="left" src="/images/people/david_walend.jpg" border="0" /></div></td><td valign="top"><h2><a href="/blog/7120">David Walend</a></h2><div id="blog-nav-links"><a href="/blog/2006/06/05/brilliant-approach-optional-data-design-wicked-hack-source-horrible-suffering">Brilliant Approach to Optional Data Design? Wicked Hack? Source of Horrible Suffering?</a> | <a href="/blog/7120">Main</a> | <a href="/blog/2006/07/18/what-giants-vote-my-generics-rfe">What Giants? - Vote For My Generics RFE</a></div></td></tr></table><div id="blog-author-feedlink2"><a href="/blog/7120/feed"><img src="/misc/feed.png" border="0" /></a></div></div><div style="clear:both"></div><div style="border-bottom: 4px #eee solid;">&nbsp;</div></div>
+</div>
+              </div>
+            						                          <h2 class="title">Our Grass is Greenest: OGNL and LINQ</h2>
+                                                <style>
+#edit-taxonomy-6-wrapper{display:none} /*feed category*/
+</style>
+
+<style>
+#edit-taxonomy-4-wrapper{display:none} /*comm homepage*/
+</style>
+
+  <div class="blog-node node">
+          <div id="blog-submitted">Posted by <a href="/blog/7120">dwalend</a> on June 19, 2006 at 12:36 PM PDT</div>  
+  <div class="content"><span class='print-link'></span><p>
+About a month ago there was a <a href="http://weblogs.java.net/blog/jonbruce/archive/2006/05/a_java_perspect.html">flurry</a> <a href="http://weblogs.java.net/blog/robogeek/archive/2006/05/syntactic_sugar.html">of</a> <a href="http://humbleblogger.blogspot.com/2006/05/language-wars-redux-imminent-approach.html">blogs</a> about <a href="http://msdn.microsoft.com/data/ref/linq/">LINQ</a> (Language Integrated Query. I'm not sure what the N stands for.) These articles are a very good description of LINQ, which looks like a useful add-on to the Microsoft CLR family of languages. LINQ would let me wind through layers of getters from the top level, to pluck out just the objects I care about. That's a nice way of saying I feel our usual C#-induced draw of language feature envy.
+</p><p>
+Deja vu followed that feeling of envy. Two years ago I was checking on what some old coworkers from VNP were doing. Drew Davidson and Luke Blanshard had created <a href="http://www.ognl.org/">OGNL</a>, the Object-Graph Navigation Language. OGNL is "an expression language for getting and setting properties of Java objects. You use the same expression for both getting and setting the value of a property." I've been looking for a nail for the OGNL hammer since I saw it. I think the main reason I haven't used OGNL is that writing a big chain of accessors is straightforward (for simple queries), and custom methods to select and build up collections of things inside of classes I control is not hard (for more interesting queries). So unless I force myself to do the (easy) overhead work of adding OGNL to a project, I'll continue to add the (not hard to write) one-off code to get the feature.
+</p><p>
+OGNL was inspired by frustration with <a href="http://jakarta.apache.org/commons/beanutils/commons-beanutils-1.7.0/docs/api/org/apache/commons/beanutils/package-summary.html#standard.nested">commons beanutils' PropertyUtils</a>; Java developers have been sharing this sort of thing for at least five years. We've no reason to feel envy. We just need to get some clue of what we already have, filter out the better ideas, share them and eventually convince the JCP to codify them.
+</p><p>
+I'll also have to regain my waning faith in Sun's process to evolve Java. We've still no bug parade number for my generics RFE.
+</p></div>
+    <div class="links">&raquo; <ul class="links inline"><li class="blog_usernames_blog first"><a href="/blogs/dwalend" title="Read dwalend&#039;s latest blog entries.">dwalend&#039;s blog</a></li>
+<li class="comment_forbidden"><span><a href="/user/login?destination=comment/reply/235745%2523comment-form">Login</a> or <a href="/user/register?destination=comment/reply/235745%2523comment-form">register</a> to post comments</span></li>
+<li class="statistics_counter"><span>212 visits</span></li>
+<li class="print_html last"><a href="/print/235745" title="Display a printer-friendly version of this page." class="print-page" rel="nofollow">Printer-friendly version</a></li>
+</ul></div>      </div>
+  <div id="comment-header">Comments</div>
+  <div id="comment-header2">Comments are listed in date ascending order (oldest first)</div>
+                                        <div id="content-bottomdiv2">
+                	                </div>
+                            
+        </td>
+              </tr>
+      <tr>
+        <td rowspan="2" valign="bottom"><img src="/images/a.gif" alt=" " border="0" height="1" width="170"><br>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <br>
+  <img src="/images/a.gif" alt=" " border="0" height="1" width="170"><br>
+  <img src="/images/a.gif" alt=" " border="0" height="1" width="170"><br>
+
+  <table border="0" cellpadding="0" cellspacing="10" width="100%">
+    <tbody>
+      <tr>
+        <td>&nbsp;
+          <div class="grayline"></div>
+          <table class="vatop" border="0" cellpadding="0" cellspacing="0" width="100%">
+            <tbody>
+              <tr>
+                <td><img src="/images/a.gif" alt=" " border="0" height="1" width="190"><br>
+                  <a href="http://www.sun.com/"><img src="/images/logo_sun_small.gif" alt=" " border="0" height="29" vspace="5" width="61"></a></td>
+                <td valign="top" width="60%"><div class="footer">
+                    <!--  Start Quantcast tag  -->
+                    <script type="text/javascript" src="/images/quant.js"></script> 
+                    <script type="text/javascript">
+											_qacct="p-20l78bOOCbhcg";
+											quantserve(); 
+                    </script>
+                    <noscript>
+                    <img src="http://pixel.quantserve.com/pixel/p-20l78bOOCbhcg.gif" style="display: none" height="1" width="1" alt="Quantcast"/>
+                    </noscript>
+                    <!--  End Quantcast tag  -->
+                    <a href="https://java-net.dev.java.net/feedback.html">Feedback</a> &nbsp;|&nbsp;<a href="/javanet-faq">FAQ</a> &nbsp;|&nbsp;<a href="http://java.net/presscenter/">Press</a>&nbsp;|&nbsp;<a href="/javanet-web-site-terms-use">Terms of Use</a><br>
+                    <a href="http://www.sun.com/privacy/">Privacy</a> &nbsp;|&nbsp; <a href="http://www.sun.com/suntrademarks/">Trademarks</a>&nbsp;|&nbsp;<a href="https://java-net.dev.java.net/sitemap.html">Site Map</a> <br>
+                    <span class="sp5">&nbsp;</span><br>
+                    Your use of this web site or any of its content or software indicates your agreement to be bound by these <a href="/javanet-web-site-terms-use">Terms of Participation</a>.<br>
+                    <span class="sp5">&nbsp;</span><br>
+                    Copyright &copy; 1995-2008 Sun Microsystems, Inc. </div></td>
+                <td align="right" valign="top" width="40%"><div class="footer"> 
+		<a href="http://www.collab.net/"><img src="/images/montague_logo_collabnet.gif" alt="Collabnet Logo" border="0" height="19" width="85"></a>
+		<a href="http://www.cognisync.com/"><img src="/images/cognisync.jpg" alt="Cognisync Communities" border="0"></a>
+<br>
+                    Powered by Sun Microsystems, Inc.,<br>
+                    CollabNet and Cognisync </div></td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="grayline"></div></td>
+      </tr>
+    </tbody>
+  </table>
+  <!--  Begin SiteCatalyst code  
+  <script language="JavaScript" src="/images/s_code_remote.js"></script>
+  <script type="text/javascript" src="/images/metrics_group1.js"></script> 
+   End SiteCatalyst code  -->
+</div>
+<div style="display:none"> </div>
+<script type="text/javascript" src="/sites/default/files/js/js_44eb2ff930a1455efe1931bab6efb04e.js"></script>
+<script type="text/javascript">
+<!--//--><![CDATA[//><!--
+jQuery.extend(Drupal.settings, { "basePath": "/", "extlink": { "extTarget": "_blank", "extClass": 0, "extSubdomains": 1, "extExclude": "", "extInclude": "", "extAlert": 0, "extAlertText": "This link will take you to an external web site. We are not responsible for their content.", "mailtoClass": 0 }, "fivestar": { "titleUser": "Your rating: ", "titleAverage": "Average: ", "feedbackSavingVote": "Saving your vote...", "feedbackVoteSaved": "Your vote has been saved.", "feedbackDeletingVote": "Deleting your vote...", "feedbackVoteDeleted": "Your vote has been deleted." } });
+//--><!]]>
+</script>
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-10612840-1");
+pageTracker._trackPageview();
+} catch(err) {}
+</script>
+</body>
+</html>
+

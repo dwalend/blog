@@ -710,17 +710,24 @@ One "the blog is back, here is where it lives, here is the feed" note on both
 channels once Phase 9 is verified. Point at `/feed.xml` explicitly - the whole
 reason for leaving Hashnode was that the feed had become undiscoverable.
 
-## Phase 12 - GoatCounter  [INSTALLED 2026-08-25, awaiting signup]
+## Phase 12 - GoatCounter  [DONE 2026-08-25]
 
-**The snippet is in `src/_includes/head.liquid` and builds.** It is on all 18
-real pages and on none of the 24 alias redirect stubs, which is correct - those
-meta-refresh to the real page, which counts the visit. Nothing double-counts.
+Live at `https://intuitivecounter.goatcounter.com`. The snippet is in
+`src/_includes/head.liquid`, on all 18 real pages and none of the 24 alias
+redirect stubs - correct, since those meta-refresh to the real page, which
+counts, so nothing double-counts.
 
-**One step is outstanding and only David can do it: registering the site code.**
-`https://intuitivecounter.goatcounter.com` currently answers 400, which is what
-GoatCounter returns for an unregistered site, so the code is free and unclaimed.
-Until it is registered the counting requests fail harmlessly - no console errors
-a reader would notice, no broken layout, just no data.
+**Both paths are verified, separately.** A normal page load registers via the
+script; a load with JavaScript disabled registers via the `<noscript>` pixel.
+That second test is the one that mattered - it is the property GoatCounter was
+chosen for, and it is the failure that would have looked like success, since the
+dashboard shows numbers either way and would simply have been missing every
+reader who does not run JS.
+
+Nice detail on how it was checked: the GoatCounter dashboard is itself a JS app,
+so its breaking under JS-off is independent proof that JS really was off. The
+counting endpoint is a plain image request, which is why the pixel still got
+through.
 
 ### Why this one and not the others
 
@@ -795,17 +802,23 @@ Worth noticing it ends; not worth much weight.
    grep -c 'gc.zgo.at' _site/2026/08/centaur-hoofbeats/index.html
    ```
 
-5. **Deploy, then verify both paths separately.** Load a page normally and
-   confirm a hit appears in the dashboard. Then load one **with JavaScript
-   disabled** and confirm a hit still appears. If only the first works, the
-   `<noscript>` half is wrong and the tool has lost the advantage it was picked
-   for.
+5. ~~**Deploy, then verify both paths separately.**~~ **[DONE]** - three hits,
+   the third from a JavaScript-disabled load, so the `<noscript>` pixel fires on
+   its own.
 6. ~~**Update the decisions table**~~ **[DONE]** - the Analytics row now reads
    GoatCounter, with what it does and does not collect.
-7. **Optional: mention it somewhere.** A line in the footer or `/about/` naming
+7. **Optional, still open: mention it somewhere.** A line in the footer or `/about/` naming
    GoatCounter and what it does not collect. Not obligatory - the site has never
    claimed to run nothing - but cheap, and the kind of thing a reader who cares
    about this would like to find.
+
+### Housekeeping
+
+- **Delete the `/test-from-claude` hit** from the dashboard. It came from probing
+  the count endpoint to find out whether the site code was registered, and it is
+  a path that does not exist on the site.
+- **Set "ignore my own visits"** in settings, or your own browsing dominates the
+  numbers.
 
 ### Rollback
 

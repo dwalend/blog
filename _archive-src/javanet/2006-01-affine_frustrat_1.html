@@ -1,0 +1,439 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="http://www.movabletype.org/" />
+
+<title>David Walend's Blog: Affine Frustration Transformed - New! Fewer Bugs!</title>
+
+<link rel="stylesheet" href="http://weblogs.java.net/blog/styles-site.css" type="text/css" />
+<link rel="stylesheet" href="http://www.java.net/css/main.css" type="text/css">
+<link rel="alternate" type="application/rss+xml" title="RSS" href="http://weblogs.java.net/blog/dwalend/index.rdf" />
+<link rel="alternate" type="application/atom+xml" title="Atom" href="http://weblogs.java.net/blog/dwalend/atom.xml" />
+
+<link rel="start" href="http://weblogs.java.net/blog/dwalend/" title="Home" />
+<link rel="prev" href="http://weblogs.java.net/blog/dwalend/archive/2005/08/connecting_to_a.html" title="Connecting to a Command Line Process" />
+
+<link rel="next" href="http://weblogs.java.net/blog/dwalend/archive/2006/05/tilting_at_the_1.html" title="Tilting at the Generics Windmill" />
+
+
+
+
+
+<!--  Begin SiteCatalyst code  -->
+<script language="JavaScript">
+<!--
+var s_channel="David Walend's Blog";
+//--></script>
+<!--  End SiteCatalyst code  -->
+
+</head>
+
+<body>
+
+<!--  Masthead  -->
+<div class="topline">
+<div class="topbar">
+<table border="0" cellpadding="0" cellspacing="0" width="100%" height="25">
+<tr>
+<td width="100%" rowspan="2"><a href="http://www.java.net"><img src="/images/header_jnet_new.jpg" width="500" height="60" border="0" alt="The Source for Java Technology Collaboration"></a></td>
+ <td nowrap="nowrap" style="vertical-align:middle">
+ <div id="login">
+ 
+  <form name="loginform" id="loginform" action="https://www.dev.java.net/servlets/TLogin" method="post">
+  <input type="hidden" name="redir" value="http://weblogs.java.net/blog/dwalend/archive/2006/01/affine_frustrat_1.html">
+  <div>
+  <strong>User:</strong>
+   <input type="text" name="loginID" id="loginID" value="" size="7" maxlength="32" />
+   <strong>Password:</strong>
+
+   <input type="password" name="password" id="password" value="" size="7" maxlength="32" />
+   <input type="submit" name="Login" class="buttonred" id="Button" value="Login" /> </div>
+  <div class="small" align="right"><strong> <a href="https://www.dev.java.net/servlets/Join">Register</a>  | <a href="https://www.dev.java.net/servlets/TLogin">Login help</a>   &nbsp;&nbsp;&nbsp;</strong></div> 
+</form>
+ 
+</div>
+</td> 
+</tr>
+</table>
+</div>
+
+<!--  Tabs  -->
+
+
+<noindex>
+<div class="tabs" id="toptabs">
+<table cellspacing=0 cellpadding=4 border=0>
+<tbody>
+<tr>
+<td><a href="https://www.dev.java.net/servlets/StartPage">My       pages</a> </td>
+<td><a       href="http://community.java.net/projects/">Projects</a></td>
+<td><a href="http://community.java.net">Communities</a>   </td>
+<th><a href="http://www.java.net">java.net</a></th>
+</tr></tbody></table></div>
+</noindex>
+
+
+
+<table id="main" cellspacing="2" cellpadding="2" width="100%" border="0">
+  <tbody>
+  <tr valign=top>
+    <td id="leftcol" width="150" rowspan="2">
+	<img src="http://today.java.net/im/a.gif" width="150" height="1"><br />
+<div id="navcolumn">
+<!--   COMMUNITY LINKS   -->
+<noindex>
+<div class="toolgroup" id="communitylinks">
+<div class="label"><strong>Get Involved</strong></div>
+<div class="body">
+<div><a href="https://java-net.dev.java.net/">java-net Project</a></div>
+<div><a href="http://www.java.net/request_project.csp">Request a Project</a></div>
+<div><a href="http://community.java.net/help_wanted/">Project&nbsp;Help&nbsp;Wanted&nbsp;Ads</a></div>
+<div><a href="http://community.java.net/projects/publicize.csp">Publicize your Project</a></div>
+<!-- <div><a href="#">Success Stories</a></div>  -->
+<div><a href="http://today.java.net/cs/user/create/bl">Submit Content</a></div>
+</div>
+</div>
+
+<div class="toolgroup" id="communitylinks">
+<div class="label"><strong>Get Informed</strong></div>
+<div class="body">
+<div><a href="http://www.java.net/about.csp">About java.net</a></div>
+<div><a href="http://today.java.net/pub/q/articles">Articles</a></div>
+<div><a href="http://weblogs.java.net/">Blogs</a></div>
+<div><a href="http://www.java.net/events">Events</a></div>
+<div><a href="http://today.java.net/today/alsotoday.csp">Also in Java Today</a></div>
+<div><a href="http://safari.java.net">java.net Online Books</a></div>
+<div><a href="http://today.java.net/today/archive/">java.net Archives</a></div>
+</div>
+</div>
+
+<div class="toolgroup" id="communitylinks">
+<div class="label"><strong>Get Connected</strong></div>
+<div class="body">
+<div><a href="http://forums.java.net">java.net Forums</a></div>
+<div><a href="http://wiki.java.net/">Wiki</a> and <a href="http://wiki.java.net/bin/view/Javapedia/WebHome">Javapedia</a></div>
+<div><a href="http://wiki.java.net/bin/view/People/WebHome">People</a>, <a href="http://partners.java.net">Partners</a>, and <a href="http://wiki.java.net/bin/view/Javanet/JobsWiki">Jobs</a> </div>
+<div><a href="http://community.java.net/jugs/listing.csp">Java User Groups</a></div>
+<div><!--  <a href="https://java-net.dev.java.net/servlets/ProjectMailingListList">Newsletters</a> and  --><a href="http://today.java.net/pub/q/rsschannels">RSS Feeds</a></div>
+</div>
+</div>
+
+<div class="toolgroup" id="communitylinks">
+<div class="label"><b>Search</b></div>
+<div class="body">
+<form action="http://onesearch.sun.com/search/onesearch/index.jsp">
+<div>Web and Projects:</div>
+<div><input type="text" name="qt" class="medium" size="14" onfocus="if( this.value==this.defaultValue ) this.value='';" value=""/>
+<input type="hidden" name="col" value="all-unfiltered">
+<input type="hidden" name="qt" value="+url:java.net">
+<input type="submit" border="0" class="buttonred" value=" &raquo; "></div>
+</form>
+<div>Online Books:</div>
+<form action="http://safari.java.net/search" method="post" name="searchForm" id="form_searchForm">
+<input name="__formName" value="searchForm" type="hidden" />
+<input value="simple" name="searchmode" id="searchmode" type="hidden" />
+<input value="0" name="page" id="page" type="hidden" />
+<input value="summary" name="searchview" id="searchview" type="hidden" />
+<input value="rank" name="sort" id="sort" type="hidden" />
+<input value="desc" name="order" id="order" type="hidden" />
+<input value="1" name="NewSearch" id="NewSearch" type="hidden" />
+<div>
+<input name="searchtextbox" id="searchtextbox" type="text" value="" class="medium" size="14" />
+<input class="buttonred" value=" &raquo; " border="0" type="submit"></div>
+</form>
+<div><a href="http://www.java.net/search.csp">Advanced Search</a></div>
+</div>
+</div>
+</noindex>
+
+</div>
+<br />
+</td>
+<td height="3" colspan="2"><img src="http://today.java.net/images/a.gif" width="1" height="3"><br /></td>
+</tr>
+<tr> 
+<td width="10"><img src="http://today.java.net/images/a.gif" width="10" height="1"></td>
+<td width="100%" valign="top">
+
+
+
+
+<div class="link-note">
+<a href="http://weblogs.java.net/blog/dwalend/index.rdf"><img src="http://www.java.net/images/icons/feed.png" width="16" height="16" vspace="4" hspace="10" border="0" alt="Syndicate this blog (XML)" align="right" /></a><br />
+</div>
+
+
+
+<img src="/images/people/david_walend.jpg" border="0" height="68" width="99" alt="David Walend" align="left" vspace="3" hspace="6" />
+
+
+
+
+<h2><a href="http://weblogs.java.net/blog/dwalend/">David Walend's Blog</a></h2>
+
+<div class="small" align="right">
+<a href="http://weblogs.java.net/blog/dwalend/archive/2005/08/connecting_to_a.html">&laquo;Connecting to a Command Line Process</a> |
+
+<a href="http://weblogs.java.net/blog/dwalend/">Main</a>
+| <a href="http://weblogs.java.net/blog/dwalend/archive/2006/05/tilting_at_the_1.html">Tilting at the Generics Windmill &raquo;</a>
+
+</div>
+
+<div class="grayline"></div>
+
+<h3>Affine Frustration Transformed - New! Fewer Bugs!</h3>
+
+<span class="ltcaption1">Posted by <b>dwalend</b> on January 26, 2006 at 06:05 PM</a> | <a href="http://weblogs.java.net/blog/dwalend/archive/2006/01/affine_frustrat_1.html#comments">Comments (6)</a>
+
+</span>
+
+<br /><br />
+
+<p>
+I put together a generic ZoomPane that holds other Swing components. Hand ZomePane's <code>transformChanged()</code> method
+ a new AffineTransform to show a new portion of the underlying view. ZoomPane uses a little linear animation to glide into the new view gracefully. 
+</p><p>
+I set up ZoomButtonPane as a simple interface. (I want to play with something more complex and transparent. It's been a while since I've worked with Swing, so I wanted to warm up with some easy buttons.) ZoomButtonPane hands off AffineTransforms to a ZoomPane.
+</p><p>
+Panning worked great. Zooming in and out was a pain to get right. I found similar old questions in some forums, with no answers. I asked for help in other forums, and got a few responses that pointed to example code. Unfortunately, none of the examples solved the whole problem; in each case, some controller held on to some of the state information used by ZoomPane. I figured out how to get those details from just the old transform and size of the window. 
+<pre>
+<code>
+    private void zoom(double newScale)
+    {
+        AffineTransform oldDestinationTransform = zoomPane.getCopyOfDestionationTransform();
+
+//Unwind the centering from the old transform.
+        double centerX = zoomPane.getWidth()/2;
+        double centerY = zoomPane.getHeight()/2;
+
+        double oldScale = oldDestinationTransform.getScaleX();
+
+        oldDestinationTransform.translate(centerX,centerY);
+        oldDestinationTransform.scale(1.0/oldScale,1.0/oldScale);
+        oldDestinationTransform.translate(-centerX,-centerY);
+        
+        oldDestinationTransform.translate((oldDestinationTransform.getTranslateX()/oldScale)
+                                            -oldDestinationTransform.getTranslateX(),
+                                            (oldDestinationTransform.getTranslateY()/oldScale)
+                                            -oldDestinationTransform.getTranslateY());
+        
+        AffineTransform newDestinationTransform = new AffineTransform();
+
+        newDestinationTransform.translate(centerX,centerY);
+        newDestinationTransform.scale(newScale,newScale);
+        newDestinationTransform.translate(-centerX,-centerY);
+
+        newDestinationTransform.concatenate(oldDestinationTransform);
+        
+        zoomPane.transformChanged(newDestinationTransform);
+    }
+</code>
+</pre>
+<p/><p>
+Here's an applet showing it working:
+</p>
+<APPLET code="net.walend.zoom.ZoomApplet.class" width="500" height="500" codebase="https://tokenarranger.dev.java.net"
+archive="walend-zoom.jar">
+<PARAM NAME=imageURL VALUE="https://tokenarranger.dev.java.net/crab.jpeg">
+ZoomApplet
+</APPLET>
+<p>
+Kick the code around yourself at <a href="https://tokenarranger.dev.java.net">https://tokenarranger.dev.java.net</a>.
+</p>
+
+<div id="a004003more"><div id="more">
+
+</div></div>
+
+<br />
+Bookmark blog post: <a href="http://del.icio.us/post?title=Affine Frustration Transformed - New! Fewer Bugs!&amp;url=http://weblogs.java.net/blog/dwalend/archive/2006/01/affine_frustrat_1.html"><img src="/images/icons/delicious.gif" alt="del.icio.us" border="0" height="16" hspace="8" vspace="1" width="16" /></a> <a href="http://del.icio.us/post?title=Affine Frustration Transformed - New! Fewer Bugs!&amp;url=http://weblogs.java.net/blog/dwalend/archive/2006/01/affine_frustrat_1.html">del.icio.us</a> <a href="http://digg.com/submit?phase=2&amp;title=Affine Frustration Transformed - New! Fewer Bugs!"><img src="/images/icons/digg.gif" alt="Digg" border="0" height="14" hspace="8" width="16" /></a> <a href="http://digg.com/submit?phase=2&amp;title=Affine Frustration Transformed - New! Fewer Bugs!&amp;url=http://weblogs.java.net/blog/dwalend/archive/2006/01/affine_frustrat_1.html">Digg</a> <a href="http://www.dzone.com/links/add.html?url=http://weblogs.java.net/blog/dwalend/archive/2006/01/affine_frustrat_1.html&amp;title=Affine Frustration Transformed - New! Fewer Bugs!"><img src="/images/icons/dzone.gif" alt="DZone" border="0" height="16" hspace="8" width="16" /></a> <a href="http://www.dzone.com/links/add.html?url=http://weblogs.java.net/blog/dwalend/archive/2006/01/affine_frustrat_1.html&amp;title=Affine Frustration Transformed - New! Fewer Bugs!">DZone</a> <a href="http://www.furl.net/storeIt.jsp?t=Affine Frustration Transformed - New! Fewer Bugs!&amp;u=http://weblogs.java.net/blog/dwalend/archive/2006/01/affine_frustrat_1.html"><img src="/images/icons/furl.gif" alt="Furl" border="0" height="17" hspace="8" width="16" /></a> <a href="http://www.furl.net/storeIt.jsp?t=Affine Frustration Transformed - New! Fewer Bugs!&amp;u=http://weblogs.java.net/blog/dwalend/archive/2006/01/affine_frustrat_1.html">Furl</a>  <a href="http://reddit.com/submit?title=Affine Frustration Transformed - New! Fewer Bugs!&amp;url=http://weblogs.java.net/blog/dwalend/archive/2006/01/affine_frustrat_1.html"><img src="/images/icons/reddit.gif" alt="Reddit" border="0" height="18" hspace="8" width="18" /></a> <a href="http://reddit.com/submit?title=Affine Frustration Transformed - New! Fewer Bugs!&amp;url=http://weblogs.java.net/blog/dwalend/archive/2006/01/affine_frustrat_1.html">Reddit</a>
+<br />
+<div class="grayline"></div>
+
+<a name="comments"></a>
+<h5>Comments</h5>
+<span class="small">Comments are listed in date ascending order (oldest first) | <a href="#post">Post Comment</a></span>
+<br /><br />
+
+<ul>
+<li>
+<a name="12915"></a>
+<div id="c12915">
+If your project public? I can't access the applet's jar nor the project page.
+<p class="posted"><span class="ltcaption1">Posted by: gfx  on January 26, 2006 at 08:22 PM</span></p>
+</div>
+</li>
+</ul>
+<ul>
+<li>
+<a name="12920"></a>
+<div id="c12920">
+<p>What version of the JRE do I need to run this applet? Both with 1.5.0_06-b05 and 1.4.2_05-b04 I get some exception..</p>
+
+<p>1.4:
+java.lang.ClassFormatError: net/walend/zoom/ZoomApplet (Bad magic number)</p>
+
+<p>1.5:
+java.lang.ClassFormatError: Incompatible magic value 169871904 in class file net/walend/zoom/ZoomApplet</p>
+
+<p>[rant]Oh, and the text format system thingy for these comments sucks, IMHO.[/rant]</p>
+<p class="posted"><span class="ltcaption1">Posted by: arnovdk  on January 27, 2006 at 01:01 AM</span></p>
+</div>
+</li>
+</ul>
+<ul>
+<li>
+<a name="12922"></a>
+<div id="c12922">
+<p>
+Affine Frustration Transformed to Applet Frustration...
+</p><p>
+Gfx, looks like java.net's not letting my .jar out. I've sent email to their support team to sort things out.
+</p><p>
+arnovdk, both of those are responses to an http 404 response, consistent with gfx's report. It's a JDK5 applet. If a 1.4 JVM loads the class, it'll give you a "ClassFormatError: Unsupported Version 49."
+</p><p>
+I've gotten it to work on Safari (MacOS) and IE v6 (Windows), but not Firefox. Does Firefox not do applet tags?
+</p><p>
+[rant]Amen, brother! How about straight [pre] text assumed?[/rant]
+</p>
+<p class="posted"><span class="ltcaption1">Posted by: dwalend  on January 27, 2006 at 05:13 AM</span></p>
+</div>
+</li>
+</ul>
+<ul>
+<li>
+<a name="12938"></a>
+<div id="c12938">
+<p>
+Got the applet working. Looks like the problem was that my tokenarranger project isn't public yet. So everything came to everyone else as 404, but it all worked for me after I logged in.
+</p><p>
+I'm not sure what to do about tokenarranger not being public. I moved the applet and picture to a different spot, and it works fine. At least on Safari... Hate that "new fewer bugs" release.
+</p>
+
+<p class="posted"><span class="ltcaption1">Posted by: dwalend  on January 28, 2006 at 06:50 AM</span></p>
+</div>
+</li>
+</ul>
+<ul>
+<li>
+<a name="12951"></a>
+<div id="c12951">
+I'd love to "kick the code around" myself - but while the applet now works, the site ( https://tokenarranger.dev.java.net ) does not work for a mere member of the public, regardless of logging in.
+
+Could you post the source jar/zip/whatever file somewhere offsite while that gets worked out? 
+
+
+
+
+<p class="posted"><span class="ltcaption1">Posted by: kylecordes  on January 29, 2006 at 12:59 PM</span></p>
+</div>
+</li>
+</ul>
+<ul>
+<li>
+<a name="12992"></a>
+<div id="c12992">
+kylecordes,
+
+Looks like they've stopped hiding the project. Let me know if you can't see it. I'll try switching the applet back over in  a few minutes.
+<p class="posted"><span class="ltcaption1">Posted by: dwalend  on January 31, 2006 at 05:00 AM</span></p>
+</div>
+</li>
+</ul>
+
+
+<br /><br />
+
+
+
+<form method="post" action="http://weblogs.java.net/mt/comments" name="comments_form" onsubmit="if (this.bakecookie[0].checked) rememberMe(this)">
+<input type="hidden" name="static" value="1" />
+<input type="hidden" name="entry_id" value="4003" />
+
+<a name="post"></a>
+
+<b>Only logged in users may post comments. <a href="/cs/user/login?x-redirect=http://weblogs.java.net/blog/dwalend/archive/2006/01/affine_frustrat_1.html">Login Here</a>.</b>
+
+<!--  TS: var-  -->
+<!--  TS: cfg-  -->
+<!--  TS: vars-  -->
+<!--  TS: test -   -->
+
+<!--  TS: cpt -   -->
+
+
+</form>
+
+</MTIfCommentsAllowed>
+
+
+
+
+<br />
+
+<div class="footer" align="right">This work is licensed under a
+<a href="http://creativecommons.org/licenses/by-nc-sa/2.0/">Creative Commons License</a>.<br />
+<a href="http://creativecommons.org/licenses/by-nc-sa/2.0/"><img src="http://creativecommons.org/images/public/somerights.gif" alt="Creative Commons License" border="0" height="31" width="88" hspace="2" vspace="2" /></a>
+</div>
+
+
+<br />
+<div id="powered" align="right">
+<b>Powered by</b><br />
+<a href="http://www.movabletype.org">Movable Type 3.01D</a><br />    
+</div>
+
+
+
+</td></tr></table>
+
+<!--  BEGIN VNV5 FOOTER   -->
+<!--  BEGIN VNV5 FOOTER   -->
+<table border="0" cellpadding="0" cellspacing="10" width="100%">
+<tr>
+<td>
+&nbsp;<a href="http://today.java.net/pub/q/java_net_rss"><img src="/images/icons/feed.png" border="0" width="16" height="16" alt="Feed" align="absmiddle"></a>&nbsp;<a href="http://today.java.net/pub/q/java_net_rss">java.net RSS Feeds</a><br />
+<div class="grayline"></div>
+<table border="0" cellpadding="0" cellspacing="0" width="100%" class="vatop">
+<tr>
+<td><img src="/im/a.gif" width="190" height="1" border="0" alt=" " /><br />
+<a href="http://www.sun.com"><img src="/im/logo_sun_small.gif" width="61" height="29" border="0" alt=" " vspace="5"/></a></td>
+<td width="60%" valign="top">
+<div class="footer">
+
+<!--  Start Quantcast tag  -->
+<script type="text/javascript" src="http://edge.quantserve.com/quant.js"></script>
+<script type="text/javascript">
+_qacct="p-20l78bOOCbhcg";quantserve();</script>
+<noscript>
+<img src="http://pixel.quantserve.com/pixel/p-20l78bOOCbhcg.gif" style="display: none" height="1" width="1" alt="Quantcast"/></noscript>
+<!--  End Quantcast tag  -->
+
+<a href="https://java-net.dev.java.net/feedback.html">Feedback</a> &nbsp;|&nbsp;<a href="http://java.net/faq.csp">FAQ</a> &nbsp;|&nbsp;<a href="http://java.net/presscenter/">Press</a>&nbsp;|&nbsp;<a href="http://java.net/terms.csp">Terms of Use</a><br />
+<a href="http://www.sun.com/privacy/">Privacy</a> &nbsp;|&nbsp;
+<a href="http://www.sun.com/suntrademarks/">Trademarks</a>&nbsp;|&nbsp;<a href="https://java-net.dev.java.net/sitemap.html">Site Map</a>
+<br /><span class="sp5">&nbsp;</span><br />
+Your use of this web site or any of its content or software indicates your agreement to be bound by these <a href="http://java.net/terms.csp">Terms of Participation</a>.<br />
+<span class="sp5">&nbsp;</span><br />
+Copyright &copy; 1995-2008 Sun Microsystems, Inc.
+</div></td>
+<td width="40%" valign="top" align="right"><div class="footer">
+<a href="http://www.oreilly.com"><img src="/images/montague_logo_oreilly.gif" width="74" height="19" border="0" alt="Oreilly Logo"></a><a href="http://www.collab.net/"><img src="/images/montague_logo_collabnet.gif" width="85" height="19" border="0" alt="Collabnet Logo"></a><br>
+Powered by Sun Microsystems, Inc.,<br /> O'Reilly and CollabNet
+</div></td></tr>
+<!--  <tr><td colspan="3" valign="top" class="grey3"><img src="/im/a.gif" width="1" height="2" border="0" alt=" " /></td></tr>  -->
+</table>
+<div class="grayline"></div>
+</td></tr>
+</table>
+<!--  END VNV5 FOOTER  -->
+
+<!--  Begin SiteCatalyst code  -->
+<script language="JavaScript" src="http://www.java.net/s_code_remote.js"></script>
+<!--  End SiteCatalyst code  -->
+
+
+</body>
+</html>
