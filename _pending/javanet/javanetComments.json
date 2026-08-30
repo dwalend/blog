@@ -1,0 +1,1010 @@
+{
+  "/archive/2003/09/defending-autoboxing-or-save-us-from-the-preprocessor/": [
+    {
+      "author": "jimothy",
+      "date": "2003-09-18",
+      "body": "I suspect you'll be disappointed  \n\nObviously, I haven't seen the spec, either, but I suspect you'll be disappointed if you expect the same performance level as straight primitives.\n\nAutoboxing is merely going to convert between a primitive (e.g., int) and object (e.g., Integer) for you.  That much we know is true; that's the definition of autoboxing.  Beyond that, we can speculate, but I'd bet my first edition Duke Beanie-Baby* that this is the way it'll work:  The compiler will insert the appropriate new Integer() and intValue() calls (or the appropriate calls for long, float, double, etc.) automatically, saving you only the trouble of writing that code yourself.  This is reasonable speculation, both when you consider how this could be implemented, and Sun's stated goal of addressing the ease of coding and readability.  Nowhere in the public information is performancea stated goal.\n\n\"I hope...that developers will use the same care they show with Strings\"\n\nThat's precisely my worry, and a perfect analogy for how this has the potential to create performance problems that slip under the radar, because it makes the object creation so hidden.  Consider String concatenation; many developers won't realize all the temporary StringBuffer and String objects being created and garbage collected.\n\n* I have no Duke Beanie-Baby, first edition or otherwise.  But if I did, I'd be willing to put him on the line.\n"
+    },
+    {
+      "author": "staypufd",
+      "date": "2003-09-18",
+      "body": "Boxing slow and wasteful???  \n\nCombine Autoboxing with type inferencing that HotSpot uses and I think you'll be suprised.  For years people said that Lisp and Smalltalk were slow in numeric operations, but many times they were shown to be wrong, b/c the compilier could inference the optimal type and useage and then optimize the code.\n\nIt is my belief that these same things will be or can be applied to the new Autoboxing features of Java.\n\nIt's funny, Java being byte-coded, etc. and in many, many situations, that type information doesn't give the solutions any more speed than Smalltalk programmers get with no types being specified at all.\n"
+    },
+    {
+      "author": "dougpardee",
+      "date": "2003-09-18",
+      "body": "Not what you want  \n\nYou are not going to get what you are looking for.\n\nThe JSR-014 generics do not \"generate a subclass of the parent class with the correct types\". There is only one implementation of each generic class, and that implementation serves for all generic instances by using ordinary polymorphism. Furthermore, when using a generic class, the actual type of the generic parameter cannot be a primitive, so it cannot be an int or a double.\n\nJava genericity is a compile-time feature that provides additional type-safety and coding convenience. It does NOT provide any additional run-time abilities.\n\nSimilarly, I do not see that autoboxing will buy you anything. Like jimothy said, it's just saving you the effort of writing \"new Integer(x)\". It's nice for making the source code cleaner and easier to read (especially for method arguments), but again, it does not give you any new abilities.\n"
+    },
+    {
+      "author": "ronaldtm",
+      "date": "2003-09-19",
+      "body": "Shortcut to ...  \n\nI think the autoboxing feature comes only to implement the new 'printf' feature (almost-C-like variable parameter list):\n\nC's printf (String s, ...) == J's printf (String s, Object[] params)\n\nthen:\n\nint age = 20;  \n\nprintf (\"%s is %d years old\", { \"Jack\", 20 } ); //new shortcut syntax to new Object[]\n\ninstead of\n\nprintf (\"%s is %d years old\", { \"Jack\", new Integer(20) } );\n\nAutoboxing sux, and brings even more danger of hidding performance bottlenecks than Strings.\n\nMoreover, only autoboxing will be supported, not autounboxing, causing the code to handle the same value in different ways. Imagine:\n\nint a = 2;  \n\nArrayList list = new ArrayList();  \n\nlist.add(a); //add as int  \n\na = list.get(0); //error  \n\na = (int) list.get(0); //error  \n\na = (Integer) list.get(0); //error  \n\na = ((Integer) list.get(0)).intValue(); //get as Integer, cast and get int value\n\nor, with generics,  \n\nint a = 2;  \n\nArrayList list = new ArrayList();  \n\nlist.add(a);  \n\na = list.get(0); //error  \n\na = list.get(0).intValue();  //get as Integer, and then get int value\n\nThis is the only code to change:  \n\nlist.add(a); -&gt; list.add(new Integer(a));\n"
+    },
+    {
+      "author": "gjhicks12",
+      "date": "2003-09-21",
+      "body": "I suspect you'll be disappointed  \n\nProfiler. Profiler. Profiler.  Performance only matters in small areas of the system and only after you know that you have a problem.  If I can make my code more understandable and less cluttered in 90% of the application for a 20% increase in performance debug time, I will do it in a nanosecond.\n\nIt brings back the original debate on Java versus compiled languages.  ?It is slower?, went the chant of compiled people.  It only matters if the user noticed and it is impossible to fix easily.  Outside of the UI, that has not been the case for Java, nor will it be the case for autoboxing.\n"
+    },
+    {
+      "author": "jimothy",
+      "date": "2003-09-22",
+      "body": "I suspect you'll be disappointed  \n\nYou're absolutely right that diligent use of a profile will help spot performance problems, and that there is a trade off in performance versus readability.\n\nHowever, you can, with some degree of reliability, predict performance hotspots. David may know in advanced that his path-finding algorithm will be frequently called, so performance is vital.  Granted, a profile can and should be used to verify any assumptions.\n\nMore importantly, things can be broken while performance tuning, and tuning itself takes development time.  There are good habits that developers can learn, such as using StringBuffer in a loop, so they can write effecient code from the beginning, lessening the need to go back and optimize.  I suspect we'll add a few points regarding autoboxing to that set of habits.\n"
+    },
+    {
+      "author": "vgiannadakis",
+      "date": "2003-09-24",
+      "body": "Autoboxing + Generics  \n\nAutoboxing is IMHO utter crap. It won't be efficient and will cause more problems. The only improvement will be on code appearance, since it is \"cool\" to write code like:\n\nint i = 1;  \n\nlist.add(i);\n\nGenerics, again IMHO, is a no-good feature. Why would you need generics when you have good-old polymorphism?\n\nBesides, my guess is generics support for Java will merely be automatically generating the necessary type casts...\n\nVagelis.\n"
+    },
+    {
+      "author": "dwalend",
+      "date": "2003-09-26",
+      "body": "Will report when the jsdk 1.5 betas are out  \n\nI've thought a while about how to respond to the talk back on this article. I'd like to say I think most of the talk back is too pessimistic. But I don't know yet.\n\nI think the best answer I can come up with is this: When Sun starts shipping the betas for JSDK 1.5, I'll try out using autoboxing and generics in the JDigraph's Floyd-Warshall implementation, see how far I can take the language, and do a performance study. It's open source, so you'll all be able to see what I'm doing in the study. I'll report my results in a blog entry so we can have answers instead of speculation.\n\nDave\n"
+    }
+  ],
+  "/archive/2003/09/somnifugijms-for-user-interfaces-and-simple-enough-apis/": [
+    {
+      "author": "krage",
+      "date": "2003-09-11",
+      "body": "Hm....  \n\nJMS is a part of J2EE spec, not J2SE so I would like to question the justification for using JMS in client-side Swing application. it looks to heavy for me ....\n"
+    },
+    {
+      "author": "dwalend",
+      "date": "2003-09-11",
+      "body": "Hm....  \n\nA good point. \"Heavy\" comes in a few flavors: class file size, objects created, processing required, throughput, latency, complexity in the code, others.\n\njms.jar is 25k. walend-somnifugi.jar is 73k. (concurrent.jar is 126k, but we only use three or four classes out of it. You *shouldn't* need the jndi support .jars, but I haven't tried it in a while. All the applications I've written recently use jndi for other things.) So for a fairly cheep analysis effort, using somnifugi should grow the application by ~100k. More effort (just using Topics, and stripping out the Queues) should shrink that to ~75K. If you're delivering an application over a 56k modem or worse, this gets important. Otherwise, it's probably fine.\n\nI haven't measured objects created. You'll need at least a connection, session, topic, publisher and consumer, maybe a dozen infrastructure objects total, plus a new message object for each event you send. If you're already worried about creating swing events every time the user does something, your ceiling's too low for SomnifugiJMS (and perhaps for Swing).\n\nThe processing required involves a little overhead to set things up (all in memory). After that, Somnifugi is just exercising the concurrent API. Processing required, throughput and latency are all pretty much the same as calling the java concurrency APIs directly.\n\nSomnifugi's big win is in reducing the complexity of the code. Any time you need to signal a Thread different from the one you're on, you simply put a message in a Topic. I find this much easier to explain than using the existing APIs in Java.\n\nI'm thinking about writing a blog on the effects of bucketing technology into J2EE, J2SE and J2ME. I see the value from a marketing-to-managers perspective, but too many people confuse J2EE with EJBs, and paint all the J2EE technology with the same brush.\n\nDave\n"
+    }
+  ],
+  "/archive/2003/10/design-for-exceptions/": [
+    {
+      "author": "jtr",
+      "date": "2003-10-06",
+      "body": "Hey Toto, this isn't smalltalk anymore!\n\nFirst let me say I agree.\n\nI'm afraid what is happening is some ivory tower-type folks are finding that it is indeed easier to code with unchecked exceptions.  Wait until they find that they can use unchecked _types_ in languages such as VB! :)  Or that some other languages allow you to escape directly to an error handler via a goto!\n\nSeriously though, I've been reading artima.com with some interest and I have to agree that exceptions do cause a ripple affect.  And sometimes I actually do want all exceptions to rise to a single handler.  But it is just as often that I've thanked the compiler for telling me about an exception which I've missed.  And let me tell you, the test system would have missed it too.\n\nAnyway, that gets to the root of the issue.  These ivory tower-type folks are claiming that testing eliminates the need for typed exceptions.  I don't buy it.  I've yet to see a _really_ complete regression suite in the wild.\n\nOn the other hand, exceptions alert me that I should add a testcase for the condition, IF it is feasible to reproduce in the test system.\n"
+    },
+    {
+      "author": "ba22a",
+      "date": "2003-10-07",
+      "body": "The purpose of exceptions...  \n\nThe difference between checked and runtime exceptions is that runtime exceptions say \"Something went wrong I don't know how to fix\", while checked exceptions say \"Something went wrong you might know how to fix in a catch clause\".\n\nA lot of the time people simply re-throw exceptions and don't think about that meaning. This can lead to encapsulation problems (e.g. a layer thats chock full of throws IOException, and/or throws SQLException, which, when implemented over \"some other\" data source doesn't throw any of those things - they were broken encapsulation from the original implementations)\n\nChecked exceptions that are created, not re-thrown , are more explicitly saying \"I think you can fix this\".  But to quote Gosling from that interview - \"When you try to open a file and it's not there, you're coping strategy is really determined by what you were going for.\" note - what you were going for, not how it went wrong. He's describing handling \"a failure\" here, rather than handling \"a specific kind of failure\" - because the second case is pretty rare.\n\nAn example of a justifiable checked exception would be the UnavailableException in the servlet API, which marks a servlet unavailable /temporarily/. Implementers can communicate usefulinformation to their callers using this exception, so its use is probably justified.\n\nSo generally I would use checked exceptions when there is a behavioural contract associated with the exception, and use runtime exceptions elsewhere. Rethrowing checked exceptions from a lower layer breaks encapsulation and I'd avoid it unless I'm claiming to \"be\" that lower layer (e.g. in an I/O utility library I'd re-throw all java's IOExceptions). Instead lower layer's exceptions are thrown wrapped in the appropriate exception for /this/ layer (ie checked if I expect the client to behave differently, runtime otherwise).\n\nI found the Eiffel model interesting (see eg http://burks.brighton.ac.uk/burks/language/eiffel/oveiffel/exceptns.htm) . Eiffel doesn't have checked exceptions, because they explicitly have this notion of a contract being fulfilled or not. You can't \"partly\" fulfil a contract, throw a checked exception saying this, which would be the equivalent in java. Worth a look.\n\n(BTW there is another similar viewpoint on artima in the interview with Elliot Rusty Harold - http://www.artima.com/intv/jdom3.html)\n"
+    },
+    {
+      "author": "jimothy",
+      "date": "2003-10-07",
+      "body": "The purpose of exceptions...  \n\nI think your taxonomy for checked Exceptions and RuntimeExceptions is interesting, and probably a useful one (though the JDK itself doesn't consistently follow this; consider NumberFormatException, which is a subclass of RuntimeException).\n\nThe problem is that to the developer who is not diligent about exception handling (and, in my experience, the majority are not), the intuitive tendency when creating a new exception class is to subclass Exception (\"I'm writing a new exception class, therefore it extends Exception\").  The issue of whether it will be, in practice, a recoverable exception or not,  is not likely to be considered.\n\nThe irony is, the developer who is cognizant of whether an exception is likely to be recoverable or not is also likely to be aware of good exception handling techniques in general.  They're not the type that will blindly code empty catch blocks or the other common exception handling bloopers we see too many times.\n\nMy point is, checked exceptions are an aid to the experience developer who could just as well do without them, but an dagger to the inexperienced developer, because they tempt him to write empty catch blocks or \"throws Exception\" declarations to get the compiler off his back.\n\nIncidentally, had Sun chosen a different naming convention, we'd probably the opposite of the current situation:  The majority of custom exceptions would be unchecked. Instead of RuntimeException and Exception, I would have liked to see Exception (unchecked) and RuntimeException. RuntimeException is a silly name anyway; show me an exception that DOESN'T occur at runtime.\n\nBut that betrays my bias towards unchecked exceptions, a bias that Sun (at least initially) does not share.\n"
+    },
+    {
+      "author": "javakishore",
+      "date": "2003-10-07",
+      "body": "Design For Exceptions  \n\nI was told that throwing exceptions in not a good habit. So we never throw excpetions in our application. We have methods where each method returns object to which we can say errorOccured and add the error id which is predefined.\n\nThe caller of the method will check isErrorOccured(), if yes then it will invoke a method (getErrorList()) on the return type of the method invoked.\n\nI still cant understand why throwing exceptions is not a good habit? Anyone will help me\n"
+    },
+    {
+      "author": "jimothy",
+      "date": "2003-10-07",
+      "body": "Design For Exceptions  \n\nWho ever told you that is mistaken.  Languages without exceptions, like C, usually indicate errors with return codes, which must be checked after calling each and every method.  But checking error codes is tedious and painful, and developers get lazy and cocky (\"I KNOW this call won't fail\"), so they leave out error checking.  And then things go break, and you can't track down where in the code things went wrong.\n\nExceptions are a giant step forward for error detection and handling.  Rather than check for errors after every method call (as in C and your project), you can write a series of method calls you expect to run successfully (\"The One True Path\") in a try block, and place your exception handling code in the catch block.  And where its not appropriate to handle an exception in a method, you can simply not catch it, and let it \"bubble-up\" to the calling method, who can then handle it as appropriate.\n\nI'd be interested in hearing the reasons you were given that throwing exceptions are a bad habit.  I suspect that your mentor read once that exceptions can be overused to represent non exceptional conditions (this is true, and should be avoided), and took it to the illogical extreme, and so believes that exceptions should NEVER be used.  Your mentor is wrong, and is setting the develoment team's coding practices back a decade.\n\nIt seems you already suspect that exceptions aren't really such a bad habit after all.  If you need more convincing, ask yourself (and your team) these questions:  Are you REALLY calling isErrorOccured() after every method you call?  Do you find doing so tedious?  When isErrorOccured() returns true, how is your application supposed to respond?  I suspect you'll find that you're not doing yourself any favors by following this misguided advice.\n"
+    },
+    {
+      "author": "dwalend",
+      "date": "2003-10-07",
+      "body": "Design For Exceptions  \n\njimothy's advice is spot-on. You've got code that would look like this:\n\nErrorVaule errorValue = yourMethod();\n\nif(errorValue.didErrorHappen()  \n\n{  \n\n List errorList = errorValue.getErrorList();  \n\n doSomething(errorList);  \n\n}\n\nWith exceptions, it'd look like this:\n\ntry  \n\n{  \n\n yourMethod();  \n\n}  \n\ncatch(YourException ye)  \n\n{  \n\n doSomething(ye.getErrorList());  \n\n}\n\nSo basically someone has told you to use return codes to replace what exceptions do for you.\n\nWhat do you do when you want a method to return something? How unnatural does it feel?\n\nTo be fair, you are miles ahead of projects with no thoughts about what to do when things go wrong.\n\nDave\n"
+    },
+    {
+      "author": "jbetancourt",
+      "date": "2003-10-07",
+      "body": "Design For Exceptions  \n\nI read that Exceptions are to be used to handle exceptional conditions.  Throwing an exception is a perfomance hit.\n\nIf the code expects certain situations or results those should be coded for, not handled with the exception mechanism.\n\nIf this is not true or not really applicable in many situations, what is the real explanation?\n"
+    },
+    {
+      "author": "dwalend",
+      "date": "2003-10-07",
+      "body": "Finding the exceptions...  \n\njimothy, ba22a,\n\nI usually lean on the compiler to let me know what exceptions I need to worry about. RuntimeExceptions are hidden; I'm lucky to find them in the javadoc of a method. That is, if I think to look.\n\nDo you know good way of discovering that a method in a .jar might throw a RuntimeException?\n\nWhen you're creating the method, how do you tell if you're in a RuntimeException case (\"Something went wrong I don't know how to fix\") or a checked Exception case (\"Something went wrong you might know how to fix in a catch clause\")?\n\nI generally give the next programmer down the line the benefit of the doubt, and give him a checked Exception. I try to save RuntimeExceptions for \"Something terrible happened. Send me a bug report.\"\n\nDave\n"
+    },
+    {
+      "author": "dwalend",
+      "date": "2003-10-07",
+      "body": "Performance Hit of Exceptions  \n\njbetancourt,\n\nEntering a try{} block is about the same as entering an if(){} block. Throwing an exception is just a little more expensive than a jump point in C. The big hit is constructing the Exception, a new Object, usually with a new String inside it, and (high on the stack) logging the Exception in the catch clause (lots more Strings).\n\nIf you're code has several likely branches that it'll follow, then coding those branches in if() or switch blocks makes sense. If it's got \"one true path,\" exception handling makes your code much easier to read. I usually use if() checks to discover when to add \"throw\" statements. If nothing is wrong, I never create or throw the Exception.\n\nThrowing an exception makes the contract for the method much easier to write; the contract ends with \"... or it has no effect on system state and throws YourException.\"\n\nYour flow of control entering catch blocks should be... um.. exceptional. Once things start breaking, performace is usually less important than fixing the problem or at least recording it so it can be fixed later.\n\nHope that helps,\n\nDave\n"
+    },
+    {
+      "author": "ba22a",
+      "date": "2003-10-08",
+      "body": "Finding the exceptions...  \n\nDave -\n\n\"Do you know good way of discovering that a method in a .jar might throw a RuntimeException?\"\n\nThe answer is obvious if you think about it - you should /always/ expect them to throw a RuntimeException. \n\nThink about NullPointerException, or ConcurrentModificationException. These get thrown from code when you least expect it. However you can also javadoc runtime exceptions, even if they're not in the throws clause (look at the documentation of Method.invoke()).\n\nThe fact that RuntimeExceptions can and do happen all over the place speaks volumes about the lack of value of a checked exception that simply reports failure. Since the developer should be already be choosing to handle RuntimeExceptions (or not) - because they always expect them - all the \"failed\" checked exception does is force them to add a second catch clause.\n\n\"When you're creating the method, how do you tell if you're in a RuntimeException case\"\n\nIt's a judgment call, I'll admit. However, it is easier to spot some things that should be checked exceptions, when there is some behaviour expected of the client when you throw it. I mentioned the servlet UAE before, there are other equally obvious examples: InvocationTargetException - \"unwrap me!\", InterruptedException - \"wake up!\", PropertyVetoException - \"don't do it!\".\n\nIt's not entirely guesswork though. When you add an exception to a throws clause you are (usually) writing code for some client  to use - code also written by yourself, as a test harness or a real application. The question you have to answer is, does your own client code ever need to know the difference between exception A and exception B? If the answer is yes, it may need a checked exception. If the answer is no, use a runtime exception.\n\n-Baz\n\nPS I freely admit that I don't have all the answers and rules like the ones I gave are made to be broken. The only reason we're arguing the point is because the point is arguable :)\n"
+    },
+    {
+      "author": "jimothy",
+      "date": "2003-10-08",
+      "body": "Design For Exceptions  \n\nYou're absolutely right that  exceptions are used to handle exceptional conditions, and that  there is overhead involved in throwing an exception.  I suspect the developers javakishore is working with heard the same thing, and took this to mean that you should NEVER use exceptions (what I called in a previous post \"the illogical extreme\").\n\nLet me use an example to illustrate the difference between exceptional conditions and other \"error\" conditions.  Let's say you have a form (web based, Swing based, etc.) for a user to fill out, and some fields on this form are required.  If the user leaves a field blank, should you throw an exception?\n\nNo, because this is not an exceptional condition; your program should expect that a user will enter invalid data or neglect to provide required information.  You can, and should, deal with these situations without throwing or catching an exception.\n\nNow, say you have a method, calculateShippingCharges() which is seperate from your UI code, and which is part of the \"business logic\" that processes the data that was collected from the form.  If the destination addess is null or invalid, it's perfectly reasonable and likely appropriate to throw an exception here (perhaps NullPointerException or a custom exception, InvalidAddressException).  Because calling calculateShippingCharges() with invalid data IS an exceptional condition.\n\nBut this situation is handled best not with a try...catch structure, but to validate the user's input before calling calculateShippingCharges().  Error handling is not synonymous with exception handling; the latter is a subset of the former.\n\nTo help remember this, use this rule of thumb:  Exceptions, and stack traces in particular, are excellent tools for developers, but are completely useless (and frightening) to the end user.  We've probably all used an application which presents an ugly stack trace on the screen when something goes wrong; heck, I'm guilty of writing such software myself.  But doing so hurts, not helps, the user experience.\n"
+    },
+    {
+      "author": "jimothy",
+      "date": "2003-10-08",
+      "body": "Design For Exceptions  \n\nTo add to Dave's points, exceptions become ever more convenient over error return codes when you call multiple methods, because you can place multiple dependent method calls in the same try block.  Error return codes don't scale well.  Instead of this:\n\nErrorVaule errorValue = yourMethod();  \n\nif(errorValue.didErrorHappen()  \n\n{  \n\n List errorList = errorValue.getErrorList();  \n\n doSomething(errorList);  \n\n}  \n\nelse  \n\n{  \n\n //the first call was successful, so continue with  \n\n //the second one  \n\n errorValue = yourSecondMethod();  \n\n if (errorValue.didErrorHappen())  \n\n {  \n\n List errorList = errorValue.getErrorList();  \n\n doSomething(errorList);  \n\n }  \n\n else  \n\n {  \n\n //continue this pattern for your third, fourth, etc. methods  \n\n }  \n\n}\n\nYou can simply do this:\n\ntry  \n\n{  \n\n yourMethod();  \n\n yourSecondMethod();  \n\n yourThirdMethod();  \n\n //etc....  \n\n}  \n\ncatch (YourException e)  \n\n{  \n\n  //handle exception here  \n\n}  \n\ncatch (YourOtherException e)  \n\n{  \n\n  //handle other exception type here  \n\n}\n\nIf yourMethod() fails, yourSecondMethod() never gets called.  Or if yourSecondMethod() fails, yourThirdMethod() never gets called.  And this is exactly what you want, since yourSecondMethod() depends upon the success of yourMethod().  (When method calls are dependent on each other, and there is some way to recover from a failure, use separate try...catch blocks for increased granularity).\n\nDealing with error return codes is so tedious and non-scaleable that eventually developers stop checking for every possible error.  And then things break and are hard to track down.  Contrast that with an exception, which is going to give you a stack trace of where the error occurred, and what calls lead up to it.\n"
+    },
+    {
+      "author": "jtr",
+      "date": "2003-10-08",
+      "body": "Finding the exceptions...  \n\nMaybe it comes down to this question:  how bulletproof do you need your code to be?\n\nrealtime: your module better be able to handle almost any exception the base layers throw and be able to recover or your rocket is going to explode. But most of us don't write code for avionics or pacemakers, but if we did we might have try/finally blocks everywhere.  Ada was designed for this.\n\ndesktop apps:  some stuff is likely to go wrong.  The dog will chew the network wire, you'll walk out of the starbucks during an IM conversation.  This is what checked exceptions are for. You'll want to recover, retry, etc....  These apps will also get NPE and OOMEs, but you can't reasonably expect to handle those, except at a highlevel try { ...} catch (Throwable t) { showError(t); }.  It just isn't worth the effort considering how likely these RuntimeExceptions will occur.  A failing of C/C++/C# is that they have only unchecked exception mechanisms.  C has return values and setjmp/longjmp, C++ has mostly unused (and unknown by many developers) unchecked exceptions, and C# suffers from the same problem.\n\nscripting: lightweight coding for lightweight use,  almost no thinking goes into handling exception cases but it usually doesn't matter.  This essentially is using the highlevel exception catcher.\n\nSo, in my apps, I \n\n - use checked exceptions to alert me to likely problems.  IOException is a typical one.\n\n- if I can't intelligently handle it at the level I'm at, I send it one level up (possibly wrapped).  But I want to keep that checked exception around until I handle it.\n\n- I handle it by retrying, recovering, or giving up, wrapping the exception in a unchecked exception and throwing it to a central handler.\n\n- all code which needs explicit closes uses a finally*\n\nGeez, I should create my own blog about this. :)\n"
+    },
+    {
+      "author": "jreed",
+      "date": "2003-10-08",
+      "body": "The purpose of exceptions...  \n\nMy gut for the two types of exceptions has always been a contract-style feel.  Runtime exceptions indicate that the caller has violated the contract calling the method (IllegalArgumentException, IllegalStateException) while a checked exception indicates the method could not fullfill the contract and return correct data (IOException, SQLException).\n"
+    },
+    {
+      "author": "jimothy",
+      "date": "2003-10-08",
+      "body": "The purpose of exceptions...  \n\nI like that...that's probably the best , and most easily followed, strategy that I've heard.  The other strategies, including ones that I've used myself, have \"grey areas\" where it seem you could go either way, but this one seems pretty clear-cut.\n\nI'm mentally collecting a list of \"best practices\" for exception handling, and I plan to eventually write them up.  I hope you don't mind if use your suggestion!\n"
+    },
+    {
+      "author": "dwalend",
+      "date": "2003-10-08",
+      "body": "More Talkback  \n\nThanks for all the great talk-back. Wow. And from relative beginners to people with lots of experience and strong opinions. That's what java.net is for. Thanks especially to jimothy, for the great examples and for keeping the discussion going.\n\nI limited the scope of the blog to \"I keep Exceptions in throws clauses specific,\" but we're covering a lot more ground. Which is great. Perhaps I should have written more.\n"
+    },
+    {
+      "author": "dwalend",
+      "date": "2003-10-08",
+      "body": "The purpose of exceptions...  \n\njreed, I like your breakdown, too. However, I encounter lots of unintentional NullPointerExceptions (RuntimeExceptions) from sloppy code with poorly documented contracts. How big do you think the disconnect is between the Exceptions we throw and the ones we handle?\n"
+    },
+    {
+      "author": "dwalend",
+      "date": "2003-10-08",
+      "body": "RuntimeExceptions  \n\njimothy, ba22a, jtr, one of the big challenges I have is that people keep using my code long after I've left the project and moved on. I've been remarkably bad at predicting how and where my code will be used. I think I can state the problem this way -- I don't want my code's expected use to determine the level of exception handling.\n\nba22a is right-- we need to decide up front that we need to handle RuntimeExceptions. However, I think that RuntimeExceptions coming up from code indicate a bug in the code somewhere. (As opposed to checked Exceptions, which usually indicate a resource problem, and Errors, which indicate a problem with the JVM.) That seems true for most of the RuntimeExceptions in the standard API. But some of the Swing classes seem out of line with it. CannotUndoException seems like it should be checked. (Or do Swing programmers just disable undo instead?)\n"
+    },
+    {
+      "author": "jbetancourt",
+      "date": "2003-10-09",
+      "body": "Performance Hit of Exceptions  \n\nThanks for the replies.  I agree with the comments.  And is what I tell others.\n\nHowever, I have the suspicion that Exceptions are overused and just may illustrate lazy programming; or its just vague writings on the subject.\n\nFor example, whether a file exists or not is not an exception, but interruption of I/O streaming is.  Yet, I have seen the former being handled wth a throw. Sure, exception use simplifies code but then I think that people who write on this subject be more precise in what they mean.\n\nFurther, if its simplification of control structures that are desired, then that should be addressed directly.  For example, Eiffel added Design-by-contract stuff to the language.  Now that is clean.\n"
+    },
+    {
+      "author": "jimothy",
+      "date": "2003-10-09",
+      "body": "FileNotFoundException  \n\nYou raise some interesting points, and provide another good example of when it is appropriate to use exceptions, and when other methods of error handling are appropriate.\n\nIf you are right an application that asks the user for the name of a file, and then performs some operation on that file, you could deal with missing files in two ways:  First, you could just attempt to perform the operation, catch FileNotFoundException, and report to the user that the file does not exist.  Or, you could check whether the file exists BEFORE trying to perform the operation, and inform the user of the problem then.  The latter would be a better approach, since your identifying the problem closer to the source, and at a time when there's an appropriate way to inform the user.\n\nOn the other hand, when you write the class and methods that actually perform the operation, throwing a FileNotFoundException is probably the appropriate thing to do.  If instead you were to check for the existence of the file and if it does not exist, return normally without doing anything, the client code mentioned earlier has no way of knowing that something went wrong.  If you pop-up a dialog at this point, you're tying your application logic to your user interface.  That same file processor could not be used in a web application or a batch process.\n\nAnd calling your file processor with a non-existent file IS a violation of the class or method contract, so an exception is appropriate here.  The client code should verify that its part of the contract is fullfilled before calling the file processor, but the file processor should go ahead and throw an exception is that contract is violated.\n\nI agree that writings to date on exceptions have been rather vague, and I'd say that exception handling is probably one of the most misunderstood aspects of Java, even among some very experienced developers I have worked with.  I've been meaning to write on this subject myself, and the blogs and comments on Java.net have given me some excellent ideas (and motivation).  The discussion of contracts has been especially insightful.  Thanks everyone, and sorry, David, if I've hijacked your blog!\n"
+    },
+    {
+      "author": "jbetancourt",
+      "date": "2003-10-09",
+      "body": "FileNotFoundException  \n\nYour response has instigated a glimmer of thought in my humble noodle.\n\nPerhaps, the degree of exception throwing is based on the tier, level, or componentness, of something. But, since you don't know beforehand (sometimes) what that is, the try catch finally stuff is the safest way to go.\n"
+    },
+    {
+      "author": "dwalend",
+      "date": "2003-10-09",
+      "body": "FileNotFoundException  \n\nI'm glad you're all having fun and getting something out of the blog. I hadn't predicted it. The whole point of java.net is to get us to have this sort of conversation. Keep going. Jimothy. If you want to drive the conversation, that's great. I only get to check in about once a day and things have been moving faster.\n\nHave fun,\n\nDave\n"
+    },
+    {
+      "author": "dwalend",
+      "date": "2003-10-09",
+      "body": "FileNotFoundException  \n\njbetancourt, do you think there's some way of putting it more tightly than \"conservative pragmatism\" on the Exception handling side, and \"following a contract\" on the throwing side?  Or does that say enought?\n"
+    },
+    {
+      "author": "jbetancourt",
+      "date": "2003-11-30",
+      "body": "FileNotFoundException  \n\nHmmm.  I think that is on the right track. The throwing side is pretty good.  But, the handling side 'must' react to the contract, so there is no real choice in the matter, unless one treats exception handling as the game 'hot potatoes' (which newbies and old, certainly do).\n\nI think we can coin a useful 'phrase' that addresses both sides, perhaps from the realm of the legal profession? I can't think of any (I've yet to see one of those crime dramas on T.V).\n"
+    },
+    {
+      "author": "ljnelson",
+      "date": "2003-12-17",
+      "body": "Thinking alike  \n\nHi, Dave.  Just stumbled across your article here.  Not surprisingly it reads very much like mine over here.\n\nCheers,  \n\nLaird\n"
+    }
+  ],
+  "/archive/2004/05/shutdown-hooks/": [
+    {
+      "author": "adbaxter",
+      "date": "2004-05-10",
+      "body": "Shutdown hooks and java.util.logging API  \n\nI have previously used shutdown hook threads to do cleanup and write final log messages for a couple of different daemon-style apps when they were killed.  \n\nHowever when I swapped over to using the java.util.logging.* APIs for all my logging (to centralize logging configuration apart from anything else) I found my final log messages were not being written to the logging.properties-configured logfile from the shutdown hook thread (or rather, some were and most weren't, in an unpredictable way that seemed to indicate threading problems).  \n\nApparently the JDK logging API has it's own shutdown hook thread used to cleanup logfiles etc., and since all shutdown hook threads are run in parallel you can't reliably log from a shutdown hook thread (or any method called from it - e.g. my cleanup code) using the JDK1.4 logging API.  \n\nThe workarounds I have used are either to use some other logging API  or shutdown the application using a message of some sort other than a kill signal, neither of which I particularly like - so if someone else has come up with a better workaround I'd like to hear it. My preference would be to be able to configure the FileLogger to cleanup logging when my code requests it, rather than as part of JDK logging cleanup.\n"
+    },
+    {
+      "author": "dwalend",
+      "date": "2004-05-10",
+      "body": "Shutdown hooks and java.util.logging API  \n\nLooks like someone suggested it at one point. http://developer.java.sun.com/developer/bugParade/bugs/4682478.html , http://developer.java.sun.com/developer/bugParade/bugs/4744270.html and http://developer.java.sun.com/developer/bugParade/bugs/4748132.html  .\n\n(Are those all from you?)\n\nI'll put in another RFE for exposing the hook and giving us control over it. Probably too late to get it into 1.5, and post a note here so we can get some votes behind it.\n\nHope that helps,\n\nDave\n"
+    },
+    {
+      "author": "jonathansimon",
+      "date": "2004-05-10",
+      "body": "Be careful!  \n\nIve had pretty bad experiences with shutdown listeners. Right now, I use them to close my JMS listeners and thats it! And even that I should probably change.\n\nIn the past I've found them to be pretty unreliable. Sometimes they run, when the weather is nice, and things are happy. Other times...\n\nAnyway. For command line apps, I can see how the CTRL-C thing might be a problem. For UI apps though, you can trap all exit commands and control safe shutdown yourself.\n\nWord to the wise...\n\n-jonathan\n"
+    },
+    {
+      "author": "coxcu",
+      "date": "2004-05-10",
+      "body": "Relevant RFE  \n\nWhile the shutdown hook API is far better than nothing, it really needs to be enhanced.\n\nSee this RFE for a discussion of some of the other issues.\n"
+    },
+    {
+      "author": "coxcu",
+      "date": "2004-05-10",
+      "body": "Shutdown hooks and java.util.logging API  \n\nThat's a nice thought, bu I doubt this page will be generating many referral hits six months from now when your new RFE becomes publicly visible.\n"
+    },
+    {
+      "author": "dwalend",
+      "date": "2004-05-10",
+      "body": "Shutdown hooks and java.util.logging API  \n\nhttp://developer.java.sun.com/developer/bugParade/bugs/5036297.html (your own?) seems to do a nice job of explaining things. Its only got one vote right now -- mine. You might want to take a minute to vote on it yourself. Votes seem to keep Sun from just brushing off RFEs they don't want to take on.\n\nIn my experience, bugs show up after a few days, a week if I send one in during the holidays. The real time lag will be waiting for JSDK 1.6.\n\nDave\n"
+    },
+    {
+      "author": "brucechapman",
+      "date": "2004-05-10",
+      "body": "Shutdown hooks and java.util.logging API  \n\nIn parallel is not really true on a single CPU machine.\n\nDoes giving your shutdown hook Thread a higher priority help?\n\nI haven't tried, but it would probably cause your shutdown hook to run before the logging one.\n\nUnless the logger code specifies a priority for its shutdown thread, it will inherit the priority of the thread that creates it - so you could also temporarily drop the priority while you call the logger API where the shutdown hook is set up - therefore encouraging it to be the last shutdown hook to run. Unless you have at least as many processors as there are shutdown hooks, the shutdown hooks must be scheduled, and changing the priorities can have a pretty strong influence on thread scheduling order.\n\nBruce\n"
+    },
+    {
+      "author": "adbaxter",
+      "date": "2004-05-11",
+      "body": "Shutdown hooks and java.util.logging API  \n\nThe particular application was portable code running on single and multiple processor machines. The API says (with my emphasis)\n\nWhen the virtual machine begins its shutdown sequence it will start all registered shutdown hooks in some unspecified order and let them run concurrently.\n\nOf course concurrently does not necessarily actually mean in parallel, but I would not want to rely on manipulating the thread priority to get reliable and reproducible effects on different architectures (I always want to see my log messages...). Having said that I'll give it a go and see what happens.\n"
+    },
+    {
+      "author": "coxcu",
+      "date": "2004-05-11",
+      "body": "Bug review times  \n\nYep, I submitted that.  Thanks for the vote.  I would vote for it, but I only get three votes--just like everybody else, and they are all allocated to a different RFE.\n\nI think the turnaround time varies based on which review pile the bug ends up in.  My records (since I started keeping track due to multi-month review times) indicate that if a bug isn't reviewed within a week, it probably won't be reviewed within 100 days.\n\n153 days  \n\ndateCreated : 2002-09-06 16:01:59.5  \n\ndateEvaluated : 2003-02-06 12:21:59.402\n\n131 days  \n\ndateCreated : 2002-09-07 11:14:13.1  \n\ndateEvaluated : 2003-01-16 15:55:28.601\n\n133 days  \n\ndateCreated : 2003-11-26 10:51:48.2  \n\ndateEvaluated : 2004-04-07 13:38:41.609\n\n117 days  \n\ndateCreated : 2003-12-27 00:41:28.4  \n\ndateEvaluated : 2004-04-22 15:19:03.78\n\n50 days  \n\ndateCreated : 2002-11-27 09:21:47.1  \n\ndateEvaluated : 2003-01-16 12:51:54.113\n\n3 days  \n\ndateCreated : 2004-01-03 18:13:30.0  \n\ndateEvaluated : 2004-04-22 15:45:10.859\n\n1 day  \n\ndateCreated : 2004-04-11 10:11:26.9  \n\ndateEvaluated : 2004-04-12 10:58:55.390\n\n0 days\n\ndateCreated : 2003-02-06 10:06:29.3  \n\ndateEvaluated : 2003-02-06 12:23:32.85\n"
+    }
+  ],
+  "/archive/2004/07/test-driving-generics/": [
+    {
+      "author": "keithkml",
+      "date": "2004-07-15",
+      "body": "Wildcards  \n\nI don't quite understand  (I don't know how it's different than ) but the idea behind the \"? extends\" and \"? super\" is that generic types are not \"variant\" in the way normal Java types are.\n\nFor example, you can say:  \n\nObject s = \"hi\";  \n\nbecause String extends Object. However, for certain reasons, you can not say:  \n\nList&lt;Object&gt; l = new ArrayList&lt;String&gt;();  \n\nBecause then, you could  break that ArrayList's type safety by saying:  \n\nl.add(new Object());  \n\nInstead, you can do:  \n\nList&lt;? extends Object&gt; l = new ArrayList&lt;String&gt;();  \n\nNow you can't call l.add() at all, because Java couldn't know what type is needed. All you can do is get and remove elements from the list.\n\n\"? super\" works similarly, but in the opposite direction (it works up the type hierarchy instead of down it).\n"
+    },
+    {
+      "author": "helen",
+      "date": "2004-07-16",
+      "body": "About Subversion  \n\nHi David -\n\nSubversion is something that is supported in future versions of Source Cast, the engine that powers the project area.\n\nThe java.net leadership team will have to decide if it will be implemented on this site. It's great to hear that you are interested in using Subversion.  If others are interested, I'd love to hear from you at https://java-net.dev.java.net/servlets/ProjectForumMessageView?forumID=93&messageID=2956.\n\nIt was great meeting you at JavaOne and getting a chance to chat!\n\nRegards,  \n\nHelen\n"
+    },
+    {
+      "author": "sparkee",
+      "date": "2004-07-18",
+      "body": "Wildcards  \n\nMy understanding is that Blah b = new Blah; means that b is a Blah parameterized by any type (and we don't care what type it is).\n\nBlah b = new Blah means that b is a Blah parameterized by any type that extends Object (and we don't care what type it is except that it extends Object).\n\nSince all types extend Object, then Blah and Blah are equivalent.\n\nBlah is used when you don't need to constrain the type you're parameterizing on.\n"
+    },
+    {
+      "author": "dwalend",
+      "date": "2004-07-27",
+      "body": "Wildcards  \n\nThat seems right. But the compiler cares about the difference.\n\nDave\n"
+    }
+  ],
+  "/archive/2004/08/moving-jdigraph/": [
+    {
+      "author": "straun",
+      "date": "2004-08-31",
+      "body": "website  \n\nTo a certain extent I can understand why java.net might want the website material under source control, because you can serve from several identical copies of the site.\n\nWhat I don't userstand is why the website of a project is not a single war file stored under a separate repository.\n\nThe website of an open source project is its fundamental shop window. All the blogs and wikis just get people to look. I would have expected java.net to have a more integrated solution than this.\n"
+    },
+    {
+      "author": "simongbrown",
+      "date": "2004-08-31",
+      "body": "Moving to java.net  \n\nGood to hear about your experiences as I've been tempted to move some of my stuff over for a while now. It sounds fairly straightforward so perhaps I'll have another look.\n"
+    },
+    {
+      "author": "dwalend",
+      "date": "2004-08-31",
+      "body": "website  \n\nIt'd be great to be able to just post .war files. Have you tried suggesting it to the java.net team? It probably won't be top priority, but will make their list.  https://java-net.dev.java.net/feedback.html\n\nDave\n"
+    },
+    {
+      "author": "coxcu",
+      "date": "2004-09-01",
+      "body": "Automated builds  \n\nA choice of version control would be nice, as would a choice in bug tracking.  What is java.net really needs, however, is automated builds.  For the life of me, I can't understand why java.net balks at automated build support.  There are a wealth of automated build tools for Java.  Without automated builds (with unit tests etc...) the difference between it works and it works on my machine is all too common.\n\nIf anybody could spare the server-side resources, you would think it would be Sun.  They make giant uber-servers, after all.\n\nI have suggested this many times starting over a year ago.  The responses that I've gotten indicate that automated builds are \"beyond the mandate\" of java.net..  If so, java.net needs a bigger mandate.\n"
+    },
+    {
+      "author": "dwalend",
+      "date": "2004-09-01",
+      "body": "Automated builds  \n\nI can understand why java.net isn't up for automatic build support. They'd be letting us run fairly generic processes on their machines. That's opening a pretty big door. I wouldn't let just anyone do that. (Sourceforge feels differently.)\n\nIt's a \"nice to have,\" I think, and a difficult one to get right. Only the largest, busiest open source projects need this feature. Java builds are generally pretty quick, and generally run the same way on all platforms. I wouldn't let someone commit to one of my projects until well after they'd demonstrated that they can run the build. Do you really miss it that much?\n\nTo frame it another way, would you rather have automated builds? cross-linked javadocs? Easy-to-digest information about downloads?\n\nHope that helps,\n\nDave\n"
+    },
+    {
+      "author": "coxcu",
+      "date": "2004-09-01",
+      "body": "Automated builds  \n\nYes, I really miss it that much.\n\nI would value it above all other missing functionality.  Of course if I had an automated build, I would want coverage info and all of the other nice things generated from it.  Java.net is free and I am greedy.\n\nAll projects need automated builds.  Small projects (and projects with few developers are the vast majority) need automated builds just as much as large projects, if not more.  The fewer the developers, the longer a broken build will go undetected and/or unfixed.\n\nIf you are a lone developer, an automated build allows you to test your program on another computer.  Being competent and having working tests is much better than just being competent.  If I fail to check a file in, the build and all the tests will still run on my machine, despite being broken in source control.\n\nOf course there is nothing keeping the conscientious developer from keeping an entirely separate directory structure for checking the project out of source control, building it, and running the tests after they do a check-in.  I bet most developers don't do that.\n\nAs for trusting people to run stuff on their servers--Java Isolates are long overdue, but Solaris has Zones and Linux has UML right now.  Are the rumors true?  Is java.net run on Windows?\n"
+    }
+  ],
+  "/archive/2004/11/amazing-xlint/": [
+    {
+      "author": "keithkml",
+      "date": "2004-11-15",
+      "body": "You should try IntelliJ IDEA 4.5, it highlights all of the Xlint warnings while you're typing the code in the editor, before even compiling.\n"
+    }
+  ],
+  "/archive/2004/12/naming-generic-types/": [
+    {
+      "author": "paulrivers",
+      "date": "2004-12-05",
+      "body": "I could not agree more. I've never understood why they always used single characters to represent types in C++ templates, and I *really* couldn't understand why they were doing it in java. I expected more legibility in java.\n\nI still don't understand why they do it, but at least now I now that I'm not the only one who thought full type names would be better. :-)\n"
+    },
+    {
+      "author": "patrikbeno",
+      "date": "2004-12-06",
+      "body": "Well in JDK it's not so bad because they do not use really complex generic types. Most complex one is Map with K as key and V as value. So what's the deal? It's readable.\n\nHowever, iI agree that if you design your own complex generic types such as the mentioned example, it really makes sense to avoid acronyms and on-letter type aliases.\n"
+    },
+    {
+      "author": "jhook",
+      "date": "2004-12-06",
+      "body": "I don't agree completely with your solution because now I look at Edge on a member variable or method and think, Class or Interface.  David remarks that this isn't a problem because the classes don't exist, but at the same time you are losing the intrinsic value of Java's naming scheme.\n"
+    },
+    {
+      "author": "jtr",
+      "date": "2004-12-06",
+      "body": "The problem with the JDK naming is that most people will copy that style because it is in the JDK.\n"
+    },
+    {
+      "author": "cayhorstmann",
+      "date": "2004-12-06",
+      "body": "If physicists always used long variable names, Einsteins equation would be energy = mass * Math.pow(speed_of_light, 2). It is \"self-documenting\", but have you ever heard of physicists who want to ditch e, m, and c?\n\nProvided they are unambigous in a given context, short variable names are better than long variable names. For example, the Java collections library uses E, K, V, T, for type variables--unambiguius and easy on the eyes.\n\nIn a graph program, I see nothing wrong with using N and E for node and edge types. I do not know what a Label type is, so maybe a longer type parameter would be better in that case.\n\nI find an overly verbose style oppressive, hard to read and hard to type. Use short names wisely, but by all means, use them when you can.\n\nCheers,\n\nCay\n"
+    },
+    {
+      "author": "cypherpunks",
+      "date": "2004-12-06",
+      "body": "It's ironic that you had so much trouble renaming E to Edge. The point of naming things with one capital letter is so that you can tell instantly what you're looking at. Few classes fit on one page and when someone else comes along and sees \"Edge\" they're naturally going to think - ok this is a class or an interface - because that's the rule! By violating the recommendation of the JLS, you're also violating the Principle of Least Astonishment. Yes, it's a tradeoff. B is not as nice as BaseDigraph, but it's actually *more clear*.  \n\nThe irony is that it would have been easy to rename E to Edge if you were using a modern IDE, while an IDE would have obviated the need to rename by making it immediately clear what E is (through a quick inline popup of its javadoc or jump to its definition and accompanying comments) or even what Edge would be (via syntax highlighting).\n"
+    },
+    {
+      "author": "dwalend",
+      "date": "2004-12-07",
+      "body": "Cay,\n\nWow -- years ago I abandoned single letter abbreviations in physics code -- particle collider simulations -- starting by replacing \"c\" with \"LIGHT_SPEED\"! (\"c\" was too many other things. It was \"speed of wave propagation in a material\" before it was the speed of light, and a materials researcher wanted to use it as a coefficient of heat or somesuch.)\n\nMaybe the thing to focus on is \"pithy\" instead of single letter. I found \"'E' is the same sort of thing as 'T'\" jarring. \"E\" and \"E1\" would have been better. How about \"Elem\" and \"Elem1\"?\n\nN to me is permanently part of O(N). People unfamiliar with graphs will have a leap to get from N to Node and from E to Edge. People unfamiliar with graph algorithms (or at least Cormen's treatment of them) will have trouble getting from L to Label. I suppose our code is for some audience.\n\nThe reason to use longer names is to get self-documenting code. It's much more robust than comments. The thing to avoid is names like\n\npublic void temporaryMethodToInitializeTheSystemForTodaysCrisis(String xmlStringToGetThingsGoing)\n\nwhile avoiding\n\npublic void init(String arg)\n\nHope that helps,\n\nDave\n"
+    },
+    {
+      "author": "markswanson",
+      "date": "2004-12-07",
+      "body": "I find E, K, V, T hugely confusing. However, I do note that using Edge does look like a Class and while it\n"
+    },
+    {
+      "author": "markswanson",
+      "date": "2004-12-07",
+      "body": "Sorry, Konqueror seems to have snipped away part of my last post....  \n\nI find E, K, V, T hugely confusing. However, I do note that using Edge does look like a Class and while it's better I still don't like the confusion. The solution: perhaps take a lesson from interfaces and use EdgeType the way some folks use EdgeIfc. Does anyone see anything wrong with this?\n"
+    },
+    {
+      "author": "paulrivers",
+      "date": "2004-12-07",
+      "body": "\"Principle of Least Astonishment\" my arse.\n\nAstonishment, seriously. Perhaps there should be some sort of naming convention, or specific IDE coloring  for template types to differentiate them.\n\nBUT, writing \"N value;\" tells you nothing about N without having previous knowledge of the context. Oh, you mean we have Nodes? I though it was Number. Or Name. Or Network.\n\nJava is supposed to be readable. A single letter for a type is not readable.\n"
+    },
+    {
+      "author": "cypherpunks",
+      "date": "2004-12-07",
+      "body": "\"N value; tells you nothing about N without having previous knowledge of the context.\"  \n\nNot true at all - and that's the point. N tells you that what you're looking at is a TypeParameter! Ok, maybe you don't know what N stands for but as I say, it's a trade-off. Unfortunately the thing you're trading off against are the common practices that the JLS practically *mandates*. All things being equals, you might choose long Names for TypeParameters, but in this case, the trade-off has already been made by the language designers and you're going against it.\n"
+    },
+    {
+      "author": "parthav",
+      "date": "2004-12-07",
+      "body": "How about NodeType or GNodeType, GEdgeType or GenNodeType to differentiate class from generics.\n"
+    },
+    {
+      "author": "rickcarson",
+      "date": "2004-12-07",
+      "body": "It looks like in order to violate the least astonishment for the most people, we would have to choose something other than a capital letter, since people see the capital letter and straight away think 'ah, its a class'.\n\nBut if we start things out with a lower case letter, then people will parse that as some kind of variable...  tricky.\n\nMaybe we should use 'anti camel casing'? eg:  \n\neDGE or \n\nnODEtYPE \n\nOh sure, its a little ugly, but you won't get it confused with anything else.  \n\nFirst letter Caps, rest lower (camelled) is taken (for classnames) \n\nAll Caps is taken (for consts)  \n\nAll lower case is taken (keywords)  \n\nFirst letter lower, rest lower (camelled), is taken (for variable and method names)\n\nLooks like the only thing left is the reverse of variable/method naming. :D\n\nPersonally, I'm a little surprised they didn't shove a symbol on the front of them, like @ or #.  Given that @ would get confused with metadata (which... in a way... generics are...) I'd consider it a likely candidate (we've got to avoid paying too much 'keyboard symbol tax' after all).\n"
+    },
+    {
+      "author": "salp",
+      "date": "2004-12-08",
+      "body": "And we're only one step away from hungarian notation. I hoped and thought I never had to see it again and that it outlived it's purpose, guess I was wrong. Hmmmmz, generics, maybe I haven't spent enough time on it, but I've got the creeping feeling this monster is going to turn around and bite us in the ###.\n"
+    },
+    {
+      "author": "ckessel",
+      "date": "2004-12-09",
+      "body": "The problem seems to be that we've introduced a new type into the system.  We had classes, methods, and variables before and conventions on naming them.  Now we have generic typing and we need a convention for how to name it such.\n\nPersonally, single character names are atrocious.  Frankly, I'm stunned the Java team followed such a 1960's coding style on that.  It's already common practice to distinguish types of variables via a naming convention (constants, static, and instance).  It's not a big stretch to think we simple need a similar decision for generics:\n\ng_GenericName  \n\n_GenericName_  \n\n__GenericName\n\nSeems like there's a plethora of possible conventions that would clearly denote a Generic vs. a Class name and still allow useful names for generic types.\n"
+    },
+    {
+      "author": "daveyost",
+      "date": "2005-08-26",
+      "body": "Desciptive type names is the right way to go.  I agree it's a shame that Sun set a bad example.  If you want to see by inspection in stone-age tools or colorless printing that something is a parameter, then what's wrong with KeyT, ValueT, etc.?\n\nI've filed an IDEA enhancement request with Jetbrains for settable coloration for generic types.  I was surprised they don't yet have that feature.\n"
+    }
+  ],
+  "/archive/2005/01/did-i-miss-generic-array-creation/": [
+    {
+      "author": "asjf",
+      "date": "2005-01-07",
+      "body": "section 7.3 of the tutorial seems to cover this?\n\nhttp://java.sun.com/j2se/1.5/pdf/generics-tutorial.pdf\n\nin summary, it sounds like because the true parameterized type in unknown at run-time you don't have enough information to guarantee run-time type safety, so you have to be disallow more than you'd like \n\n(possibly)\n\nbtw, isn't forums.java.sun.com the place for this sort of question?\n"
+    },
+    {
+      "author": "pprun",
+      "date": "2005-01-07",
+      "body": "you can see  Articles by Bruce Eckel\n\n9-19-04 Puzzling Through Erasure\n\nhope some help.\n"
+    },
+    {
+      "author": "dwalend",
+      "date": "2005-01-07",
+      "body": "asjf,\n\nThe end of section 7.3 of the tutorial says section 8 will explain a work-around to avoid the warning. To use section 8, I'd need a way to say \n\nHeapMember&lt;Key,Value,Comp&gt;.class either a newArray(size) method on Class or a type-aware newInstance() method on Array. That's why I think there's a missing piece.\n\npprun,\n\nThanks for the pointer. I'd rather not use @SuppressWarnings(\"unchecked\") . Just one method, but it'd leave me feeling a little dirty.\n\nThanks again,\n\nDave\n"
+    },
+    {
+      "author": "wingetr",
+      "date": "2005-01-07",
+      "body": "public class ArrayFactory  \n\n{  \n\n private ArrayFactory() {}  \n\n public static T[] toArray( T... array ) \n\n {  \n\n return array;  \n\n }  \n\n}\n"
+    },
+    {
+      "author": "tball",
+      "date": "2005-01-08",
+      "body": "I've run into the same problem. I think the bug is with the compiler's  -Xlint option (which was added late in the release), rather than the language itself.  I'm not a Java language expert, however.\n"
+    },
+    {
+      "author": "dwalend",
+      "date": "2005-01-08",
+      "body": "wingetr,\n\nThat's a nice hack, but doesn't quite fit my problem. However, that plus pprun's post did inspire my own hack:\n\n@SuppressWarnings(\"unchecked\")  \n\n private HeapMember[] createHeapMemberArray(int size)  \n\n {  \n\n return (HeapMember[])Array.newInstance(HeapMember.class,size);  \n\n }\n\nprivate void consolidate()  \n\n {  \n\n HeapMember[] fibNodes = createHeapMemberArray(size());  \n\n...\n\nI decided that a one-line method with one unchecked cast is OK for now.\n\ntball,\n\nLooks like Sun ran out of time to fix the -Xlint option to actually look at @SuppressWarnings(\"unchecked\"). So my hack will help reduce warnings in classes that have the same unchecked cast, but won't get rid of all warnings. See bug #4986256, and add a vote if you've got one to spare.\n\nAnd I'll go ahead and put in the RFE for a typesafe Array.newInstance(). Will post the bug number once it works its way through the parade.\n\nThanks,\n\nDave\n"
+    },
+    {
+      "author": "kinfei",
+      "date": "2006-09-05",
+      "body": "T[].class.cast(java.lang.reflect.Array.newInstance(T[].class, size));\n"
+    },
+    {
+      "author": "dwalend",
+      "date": "2006-09-06",
+      "body": "Thanks for the suggestion, kinfei. It still gives the warning. You can't specify the generics on T[] in the T[].class.\n\nThanks for the suggestion in this old blog, though.\n\nDave\n"
+    },
+    {
+      "author": "dprotti",
+      "date": "2007-05-07",
+      "body": "As I read in http://sofpower.com/java/qa.html, this is a common problem. Quoting sofpower.com:\n\n\"Q: Why does E[] arr = new E[cap]; give a compile-time error?\n\nA: Basically, the operator new is a run-time operation and Java 1.5 removes all generics typing at compile-time. This is the well-known generic array creation an operation not supported by Java 1.5. You need to use\n\nobj = (E[]) (new Object[cap]);\n\nwhich will compile with just a warning.\"\n\nRegards,  \n\nDuilio Protti.\n"
+    },
+    {
+      "author": "dwalend",
+      "date": "2007-05-07",
+      "body": "dprotti,\n\nThanks for posting in this ancient blog. I'm at JavaOne where we're going to have an \"animated discussion\" about getting rid of erasure for JDK7.\n\nFor now, the cast is the best you can do. I put the casts like that in a short separate private method with a @SuppressWarning( \"unchecked\" ) annotation. That works well for me.\n\nDave\n"
+    }
+  ],
+  "/archive/2005/01/sharpening-the-axe-or-shaving-the-yaks/": [
+    {
+      "author": "jonmountjoy",
+      "date": "2005-01-23",
+      "body": "The balding yak stuff is quite distracting. I thought I'd recommend you take a look at XMLBeans as an alternative to JAXB.  It's stable, and it rocks. If you want to take a risk and use XPath 2.0 (I doubt it's a big risk), take a look at Saxon for a great implementation.\n"
+    },
+    {
+      "author": "dwalend",
+      "date": "2005-01-23",
+      "body": "Hi Jon,\n\nXMLBeans was a good suggestion. However, we found a few problems with it.\n\nFirst, it doesn't give us a way to preserve the reference graph beyond full containment and list order. We'd have to write some caching scheme that resolves any IDREFs. A small but shaggy yak.\n\nSecond, I want to avoid having a separate layer of DAO all together if possible. We're going to be changing the data structures all the time (because we only have a vague idea of what we'll be doing with them). The team didn't have enough patience for a JaxB 1.0/.xsd approach and wants something better. \"I'm building a data access object layer for XMLBeans\" is not a great answer for, \"How's the new scheduling algorithm coming?\" Big fat hairy yak.\n\nThe appeal of Xstream is that the team can work with the Java objects they prefer; the cost of mutating them is just breaking some test cases. (Might be able to fix that with xslt.) Scaling it up to handle interlinked xml documents in an xml:db would be some work, but looks straight forward.\n\nSaxon gives me XPath 2.0, but it's not integrated with anything. To use .xsd substitution groups to get inheritance in XPath, I need the 2.0 spec tied in with the persistence mechanism. Maybe needed. Definitely more work not in focused search algorithms.\n\nThanks again,\n\nDave\n"
+    },
+    {
+      "author": "dtbullock",
+      "date": "2005-01-23",
+      "body": "If your goal is a persistence mechanism, then look to a persistence technology.  It's not clear why you need an XML database ... unless the data you will be manipulating is document-oriented to begin with.\n\nIt seems as if you need a persistence mechanism that will let you start persisting things with only a minor amount of work - maybe even provide an abstraction that allows you to defer the question of which underlying database to use to a later date.\n\nSince you are already thinking XML, I will recommend a product first, and then justify why your investment in that product will not be mis-spent.  Take a look at Xcalia LiDO.  It is just one instance of a new class of products which provide persistence based on what have been termed 'plain old Java objects'.  I recommend Xcalia because they target XML databases, and I know them to produce decent software.\n\nHappily, your experience with Xcalia will give you experience with around twenty other products on the market which adhere to the Java Data Objects standard for transparent object persistence.  Your code will run un-modified (just some external mappings and factory-properties will change) even if you change database or JDO vendor\n\nNow the bulk of the JDO vendors (including Xcalia) target relational databases or object-databases.  And this is something you'll want to consider.  You seem to want to use XML for its low level of commitment to a given data-structure, but surely SQL is just as useful as XSL for evolvability that way?  It may be a pain stuffing an object graph into the relational paradigm, but it's an even bigger one sticking it into a hierarchical paradigm!  Not that you'll care much using JDO, except when you have to synch your already-persistent data with the latest rev of the object model ... and even then, most vendors provide tools that write the SQL (both initial and all updates) for you!\n\nHaving been a user of JDO for over a year now, I can truly say that it helps you to forget about the persistence 'yak' and concentrate on the real problem at hand.  In the relational space I use MVCsoft's implementation, which has a nice homey fit (and price) for my needs as a solo developer.  For use in an enterprise situation (for example, where you farmed out the SQL mapping to someone who knew databases better than you), you might choose a bigger vendor.  Xcalia's market differentiation is that you can mix and match quite a range of persistence targets - not just relational databases.\n\nA good JDO resource is JDOCentral.\n"
+    },
+    {
+      "author": "arae",
+      "date": "2005-01-24",
+      "body": "Yak-shaving seems more of a displacement activity for someone without a real job to do.  A writer-in-residence who spends all day sharpening pencils is not the same as a lumberjack who takes a fews days off for tool honing.\n"
+    },
+    {
+      "author": "dwalend",
+      "date": "2005-01-24",
+      "body": "arae,\n\nIt's not so much that the job isn't real. It's more that the job is big and long term, and the would-be yak shaver has a free hand to decide how to do it. A writer-in-residence who spends a week learning to sing Russian folk songs when he's got a novel due in two years. Yak shaving seems to have something to do with explaining why you're doing what you're doing in the near term to reach a far term goal.\n\ndtbullock,\n\nThanks for the pointer to Xcalia. I haven't got to pull out my JDO hammer in about two and a half years. JDO over XML is pretty close to what XStream gives me. (I'd point to my early, early FOSS JDO precursor, but some things are better left behind.)\n\nDave\n"
+    },
+    {
+      "author": "calum",
+      "date": "2005-01-25",
+      "body": "Since we don't know what sorts of data structures we'll need, but do need to manage a lot of data early, XML:DB and xml binding technology looks like a good fit.\n\nHave you thought of using Javaspaces, and throw your data structures in as Entries?\n\n--Calum\n"
+    },
+    {
+      "author": "dtbullock",
+      "date": "2005-01-27",
+      "body": "Yup, XStream will let you persist your entire object graph all at once.  JDO (more of a 'way' than a hammer, IMHO) would:\n\nallow you to have only parts of your graph in memory at the one time  \n\n  provide a query language that fits naturally with a Java object model  \n\n  provide transactions should you need them\n\nYou still haven't justified why XML deserves to be part of this picture?\n"
+    },
+    {
+      "author": "dwalend",
+      "date": "2005-01-28",
+      "body": "calum,\n\nThanks for the suggestion. I'll have a look. We've talked about a blackboard-style system for keeping up with what's going on.\n\ndtbullock,\n\nAha -- More details: XML's already in the picture. The inbound details and outbound details are XML. One of the receiving ends is a fairly limited device that already has to have core XML libraries on board, so a large part of the XML tax is already paid.\n\nIt's got some benefits, too. Generating test cases and pretty pictures will be cheap. The management's bought in to it heavily to support long-term interroperability. etc. They'll see relational database technology as a yak.\n\nBut you're right. The API and thought patterns I ultimately want to use line up well with JDO. I seem to fall back into the problem of a first class/second class object split no matter what.\n\nThanks,\n\nDave\n"
+    }
+  ],
+  "/archive/2005/03/better-javadoc-on-httpjavanet/": [
+    {
+      "author": "grlea",
+      "date": "2005-03-08",
+      "body": "I'm keeping the javadoc for my java.net projects offsite, uploading them by FTP and pointing to them from the java.net site.  \n\nI find FTP a very easy way to do it.\n\nUsing Internet Explorer (groan all you like - it works for me), I browse to the ftp directory where I keep the javadocs, delete the 'api' directory, then drag and drop the same directory from the latest build.  \n\n30 seconds later and I'm done.\n\nI'd love to be able to FTP them up to java.net.  \n\nI think it's sad that, at the moment, it's impractical for the whole project to be hosted here.\n"
+    },
+    {
+      "author": "pdoubleya",
+      "date": "2005-03-09",
+      "body": "You should be able to request JDocs.org to add your API, and to update it when it changes. There are links on their site to do that.\n\nJDocs uses the Ashkelon FOSS system, which stores APIs in a relational database. It should be easy to attach to a website (that was the original intent for the project), or for java.net to coordinate with JDocs to provide for easy updating, etc.\n\nPersonally, if I'm going to use the API much, I prefer to have the APIs locally, and am migrating to using Ashkelon locally as well.\n\nPatrick\n"
+    },
+    {
+      "author": "eitan",
+      "date": "2005-03-09",
+      "body": "david,\n\ni don't know whether you know this or not but jdocs is based on my open-source project 'ashkelon.'  they basically use ashkelon to populate their db.  when they got started they contacted me and i helped them get set up.  i even went as far as adding features to ashkelon to accomodate their needs.\n\nwhere it differs from ashkelon is the jsps's:  they wanted their ui to look just like javadocs did (monochromatic, html 3.2 stuff).  with the ashkelon base, it's _very_ easy to customize the ui for javadocs because they can all be templatized.\n\nanyhow, i'd be more than happy to work with the powers that be at java.net to make that happen.\n\nthe ashkelon project is well-documented.  furthermore, i'm giving talks on ashkelon all across the country with the no fluff just stuff conferences.\n\n- eitan\n"
+    },
+    {
+      "author": "dwalend",
+      "date": "2005-03-09",
+      "body": "grlea,\n\nMaybe if they opened up the \"documents and files\" segment to be a better match for javadoc, that would open up something that works more like ftp. I don't really want to have to hold the javadocs on a separate site. Worth considering, though.\n\nThanks,\n\nDave\n"
+    },
+    {
+      "author": "dwalend",
+      "date": "2005-03-09",
+      "body": "eitan, Patrick,\n\nDo either of you know if the JDoc site is being kept up? The front page says they haven't added an API since September 7th, 2004.\n\nWhat's the overhead of running ashkelon? Does it jjust plug into a servlet engine? Any special security concerns? Anything that will make the java.net crew grind their teeth?\n\nThanks,\n\nDave\n"
+    },
+    {
+      "author": "rickcarson",
+      "date": "2005-03-09",
+      "body": "You should be able to browse the Javadoc, but the developer shouldn't have to muck around with uploading them and keeping them up to date - that should be automated.\n\nHere's how it should work:  \n\nInitial State = no javadoc stored  \n\nSomeone clicks a \"look at the javadoc\" link, and as appropriate (depending on the link) the servlet responsible for handling that request checks to see if the Javadoc exists.  Also rather than compile the whole shebang, it should be smart enough to only make the relevant bits.  Eg if you're looking for the index, it should compile only what it needs to for that (perhaps just using the file names and packages of the .java files).  Or if I'm looking at a particular class it only needs to compile the Javadoc for that one class.  \n\nThe second thing it should do is in case the existing javadoc is older than the class you're looking at it should compile a new one.  \n\nThe third thing is that if noone's looked at a javadoc for a while, there should be a maintenance facility to maybe get rid of it (move it to cheaper storage maybe?)\n\nThe point of all this is a not too smart automated facility could be quite quick, and not suck storage the way cvs would, while taking a lot of hassle off the coders, and also maximising the convenience for the viewers.\n"
+    },
+    {
+      "author": "grlea",
+      "date": "2005-03-09",
+      "body": "Rick: automation is an absolute must for people. I'm happy to do a few manual things as long as they're easy (which checking javadoc into CVS is not). I have a colleague who will almost refuse to do anything unless it's automatable. I wish he'd write my Ant files for me.  : )\n\nDavid: I'd be pretty happy with any solution for putting javadocs onto java.net as long as:  \n\n - it's strongly associated with the project (i.e. in the same subdomain)  \n\n - it's not in CVS  \n\n - it's easy to upload manually - akin to my single d'n'd with IE.  \n\nAutomation would be good, but isn't a requirement for me. It is for some people, though, which probably means it SHOULD be a requirement (in case anyone with control over the site is reading this).\n"
+    },
+    {
+      "author": "pdoubleya",
+      "date": "2005-03-10",
+      "body": "Another thought on using Ashkelon. We could write a doclet for Ashkelon that outputs the docs in a standard XML format, which includes a version attribute. On request for a certain class, if not already in the central Ashkelon database, they are pulled in--and, if the version is different from that in the database, the newer version is pulled in. The load could be \"chunked\" using XPath to load by package, class, etc. Links would always go through the main servlet to allow for lazy loading.\n\nThe generated XML can be uploaded to the project www directory, and overwrite whatever is currently in there, given a version change.\n\nAlso, if the servlet can return either HTML or XML, using the XML one can write a rich client browser (one of my pet projects) or submit different XSL for different styled layouts.\n\nI think Ashkelon or something like it is the best solution for managing multiple JavaDoc sets. It is stable code and works well.\n\nPatrick\n"
+    },
+    {
+      "author": "mgladdish",
+      "date": "2005-03-10",
+      "body": "Surely the sensible answer is for java.net to use your project's build script to create the javadocs form the checked-in version of the code. I'm absolutely with you being against checking in derived artifacts. We use cruisecontrol to run regular builds from our repository and make the generated reports, including javadoc, available. Jakarta also provide regular builds via gump.\n"
+    },
+    {
+      "author": "dwalend",
+      "date": "2005-03-11",
+      "body": "rickcarson,\n\nGreat suggestions on how the world should be. That might be putting too much burden on the java.net service. I'd be surprised if they had the resources to build out a new piece of software. And it'd be hard to justify in light of Ashkelon. (You could sign on with the Ashkelon project and pull the world toward your vision...)\n\nDave\n"
+    },
+    {
+      "author": "dwalend",
+      "date": "2005-03-11",
+      "body": "grlea, Patrick, mgladdish,\n\nGreat ideas on automating this stuff.\n\nThe project automation tools mgladdish suggests aren't widely accepted yet. (I've found them a bit restrictive.) Ant seems to be universal enough, so that got me thinking...\n\nPerhaps what we need is a standard ant Task to hand off javadoc to a remote instance of Ashkelon. I'd slip it into my big release target, just after the tag task. Others could link it up with cruisecontrol or maven or what-comes-next.\n\nWe'd need to convince the java.net crew to host an Ashkelon instance, and open the firewall enough to let us talk to it. Eitan said he could help.\n\nHow's that sound?\n\nDave\n"
+    },
+    {
+      "author": "eitan",
+      "date": "2005-03-15",
+      "body": "sorry it took me a few days to get back to this thread.  yall have some terrific ideas.  i think we could do our community a great service by setting this up for all java.net projects.  i have some initial ideas which i'll outline here for starters.\n\nthe ashkelon repository manager stuffs apis into a db.  ashkelon supports either mysql or postgres.  every project maps nicely to a single api.  we'll need to figure out how long it will take ashkelon to populate all java.net projects and how the viewer performs on that level/scale.  my idea is to start simple:  have the repository manager rebuild the database nightly so that every morning all projects have fresh javadocs, and this would all be automated.  there is one piece that project developers would have to supply:  the api.xml file which lists the packages to be documented (and the api name, and a few other tidbits).  we can get the source code from cvs.  we can also get much of the information that is traditionally supplied in api.xml directly from the java.net project information, so that the requirement from project leaders/developers would be minimal (possibly nil).  once we get this working, we could then start refactoring:  making ashkelon a little smarter so it doesn't have to rebuild the docs for an api if the source hasn't changed.  also ashkelon supports a per-api add/remove feature so that updating an api can be performed independently of the others.\n\nit looks like a number of you are ready and willing to help out with setting this up, which would be terrific.  we could surely use your help.  a community effort!\n"
+    },
+    {
+      "author": "eitan",
+      "date": "2005-03-16",
+      "body": "Dave wrote:\n\n&gt; Do either of you know if the JDoc site is being kept up? The front page \n\n&gt; says they haven't added an API since September 7th, 2004.\n\nI don't really keep up with what goes on at javalobby these days.  But you must realize that they're a small team.  Also once the top 100+ APIs are documented, you pretty much have things covered for the community...with the exception of updating the APIs with newer version releases.\n\n&gt; What's the overhead of running ashkelon? Does it just plug into a \n\n&gt; servlet engine? Any special security concerns? Anything that will \n\n&gt; make the java.net crew grind their teeth?\n\nthe viewer is a war file you drop into a servlet/jsp container.  security concerns should be minimal as the viewer is essentially read-only.  though i really think we should think through various scenarios, possible vulnerabilities.\n"
+    }
+  ],
+  "/archive/2005/04/a-trip-in-the-way-back-machine/": [
+    {
+      "author": "johnreynolds",
+      "date": "2005-04-26",
+      "body": "In the J2EE space, JDK 5 is very frustrating.  Until the major commercial app servers support it we can't use it, but many of the technologies that we'd like to use (like JAXB 2) require it.\n\nToby's Retroweaver is a great help, but wouldn't it have made more sense for something like Retroweaver to be an \"official\" deliverable from Sun et. al.?\n"
+    },
+    {
+      "author": "osbald",
+      "date": "2005-04-26",
+      "body": "I've been pondering making the switch using Retroweaver as my compatibility stabilisers, so far the idea of tip-toeing around the bits of Java 5.0 Retroweaver doesn't support has convinced me to stay put. (esp. when you're not fully to-to-speed on the new syntax anyway).\n\nAlso worth noting is that the JSR 166 backport isn't 100% compatible either, but most awkwardly all the package names in the backport have been changed.. how did your SomnifugiJMS user handle that? change all the code by hand/ide? I understand why, because Sun dosnt like anybody distributing code in the java.* packages.. but also it'd cause classloading problems (I think) forcing it to be loaded by the bootclasspath override? Not too hot if your using java web start.\n\nIt'd be nice if retroweaver could integrate & alias to the jsr-166 backport without requiring code changes.\n"
+    },
+    {
+      "author": "richunger",
+      "date": "2005-04-26",
+      "body": "Oh, yeah?  Well, my company is still on 1.3!  You fancy-pants developers with your assert() statements...\n"
+    },
+    {
+      "author": "dwalend",
+      "date": "2005-04-27",
+      "body": "richunger,\n\nJust wait until all of us are using NetBeans 42.0 with \"telepathic intent-based programming.\" We'll all have antennae coming out of our heads, and you'll really feel like a poor cousin.\n\nDave\n"
+    },
+    {
+      "author": "dwalend",
+      "date": "2005-04-27",
+      "body": "osbald,\n\nI used separate packages. The default net.walend.somnifugi.backport package uses the backport, and is in the somnifugi subproject. I created a new subproject to hold net.walend.somnifugi.juc. The somnifugi subproject gets retroweaved and uses the backport. The juc subproject does not get retroweaved and uses the juc concurrency classes.\n\nA better way to handle this problem would be using a source code branch. One branch would be a JSDK 1.4 only code base that uses retroweaver and the backport. The other would be a JDK 5 code base that uses juc and doesn't use retroweaver. You would build two releases, one for JSDK 1.4 and one for JDK 5. I did not want to deal with CVS branches becase they are a pain, especially after using subversion.\n\nToby (created retroweaver) advocates this two-release approach because it avoids some annoying problems. More on that in a minute.\n\nDave\n"
+    },
+    {
+      "author": "dwalend",
+      "date": "2005-04-27",
+      "body": "johnreynolds,\n\nSun is an odd duck as companies go. They created five versions of java and gave them away. They have to balance their quarterly bottom line with their desire to get more people coding in Java and their desire to get people to switch to JDK 5. Sun does not ask us for donations. More power to them.\n\nToby has a crowd of people (me included) encouraging him to add more parts of JDK 5 to retroweaver. But JDK 5 has too many changes for him to possibly keep up with alone. Sun would be in a worse position -- Retroweaver is Toby giving up his free time to create a great tool. Sun can not claim that kind of charitable motivation.\n\nI would like Sun to consider breaking up the massive library that comes with the JDK into smaller parts so that we can use new major features sooner and more independently. However, I recognize the spectacularly high cost of that approach. It is hard to say what the right balance is.\n\nDave\n"
+    },
+    {
+      "author": "dwalend",
+      "date": "2005-04-27",
+      "body": "Toby asked me to emphasis creating two releases: one for JDK 5 and one for JSDK 1.4. That approach makes my EnumSet example fall apart; code that uses java.util.EnumSet will not compile under JSDK 1.4. If someone used the EnumSet code with JSDK 1.4, they will get a ClassNotFoundException or worse.\n\nDave\n"
+    },
+    {
+      "author": "scirka",
+      "date": "2005-04-27",
+      "body": "I think casting is evil and that's why I jumped on generics and Java when it was released last fall. Doing nothing is always the easiest thing to do, but not always the right thing to do. For me, using the new language features and some of the minor additions in the API was the right thing to do. Sometimes is hurts though - especially when you try to release on OS X. But it hurts even more when you are lusting after the new features from J2EE (fortunately I'm developing a J2SE app). \n  \n\nEven though I get beaten up for using the lastest technologies and tools, I still do it. For me, if you're standing still then you're moving backward.  \n  \n\nI appreciate your decision to use JDK 5. Somebody has to lead.\n"
+    },
+    {
+      "author": "anarchi",
+      "date": "2005-05-01",
+      "body": "Sounds like a familiar scenario! I have been using retroweaver to target 1.4 for some time but I recently also had to produce a version of an API for 1.3.1 (way - way back prehistory machine). Retroweaver can target 1.3.1 however I found that the retroweaver-rt jar itself is compiled for 1.4 - with a quick look in the buildfile though you can see retroweaver retroeaves itself to target 1.4 and you can easily tweak this to produce a version of the retroweaver runtime classes for 1.3.1.\n"
+    }
+  ],
+  "/archive/2005/08/connecting-to-a-command-line-process/": [
+    {
+      "author": "pete_kirkham",
+      "date": "2005-08-25",
+      "body": "InputStream.read() returns the next byte, so casting it to a char only works for a limited character set in some encodings. If you're reading binary it's better to read into a byte array rather than individual bytes, though as it seems it's and ASCII text file, using BufferedReader and readLine() may be better.\n\nI'd add a name field to **StreamPull**, and either have getResult() throw **trouble** if not null or it thrown by a **reportExceptions()** method, rather than all the error handling in the client. You'd want to subclass **StreamPull** for the error stream so its **reportExceptions()** method throws an exception whenever the data read is not empty; I tend to prefer specialisation by Oo rather than by procedural conditions.\n"
+    },
+    {
+      "author": "asjf",
+      "date": "2005-08-25",
+      "body": "imho, some things to consider are:\n  \n  \n\n(1) Write an abstraction for a process whose stdout and stderr are assumed to be bounded by some constant byte size passed in to the constructor  \n\n(2) Make StreamPull an inner class of that  \n\n(3) Maybe use a BufferedReader and read a line of output at a time?  \n\n(4) there seem to be an excessive number of combinations of error possibilities considered. In practice surely you want to check the return code of the process, and if its success assume the stdout is a good form. I'm not sure what value there is in differentiating between a null stdout and the empty string stdout for example?  \n\n(5) maybe use ProcessBuilder to redirect stderr to stdout if the client code doesn't need to distinguish the two?  \n\n  \n  \n\njakarta commons io has some utility methods for sucking up the content of readers and inputstreams in their entirety. There doesn't seem good support for this in the JDK? It would've been nice to have an interface for InputStream and a subclass FiniteInputStream or BoundedInputStream or something which included methods for getting the whole inputstream or reader output as an array or String :)\n"
+    },
+    {
+      "author": "mgbacke",
+      "date": "2005-08-25",
+      "body": "Something else you might be interested in is Expectj, a Java port of Expect. It allows you to automate the interaction with other processes via the command line.\n\nExpect is a very powerful automation utility that's been known and used for ages in the UNIX world. See [http://expect.nist.gov](http://expect.nist.gov).  Activestate has a Windows port.\n\nI haven't used the Java version yet, but it's in my bag-of-tools for future use. You might gleam something useful from the sources, or just use it within your app.\n\nSee [http://expectj.sourceforge.net](http://expectj.sourceforge.net)\n"
+    },
+    {
+      "author": "jhannes",
+      "date": "2005-08-25",
+      "body": "I'd replace the code in StreamPull.run by using org.apache.commons.io.IOUtils:\n\npublic void run() {\n try {\n result = IOUtils.toString(is);\n } catch (Exception e) {\n setException(e);\n } finally {\n IOUtils.close(is);\n }\n}\n\nI also think that you might want to use java.util.concurrent.FutureTask  to implement the StreamPull, but it's been several years since I used the concurrent library, so I don't remember how. :-(\n\nCheers,\n~Johannes\n"
+    },
+    {
+      "author": "dwalend",
+      "date": "2005-08-26",
+      "body": "Thanks for the suggestions. I'll try them out next week and report in.\n"
+    },
+    {
+      "author": "dwalend",
+      "date": "2005-09-05",
+      "body": "pete_kirkham -- I switched from a StringBuilder to ByteArrayOutputStream's toString() method. That should fix any unicode issues. I don't much like the idea of extending StreamPull by how something larger will interpret it; something on sys.err isn't an Exception until the context says so.\n\nasjf -- I don't get the luxury of a known byte array size, but ByteArrayOutputStream does a nice job. Thanks for reminding me to check error codes. I haven't spotted information on what dot might return, but I think I know where to ask.\n\nmgbacke -- Thanks for the pointer to expectj. It looks way over the top for what I need. I don't want to add another programming language to the mix; java, dot, and command line are plenty.\n\njhannes -- I'll keep FutureTask in mind in case the dot processes start to run long.\n"
+    }
+  ],
+  "/archive/2006/01/affine-frustration-transformed-new-fewer-bugs/": [
+    {
+      "author": "gfx",
+      "date": "2006-01-26",
+      "body": "If your project public? I can't access the applet's jar nor the project page.\n"
+    },
+    {
+      "author": "arnovdk",
+      "date": "2006-01-27",
+      "body": "What version of the JRE do I need to run this applet? Both with 1.5.0_06-b05 and 1.4.2_05-b04 I get some exception..\n\n1.4:\njava.lang.ClassFormatError: net/walend/zoom/ZoomApplet (Bad magic number)\n\n1.5:\njava.lang.ClassFormatError: Incompatible magic value 169871904 in class file net/walend/zoom/ZoomApplet\n\n[rant]Oh, and the text format system thingy for these comments sucks, IMHO.[/rant]\n"
+    },
+    {
+      "author": "dwalend",
+      "date": "2006-01-27",
+      "body": "Affine Frustration Transformed to Applet Frustration...\n\nGfx, looks like java.net's not letting my .jar out. I've sent email to their support team to sort things out.\n\narnovdk, both of those are responses to an http 404 response, consistent with gfx's report. It's a JDK5 applet. If a 1.4 JVM loads the class, it'll give you a \"ClassFormatError: Unsupported Version 49.\"\n\nI've gotten it to work on Safari (MacOS) and IE v6 (Windows), but not Firefox. Does Firefox not do applet tags?\n\n[rant]Amen, brother! How about straight [pre] text assumed?[/rant]\n"
+    },
+    {
+      "author": "dwalend",
+      "date": "2006-01-28",
+      "body": "Got the applet working. Looks like the problem was that my tokenarranger project isn't public yet. So everything came to everyone else as 404, but it all worked for me after I logged in.\n\nI'm not sure what to do about tokenarranger not being public. I moved the applet and picture to a different spot, and it works fine. At least on Safari... Hate that \"new fewer bugs\" release.\n"
+    },
+    {
+      "author": "kylecordes",
+      "date": "2006-01-29",
+      "body": "I'd love to \"kick the code around\" myself - but while the applet now works, the site ( https://tokenarranger.dev.java.net ) does not work for a mere member of the public, regardless of logging in.\n\nCould you post the source jar/zip/whatever file somewhere offsite while that gets worked out?\n"
+    },
+    {
+      "author": "dwalend",
+      "date": "2006-01-31",
+      "body": "kylecordes,\n\nLooks like they've stopped hiding the project. Let me know if you can't see it. I'll try switching the applet back over in  a few minutes.\n"
+    }
+  ],
+  "/archive/2006/05/tilting-at-the-generics-windmill/": [
+    {
+      "author": "keithkml",
+      "date": "2006-05-01",
+      "body": "I posted a list of what I think java generics needs to become more usable. It includes some of the issues you presented here. My post is at [What Java Generics Needs](http://joust.kano.net/weblog/archive/2004/12/01/what-java-generics-needs/)\n"
+    },
+    {
+      "author": "feshenga",
+      "date": "2006-05-03",
+      "body": "What generics needs is to go away. it doesn't do anything to make my life easier and learning it is a PITA. it just makes me more motivated to learn a different language.\n"
+    },
+    {
+      "author": "cowwoc",
+      "date": "2006-05-03",
+      "body": "David,\n\nI think you've nailed the problems and solutions right on the nose! Is there a RFE issue we can vote for for this change?  \n\nThank you,  \n\nGili\n"
+    },
+    {
+      "author": "helen",
+      "date": "2006-05-03",
+      "body": "Looking forward to your presentation David!  See you in the java.net Community Corner which is located at pod 523!\n\nRegards,\nHelen\n"
+    },
+    {
+      "author": "dwalend",
+      "date": "2006-05-03",
+      "body": "keithkmi, that's a good list. Did anyone at Sun see it?\n\nAlso, any thoughts for a specific solution to let us see the types specified in the generics? Right now all we get is the limits on the type parameters.\n"
+    },
+    {
+      "author": "dwalend",
+      "date": "2006-05-03",
+      "body": "feshenga, check your spleen for leaks^H^H^H^H^H^H^H^H\n\nfeshenga, check out the beanshell language at beanshell.org. No generics, you can use the java class libraries, and can still compile your code into java's bytecodes.\n"
+    },
+    {
+      "author": "dwalend",
+      "date": "2006-05-03",
+      "body": "Thanks for reminding me to do an RFE, Gill. I put in the RFE about an hour ago. (Had to go through a few hundred RFEs on generics to make sure it wasn't a duplicate.) I'll post the public bug number here when they send it.\n"
+    },
+    {
+      "author": "keithkml",
+      "date": "2006-05-04",
+      "body": "Yes David, you can see that Peter von der Ahé from the javac team posted a comment. I think Sun feels that generics are \"good enough\" for now though.\n"
+    }
+  ],
+  "/archive/2006/07/what-giants-vote-for-my-generics-rfe/": [
+    {
+      "author": "johnreynolds",
+      "date": "2006-07-18",
+      "body": "The reviewer's evaluation of your proposal is illuminating:\n\n\"Regarding the suggested language change, don't get your hopes up.  Explicit declarations are favored in the Java programming language as it generally makes code easier to read (at the expense of writing it).\"\n\nI almost laughed out loud at the \"it generally makes code easier to read\" part of this comment... I can't imagine how anyone would thing so.\n\n-JohnR\n"
+    },
+    {
+      "author": "dwalend",
+      "date": "2006-07-18",
+      "body": "Thanks, John. My first thoughts were along the same lines. My guess is the reviewer scans a hundred or so RFEs per day, sorted by category, and that he just finished a few \"type inference like in P-languages\" requests. He's probably quoted that party line in a dozen RFEs today. In general, I think Sun's hit the right spot with explicit declarations. I just want some encapsulation and reuse of them. We should cut him some slack. He's helping the giants we want help from.\n\nThe suggested fix was what really got me smirking. I had a geospatial rig open on another monitor. N E and S in the comments primed me to look for W, D and U.\n"
+    },
+    {
+      "author": "hlovatt",
+      "date": "2006-07-18",
+      "body": "A while back I wrote a graph package and used something like:\n\n```java\nimport java.util.*;\n\n// HasState is possible to code as you want\ninterface HasState< HS extends HasState< HS > > {\n    Class< ? extends HS > getPrincipleInterface();\n}\n\n// Now tying Digraph etc. to a given family of Node and Edge types\n// The key is to use Node and Edge as generic parameters throughout\n// IE every type has generic parameters < N extends Node< N, E >, E extends Edge< N, E > >\ninterface Node< N extends Node< N, E >, E extends Edge< N, E > > {\n    Set< E > getEdges();\n    void addEdge( E e );\n}\n\ninterface Edge< N extends Node< N, E >, E extends Edge< N, E > > {\n    N getStart();\n    N getEnd();\n}\n\ninterface Digraph< N extends Node< N, E >, E extends Edge< N, E > > {\n    Set getEdges();\n    Set getNodes();\n}\n\ninterface Subgraph< N extends Node< N, E >, E extends Edge< N, E > > extends Digraph< N, E > {\n    Supergraph< N, E > getSupergraph();\n}\n\ninterface Supergraph< N extends Node< N, E >, E extends Edge< N, E > > extends Digraph< N, E > {\n    Set< Subgraph< N, E > > getSubgraphs();\n}\n\n// Now test them\n// Family A classes\nclass NA implements Node< NA, EA > { // Base Node type in family A\n    private Set< EA > edges = new HashSet< EA >();\n    public final Set< EA > getEdges() { return edges; }\n    public final void addEdge( EA e ) { edges.add( e ); }\n}\n\nclass NA2 extends NA {} // 2nd Node type in family A\n\nclass EA implements Edge< NA, EA > { // First Edge type in family A\n    private final NA start;\n    private final NA end;\n    EA( final NA start, final NA end ) {\n        this.start = start;\n        start.addEdge( this );\n        this.end = end;\n        end.addEdge( this );\n    }\n    public final NA getStart() { return start; }\n    public final NA getEnd() { return end; }\n    public final String toString() { return start + \" -> \" + end; }\n}\n\nabstract class DA implements Supergraph< NA, EA > {\n    private final Set< EA > edges;\n    DA( Set< EA > edges ) { this.edges = edges; }\n    public final Set< EA > getEdges() { return edges; }\n    public final Set< NA > getNodes() {\n        final Set< NA > nodes = new HashSet< NA >();\n        for ( final EA edge : edges ) {\n            nodes.add( edge.getStart() );\n            nodes.add( edge.getEnd() );\n        }\n        return nodes;\n    }\n    public final String toString() {\n        final StringBuilder result = new StringBuilder();\n        for ( final EA edge : edges ) {\n            result.append( edge );\n            result.append( '\\n' );\n        }\n        return result.toString();\n    }\n}\n\nclass SuperA extends DA implements Supergraph< NA, EA > {\n    SuperA( final Set< EA > edges ) { super( edges ); }\n    public final Set< Subgraph< NA, EA > > getSubgraphs() { // very much an example!\n        final Set< EA > subEdges = new HashSet< EA >();\n        subEdges.add( getEdges().iterator().next() );\n        final Set< Subgraph< NA, EA > > subgraph = new HashSet< Subgraph< NA, EA > >();\n        subgraph.add( new SubA( this, subEdges ) );\n        return subgraph;\n    }\n}\n\nclass SubA extends SuperA implements Subgraph< NA, EA > {\n    private final SuperA zuper;\n    SubA( final SuperA zuper, final Set< EA > edges ) {\n        super( edges );\n        this.zuper = zuper;\n    }\n    public final SuperA getSupergraph() { return zuper; }\n}\n\n// Family B class\n//class NB implements Node< NB, EA > { // Base Node type in family B - compiler catches error of using EA\n//    private Set< EA > edges = new HashSet();\n//    public final Set< EA > getEdges() { return edges; }\n//    public final void addEdge( EA e ) { edges.add( e ); }\n//}\n\npublic class Main {\n    public static void main( final String[] notUsed ) {\n        final NA na = new NA();\n        final NA na2 = new NA2();\n        final Set< EA > edges = new HashSet< EA >();\n        edges.add( new EA( na, na2 ) );\n        final SuperA graph = new SuperA( edges );\n        System.out.print( graph.getSubgraphs() );\n    }\n}\n```\n\nI didn't find I needed any particularly complicated generic definitions.\n\nI do however agree that the syntax of generics is ugly, it makes html posts (like the above) a pain, and that perhaps they went too far with the variance stuff; i.e. I have never actually had an ArrayStoreException.\n"
+    },
+    {
+      "author": "dwalend",
+      "date": "2006-07-19",
+      "body": "Hi hlovatt,\n\nYou're right. Generic Digraph types themselves aren't really any worse than Maps.\n\nI had to resort to using all the exposed declarative complexity when I started building generic algorithms on top of the generic Digraphs. Semiring algorithms (shortest path and its kin) really demonstrate the problem because the problem's input is Digraph&lt;Node,Edge&gt; and the general output is Digraph&lt;Node,Digraph&lt;Node,Edge&gt;&gt;.\n\nYou're not kdding about html format for generics posts. What a time sink!\n"
+    },
+    {
+      "author": "erickson",
+      "date": "2006-07-19",
+      "body": "Sorry, it's closed; will not fix.\n"
+    },
+    {
+      "author": "rickcarson",
+      "date": "2006-07-19",
+      "body": "I don't think it is fair to sugges that the reviewer who denied your request didn't pay more than passing attention to your request.\n\nFor starters, he reformulated your code.  Now unless he got it wrong (of which I can find no indication from you or others) then he had to have at an absolute minimum read your request in detail.\n\nSecondly, you can see that he went and ran it in the latest build of Mustang (and didn't get the error you reported), so he's even gone to the trouble of taking the code and going off and compiling it.\n\nThirdly, the readability issue.  Whilst I personally think that Generics are a crime against nature and despise and loathe them with a passion, readability is a bit of a personal thing, and I personally found that the reviewers code was a little bit more readable.  (Which since I think generics are horrible and unreadable amounts to little more than saying his raw sewage is slightly tastier than your raw sewage - perhaps in time I shall learn to muscle my way past the gag reflex, but I doubt it ;-)\n\nThe problem with Generics is that there is no win.  It is supposed to 'save us' from the terrible fate of typecasting (oh noes, oh woes is us etc.)  However, all that happens is that it moves the (Foo) from in front of the variable, and turns it into  and shoves it on the end of the type.  And what is worse, most of the example code has more typing than there would be casting, so it is a net loss.  (And, in general, darn hard to read for us old timers)\n\nI wonder when these Earthlings will discover the superior technology of vinyl^H^H^H^H^H Interfaces\n"
+    },
+    {
+      "author": "rickcarson",
+      "date": "2006-07-19",
+      "body": "Ah, yes I see the problem with shoving example generics in html.  My goodness that is annoying.  I wonder if using lt and gt will work?\n\nPost should read... turns (Foo) into &lt;Foo&gt; for no gain whatsoever.\n\nWell, preview, (the lying trollop that it is) says that works, so lets give it a go...\n"
+    },
+    {
+      "author": "hlovatt",
+      "date": "2006-07-20",
+      "body": "Following on from example above, I think I can see what you are doing. We took a different approach, for stuff like:\n\n```java\nDigraph< Node, Digraph< Node, Edge > >\n```\n\nWe used the composite pattern, so the return type would be:\n\n```java\nDigraph< N, E >\n```\n\nBut the E returned would implement something like:\n\n```java\ninterface Composite< N extends Node< N, E >, E extends Node< N, E > > {\n    Diagraph< N, E > getDiagraph();\n}\n```\n\nas well as Edge. That way it can primarily be treated like an Edge but if you need to you can get at the underlying graph.\n\nIt worked out OK for us :)\n"
+    },
+    {
+      "author": "dwalend",
+      "date": "2006-07-20",
+      "body": "hlovatt, that extra layer of indirection looks interesting...\n\nHow would it hold up for something like [FloydWarshall](https://jdigraph.dev.java.net/source/browse/*checkout*/jdigraph/v2/source/semiring/net/walend/semiring/FloydWarshall.java)? Do you see a way to push it into Semiring?\n\nThe real power we should be able to get out of generics is generic algorithms like [FloydWarshall](https://jdigraph.dev.java.net/source/browse/*checkout*/jdigraph/v2/source/semiring/net/walend/semiring/FloydWarshall.java), [Dijkstra ](https://jdigraph.dev.java.net/source/browse/*checkout*/jdigraph/v2/source/semiring/net/walend/semiring/Dijkstra.java), and [AStar](https://jdigraph.dev.java.net/source/browse/*checkout*/jdigraph/v2/source/semiring/net/walend/semiring/AStar.java). There are a lot of different types flying around, all incestuously related to each other. I've managed to shove all the complexity into the type parameters. Now I'd like encapsulation to manage that complexity for me.\n"
+    },
+    {
+      "author": "dwalend",
+      "date": "2006-07-20",
+      "body": "erickson,\n\nWow. Three months to get it in the bug parade, three days to deny it. I am making Don Quixote allusions for a reason.\n\nSomeone mentioned an appeal process at JavaOne. I'll put together my comment first, then try that path.\n"
+    },
+    {
+      "author": "rbirenheide",
+      "date": "2006-07-21",
+      "body": "rickcarson,\n\nI do not agree with your statement that generics shift only the cast. I see two implications here, I found to be important:\n\n- I am working within a big project. Therefore I am using a lot of code written by other people. The projects are pressurizing and the javadoc's are lousy sometimes. So I prefer to see something like Map&lt;String, String&gt; in a signature instead of Map only.\n\n- For the same reason, I prefer breaking someones code at build time and not at runtime. In my environment, integration cost are extremely high therefore I'd rather break the build.\n"
+    },
+    {
+      "author": "hlovatt",
+      "date": "2006-07-21",
+      "body": "**RE: Composite (extra layer of indirection)**\n\nThe graph project I was involved in didn't use any standard graph reduction algorithms; one of the reasons for this was that the reduction involved the properties of nodes, not edges, and the second reason was that the reduction was very application specific. Therefore I can't comment from direct experiance, infact I am not even sure if I remember what a semiring is! I think it might be some type with: multiply, add, zero, and one methods! Assuming my memory is correct, then I would define a Semiring interface:\n\n```java\nSemiring< N extends Node< N, E >, E extends Edge< N, E > > {\n  Semiring< N, E > multiply( Semiring< N, E > rhs );\n  Semiring< N, E > add( Semiring< N, E > rhs );\n  Semiring< N, E > zero();\n  Semiring< N, E > one();\n}\n```\n\nThen I would make Edge extend Semiring.\n\n*\nWarning: Blatent Plug For Own Pet Project :)*\n\nThere is a problem with binary numeric type operations and single dispatch; in that you really want multiple dispatch, that is why you need to type test in an equals method (typically an instanceof test is used). This point about numerics really requiring multiple dispatch is expanded more [here](https://pec.dev.java.net/nonav/compile/javadoc/pec/compile/multipledispatch/package-summary.html#package_description). Multiple dispatch can be added to Java using my extended [compiler](http://pec.dev.java.net/nonav/compile/index.html). The compiler I wrote enforces design patterns, it is called a pettern enforcing compiler or PEC, and one of the patterns is Multiple Dispatch.\n"
+    },
+    {
+      "author": "hlovatt",
+      "date": "2006-08-10",
+      "body": "There is some interest at Sun in this kind of thing:\n\n&gt; [\n&gt; http://research.sun.com/projects/plrg/IBM-PL-Day-where.pdf\n&gt; ](http://research.sun.com/projects/plrg/IBM-PL-Day-where.pdf)\n\nThe paper describes hidden types that could be used like the dot notation proposed.\n"
+    },
+    {
+      "author": "dwalend",
+      "date": "2006-08-10",
+      "body": "Thanks for the pointer, hlovatt. I'll follow up on that one. They might be giants.\n"
+    }
+  ],
+  "/archive/2006/12/me-and-you-in-user-interfaces/": [
+    {
+      "author": "arae",
+      "date": "2007-01-03",
+      "body": "Interesting thought piece. I see that (according to Wikipedia) * in Windows Vista, My Documents has been renamed to simply, \"Documents.\" My Music and My Pictures have also lost their prefix, and the folders themselves have moved to the user profile's root directory.*I suspect it's more to do with using the initial letter as a menu accelerator than a rethink of the PC personality.\n"
+    },
+    {
+      "author": "dserodio",
+      "date": "2007-01-03",
+      "body": "Nice piece; I've always found Windows' \"My \" prefix stupid, but never really thought about the reason. BTW, Perl also has a \"my\" operator.\n\nI always rename the Start Menu shortcuts to drop the \"My\" prefix, because of the menu accelerator. Renaming the directories themselves doesn't work so well (can be done with TweakUI), because lots of apps hard-code these names.\n\n\"Documents and Settings\" is another stupid decision! I guess they were so excited about not being restricted to 8.3 letters that they've missed the obvious \"Users\", which both Mac OS X and Vista use.\n"
+    },
+    {
+      "author": "dwalend",
+      "date": "2007-01-03",
+      "body": "arae, dserodio,\n\nInteresting that vista dropped the \"My.\" I'll bet you're right about the reason -- keyboard shortcuts -- but it'll have interesting consequences. I expect it'll take years to unwind the VB code. Does \"My Documents\" exist as soft link?\n\nI don't remember perl's \"my\" keyword. Last time I used the language, black perl still parsed.  I wonder if we can trace use of perl to using myReference names.\n\nSomeone at work pointed out that computers are still more like table saws than like pets, but [robot vacuum cleaners get names](http://www.wired.com/news/technology/0,1282,59249,00.html).\n\nDave\n"
+    }
+  ],
+  "/archive/2007/05/preparing-for-javaone/": [
+    {
+      "author": "jtp51",
+      "date": "2007-05-02",
+      "body": "This will be my first JavaOne. So this information is really helpful to us newbies. Thank you.\n"
+    },
+    {
+      "author": "felipegaucho",
+      "date": "2007-05-03",
+      "body": "also a newby .. thanks for the tips....\n"
+    },
+    {
+      "author": "dwalend",
+      "date": "2007-05-03",
+      "body": "Glad to help.\n"
+    },
+    {
+      "author": "dwalend",
+      "date": "2007-05-03",
+      "body": "Almost forgot -- pick up your badge before Tuesday morning. It'll let you dodge a huge line.\n"
+    },
+    {
+      "author": "dhergert",
+      "date": "2007-05-05",
+      "body": "Also my first JavaOne conference. Excellent article with good info, thanks for the tips!\n\nCouple questions: I've seen pictures from past JavaOne's with people wearing JavaOne backpacks.  Are these given to each attendee or must you purchase them?\n\nWhat is your opinion of the BOF sessions?  Worth going to?\n\nThanks!\n"
+    },
+    {
+      "author": "dwalend",
+      "date": "2007-05-05",
+      "body": "dhergert,\n\nThe backpack was a gift. Some years (like last year) they give us a really good computer bag. Some years it's something less ergonomic.\n\nI think the BoF sessions are the best of the conference. The BoF talks often cover more intriguing topics on less mature technology. The scale of the BoFs is smaller and closer to the speaker. The discussions after the BoFs tend to be extremely good. If I'm choosing between staying up late for BoFs or getting up early for key notes, I take the BoFs every time.\n"
+    }
+  ],
+  "/archive/2007/06/salutafugijms-java-messaging-service-on-zeroconf/": [
+    {
+      "author": "jstrachan",
+      "date": "2007-06-25",
+      "body": "FWIW Apache ActiveMQ can work in a peer to peer mode; using its own multicast discovery or zeroconf...\n\nhttp://activemq.apache.org/discovery.html\n\nhttp://activemq.apache.org/peer-transport-reference.html\n\nYou can use discovery in a peer to peer architecture, or in a federated cluster architecture; so you've the best of both worlds. Typically if you want reliable messaging and persistence, you probably don't want peer to peer; as thats a lot of disks to worry about backing up etc :)\n"
+    },
+    {
+      "author": "dwalend",
+      "date": "2007-06-25",
+      "body": "Thanks. I spotted their federated cluster business, but not the peer-to-peer.\n\nAt some point I'll write a blog about reliable messaging's detrimental effects on system reliability...\n"
+    },
+    {
+      "author": "geoffh",
+      "date": "2007-06-27",
+      "body": "you said: \"At some point I'll write a blog about reliable messaging's detrimental effects on system reliability...\"\n\nYeah I was actually on a project a few years ago that got cancelled because someones' \"reliable\" eb-xml messaging didn't work.  The prototype worked in production for a year using dumb-ole-http-post without missing a beat.\n\nHowever some genius thought we needed \"reliable messaging\" and so we modified everything to use eb-xml.  Unfortunately, due to an interop problem between endpoints (both using the same libs) the sender always threw an exception, even though the messages were \"reliably\" delivered.\n\nSo since there was no way to distinguish between a real message failure, and the bogus exception which always occurred, \"reliable\" sending was declared unachievable and the project was canned.\n\nGo figure...\n"
+    },
+    {
+      "author": "dwalend",
+      "date": "2007-07-01",
+      "body": "geoffh,\n\nWow. That's a terrible war story.\n\nMost of what I've seen is systemic failure caused by the demands of reliable messaging: big latencies, databases filling up, big message backlogs, nasty interactions with timeouts, thrash and churn sorts of problems.\n"
+    },
+    {
+      "author": "jklmno",
+      "date": "2008-06-19",
+      "body": "I'm so grateful  for all that you've done. Thanks again  for that nice essay and I would be most grateful if you would send me the latter ones....\n\nmirc \n\nmırc \n\nmirç  \n\nmırç \n\nmirc indir \n\nchat yap \n\nislami sohbet \n\ndini sohbet \n\nkelebek \n\nkelebek sohbet \n\nkelebek mirc \n\nkameralı mirc \n\nkameralı sohbet  \n\nchat yap  \n\nçet \n\nçet odaları \n\nsohbet kanalları \n\nsohbet odaları \n\nyarışma  \n\nsevgili  \n\narkadaş  \n\narkadaş ara  \n\narkadaşlık\n"
+    }
+  ],
+  "/archive/2007/11/how-big-is-that-boolean/": [
+    {
+      "author": "mthornton",
+      "date": "2007-11-15",
+      "body": "boolean[] will usually use the smallest addressable memory unit, typically a byte in most current machines. Using a bit would introduce difficulties in maintaining the concurrency expectations where multiple threads are modifying a boolean array. Every write to a bit array would in fact be a read/modify/write cycle and require synchronization of some sort.. Otherwise if two threads were modifying different bits that were held in the same 'word', the update from one thread might be lost.\n"
+    },
+    {
+      "author": "tackline",
+      "date": "2007-11-15",
+      "body": "If boolean[] used one bit per boolean, writes would have to be implemented as a read, logical operation then write. Concurrent writes on nearby bits would then be a problem.\n\nIf you need multi-thread access, you can go faster than BitSet with external synchronisation. java.util.concurrent.atomic.AtomicIntegerArray/AtomicLongArray.compareAndSet can atomically check writes overwrite the value you expected. Your code can then retry if another thread got there first.\n"
+    },
+    {
+      "author": "wlouth",
+      "date": "2007-11-18",
+      "body": "Hi David\n\nYou might be interested in a blog entry I just published. I had been meaning for sometime to publish such an article and when I came across your blog entry I felt the timing was right.  \n\nHow much does that Object cost in the VM?  \n\nhttp://blog.jinspired.com/?p=174\n\nKind regards,\n\nWilliam Louth  \n\nJXInsight Product Architect  \n\nCTO, JINSPIRED\n"
+    },
+    {
+      "author": "abies",
+      "date": "2008-02-24",
+      "body": "Well, what about stopping guessing? All this is very well defined. There is no 'usually'.\n\n3.3.4 The boolean Type\n\nAlthough the Java virtual machine defines a boolean type, it only provides very limited support for it. There are no Java virtual machine instructions solely dedicated to operations on boolean values. Instead, expressions in the Java programming language that operate on boolean values are compiled to use values of the Java virtual machine int data type.\n\nThe Java virtual machine does directly support boolean arrays. Its newarray instruction enables creation of boolean arrays. Arrays of type boolean are accessed and modified using the byte array instructions baload and bastore\n"
+    }
+  ],
+  "/archive/2008/07/good-bye-alpha/": [
+    {
+      "author": "michael_schnell",
+      "date": "2009-04-29",
+      "body": "Great stuff!\n\nWe use your SomnifugiJMS in our new JmsMvc4Swing framework:\n\n[http://www.fuin.org/jmsmvc4swing/index.html](http://www.fuin.org/jmsmvc4swing/index.html)\n"
+    }
+  ],
+  "/archive/2009/07/event-based-programming-in-javafx/": [
+    {
+      "author": "dwalend",
+      "date": "2009-07-06",
+      "body": "Fabrizio,\n\nThanks for the report on firefox. I've realized \"applets in Java in N browsers on M operating systems\" is too many wheels in wheels to rely on. I'll try jnlp next time so my work only has to spin on top of Java and the OS.\n\nvar, def, public-init and bind play together in some interesting ways. bind with def is OK. It seems not so much encapsulation as clashing mutators. I haven't thought through two-way binds or bound functions yet. (Heck, this is my first javafx project.) Do you see something similar or something else?\n"
+    },
+    {
+      "author": "whp",
+      "date": "2009-07-02",
+      "body": "Exception: java.io.FileNotFoundException: JNLP file error: [https://tokenarranger.dev.java.net/mines/mines_browser.jnlp](https://tokenarranger.dev.java.net/mines/mines_browser.jnlp). Please make sure the file exists and check if \"codebase\" and \"href\" in the JNLP file are correct.\n\nJavaFX deployment bites again.\n"
+    },
+    {
+      "author": "dwalend",
+      "date": "2009-07-02",
+      "body": "whp,\n\nWhich browser? Which OS? Which versions? I've seen a lot of variability by OS and browser. Works for me on Safari - MacOS, Firefox - MacOS (asks for a password), IE - Windows. Haven't seen it work on firefox - windows or anything - linux yet.\n\nDoes it work now? (I updated the jnlp. It had a file URL. Now points somewhere more reasonable. Maybe a \"feature\" for the NetBeans plugin to add.)\n\nThanks,\n\nDave\n"
+    },
+    {
+      "author": "dwalend",
+      "date": "2009-07-02",
+      "body": "Now working on firefox - windows. Looks like the problem with linux is that the OS thinks its still March and I signed the .jars a few days ago.\n\nDave\n"
+    },
+    {
+      "author": "aleixmr",
+      "date": "2009-07-03",
+      "body": "Hey !! that's pretty crazy, still 10 years and we need to do things on invokelater !!! I don't like that asynchronous solution coz it gets your code messy and difficult to read ! I like the foxtrot aproach I use it for swing and works like a charm, synchronous solution !!! \n(Please don't get me wrong, asynchronous callback is needed to !)\n"
+    },
+    {
+      "author": "dwalend",
+      "date": "2009-07-03",
+      "body": "Hi aleixmr,\n\nI'm not that bothered by the asynchrony. The user is always on his own thread, so asynchrony is part of the UI puzzle. I like the \"one thread for pixels\" approach (although \"one thread per display\" might be better). Driving via interrupts (pre-Mac-OSX for example) I found much harder to get my head around. I think the FX.deferAction is clear, clean and very compact. I just wish we had queue.put(function) instead.  \n\nMy long-lived complaint about having to use the graphics event thread was that the parts we have to use looked nothing like the rest of the system. There's no non-graphics event queue, non-graphics worker, or non-graphics invokeLater(), so the other concurrency puzzles get solved differently from Swing's. Foxtrot standardizes some other options for Swing UIs, but (1) you still have to learn all of Swing's rules to use it, (2) you have to learn Foxtrot's additional rules, and (3) it's still UI-only.\n\nJavaFX brings us this very profound feature -- easy automatic propagation -- but the feature seems pinned to the graphics thread. Tantalizing.\n"
+    },
+    {
+      "author": "dwalend",
+      "date": "2009-07-04",
+      "body": "... queue.put() might be easy to do... I'll try the experiment.\n"
+    },
+    {
+      "author": "fabriziogiudici",
+      "date": "2009-07-05",
+      "body": "It took a while for me to understand what's happening, but it looks like FireFox 3.5 is pretty bad screwed out. While the first time I accessed this blog was with 3.0, and I could see the applet, with 3.5 I can't see the applet, and even worse the whole navigator is broken (can't edit the URL in the navigation bar, can't write anything in this comment box; I have been forced to use Safari). I think it's the fault of FireFox 3.5, since it is plagued by a high number of bugs.\n\nBack to the topic.\n\n\"Osvaldo Pinali posted a blog with a postscript about the power of automatic propagation through bind. Fabrizio Giudici's concerns about encapsulation I think are misplaced.*\"\n\nWell, it depends. Seeing binding as message passing is a great idea as you can define the bindable structures as messages independent of the internal state of the object. Binding to internal state can be a trouble, and that's where my concern is. As usual, we have to distinguish from the binding feature (a powerful tool) and the use people make of it.\n"
+    }
+  ],
+  "/archive/2006/04/understanding-service-oriented-architecture/": [
+    {
+      "author": "richardqr",
+      "date": "2006-05-16",
+      "subject": "great article",
+      "body": "true indeed.  programmers really are at a lost on what this hype/buzz is all about.  i for one is at lost.  at least now, I am guided.  thanks.\n"
+    },
+    {
+      "author": "yogibear15",
+      "date": "2006-04-27",
+      "subject": "Brilliant article",
+      "body": "David - my compliments on one of the best articles on SOA I have ever found. It is concise, accurate & actually has detail  :)  \n\n  \n\nmatthew\n"
+    },
+    {
+      "author": "dwalend",
+      "date": "2006-04-29",
+      "subject": "Brilliant article",
+      "body": "&lt;span color=\"red\"&gt;Blush&lt;/span&gt;\n"
+    },
+    {
+      "author": "threadweaver",
+      "date": "2006-04-10",
+      "subject": "A valiant try but irrelevant....",
+      "body": "**Part of service oriented architecture is document oriented architecture. ** Not really, but people in this industry tend to think that way since that is how web services work and they are very confused.  \n\n  \n\nOther than that, the rest of your argument is logical and very well done but:  \n\n  \n\nI don't think that there is any value in trying to define a vacuous term like SOA. If its originators had intended to provide a useful solution instead of a buzz word on which they could sell products they would not have intentionally left its definition so vague and ambiguous.  \n\n  \n\nTrying to define SOA as something useful in the real world, rather than coming up with something useful in the real world and giving it a name is confused pedagogy and exactly the opposite of what we should be doing. Coming up with a model that fits the real world is science. Trying to make the real world fit the imaginary model is religion.  \n\n  \n\nLike every cult before it the SOA cult is going to fall flat on its face because it is comprised of a bunch of wackos who have abandonded reality.\n"
+    },
+    {
+      "author": "vfrisina",
+      "date": "2006-04-10",
+      "subject": "A valiant try but irrelevant....",
+      "body": "\"Coming up with a model that fits the real world is science. Trying to make the real world fit the imaginary model is religion.\"  \n\n  \n\nI beg to differ.  Trying to make the real world fit the imaginary model is the basis of all technology and progress.  We look at what currently exists, imagine something better, and then create it. \n\n  \n\nI am not just being pedantic.  Part of the impatience that many developers show feel about SOA seems to be that one cannot point to a piece of code and say \"That is SOA\".  Unfortunately, it is still a concept rather than a code library, so there is legitimate debate about what SOA is and should be.  This is analogous to the long ago debates about what an object is.  The existence of the debates did not mean that OO is just marketing fluff (although there were plenty of marketers exploiting the ambiguity).  Rather the concept was still being hammered out.  We are in roughly the same situation with SOA.\n"
+    },
+    {
+      "author": "threadweaver",
+      "date": "2006-04-11",
+      "subject": "A valiant try but irrelevant....",
+      "body": "Ok. I guess that wasn't very straight forward. You are refering to physical acts of creation. I am refering to what is actually going on irrespective of people's imaginations. \n\n  \n\nSOA is not a technology, it is a buzz word that a few marketers created. It is no more a piece of technology than the word \"dajslfkjsladjflsjafljas\". \n\n  \n\nIn order for something to be useful, it must hold up to real world empirical analysis. An example of a so-called technology that has failed like CMP-EJB. SOA is not even as close to technology as CMP-EJB because although CMP-EJB failed, at least it had a definition in the real world. In other words, even though EJB-CMP was a step backward or at best a lateral step, it had more value than SOA.  \n\n  \n\nIf I said, I had a new paradigm that was going to revolutionize software development called \"Pluggable Popsicles\" and didn't bother to define it, no one would pay attention. But when Oracle and BEA come up with a new meaningless term in order to sell their crappy products everyone jumps on board because Oracle and BEA are assumed to be experts. Sorry, but I refuse to believe that anyone at IBM, Oracle, Sun, or BEA is the messiah because in most cases they are even dumber than I am. Web Services is a technology (a poor one). SOA is hype.  \n\n  \n\nSOA as most people define it (and as this article defines it) is pretty much the same as CORBA which, after 20 years of experiment, has proven to be a mess.\n"
+    },
+    {
+      "author": "vfrisina",
+      "date": "2006-04-13",
+      "subject": "A valiant try but irrelevant....",
+      "body": "&gt; SOA is not a technology, it is a buzz word that a few marketers created.  \n\n  \n\nNot quite.  SOA is not an API or  code library.  There is no referenece implemenation or specification.  If there were, I would agree that is is worthless BS simply because we are nowhere near the point of defining a spec.  Instead SOA is a concept, and idea about how to structure distributed systems.  As you noted, there have been many, many years of spectacular failures.  However, I would say that the reason CORBA and DCOM systems failed was not because they are inherently awful technologies (athough they certainly have their warts), but rather because of the way they were used.  Service-oriented architecture is an idea currently being hammered to fix that part of the problem, regardless of what technology you use to implement it. Because it is essentially an on-going argument, there is not currently a consensus position that you can point to and call The  One True Definition of SOA.  \n\n  \n\nAgain, I remember the same arguments when OO was first introduced to the masses (as opposed to the LISP and Smalltalk gurus who always knew everything before the rest of us unwashed barbarians).  Many people claimed that OO was just marketing fluff because there was nothing there that could not be done in C or even assembly, given the right discipline.  They were missing the point.  OO was not the language or dev tools, it was the discipline and the approach to building software.  The real debate was not about languages.  Instead it was about what consistituted object orientation, what its strengths and weaknesses were, and how to apply it.  That took years of arguing and experiementing to work out, and frankly we are still learning.  \n\n  \n\nIt seems that part of the issue is that there is no official standard for SOA. I think one of the worst things for our industry is the idea that as soon as someone has an idea, there must be a standard for it. even if the problem is not yet understood.  Sun and other large vendors are among the worst offenders in that they create standards to fit their latest tools as soon as they come out.  I point to EJB and JSF in the Java space.  Standardize from a consensus of best practices and a good understanding of the solution, rather than just declaring one by fiat so you can claim your product is \"standards compliant\".  I already ranted about spec-envy in [my blog](http://jroller.com/trackback/vfrisina/Weblog/gathered_vs_declared_standards_in)\n"
+    },
+    {
+      "author": "dwalend",
+      "date": "2006-04-23",
+      "subject": "A valiant try but irrelevant....",
+      "body": "vfrisina, I think you're on to something comparing SOA to OO. In OO there are simple but deep concepts to grok, followed by things to experiment with and practice before it works. I think SOA is the same sort of thing. Instead of the cells of the system being objects, they are services.  \n\n  \n\nA lot of OO and SOA is marketing fluff. Marketing is good; business guys learn what we can do for them and pay us for our work. Fluff is annoying because you have to chop through it to get to something solid. SOA is currently snowed under fluff, just like OO in 1994.  \n\n  \n\nI think its valiant to define some standards to help with SOA, so long as people realize that today's standards probably won't be the ones we use next year. They are handy for coordinating productions of big systems built by big teams, even if only to shorten debates. I share Dr. Waldo's fear that the standards will quash innovation, but so far innovation seems quite healthy. Older good things like JINI seem to rise to the top. I don't know of anything bad that's been lost yet.\n"
+    },
+    {
+      "author": "dwalend",
+      "date": "2006-04-12",
+      "subject": "A philosophical argument?",
+      "body": "Wow... I didn't expect a philosophical discussion. I was hoping more for comments like, \"I'm using technology X to get feature A,\" so I could skip over the drab also-ran technologies to the good stuff. \n\n&lt;p/&gt;  \n\nThreadweaver, you've told us you don't like CMP-EJB and don't like CORBA. What do you like to use?  \n\n&lt;p/&gt;  \n\nThreadweaver, treating your data-bearing objects as immutable documents works wonders in concurrent systems. Less-gifted developers understand just what they're dealing with. Throwing them into thread-aware thread-safe transactional code is inviting disaster. In a distributed system, you get half of DOA just because each process gets its own deep copy of the data.  \n\n&lt;p/&gt;  \n\nVfrisina, I'm with you. The working title was *Smells like SOA*. At one start-up, we figured out how to make this stuff work, but it was very hard to describe. There is value to having solid definitions. Industry was distracted by academia's traveling computing agents in the late 1990s. If they'd focused on messaging instead, we wouldn't have needed a week-long seminar to make the pitch. Now I can go to a customer and pitch \"a distributed system of services.\" The customer nods his head, refers to his own strategic initiative and we dive into details.  \n\n&lt;p/&gt;  \n\nThreadweaver, you've uncovered an interesting dichotomy between concepts and bits, and dived into the problem of making them match up. CMP-EJB is bits. It comes in a .jar file, and has a fat PDF spec. (New EJB specs are like a bad sequel to a bad movie, \"EJB 4: CMP -- The Apology.\") Vfrisina is right. Using WS-2 standards is as likely to get SOA benefits as using Java is to get good OO benefits. If someone shortcuts your architecture, things will break.  \n\n&lt;p/&gt;  \n\nI see new conceptual approaches to coding coming from two sources: academia and industry. LISP university labs created object-oriented programming (and constantly point out how we got it wrong and they got it right) and now are pushing aspects. Universities came up with web agents. Industry is for profit; either they want to sell us something expensive or they want us to build something interesting. The former results in application servers and the later results in brilliant things like JINI.  \n\n&lt;p/&gt;  \n\nCORBA has some serious problems. I started working with this thing in 1995. Some of the people we work with still use it. The biggest problem in CORBA is its reliance on IDL. Basically the IDL rigidly defines the pipe that the data flows through. If the IDL changes, the code through the entire pipe has to change. (Anything relying on XMLSchema in the pipes risks the same sort of woe.) Other serious problems I've observed are an over-reliance on RPC-style programming and on hard addresses for distributed parts. When the system makes a jump in scale, it tends to fly apart. Later add-ons to the spec try to fix these problems, but the culture already jelled into weaker forms. \n\n&lt;p/&gt;  \n\nI always have trouble naming my projects. \"Pluggable Popsicles\" would be a great name for a persistence engine. Can I steal it?\n"
+    },
+    {
+      "author": "threadweaver",
+      "date": "2006-04-12",
+      "subject": "A philosophical argument?",
+      "body": "&gt;&gt; I always have trouble naming my projects. \"Pluggable Popsicles\" would be a great name for a persistence engine. Can I steal it?  \n\n  \n\nSure go ahead. ;P  \n\n  \n\nI agree with everything you said. I just think we ought to be focusing on what creates value (technology) and not on buzzwords.  \n\n  \n\n&gt;&gt; Threadweaver, you've told us you don't like CMP-EJB and don't like CORBA. What do you like to use?  \n\n  \n\nFor persistence, Hibernate, which I think has held up very well in the real world. For services, I still like EJB although I have not had time to really play with Jini or anything other than RMI (JRMP) yet. What about you?  \n\n  \n\n&gt;&gt;(New EJB specs are like a bad sequel to a bad movie, \"EJB 4: CMP -- The Apology.\") LMFAO.  \n\n  \n\n&gt;&gt; Threadweaver, treating your data-bearing objects as immutable documents works wonders in concurrent systems. Agreed. I was just saying that is not required in strict-english interpretation of the term SOA since, any service could represent SOA under the terms defined in the dictionary.  \n\n  \n\n&gt;&gt; Wow... I didn't expect a philosophical discussion. I was hoping more for comments like, \"I'm using technology X to get feature A,\" so I could skip over the drab also-ran technologies to the good stuff.  \n\n  \n\nI have been attacked for that in other circles (if you want more info let me know). Ultimately, I think that people that are good natured generally want answers rather than to cling to some dogma. I want working answers as well, but it seems logical to me that it is impossible to arrive at a result other than confusion without a mutual definition of terms at the outset. In other words, I think it will be easier to arrive at things that work in the real world if we are speaking the same language.\n"
+    },
+    {
+      "author": "dwalend",
+      "date": "2006-04-12",
+      "subject": "A philosophical argument?",
+      "body": "&gt;&gt;For persistence, Hibernate, which I think has held up very well in the real world. For services, I still like EJB although I have not had time to really play with JINI or anything other than RMI (JRMP) yet. What about you?  \n\n  \n\nCurrent project is very lightweight: JMS for comms (both between threads and between remote processes). Mostly immutable objects flowing between things via serialization. For the moment, we're using serialization for persistence. (I'm trying to keep a database out of our part of the system.) We've just hard-coded the orchestration in Java for now. JNDI for a service locator. We might eventually use JINI to build up a larger system. \n\n  \n\nEJB was originally for coordinating transactions over multiple XA resources. Are you actually using it for that? It does a great job, but the problem doesn't come up that often. I gave up tracking the spec after it passed 800 pages.  \n\n  \n\n&gt;&gt;I agree with everything you said. I just think we ought to be focusing on what creates value (technology) and not on buzzwords.  \n\n  \n\nI'm interested in what makes one technology useful, and another just resume crud. I think those things can be characterized, and the characterization can be collected into something that makes sense as a whole. \n\n  \n\nBuzzwords are an interesting facet of the problem, along with things in \"util,\" things named \"*Manager\" and \"*tion\" words. People imagine them to mean whatever fits their view of the universe, then are disappointed when things don't work out. (Think of experiences with the word \"documentation.\" Does it mean writing documents, reading documents, or doing something vague, not coding? How do you know when you're done?)  \n\n  \n\nI think we're just now getting to the point where we can define what we want and start asking for it. I'm hoping we'll recognize it when we see it. JINI's an example of something great that most of us missed.\n"
+    },
+    {
+      "author": "threadweaver",
+      "date": "2006-04-13",
+      "subject": "A philosophical argument?",
+      "body": "&gt;&gt;People imagine them to mean whatever fits their view of the universe, then are disappointed when things don't work out.  \n\n  \n\nI could not have said it better. That's why I thought your article was noble to a large extent. \n\n  \n\nI agree that we ought to take what works and abandon things that do not. At the same time, I think we need to always be pushing to simplify things so that we can solve bigger problems. No one should have to read a 800 page spec. \n\n  \n\nI have been stuggling with coming up with a system to accomplish this. I wanted to devise and formalize a method for \"How to approach Computer Science as a Scientist.\" If you would like to participate, I would love that, but if not, you have already helped me greatly and given me hope.  \n\n  \n\nYou will probably never know how much your article and this conversation has meant to me, but this has been the first real, rational conversation I have had with someone in IT since graduating from college. Thank you. It has been like breathing fresh air for the first time.  \n\n  \n\n&gt;&gt; EJB was originally for coordinating transactions over multiple XA resources. Are you actually using it for that? \n\n  \n\nYes and no.  \n\n  \n\nWe have multiple databases on which the application depends but no JCA or anything like that. EJB is used for remoting specifically. I wrote our transaction API to be an abstract factory. The current implementation is based on JTA. The problem that I saw with using both BMT and CMT is that it couples your transaction logic to EJB.  \n\n  \n\n&gt;&gt; I think we're just now getting to the point where we can define what we want and start asking for it. \n\n  \n\nI hope you are right and I hope you reply again. Thank you.\n"
+    },
+    {
+      "author": "dwalend",
+      "date": "2006-04-23",
+      "subject": "A philosophical argument?",
+      "body": "Sorry for not getting back to this sooner. Vacation.  \n\n  \n\nWatch out for the seduction of simplicity. Some things, especially physical things, really do rate an 800 page spec. An example: i can solve bigger problems by using multiple threads and multiple processes. However, doing that means giving up the simplicity of the stack. A few generations of EJB specs got wrapped around this idea of defining roles instead of transactions.  \n\n  \n\n\"How to approach Computer Science as a Scientist.\" sounds interesting. Are you more interested in observing systems, like a naturalist, or setting up experiments like a chemist? I've always seen myself as an engineer; I build stuff.\n"
+    },
+    {
+      "author": "threadweaver",
+      "date": "2006-04-23",
+      "subject": "A philosophical argument?",
+      "body": "Watch out for the seduction of simplicity.  - Certainly we don't want to be *overly* simple.  \n\n  \n\nEssentially the job of software developers is to create models. I haven't found good criteria yet for evaluation of models. In physics, a model is considered valid it reflects what is going on in the realm of our sensory experience. I would also add the criteria: inclusion, coherence, simplicity, and flexibility.  \n\n  \n\nSo, in my mind the method for determining the best model for a particular problem would be:  \n\n  \n\n1. Realization that there are no paradoxes in nature. Paradoxes exist only in our constructs.  \n\n2. Throw away all invalid models.  \n\n3. Whatever is the most inclusive, coherent, simple, flexible out of what remains the best choice.  \n\n  \n\nAll of this caught up in the bi-directional communication (requirements gathering) between the development team and the people who are sponsoring  the development. I am working on formalizing all of this as well. I have a real problem with both use cases and user stories which are fundementally the same thing: the description of a single isolated event.  \n\n  \n\n\"How to approach Computer Science as a Scientist.\" - I can email you a copy of what I have going in a few weeks, but it will be a rough draft. Unfortunately, at this point in time I don't know enough about probablity theory and statistics to make it really powerful yet (it's a matter of detail) but I still think that it is useful.  \n\n  \n\nI've always seen myself as an engineer; I build stuff.  \n\n  \n\nIf by engineer, you mean that you use scientific knowledge to modify your environment, we all are.  \n\n  \n\nEvery sentance spoken is an act of engineering and creation. A technology is just an application of science in our 4(+)D sensory world.\n"
+    },
+    {
+      "author": "dwalend",
+      "date": "2006-04-29",
+      "subject": "A philosophical argument?",
+      "body": "threadweaver, have you had a look at the [latest EJB spec?](https://sdlc1b.sun.com:443/ECom/EComActionServlet/DownloadPage:~:com.sun.sunit.sdlc.content.DownloadPageInfo;jsessionid=CF7126AD7835DE40F690D827AD148A22;jsessionid=CF7126AD7835DE40F690D827AD148A22) The page count seems to have stabilized, they've chopped it into three, and they've added features to keep us from having to make so much boiler plate. I might wade back in if I get a project that can have the overhead of an application server.\n\nYou're in for a great journey trying to define what we do with that kind of rigor. You're more ambitious than Dijkstra. I'd love to look over your shoulder from time to time to see how it's going.\n\nI'll a gree that every sentence spoken is an act of creation. The world would be a better place if every sentence were all an act of engineering.\n"
+    },
+    {
+      "author": "threadweaver",
+      "date": "2006-05-03",
+      "subject": "A philosophical argument?",
+      "body": "I haven't read the EJB 3 spec yet. Unfortunately, I just don't have time to read everything that I would like so I have to make sacrifices. I think I will let some other people try it out first and see what they think. Let me know what you think. I hope the ORM works out better this time. It's hard to get into everything early and be a generalist at the same time.  \n\n  \n\n&gt;&gt; You're in for a great journey trying to define what we do with that kind of rigor. You're more ambitious than Dijkstra. \n\n  \n\nNo kidding. I'm just trying to make things better any way that I can.  \n\n  \n\n&gt;&gt;I'd love to look over your shoulder from time to time to see how it's going.  \n\n  \n\nSure. I'll email you what I am working on in a few weeks if you want.  \n\n  \n\n&gt;&gt;I'll agree that every sentence spoken is an act of creation. The world would be a better place if every sentence were all an act of engineering.  \n\n  \n\nHa. Ha! I love it. Can I quote that?\n"
+    },
+    {
+      "author": "dwalend",
+      "date": "2006-05-11",
+      "subject": "A philosophical argument?",
+      "body": "&gt;&gt;Ha. Ha! I love it. Can I quote that?  \n\n  \n\nOnly if you fix the grammar. Ug.\n"
+    }
+  ]
+}

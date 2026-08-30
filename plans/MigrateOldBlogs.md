@@ -234,22 +234,181 @@ The category index at `archive/web_services_and_xml/index.html` is **not** in
 Common Crawl - no captures. If that grouping matters for the retrospective it
 needs the wayback machine, or reconstructing from the posts themselves.
 
+### What is NOT recovered - 7 known-missing posts
+
+These are linked from the blog's own monthly archive pages but have **no Common
+Crawl capture**. They need the wayback machine, which was down all of 2026-08-25.
+`bin/fetch-javanet.sh` exists for exactly this.
+
+```
+2004-09-evolving_the_ja      2006-01-the_nonpublic_c
+2005-06-generics_consid_1    2006-05-a_java_perspect
+2005-08-pumping_up_java      2007-04-reserve_seats_a
+2008-06-tests_first_or
+```
+
+**41 is a floor, not a ceiling.** That number is only what the crawled monthly
+index pages happened to link. Posts in months whose index page was never crawled
+would not appear at all.
+
+### `bin/fetch-javanet-cc.py` is UNTESTED as it currently stands
+
+The version that produced the 34 posts on disk queried only two indexes and knew
+nothing about the articles - so it would **not** reproduce the current state from
+a clean checkout. It was rewritten on 2026-08-25 to query all ~42 indexes from
+java.net's lifetime, dedupe by `<title>` rather than by slug, and enumerate the
+articles from the author page.
+
+**That rewrite parses but has never been run end to end.** Verify it before
+trusting it. A full run re-queries ~42 indexes across several URL patterns and
+takes minutes, so start with `--list`.
+
+The authoritative artifact is the recovered HTML in `_archive-src/`, not the
+script. If the script disagrees with what is on disk, the disk is right.
+
+### Two traps that cost real errors here
+
+1. **Count titles, not slugs.** Movable Type emitted two URLs per post
+   (`foo.html` and `foo_1.html`). Ten slugs that were "missing from disk" turned
+   out to be nine duplicates and one genuine post. A slug you do not have is not
+   the same as a post you do not have.
+2. **`/YYYY/MM/index.html` matches the article pattern** but is a monthly
+   listing. Including them inflated the count from 33 to 58.
+
+Both produce a plausible larger number, which is exactly why they survive a
+glance. **A count is not a check.**
+
+### The conversion  [DONE 2026-08-25, staged unpublished]
+
+All 36 pages are converted and staged in **`_pending/javanet/`** - out of the
+Eleventy build, awaiting David's review before anything is published. Two
+scripts do it, and both have been run end to end:
+
+```sh
+bin/javanet-extract.py --table                      # inventory: shape, date, title, counts
+bin/javanet-extract.py | bin/javanet-to-markdown.py _pending/javanet
+```
+
+`javanet-extract.py` parses HTML to JSON; `javanet-to-markdown.py` turns that
+JSON into Markdown plus `javanetComments.json`. The split matters: the
+inventory is readable on its own, which is how the template surprises below
+got caught.
+
+**Five template shapes, not two.** The plan expected the articles to differ
+from the posts. In fact the blog itself has three shapes, because java.net
+moved it from Movable Type to Drupal in 2008 and kept the archive URLs, then
+re-themed Drupal at least once. *Which shape a page has depends on when the
+crawler visited, not on when the post was written* - the same fact that made a
+2008 crawl yield 2003 posts. 20 pages are Movable Type, 14 Drupal (two themes),
+plus one shape for each article.
+
+**Dates: all 36 recovered, to the minute.** Both blog templates carry a full
+"Posted by dwalend on October 06, 2003 at 04:57 AM"; the articles carry
+`04/04/2006` and `Thu, 2008-05-08`. Every result was read against its page.
+
+**Comments: 189, from 83 people**, 62 of them David's own replies. Kept as
+static HTML in the shape `src/_data/archivedComments.json` already uses, keyed
+by the new `/archive/...` URL - the same treatment as the six Disqus comments
+in section 3.
+
+### Presentation: `/archive/`, out of the feed, unpublished until reviewed
+
+- URLs are `/archive/YYYY/MM/slug/`, set by an explicit `permalink`.
+- No `tags: post`, so they stay out of the index and the RSS feed even after
+  they move into `src/`.
+- Front matter carries `archived: true` and `originalUrl:`, for a standing
+  header noting the original date and source. **The header and the layout
+  support for `archived` are not written yet.**
+- They live in `_pending/javanet/` until David has read them.
+
+### Three things the conversion turned up
+
+1. **The original pages ate their own generics.** `<Elem>`, `<Node>`, `<Key>`
+   and friends were written bare in prose, so browsers silently dropped them -
+   readers in 2004 saw "I changed the Bag interface to Bag extending
+   Collection." They are restored as escaped text. Note the second trap here:
+   several *are* correctly escaped in the source, and a naive
+   `html.unescape` turns those back into raw brackets that markdown-it then
+   swallows. Escaping happens after every real tag is gone.
+2. **Four content images are dead** and were never fetched -
+   `bloggers.dev.java.net` is gone. Two source-directory diagrams in "Design
+   for Reuse", two GraphViz class diagrams in "GraphViz Class Diagrams".
+   **Decision 2026-08-26: recover them, do not cut them and add a note.** All
+   four are reproducible from the posts if no archive has them - a directory
+   tree and a GraphViz class diagram can both be redrawn. `bin/javanet-fetch-images.py`
+   tries the wayback machine, then Common Crawl, and writes to `src/img/archive/`.
+   The Markdown keeps the image references either way.
+3. **Two dead embeds**, replaced with an italic note: the ZoomApplet in
+   "Affine Frustration Transformed" and the JavaFX minesweeper launcher in
+   "Event Based Programming in JavaFX".
+
+### The comment gap - 12 posts, and why the fetch script may be at fault
+
+**12 of the 36 pages carry zero comments, and that is probably not true.**
+All 12 are Drupal-shape captures of pre-2008 posts. The Drupal-shape captures
+that *do* have comments are the late ones (2008-07, 2009-07). The likely
+reading is that the Movable Type -> Drupal migration dropped the older threads.
+
+But there is a second possible cause, and it is ours: **`fetch-javanet-cc.py`
+keeps the largest capture per URL**, and a bulky comment-free Drupal page can
+outweigh a lean Movable Type page that still has the thread. If so, the
+comments were in Common Crawl all along and the fetch threw them away.
+
+`bin/javanet-recheck-comments.py` tests exactly this - for those 12 URLs it
+fetches *every* capture rather than the biggest, counts comment blocks in each,
+and writes any better one as `SLUG.mt.html` beside the existing file rather
+than over it.
+
+**First run, 2026-08-26: inconclusive, and it took a fix to see that.** One
+real result came back - `design_for_reus` has 4 captures and none of them carry
+comments, so for that post the threads are genuinely gone. Then
+`index.commoncrawl.org` stopped answering entirely (connection refused, not a
+timeout), almost certainly a rate limit earned by querying 44 indexes for 12
+URLs back to back. The script swallowed those failures and printed `0 captures`
+for every remaining post, which reads exactly like a finding.
+
+It now counts unreachable indexes separately, says so in its output, and sleeps
+between queries. **An archive that will not answer is not an archive that has
+nothing** - the second half of that sentence is what the first version wrote to
+the log. Re-run after a cooldown.
+
+The 12: `design_for_reus`, `reviewing_the_j`, **`coupling_in_sof`** (the
+retrospective's own subject), `somnifugijms_fo_4`, `graphviz_class`,
+`no_giant_or_win_1`, `brilliant_appro`, `our_grass_is_gr`, `whooshing_sound_1`,
+`bad_things_in_a`, `wild_winds_wres_1`, `jmx_and_testdri_1`.
+
 ### Still to do
 
-1. Convert the 33 HTML files to Markdown. Expect Movable Type markup, old
-   entities, and dead outbound links.
-2. Recover per-post dates. The filenames give `YYYY-MM`; the exact day is in the
-   HTML as "Posted by dwalend on September 18, 2003 at 05:14 AM" but in more than
-   one template shape across six years, so it needs a real parser rather than one
-   regex.
-3. **Decide about comments.** Several posts carry substantial threads - "Design
-   For Exceptions" has 25, "Naming Generic Types" 16, "What Giants?" 14, "Better
-   JavaDoc" 13. That is a real archive, the same judgement as the 2015 Disqus
-   thread in section 3, and it is in the recovered HTML already.
-4. Decide presentation - an `/archive/` prefix with a standing header rather than
-   backdating 33 items into the main feed.
-5. Then write the retrospective as a *new* post linking back into it. That is the
-   actual goal; the recovery is in service of it.
+1. **David reads the 36 staged posts.** Nothing publishes before that.
+2. **Layout support for `archived`** - the standing header, and keeping the
+   archive out of the feed and sitemap.
+3. **Wire `javanetComments.json` in** the way `archivedComments.json` is wired.
+4. **Re-run `bin/javanet-recheck-comments.py`** after a Common Crawl cooldown -
+   11 of the 12 are still unanswered.
+5. **Recover the four dead images** (`bin/javanet-fetch-images.py`), and the
+   seven posts with no capture at all. Both need an archive that will talk to
+   us; see below.
+6. **Then write the retrospective** as a *new* post linking into the recovered
+   material. That is the goal; the recovery serves it.
+
+### Archive availability, 2026-08-26
+
+Both are refusing us, in different ways:
+
+- **`web.archive.org` is still down for us** - `/cdx/search/cdx` times out at
+  40s, as it did all of 2026-08-25. Note the trap: `archive.org/wayback/available`
+  answers 200 in 1.3s, and that is a *different host*. Checking the wrong
+  endpoint says wayback is back when it is not.
+- **`index.commoncrawl.org` refuses connections** as of the recheck run above.
+  `data.commoncrawl.org` was not retested.
+
+`bin/javanet-fetch-images.py` ran against both and recovered nothing - all four
+images reported `wayback UNREACHABLE` then `commoncrawl UNREACHABLE`. **That is
+not evidence the images are unarchived**, and the script says so in those words
+rather than "not found". Re-run when an archive answers.
+
+Nothing that needs a network archive can proceed until one of them returns.
+Everything staged in `_pending/javanet/` is already local and unaffected.
 
 ## 4b. Note for whichever post covers disentangleParGraphs
 

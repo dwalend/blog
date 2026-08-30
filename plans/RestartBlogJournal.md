@@ -1188,8 +1188,11 @@ would hide exactly the thing worth seeing.
 
 ## 2026-08-25 - The java.net blog, recovered from Common Crawl
 
-`web.archive.org` was down all day. Thirty-three posts from 2003-2009 are now in
+`web.archive.org` was down all day. Posts from 2003-2009 are now in
 `_archive-src/javanet/` anyway, fetched from Common Crawl, zero failures.
+
+**The count in this entry was 33 when it was written. It is 34, plus 2 articles.**
+See the next entry - the correction is more interesting than the number.
 
 ### Asking a different question
 
@@ -1254,3 +1257,215 @@ January 2004 makes it a **22-year** retrospective. The plan has said "20-year"
 since it was written, which was true when someone first typed it and quietly
 stopped being true two years ago. Same class of drift as the "no trackers"
 decision, minus the consequences.
+
+## 2026-08-25 - Two more archives, and a count I got wrong twice
+
+The java.net recovery finished at **34 blog posts and 2 articles**. Getting there
+produced two errors of the same kind, and the second one after the first was
+already written down.
+
+### The article was never a blog post
+
+"Understanding Service Oriented Architecture" is not in the blog archive and
+never was. java.net published articles at `today.java.net/pub/a/...`, a different
+site from `weblogs.java.net/blog/dwalend`. This plan said "article" and I read it
+as "blog post," then searched the blog thoroughly and concluded it was missing.
+
+What broke it open was a javawhat.com directory page David found and dismissed as
+a dead end. It had no content - just the exact URL. The URL was the entire
+problem. **A lead with no content can still carry the one fact you need.**
+
+Then the article itself linked to `today.java.net/pub/au/95`, the author page,
+which enumerated everything he wrote there: two pieces, not the one he
+remembered. The second is a JavaOne 2008 session abstract on JMX for unit tests.
+
+**An author page enumerates what URL-pattern guessing cannot reach.** That is the
+transferable trick from this whole exercise.
+
+### The count, wrong twice, the same way
+
+First: the inventory said **58 articles**. `/YYYY/MM/index.html` matches a
+`YYYY/MM/slug.html` pattern perfectly well and is a monthly listing. Excluding
+them: 33. Caught by reading `--list` output line by line.
+
+Second, after writing that lesson down: I scraped post links out of page bodies,
+found 8 slugs not on disk, and told David I had found 8 more posts. He was
+pleased. Then I fetched them and compared titles - **nine of ten candidates were
+the same posts under alternate slugs.** Movable Type emitted both `foo.html` and
+`foo_1.html`. Exactly one was new.
+
+Both errors produce a *larger, more pleasing* number than expected, which is why
+neither tripped an alarm. 58 beat the plan's ~37; 41 beat the 33 I had. **A count
+that flatters the work is the one to check first.**
+
+And the second happened after the first was in this file. Writing a lesson down
+is not the same as having learned it.
+
+### What is missing, stated as a floor
+
+Seven posts are linked from the monthly archive pages with no Common Crawl
+capture. They need the wayback machine. And 41 is a floor - it is only what the
+crawled index pages happened to link, so months whose index was never crawled
+contribute nothing at all. **"All of them" is not a claim this recovery can
+support**, and the plan now says so rather than implying completeness.
+
+### Telemetry, since David asked
+
+Context was at 29% when the mistakes started clustering, and he called it before
+I did. Two concrete symptoms, both mine:
+
+- I piped a verification run to `tail -12` - a command whose entire purpose was
+  to show me every line. That guarantees a re-run.
+- I started a multi-minute, ~42-index network job as an "idempotence test"
+  without warning him what it would cost, and he had to interrupt it.
+
+Neither is a reasoning failure. Both are attention failures - the kind that show
+up as small process sloppiness well before they show up as wrong answers. Worth
+recording because the useful signal was not "the model said something false," it
+was "the model is being careless with cheap things."
+
+`bin/fetch-javanet-cc.py` was rewritten to query all ~42 indexes, dedupe by
+title, and pull the articles from the author page. **It parses and has never been
+run.** Flagged UNTESTED in the plan. The recovered HTML is the artifact; the
+script is a convenience that currently owes a proof.
+
+## 2026-08-25 - The conversion, and a bug that looked like the opposite bug
+
+All 36 recovered pages are Markdown now, staged in `_pending/javanet/` because
+David wants to read them before anything publishes. Two scripts, both run end to
+end: `bin/javanet-extract.py` (HTML -> JSON) and `bin/javanet-to-markdown.py`
+(JSON -> Markdown + comments). Splitting them was the right call - the inventory
+is readable on its own, and reading it is what caught both template surprises.
+
+### Five shapes, not two
+
+The plan said the articles would differ from the posts, so expect two shapes.
+The blog alone has three: Movable Type, Drupal, and a later Drupal theme that
+moved the title into `<h1 id="page-title">` and dropped the wrapper the body
+parser keyed on. Plus one shape per article. 20 MT, 14 Drupal, 2 articles.
+
+Same underlying fact as the lucky part of the fetch: **which shape a page has
+depends on when the crawler visited, not on when the post was written.** java.net
+moved the blog to Drupal in 2008 and kept the archive URLs, so a 2003 post
+arrives in whichever template was live at capture time. I had written that
+sentence about crawl dates two entries ago and still didn't predict this.
+
+### The generics bug, which I got backwards first
+
+Bare `<Elem>` and `<Node>` in prose - unescaped type parameters - get eaten by
+markdown-it as unknown HTML tags. Fine, escape them: I wrote a guard that
+converts non-HTML pseudo-tags to `&lt;...&gt;` before the tag strip, unit-tested
+it, watched it work, ran the pipeline, and `<Node>` was still there.
+
+I re-ran it. Still there. The guard was obviously running, the test obviously
+passed, and the output obviously disagreed.
+
+The answer was that those particular pages **escape them correctly.** The source
+says `Digraph&lt;Node&gt;`. My own `html.unescape` - two lines after the guard -
+turned them back into raw brackets. The guard was defending against a problem
+that arrived later, from me.
+
+Worth naming, because I nearly went looking for a stale file or a caching
+problem instead: **when a unit test passes and the pipeline disagrees, the input
+is different from what the test assumed.** The fix is one line - escape every
+remaining bracket after the last real tag is gone, since by then nothing in the
+string is markup.
+
+The repair is also worth noting on its own terms. Readers in 2004 saw "I changed
+the Bag interface to Bag extending Collection" - the browser dropped `<Elem>`
+silently. The archived version reads better than the original ever did.
+
+### 189 comments, and 12 posts that claim to have none
+
+189 comments from 83 people, 62 of them David's own replies. Clean extraction,
+nothing empty or dateless.
+
+But 12 pages report zero comments, and all 12 are Drupal-shape captures of
+pre-2008 posts - including `coupling_in_sof`, the article the whole retrospective
+is being built on. The Drupal captures that *do* carry comments are the late ones.
+
+Two explanations, and the second is ours: the MT -> Drupal migration dropped the
+old threads, **or** `fetch-javanet-cc.py` keeps the *largest* capture per URL and
+a bulky comment-free Drupal page outweighed a lean MT page that still had the
+thread. In that case the comments were in Common Crawl all along and the fetch
+discarded them.
+
+`bin/javanet-recheck-comments.py` settles it: for those 12 URLs it fetches every
+capture instead of the biggest, counts comment blocks, and writes any better one
+as `SLUG.mt.html` beside the existing file rather than over it.
+
+The general lesson is about the earlier heuristic, not this bug. **"Keep the
+biggest" is a proxy for "keep the most complete," and proxies fail quietly.**
+Bigger meant more navigation chrome, not more content. It produced a plausible
+file for every URL, which is exactly why it went unquestioned for a day.
+
+### I said 9 and it was 12
+
+Told David 9 posts had no comments. I had counted the zero-comment rows by eye
+off a 36-line table instead of filtering it. Same failure mode as the 58-that-was-33
+and the 8-new-posts-that-was-1, with the flattering direction reversed - this
+one *understated* the problem, which is presumably why it didn't feel worth
+checking. **A count is not a check** applies to counts that make things look
+better and counts that make them look smaller alike.
+
+### Telemetry
+
+David stopped me mid-task: "You're burning a lot of tokens for just coming up to
+speed on a plan." Correct as a read of the visible behavior. I had spent a long
+run of tool calls on exploratory greps before producing anything, and never said
+what I was building, so from outside it looked like re-reading the plan at
+length. The work was real, but announcing the target before the tenth grep would
+have cost one sentence.
+
+## 2026-08-26 - I wrote the bug I had just written up
+
+Yesterday's entry ends with a lesson about proxies failing quietly: "keep the
+biggest" stood in for "keep the most complete," and produced a plausible file for
+every URL. Today I wrote `bin/javanet-recheck-comments.py` to test that theory,
+and put the same failure in it.
+
+The script queries 44 Common Crawl indexes per URL for 12 URLs. Its inner loop
+was `except Exception: continue` - written to skip the 404s that mean "this index
+holds nothing." One real result came back (`design_for_reus`: 4 captures, no
+comments in any of them). Then Common Crawl stopped answering, plainly because
+528 rapid index queries earned a rate limit, and every remaining line read
+`0 captures, best comment count 0`.
+
+**That is a finding-shaped hole.** "No captures" and "we never asked" print
+identically, and the one that is a fact about the archive is indistinguishable
+from the one that is a fact about our manners. I nearly reported eleven posts as
+confirmed comment-less.
+
+The fix is small - count non-404 failures separately, name them in the output,
+sleep between queries. The sentence to keep is **an archive that will not answer
+is not an archive that has nothing.**
+
+Worth being precise about why this happened: it was not that the lesson hadn't
+been written down. It was written down, by me, in this file, the day before. It
+had been written about a *heuristic for choosing among results*, and I did not
+recognise it wearing the costume of *error handling*. A lesson generalises only
+as far as you restate it.
+
+### Also, I declared the wayback machine back
+
+`archive.org/wayback/available` returned 200 in 1.3 seconds, so I said wayback
+was back up and that this changed the plan. It did not. `web.archive.org/cdx`
+still times out at 40 seconds, exactly as it did all of 2026-08-25. Those are
+two different hosts, and the one that answered is not the one that holds the
+captures.
+
+Checking availability with the cheapest endpoint that shares a brand name is not
+checking availability. Both errors today are the same shape as each other:
+**accepting a signal that is adjacent to the question instead of on it.**
+
+### Where the work actually stands
+
+Not blocked. All 36 posts, all 189 comments, and both articles are converted and
+local in `_pending/javanet/`. Only three things need a network archive - the 12
+comment-gap posts, the 4 dead images, and the 7 posts with no capture - and all
+three can wait for the archives to come back.
+
+David's call on the images: recover them, do not cut them and add a note. They
+are reproducible from the posts if no archive has them, which makes cutting them
+the strictly worse option - a broken image says "this existed," and a removal
+note says the same thing with less information and more words.
