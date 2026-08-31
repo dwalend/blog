@@ -180,6 +180,23 @@
       "body": "Thinking alike  \n\nHi, Dave.  Just stumbled across your article here.  Not surprisingly it reads very much like mine over here.\n\nCheers,  \n\nLaird\n"
     }
   ],
+  "/archive/2004/01/coupling-in-software-architecture/": [
+    {
+      "author": "ljnelson",
+      "date": "2004-01-12",
+      "body": "Nice summary  \n\nHi, Dave; nice overview.  Rob deLine has an interesting paper covering what happens when you are faced with a system that mixes these composition approaches: http://shaw-weil.com/marian/DisplayPaper.asp?paper_id=26\n\nAlso, anything in that general web is good; Mary Shaw specializes in software architecture research and puts out some really interesting level-headed work.\n\nCheers,  \n\nLaird\n"
+    },
+    {
+      "author": "ljnelson",
+      "date": "2004-01-12",
+      "body": "Nice summary  \n\nAh, here's specifically what I was looking for:\n\nhttp://www-2.cs.cmu.edu/afs/cs/project/tinker-arch/www/html/Tutorial_Slides/Soft_Arch/base.013.html\n\nCheers,  \n\nLaird\n"
+    },
+    {
+      "author": "ceperez",
+      "date": "2004-01-12",
+      "body": "Is there are preferred axis for loose coupledness?  \n\nhttp://www.manageability.org/blog/stuff/axis-of-loose-coupled-ness\n"
+    }
+  ],
   "/archive/2004/05/shutdown-hooks/": [
     {
       "author": "adbaxter",

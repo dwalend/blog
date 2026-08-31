@@ -13,7 +13,7 @@ falls back to Common Crawl. Writes into src/img/archive/. Resumable.
 Reports unreachable archives as unreachable. An archive that will not answer is
 not an archive that has nothing.
 """
-import importlib.util, json, os, sys, urllib.parse, urllib.request
+import importlib.util, json, os, sys, time, urllib.error, urllib.parse, urllib.request
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 spec = importlib.util.spec_from_file_location("cc", os.path.join(HERE, "fetch-javanet-cc.py"))
@@ -30,7 +30,21 @@ IMAGES = [
 ]
 
 
-def from_wayback(url):
+def from_wayback(url, tries=4):
+    # web.archive.org answers 429 under load rather than failing outright, so
+    # back off and ask again instead of treating a throttle as an absence.
+    for n in range(tries):
+        try:
+            return _wayback(url)
+        except urllib.error.HTTPError as e:
+            if e.code != 429 or n == tries - 1:
+                raise
+            wait = 20 * (n + 1)
+            print(f"    wayback 429, waiting {wait}s")
+            time.sleep(wait)
+
+
+def _wayback(url):
     cdx = ("https://web.archive.org/cdx/search/cdx?"
            f"url={urllib.parse.quote(url, safe='')}&output=json&filter=statuscode:200&limit=5")
     rows = json.loads(cc.get(cdx, tries=1).decode("utf-8", "replace") or "[]")
@@ -75,6 +89,7 @@ def main():
                 continue
             if blob:
                 open(dest, "wb").write(blob)
+                time.sleep(5)
                 print(f"  {name}: {len(blob)} bytes from {source}")
                 break
         else:

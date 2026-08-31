@@ -2,16 +2,18 @@
 
 Content-migration companion to `RestartBlog.md`. Four sources.
 
-**Three of the four are done.** The blog went live at `https://blog.walend.net`
-on 2026-08-25; everything time-boxed by the DNS cutover finished before it. Only
-the java.net recovery is left, and it was never urgent.
+**Three of the four are done, and the fourth is staged.** The blog went live at
+`https://blog.walend.net` on 2026-08-25; everything time-boxed by the DNS
+cutover finished before it. The java.net recovery is converted and sitting in
+`_pending/javanet/`, waiting on David to read it - nothing publishes before
+that. Three loose ends still need a network archive; see the end of section 4.
 
 | Source | Count | Status | Phase |
 | --- | --- | --- | --- |
 | Jekyll `_posts/` (2014-2016) | 10 | Done 2026-08-23 | Phase 5 |
 | Hashnode (2024) | 4 | Done 2026-08-23 | Phase 6 |
 | Disqus comments (2015) | 6 real | Done 2026-08-24 | Phase 7 |
-| java.net via wayback (2003-2009) | ~37 pages | **Outstanding** | Phase 10 |
+| java.net via Common Crawl (2003-2009) | 36 pages | Converted 2026-08-26, **staged unread** | Phase 10 |
 
 ---
 
@@ -234,22 +236,43 @@ The category index at `archive/web_services_and_xml/index.html` is **not** in
 Common Crawl - no captures. If that grouping matters for the retrospective it
 needs the wayback machine, or reconstructing from the posts themselves.
 
-### What is NOT recovered - 7 known-missing posts
+### The "7 known-missing posts" were never his  [CORRECTED 2026-08-30]
 
-These are linked from the blog's own monthly archive pages but have **no Common
-Crawl capture**. They need the wayback machine, which was down all of 2026-08-25.
-`bin/fetch-javanet.sh` exists for exactly this.
+This section used to list seven slugs as posts linked from the monthly archive
+pages with no Common Crawl capture, needing the wayback machine.
 
-```
-2004-09-evolving_the_ja      2006-01-the_nonpublic_c
-2005-06-generics_consid_1    2006-05-a_java_perspect
-2005-08-pumping_up_java      2007-04-reserve_seats_a
-2008-06-tests_first_or
-```
+**All seven are other people's blogs.** They are outbound links David made, and
+the scraper that built the list matched `weblogs.java.net/blog/*/archive/...`
+without pinning the author to `dwalend`:
 
-**41 is a floor, not a ceiling.** That number is only what the crawled monthly
-index pages happened to link. Posts in months whose index page was never crawled
-would not appear at all.
+| Slug | Actually on |
+| --- | --- |
+| `2004-09-evolving_the_ja` | `/blog/kgh/` - Graham Hamilton |
+| `2005-06-generics_consid_1` | `/blog/arnold/` - Ken Arnold, the "generics are a mistake" post |
+| `2005-08-pumping_up_java` | `/blog/kohsuke/` - Kohsuke Kawaguchi |
+| `2006-01-the_nonpublic_c` | `/blog/robogeek/` - David Herron |
+| `2006-05-a_java_perspect` | `/blog/jonbruce/` |
+| `2007-04-reserve_seats_a` | `/blog/webmink/` - Simon Phipps |
+| `2008-06-tests_first_or` | `/blog/johnsmart/` - John Ferguson Smart |
+
+One grep against the recovered HTML settles it, and it should have been run
+before the slugs were written down as missing. **A URL pattern that omits the
+part identifying the author will happily match every author.** Same family as
+the `/YYYY/MM/index.html` trap and the `foo_1.html` duplicate-slug trap: a
+pattern matching more than intended, producing a plausible number.
+
+Note which direction this one goes. The earlier two *inflated* the count and
+flattered the work; this one *invented a deficit* and made the recovery look
+less complete than it was. Both survived because nobody checked, which is the
+only thing the three have in common that matters.
+
+**So there is no known-missing set.** 34 blog posts and 2 articles is the whole
+of what the crawled index pages point to under `/blog/dwalend/`.
+
+**That is still a floor, not a ceiling.** It is only what the crawled monthly
+index pages happened to link; months whose index page was never crawled
+contribute nothing at all. "All of them" remains a claim this recovery cannot
+support - but the support for it is stronger than this plan has been saying.
 
 ### `bin/fetch-javanet-cc.py` is UNTESTED as it currently stands
 
@@ -359,6 +382,35 @@ fetches *every* capture rather than the biggest, counts comment blocks in each,
 and writes any better one as `SLUG.mt.html` beside the existing file rather
 than over it.
 
+**Second run, 2026-08-30: the theory was right.** `coupling_in_sof` - the
+retrospective's own subject - has **25 captures in Common Crawl, and the
+Movable Type one carries 3 comments**: `ljnelson` twice and `ceperez`, January
+2004. The bodies of the two captures are identical to the character. The only
+difference is that the comment-free Drupal page is bulkier, so "keep the
+largest" discarded the thread. Recovered as
+`_archive-src/javanet/2004-01-coupling_in_sof.mt.html`.
+
+That makes 192 comments across 24 posts.
+
+**The two captures each kept something the other dropped** - Movable Type the
+comments, Drupal the `Programming` topic tag - so `javanet-extract.py` now
+folds `SLUG.mt.html` into `SLUG.html` and takes the best of each field rather
+than picking a winner. Repeating the original mistake one level up would have
+been an easy thing to do here.
+
+**The run is only half done.** The 1s sleep was not enough; throttling returned
+partway through and the last five URLs report `44/44 indexes UNREACHABLE`:
+
+| Verdict | Posts |
+| --- | --- |
+| Genuinely no comments - 24 captures, clean run | `graphviz_class` |
+| Probably none | `design_for_reus`, `reviewing_the_j`, `somnifugijms_fo_4`, `no_giant_or_win_1` |
+| Weak - 23/44 indexes unreachable | `brilliant_appro` |
+| **No data at all** | `our_grass_is_gr`, `whooshing_sound_1`, `bad_things_in_a`, `wild_winds_wres_1`, `jmx_and_testdri_1` |
+
+Those five need another pass after a longer cooldown, with a bigger sleep.
+`coupling_in_sof` is the argument for bothering.
+
 **First run, 2026-08-26: inconclusive, and it took a fix to see that.** One
 real result came back - `design_for_reus` has 4 captures and none of them carry
 comments, so for that post the threads are genuinely gone. Then
@@ -383,17 +435,26 @@ retrospective's own subject), `somnifugijms_fo_4`, `graphviz_class`,
 2. **Layout support for `archived`** - the standing header, and keeping the
    archive out of the feed and sitemap.
 3. **Wire `javanetComments.json` in** the way `archivedComments.json` is wired.
-4. **Re-run `bin/javanet-recheck-comments.py`** after a Common Crawl cooldown -
-   11 of the 12 are still unanswered.
-5. **Recover the four dead images** (`bin/javanet-fetch-images.py`), and the
-   seven posts with no capture at all. Both need an archive that will talk to
-   us; see below.
+4. **Re-run `bin/javanet-recheck-comments.py`** for the five posts that got no
+   data at all, after a longer cooldown and with a bigger sleep.
+5. **Recover the four dead images** (`bin/javanet-fetch-images.py`). There is
+   no seventh-post problem - see the correction above.
 6. **Then write the retrospective** as a *new* post linking into the recovered
    material. That is the goal; the recovery serves it.
 
-### Archive availability, 2026-08-26
+### Archive availability, 2026-08-30
 
-Both are refusing us, in different ways:
+**Common Crawl is back.** `index.commoncrawl.org/collinfo.json` answers 200 in
+0.19s, four days after refusing connections. The recheck and image runs were
+started against it; results below.
+
+**`web.archive.org` is still down for us** - `/cdx/search/cdx` timed out at 30s
+on 2026-08-30, as it has since 2026-08-25. Six days. `archive.org` is fine; it
+is specifically the capture service. Nothing outstanding needs it any more now
+that the seven "missing posts" turn out to be other people's.
+
+The state it was in on 2026-08-26, kept because the endpoint trap is worth
+remembering:
 
 - **`web.archive.org` is still down for us** - `/cdx/search/cdx` times out at
   40s, as it did all of 2026-08-25. Note the trap: `archive.org/wayback/available`
@@ -402,10 +463,18 @@ Both are refusing us, in different ways:
 - **`index.commoncrawl.org` refuses connections** as of the recheck run above.
   `data.commoncrawl.org` was not retested.
 
-`bin/javanet-fetch-images.py` ran against both and recovered nothing - all four
-images reported `wayback UNREACHABLE` then `commoncrawl UNREACHABLE`. **That is
-not evidence the images are unarchived**, and the script says so in those words
-rather than "not found". Re-run when an archive answers.
+**2026-08-30: the images are not in the wayback machine, and this time that is
+a real answer.** The host is there and so are its neighbours - a CDX query for
+`bloggers.dev.java.net/files/documents/84*` returns other people's images - but
+**every one of them is a 301, 302 or 404, never a 200.** java.net's file server
+redirected crawlers instead of serving bytes. A query for each of the four
+returns `[]`: no captures at all.
+
+Common Crawl was rate-limited from the comment recheck and refused connections
+throughout, so it is still untested for the images. That is the one remaining
+place to look. After that, redraw them - a directory tree and a GraphViz class
+diagram are both reproducible from the posts, which is why the decision was to
+keep the references rather than cut them.
 
 Nothing that needs a network archive can proceed until one of them returns.
 Everything staged in `_pending/javanet/` is already local and unaffected.

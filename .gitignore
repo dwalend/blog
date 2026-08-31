@@ -10,6 +10,9 @@ node_modules/
 .jekyll-cache/
 .jekyll-metadata
 
+# Python bytecode from the bin/ recovery scripts
+__pycache__/
+
 # Editors and OS
 .idea/
 .DS_Store

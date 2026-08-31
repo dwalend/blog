@@ -212,19 +212,46 @@ def parse_j1(text):
 PARSERS = {"mt": parse_mt, "drupal": parse_drupal, "soa": parse_soa, "j1": parse_j1}
 
 
+def merge(records):
+    """Fold the captures of one post into a single record.
+
+    A post can be on disk more than once: SLUG.html from the original fetch and
+    SLUG.mt.html from bin/javanet-recheck-comments.py. They are the same post
+    seen through different templates, and each template kept something the other
+    dropped - Movable Type has the comment thread, Drupal has the topic tags.
+    Picking one loses real content, so take the best of each field.
+    """
+    if len(records) == 1:
+        return records[0]
+    best = max(records, key=lambda r: len(r["body"] or ""))
+    out = dict(best)
+    out["comments"] = max((r["comments"] for r in records), key=len)
+    out["comment_count"] = len(out["comments"])
+    seen, tags = set(), []
+    for r in records:
+        for t in r["tags"]:
+            if t not in seen:
+                seen.add(t)
+                tags.append(t)
+    out["tags"] = tags
+    out["captures"] = sorted(r["file"] for r in records)
+    return out
+
+
 def main():
-    pages = []
+    groups = {}
+    order = []
     for d in DIRS:
         for path in sorted(d.glob("*.html")):
             text = path.read_text(encoding="utf-8", errors="replace")
             shape = detect(text)
+            rel = str(path.relative_to(ROOT))
             if shape not in PARSERS:
-                pages.append({"file": str(path.relative_to(ROOT)), "shape": shape, "error": "unrecognized template"})
-                continue
-            title, date, time, body, comments, tags = PARSERS[shape](text)
-            pages.append(
-                {
-                    "file": str(path.relative_to(ROOT)),
+                rec = {"file": rel, "shape": shape, "error": "unrecognized template"}
+            else:
+                title, date, time, body, comments, tags = PARSERS[shape](text)
+                rec = {
+                    "file": rel,
                     "shape": shape,
                     "title": title,
                     "date": date,
@@ -235,7 +262,20 @@ def main():
                     "body": body,
                     "comments": comments,
                 }
-            )
+            # SLUG.mt.html is another capture of SLUG.html, not another post.
+            key = (path.parent.name, path.name.replace(".mt.html", ".html"))
+            if key not in groups:
+                groups[key] = []
+                order.append(key)
+            groups[key].append(rec)
+
+    pages = []
+    for key in order:
+        records = groups[key]
+        if any("error" in r for r in records):
+            pages.extend(records)
+            continue
+        pages.append(merge(records))
 
     if "--table" in sys.argv:
         for p in pages:

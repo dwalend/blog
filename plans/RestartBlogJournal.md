@@ -1469,3 +1469,74 @@ David's call on the images: recover them, do not cut them and add a note. They
 are reproducible from the posts if no archive has them, which makes cutting them
 the strictly worse option - a broken image says "this existed," and a removal
 note says the same thing with less information and more words.
+
+## 2026-08-30 - The theory was right, and a deficit that never existed
+
+Common Crawl came back after four days. Two findings, pointing opposite ways.
+
+### The comments were there, and we threw them away
+
+`coupling_in_sof` - "Coupling in Software Architecture," January 2004, the post
+the whole retrospective is being built on - has 25 captures in Common Crawl. The
+Movable Type one carries three comments: `ljnelson` twice and `ceperez`, both
+within a day of publication. The Drupal capture we kept has none.
+
+The two bodies are identical to the character. The only difference is that the
+comment-free page is bulkier, because Drupal's chrome outweighs three comments.
+**"Keep the largest capture" discarded content while reporting success**, which
+is exactly what the 2026-08-25 entry guessed and could not prove.
+
+The repair had its own version of the same trap in it. The obvious move is to
+swap the MT capture in for the Drupal one - and that loses the `Programming`
+topic tag, which only the Drupal template carries. Two captures of one post,
+each holding something the other dropped; picking a winner is the same error one
+level up. The extractor now merges them.
+
+192 comments across 24 posts.
+
+### The seven missing posts were never his
+
+The plan has listed seven slugs since it was written as posts linked from the
+monthly archive pages that Common Crawl never captured, needing the wayback
+machine. **All seven are other people's blogs** - `kgh`, `arnold`, `kohsuke`,
+`robogeek`, `jonbruce`, `webmink`, `johnsmart`. Ken Arnold's "generics are a
+mistake" post is on that list. They are outbound links David made, and whatever
+scraped them matched `weblogs.java.net/blog/*/archive/...` without pinning the
+author.
+
+One grep settled it, and it cost nothing. It should have run before the slugs
+were written down as missing.
+
+That is the third pattern-matches-too-much error in this recovery -
+`/YYYY/MM/index.html` inflating 33 to 58, `foo_1.html` turning one new post into
+eight, and now an author wildcard inventing a deficit. **The heuristic I wrote
+down was "check the count that flatters you," and this one does the opposite** -
+it made the work look less complete than it was, which is presumably why it sat
+unexamined for five days while the flattering ones got caught within the hour.
+The generalisation was never about flattery. It is that a number nobody checked
+is a number nobody checked.
+
+### Two claims of mine that were stale when I made them
+
+I told David wayback was still down and that nothing outstanding needed it. Both
+wrong within the same hour: the 429 in the image run meant alive-and-throttled,
+and the images need it. It answers in 8s now.
+
+And the sequential driver script reported exit 0 because its last line was an
+`echo`. The image fetch inside it had failed. Reading the output caught it, but
+**the status I would have quoted was a lie the script told about itself.**
+
+### The images are genuinely not archived
+
+Worth stating carefully, because every previous "not found" here has turned out
+to mean "not asked."
+
+The wayback machine *has* `bloggers.dev.java.net`, and it has other files in the
+same `files/documents/84/` directory. **Every one of them is a 301, 302 or 404 -
+never a 200.** java.net's file server redirected crawlers rather than serving
+bytes. The four images David needs return `[]`: no captures.
+
+So this is a real negative for wayback. Common Crawl is still untested for them,
+having been rate-limited throughout. After that they get redrawn, which was
+always the fallback and is why the decision was to keep the broken references
+rather than replace them with a note.
