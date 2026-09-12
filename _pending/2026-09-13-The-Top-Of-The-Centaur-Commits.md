@@ -35,14 +35,19 @@ Add this line to your ~/.claude/settings.json and each project's .claude/setting
 
 ## 10X Read-to-Write
                                        
-Before AI we already spent 10X more time reading code than writing it. TODO add Robert C Martin quote. We review all 
-the code to make sure it does what it should, is following standard practices, and is reasonably clear; someone has to 
-read it. Developers will reread successful code many times while maintaining it. That is a strong argument for 
-investing the time to write code that clearly expressed its intent and is easy to trace back to requirements and good 
-practice. If my reviewer can't figure out what my code does it isn't because that reviewer is incompetent or even 
-unskilled; the fault is in the code. If reviewing and understanding code takes a lot of effort then the work is not 
-complete. The effort to make the code clear starts paying immediately. It pays a dividend every time someone needs to 
-understand it - until some final commit replaces the code or some business mishap ends the project.
+Before AI we already spent 10X more time reading code than writing it. 
+
+```
+... the ratio of time spent reading versus writing is well over 10 to 1. We are constantly reading old code as part of the effort to write new code. - Robert C. Martin, _Clean Code_ 
+```
+
+We review all the code to make sure it does what it should, is following standard practices, and is reasonably clear; 
+someone has to read it. Developers will reread successful code many times while maintaining it. That is a strong 
+argument for investing the time to write code that clearly expressed its intent and is easy to trace back to 
+requirements and good practice. If my reviewer can't figure out what my code does it isn't because that reviewer is 
+incompetent or unskilled; the fault is in the code. If reviewing and understanding code takes a lot of effort then the 
+work is not complete. The effort to make the code clear starts paying immediately. It pays a dividend every time 
+someone needs to understand it until some final commit replaces the code or some business mishap ends the project.
 
 This large read/write ratio is one of the strongest arguments to use languages like Scala that make it possible to 
 clearly express our intent, and cleanly separate concerns interwoven in the code. I've been able to create (or even 
@@ -63,11 +68,11 @@ Gateway what resource it exposes. If you are familiar with http verbs and passin
 very exact and clear. I define the URIs using these endpoints, then use the endpoints to build clients and servers. 
 The compiler checks this endpoint and the places it is used to prove that every part involved is consistent. It is also 
 very compact; a small change can change a lot about what the system does while limiting the impact precisely isolated 
-to the client and server code that must change to match. Almost always the code that needs a tweak won't compile. Even 
-if it does compile a quick search in the IDE shows me everywhere it might be used. Putting in extra effort to make that 
-RestApiId starts paying off immediately; the compiler proves that everywhere uses a RestApiId doesn't use some random 
-collection of characters meant for something else. Reviewing the change is easy because certain problems can't exist 
-and each line of code is only doing one thing.
+to the client and server code that must change to match. The type system will generally guide me to code that needs a corresponding update. 
+
+Putting in extra effort to turn arbitrary `String`s into `RestApiId`s starts paying off immediately; the compiler 
+proves that everywhere uses a `RestApiId` doesn't use some collection of characters meant for something else. Reviewing 
+the change is easy because certain problems can't exist. 
      
 ## People-Based Review
 
@@ -207,7 +212,7 @@ deliberately hard to erase anything from it. "Suppression" takes a high level of
 level. I forgot to put the config in ~/.claude and Claude got itself in my blog repo! I had to remove it myself. No one 
 is interested in spending time cleaning up ads in git.   
 
-If you are interested in spending time cleaning up ads in github - this Q&A https://github.com/orgs/community/discussions/197389 helped me do it for this blog. Good luck!
+If you are interested in spending time cleaning up ads in github - this Q&A https://github.com/orgs/community/discussions/197389 helped me do it for this blog. It's a 30-minute choreographed dance with the git command line and github's UI. Good luck!
 
 
 ## Rant about fully-AI systems
