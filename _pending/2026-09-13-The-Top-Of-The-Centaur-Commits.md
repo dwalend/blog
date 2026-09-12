@@ -60,7 +60,7 @@ endpoint.get
 That code builds the path segment of a URI like 
 `GET https://SomeAwsGatewayConfigSystem/restapis/restApiId/SomeRestApiId/resources`. This endpoint is for asking AWS 
 Gateway what resource it exposes. If you are familiar with http verbs and passing familiar with Scala then that code is 
-very exact and clear. I use endpoints like this to describe URIs, then use the endpoints to build clients and servers. 
+very exact and clear. I define the URIs using these endpoints, then use the endpoints to build clients and servers. 
 The compiler checks this endpoint and the places it is used to prove that every part involved is consistent. It is also 
 very compact; a small change can change a lot about what the system does while limiting the impact precisely isolated 
 to the client and server code that must change to match. Almost always the code that needs a tweak won't compile. Even 
