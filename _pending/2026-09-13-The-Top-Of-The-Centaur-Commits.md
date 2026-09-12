@@ -78,7 +78,7 @@ the change is easy because certain problems can't exist.
 ## People-Based Review
 
 A developer will create a feature branch from the code in the repository, then make and commit small changes to code 
-while working through the details of the new feature. Usually we take between half a day's work and three day's for one 
+while working through the details of the new feature. Usually we take between half a day's work and three days' for one 
 feature; larger tasks get hard to schedule and track. Once the developer thinks the work is complete they'll propose 
 the change by posting it for review. Another developer reviews the difference between the current code and the proposed 
 change, suggests improvements, and the cycle continues until the reviewer signs off on the change. For a concise, 
@@ -216,7 +216,7 @@ is interested in spending time cleaning up ads in git.
 If you are interested in spending time cleaning up ads in github - this Q&A https://github.com/orgs/community/discussions/197389 helped me do it for this blog. It's a 30-minute choreographed dance with the git command line and github's UI. Good luck!
 
 
-## Rant about fully-AI systems
+## The AI Slop Cleanup
 
 My great hope for this brave new world of AI is that entrepreneurs will be able to quickly try out lots of new ideas 
 for new businesses. Normally one-in-ten new businesses succeed long-term. During the internet boom and the cloud 
