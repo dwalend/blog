@@ -1,4 +1,70 @@
 
+One of the strongest arguments to use languages like Scala is that a developer can put in some effort to  - over a successful project's lifespan - we will spend 9X more time reading the code than writing it. Writing the code to be clearly, obviously correct pays a dividend
+
+Now that I'm an AI-enabled centaur I take advantage of Claude's faster typing speed. I divide my time between writing small examples of what I want the code to look like,
+writing directives in Markdown for Claude to follow, and reviewing what Claude types. I originally divided my time equally between the three, but at this point I spend maybe four hours per week writing code, eight hours writing directives, and the rest of my time reviewing Claude's work. I'm producing more but my time is the real constraint on production.
+
+Fine-tuning that review cycle optimizes my time. I put a lot of writing effort into "getting the code right the first pass," to reduce the number of review passes and the time they take. I also put a break in the system more severe than with my own work. I forbid Claude from committing code to git, and from pushing code to the shared repository.
+
+Working with Claude means taking turns with Claude while building code. When Claude finishes making edits to source code files Claude stops and waits for me to issue the next prompt. Claude Code very much wants to commit and share its work as early as possible; it would prefer no review at all.
+
+That makes for astounding demos and propagates spectacular defects in code. I suspect my mid- and long-term career will involve making AI-generated software that has proven commercial potential reliable enough to be commercially successful. (I'm undaunted by this. Most of my jobs have been making unreliable prototypes reliable enough to use.)
+
+I've configured Claude Code so it cannot commit and cannot push with this setting:
+
+```json
+
+```
+
+Claude finishes a series of edits, prompts, and waits for me. I have a fixed process:
+* I check the size of the context to make sure Claude isn't about to lose all it's inhibitions and make a huge mess. (TODO see future blog post about AI Robocide).
+* I read the changes Claude Code has made. When they aren't quite right then I start writing a prompt for the next series of edits. I qoute pieces of code that need attention and give direction.
+* When Claude Code is making general mistakes then I'll ask questions about why. I may sharpen some of the directives in the markdown files that provide guidelines.
+* I build and test the relevant changes using my automated build system. I may look at UI changes, run subsystem tests, or whole-system tests on my own.
+* I commit to git with something like
+
+```shell
+git commit -a -m "Progress toward the name of this step"
+```
+* Finally I hit enter on my prompt to give Claude Code its next turn.
+
+When I'm satisfied with the code for the step then:
+
+* I run one final `bleep test-all`
+* I'll share the code with my feature branch on a remote repository with
+
+```shell
+git push
+```
+* Then I start a fresh Claude Code session with a prompt to do the next step in the plan.
+
+I now have this in both my projects' .claude/settings.json and my home directory's .claude/settings.json. I use this belt-and-suspenders
+
+
+
+
+
+Claude Code's Opus model has been down for about an hour ( https://status.claude.com/ September 3rd, 2026) so I'm catching up on writing.
+
+
+
+
+
+
+a lot of time reviewing and directing Claude to change source code files. I store all of these files in git - a source code control system.
+
+Git (and Source Code Control)
+
+Stop the dog from eating your homework, and stop those centaur legs from stomping on it.
+
+
+A Natural Review Point
+
+
+Stop Claude Advertising for Anthropic
+
+
+
 
 
 For $20 And a Lot of Trial-and-Error You Get Four Legs and An Extra Torso That Lets You Eat Grass
@@ -64,4 +130,15 @@ That weekly reset has been trouble for an employer as well. Our team initially h
 Real financial analysts look at AI company's books and point out that they are operating with an unsustainable loss-leader. Ultimately I think Corey Doctorow is correct; after the AI bust open models will survive. TODO.
 
 Reading: Cory Doctorow's _Little Brother_ . Fun start. Great pace.
-Listening: The Mistholme Museum of Mystery . 
+Listening: The Mistholme Museum of Mystery .
+
+
+---
+
+Separation of concerns.
+
+This large read/write ratio is one of the strongest arguments to use languages like Scala that make it possible to clearly express your intent, and cleanly separate concerns interwoven in the code. I've been able to create (or even better - use someone else's) little domain-specific languages to concisely express what I care about, while separating the details that bring the system together. Here's an example using the Tapir library to express a possible endpoint for web API:
+
+```Scala
+TODO some tight Tapir example from duck aligner
+```
