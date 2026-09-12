@@ -37,9 +37,9 @@ Add this line to your ~/.claude/settings.json and each project's .claude/setting
                                        
 Before AI we already spent 10X more time reading code than writing it. 
 
-```
-... the ratio of time spent reading versus writing is well over 10 to 1. We are constantly reading old code as part of the effort to write new code. - Robert C. Martin, _Clean Code_ 
-```
+
+> the ratio of time spent reading versus writing is well over 10 to 1. We are constantly reading old code as part of the effort to write new code. 
+> - Robert C. Martin, _Clean Code_ 
 
 We review all the code to make sure it does what it should, is following standard practices, and is reasonably clear; 
 someone has to read it. Developers will reread successful code many times while maintaining it. That is a strong 
@@ -68,7 +68,8 @@ Gateway what resource it exposes. If you are familiar with http verbs and passin
 very exact and clear. I define the URIs using these endpoints, then use the endpoints to build clients and servers. 
 The compiler checks this endpoint and the places it is used to prove that every part involved is consistent. It is also 
 very compact; a small change can change a lot about what the system does while limiting the impact precisely isolated 
-to the client and server code that must change to match. The type system will generally guide me to code that needs a corresponding update. 
+to the client and server code that must change to match. The type system will generally guide me to code that needs a 
+corresponding update. 
 
 Putting in extra effort to turn arbitrary `String`s into `RestApiId`s starts paying off immediately; the compiler 
 proves that everywhere uses a `RestApiId` doesn't use some collection of characters meant for something else. Reviewing 
