@@ -14,11 +14,12 @@ tags:
 ## TL;DR
 
 Use a tight loop where you control git commits and pushes when using AI to build a software system. Disable Anthropic 
-Claude's ability to do either in both the project and user settings.json. Don't let Claude commit. Slow things down so 
+Claude's ability to do either. Do it in both the project and user `settings.json`. Don't let Claude commit. Slow things down so 
 that you can review the AI's work in small bites. Claude Code is a tool, not something with agency. You are responsible 
 for its work. Also, it will stuff your source code control with advertisements for Anthropic Claude Code.
 
-Add this line to your ~/.claude/settings.json and each project's .claude/settings.json . Do it now, then come back. 
+Add these lines to your `~/.claude/settings.json` and each project's `.claude/settings.json`
+([permissions docs](https://code.claude.com/docs/en/permissions)). Do it now, then come back. 
 
 ```json
 ...
@@ -37,13 +38,13 @@ Add this line to your ~/.claude/settings.json and each project's .claude/setting
                                        
 Before AI we already spent 10X more time reading code than writing it. 
 
-
-> the ratio of time spent reading versus writing is well over 10 to 1. We are constantly reading old code as part of the effort to write new code. 
-> - Robert C. Martin, _Clean Code_ 
+> the ratio of time spent reading versus writing is well over 10 to 1. We are constantly reading old code as part of the effort to write new code.
+>
+> — Robert C. Martin, _Clean Code_
 
 We review all the code to make sure it does what it should, is following standard practices, and is reasonably clear; 
 someone has to read it. Developers will reread successful code many times while maintaining it. That is a strong 
-argument for investing the time to write code that clearly expressed its intent and is easy to trace back to 
+argument for investing the time to write code that clearly expresses its intent and is easy to trace back to 
 requirements and good practice. If my reviewer can't figure out what my code does it isn't because that reviewer is 
 incompetent or unskilled; the fault is in the code. If reviewing and understanding code takes a lot of effort then the 
 work is not complete. The effort to make the code clear starts paying immediately. It pays a dividend every time 
@@ -52,10 +53,10 @@ someone needs to understand it until some final commit replaces the code or some
 This large read/write ratio is one of the strongest arguments to use languages like Scala that make it possible to 
 clearly express our intent, and cleanly separate concerns interwoven in the code. I've been able to create (or even 
 better - use someone else's) little domain-specific languages to concisely express what I care about, while separating 
-the details that bring the system together. Here's an example using the Tapir library to express a possible endpoint 
-for web API:
+the details that bring the system together. Here's an example using the [Tapir](https://tapir.softwaremill.com/) DSL to 
+express an endpoint for a web API (to find out how AWS API Gateway is configured):
 
-```Scala
+```scala
 endpoint.get
       .in("restapis" / path[RestApiId]("restApiId") / "resources")
       .out(bodyStatus)
@@ -64,7 +65,7 @@ endpoint.get
 
 That code builds the path segment of a URI like 
 `GET https://SomeAwsGatewayConfigSystem/restapis/restApiId/SomeRestApiId/resources`. This endpoint is for asking AWS 
-Gateway what resource it exposes. If you are familiar with http verbs and passing familiar with Scala then that code is 
+Gateway what resource it exposes. If you are familiar with http verbs and passingly familiar with Scala then that code is 
 very exact and clear. I define the URIs using these endpoints, then use the endpoints to build clients and servers. 
 The compiler checks this endpoint and the places it is used to prove that every part involved is consistent. It is also 
 very compact; a small change can change a lot about what the system does while limiting the impact precisely isolated 
@@ -112,12 +113,12 @@ Anthropic does not want Claude Code to work that way.
 
 ## Not What Anthropic Intended
 
-Anthropic wants Claude to build whole systems from one prompt with no oversite. It took me some effort to stop the Opus 
+Anthropic wants Claude to build whole systems from one prompt with no oversight. It took me some effort to stop the Opus 
 model from running wild and trying to finish the whole system. I stop Opus at the first prompt over ~25% context - 
 about three prompts - because it starts ignoring some of my directives at ~30%. It "loses its marbles" at about 45% - 
 five or six prompts - and tries to edit every bit of code it imagines it might need to. It tries to build a complete 
 system while completely ignoring all of my directives except the main goal. (Fable is even more aggressive - and not 
-part of the $20/month plan. I haven't figured out how to reign in Fable.) The results of these wild rides create and 
+part of the $20/month plan. I haven't figured out how to rein in Fable.) The results of these wild rides create and 
 alter so much code they are nearly impossible to review. 
 
 Worse - Claude Code will joyously commit the changes in the local git, push them to the shared git repository, then 
@@ -132,15 +133,15 @@ the LLM is not going to do the same thing every time. Claude edits its own conte
 as it follows those directives. As more things enter the context the LLM is going to disregard more and more of those 
 directives. 
 
-Further, the directives will be interacting with the LLM's deep training. Antrhopic has trained Claude's models to make 
+Further, the directives will be interacting with the LLM's deep training. Anthropic has trained Claude's models to make 
 spectacular demos where Claude builds a whole system. Opus has this to some degree, but that's Fable's big feature. 
 Eventually my directives lose their weight completely and the core training takes over. With Opus that happens at about 
 45% context - five or six prompts. With Fable that happens while it is working on my first prompt.
 
-The best way I've found to control this noxious behavior is to forbid it from using git commit and git push by 
+The best way I've found to control this noxious behavior is to forbid it from using `git commit` and `git push` by 
 configuring it outside of the LLM. 
 
-I add this clip of json to my ~/.claude/settings.json and every project's .claude/settings.json . This makes it impossible for Claude Code to use these git commands in its bash shell tool. It has worked so far. 
+I add this clip of json to my `~/.claude/settings.json` and every project's `.claude/settings.json`. This makes it impossible for Claude Code to use these git commands in its bash shell tool. It has worked so far. 
 
 ```json
 ...
@@ -155,11 +156,10 @@ I add this clip of json to my ~/.claude/settings.json and every project's .claud
 ...
 ```
  
-I also have a git-rules.md that opens with a summary of these restrictions. It seems inefficient and feels cruel to let
-the LLM attempt to try. (It still will try when my directives fade.)
+I also have a `git-rules.md` that opens with a summary of these restrictions. It seems inefficient and feels cruel to let
+the LLM attempt forbidden commands. (Claude will still try when my directives fade from the context.)
    
 ```markdown
-
 # Git Rules
 
 - **`git commit`, `git push`, and `git pull` are out of bounds for Claude.** Never run them, never suggest running them 
@@ -179,7 +179,6 @@ under `/tmp`). `git add` is allow-listed in `.claude/settings.json`.
 - **Prefer `git mv` over copying and `git rm`, `git add`** when moving or renaming files and directories, so git 
 tracks the move as a rename rather than a remove and add pair.
 ...
-
 ```
 
 ## This Also Stops Claude Advertising Itself!
@@ -188,8 +187,8 @@ Claude is naturally long-winded, constantly writing notes to itself, polluting y
 comments. Worse, Anthropic has trained it to put adverts for Claude Code everywhere it can. Its commit messages are 
 comically bad.
                                                                                      
-```
-[dozens of lines of self-agrandizing blather removed]
+```text
+[dozens of lines of self-aggrandizing blather removed]
 
 🤖 Generated with [Claude Code](https://claude.ai/code)
     Session Transcript: https://claude.ai
@@ -199,21 +198,21 @@ comically bad.
 It even claims to be a co-author, slapping an Anthropic logo in your committers list. I decided not to extend the 
 centaur analogy in this article to what the back end of the centaur is producing.
 
-I found a neutral summary of a debate around Claude advertising itself as a committer in this article (which slowly 
-gets blurry as you read it) https://www.explainx.ai/blog/claude-code-commit-co-author-attribution-disable-guide-2026 . 
-Anthropic has Claude claiming credit turned on by default. The article concludes with 
+I found a neutral summary of a debate around Claude advertising itself as a committer in
+[Claude Code Adds Itself as Git Co-Author: What It Means and How to Disable It](https://www.explainx.ai/blog/claude-code-commit-co-author-attribution-disable-guide-2026). 
+Anthropic has Claude claiming credit turned on by default. The article concludes with
 
-```
-Both positions have merit. Anthropic's design choice — on by default, trivially disablable — is a reasonable resolution: it surfaces AI involvement without making suppression difficult.
-```
+> Both positions have merit. Anthropic's design choice — on by default, trivially disablable — is a reasonable resolution: it surfaces AI involvement without making suppression difficult.
 
 I'm not neutral. My counter to this conclusion is that once Claude has added itself as a co-author and started pasting 
 its ads and pushing commits into your repo it is too late. git's core philosophy is keeping a record; it is 
 deliberately hard to erase anything from it. "Suppression" takes a high level of git expertise - higher than Opus' 
-level. I forgot to put the config in ~/.claude and Claude got itself in my blog repo! I had to remove it myself. No one 
-is interested in spending time cleaning up ads in git.   
+level. I forgot to put the config in `~/.claude` and Claude got itself in my blog repo! I had to remove it myself. No one 
+is interested in spending time cleaning up ads in git. Claude has a nasty bug.  
 
-If you are interested in spending time cleaning up ads in github - this Q&A https://github.com/orgs/community/discussions/197389 helped me do it for this blog. It's a 30-minute choreographed dance with the git command line and github's UI. Good luck!
+If you are interested in spending time cleaning up ads in github - this Q&A,
+[How to remove Claude Code from Contributors?](https://github.com/orgs/community/discussions/197389), helped me do it 
+for this blog. It's a 30-minute choreographed dance with the git command line and github's UI. Good luck!
 
 
 ## The AI Slop Cleanup
@@ -224,7 +223,7 @@ computing boom that number was one-in-twenty. Most people reacted to that with s
 internet made it possible to sell to a national and eventually global market, and cloud computing lowered the cost to 
 enter by orders of magnitude. That let  the entrepreneurs try out riskier ideas because building the business had a 
 higher potential payoff and a lower start-up cost. AI lowers the cost by another order or two of magnitude. The ideas 
-will be crazier and less likely to succeed but there will be a lot more of them. Maybe one-in-one-hundered will 
+will be crazier and less likely to succeed but there will be a lot more of them. Maybe one-in-one-hundred will 
 succeed. (I wish I knew which ones were good; I'd start it tonight.)
 
 The problem with using generative AI to bring systems to market will come home to roost in a year or two as some of 
