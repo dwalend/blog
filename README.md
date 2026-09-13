@@ -56,7 +56,7 @@ Jekyll site and the 2024 Hashnode site are preserved with redirect stubs.
 
 ## Deploying
 
-GitHub Actions builds and deploys to GitHub Pages on push to `master`. The
+GitHub Actions builds and deploys to GitHub Pages on push to `main`. The
 workflow reads `PATH_PREFIX` and `SITE_URL` from the Pages configuration, so it
 works unchanged at `dwalend.github.io/blog` and at the custom domain later.
 
