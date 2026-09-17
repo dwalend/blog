@@ -1,0 +1,1 @@
+Set a CNAME record to intuitivecounter.goatcounter.com – detailed instructions in https://intuitivecounter.goatcounter.com/settings/main .
