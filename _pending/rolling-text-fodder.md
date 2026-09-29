@@ -142,3 +142,21 @@ This large read/write ratio is one of the strongest arguments to use languages l
 ```Scala
 TODO some tight Tapir example from duck aligner
 ```
+
+Naming is hard
+
+https://contributors.scala-lang.org/t/pre-sip-a-new-type-for-optionals-and-error-handling-2/7533/68?u=dwalend 
+
+---
+
+SaaS is not repeatable:
+
+https://github.com/anthropics/claude-code/issues/97854#issuecomment-5893047179
+
+---
+
+blog ideas -
+
+long, awkward class and method names for things I don't want people to use vs short, dense names for things I want everyone to
+
+writing as an aide to thinking 
