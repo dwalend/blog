@@ -24,7 +24,7 @@ Generative AI helps me in three ways:
 I can type really fast.
 
 In high school on an IBM Selectric mashing ink onto actual paper I won a typing race with a whopping 161 
-words-per-minute - no mistakes. At hands-up the buffer in the Selectric fed that staccato baning golf ball until 
+words-per-minute - no mistakes. At hands-up the buffer in the Selectric fed that staccato banging golf ball until 
 everyone in the room was staring at it. I was never able to repeat that feat, but I could consistently clock about 
 120 wpm by the end of the semester. Touch typing is pretty deep in my hippocampus; I'm not aware of typing beyond 
 feeling when I have used a key that's not yet polished completely smooth. The Q has deeper texture than the well-worn P.
@@ -51,12 +51,13 @@ while you watch the token meter tick up.
 Investing in being an effective AI centaur pays an immediate dividend. We're looking at the 
 [John Henry fable](https://www.youtube.com/watch?v=BZGxZbOB1Eo) repeating before our eyes.
 
-I spend my time pondering, refining my directives for the AI, then reviewing its output (TODO cite "The Top Of The Centaur Commits"). I'll 
+I spend my time pondering, refining my directives for the AI, then reviewing its output 
+([Don't Let the Back End of the Centaur Commit to Git]({{ '/2026/09/The-Top-Of-The-Centaur-Commits/' | url }})). I'll 
 occasionally code an example for it to follow, but Claude produces the lion's share of the production code and tests. 
 I've always spent time thinking about how a system should work, reviewing both my own work and my peers, and teaching 
 our interns and new hires. My new activities are really writing down how the system needs to work instead of carrying 
 it in my head as company oral tradition - this is good - and managing Claude's delicate 
-context - two (someday six) cranky blog articles (TODO cite blog table of contents).
+context - two (someday six) [cranky blog articles]({{ '/' | url }}).
 
 ## An LLM Can Process Natural Language
 
@@ -88,7 +89,7 @@ tell you.
 
 > A person meets a broken fix on the first run because their own icon never appears.
 
-Claude means to say: The only way a user who's GPS is never going to provide a location ("a broken fix") sees an error 
+Claude means to say: The only way a user whose GPS is never going to provide a location ("a broken fix") sees an error 
 is that their own icon doesn't show up on the UI's animated map ("because their own icon never appears"). That took me 
 a few readings.
 
@@ -169,8 +170,8 @@ bear dances at all." - I was able to trace the reference back to James Boswell's
 original quote is unkind to a whole group of religious women. Samuel Johnson was not better than his peers in that
 regard.</p>
 
-**Reading:** I finished Cory Doctorow's _Little Brother X_ ... about a decade late. He should feel like a prophet. He 
+**Reading:** I finished Cory Doctorow's [_Little Brother_](https://craphound.com/category/littlebrother/) ... about a decade late. He should feel like a prophet. He 
 earned it.
 
-**Listening:** I went with the Henry Belefonte version of "John Henry" instead of [Joe Bonamassa](https://www.youtube.com/watch?v=DRxawmG5MfM). 
+**Listening:** I went with the Harry Belafonte version of "John Henry" instead of [Joe Bonamassa](https://www.youtube.com/watch?v=DRxawmG5MfM). 
 It wasn't the folk-tale I needed for the citation, but that's made my afternoon.
