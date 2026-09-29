@@ -16,3 +16,6 @@ __pycache__/
 # Editors and OS
 .idea/
 .DS_Store
+
+# Claude Code
+.claude/settings.local.json
