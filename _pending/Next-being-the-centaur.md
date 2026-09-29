@@ -19,8 +19,60 @@ A token is about what it takes to read or write 3/4ths of a word [todo some arit
 I spend my time pondering, refining my directives for it, and reviewing its output. I'll occasionally code an example for it to follow, but it produces the lion's share of the actual code. I've always spent time thinking about how a system should work,  reviewing both my own work and my peers, and teaching our interns an new hires. My new activities are really writing down how the system needs to work instead of carrying it in my head and as company oral tradition (this is good), and managing Claude's delicate context (leading to five blog entries about how annoying the new chore is). 
 
 
-An LLM Can Actually Process Natural Language
+An LLM Can (Kind Of) Process Natural Language
+                      
+I can write words that the AI interprets and acts on. It can write words that I can read. Sometimes it wildly misinterprets 
+or simply ignores what I tell it. Sometimes I have to put in great effort to read what it says. I'm OK with that; it's 
+still pretty amazing. Claude Code has achieved more than the "dancing bear" capability. ("The bear doesn't have to do a 
+quick-step with Ginger Rogers. The remarkable thing is that the bear dances at all." - I was able to trace the reference 
+back to James Boswell's _Life of Johnson_, but the full quote is unkind to a whole group of religious women. Samuel Johnson 
+was not better than his peers in that regard.) 
+                                              
+For example Claude does not use the word "only," and struggles to work around it with existentially dramatic phrasing: 
 
+> A script reports a finding by throwing a `BleepException`. bleep's `main` catches that and prints its message alone.  
+                                                   
+could be
+
+> A script reports a problem by throwing a `BleepException`. bleep's `main` catches that exception but only prints the 
+exception's message.
+        
+without angst or apprehension. 
+
+I have a 475-line prose.md file of guidelines for how to write clear comments in code. That file grows by a line or two 
+every day. The guidelines help, but they also might make things more strange. Claude is having a deep conversation with
+itself but not providing context. It's sort of like a conversation with a 4-year-old who can't imagine what you already 
+know.
+
+> A person meets a broken fix on the first run because their own icon never appears.
+
+Claude means: The only way a user who's GPS is not working ("a broken fix") sees an error is that their own icon doesn't show up on a map. That took me a few readings. 
+
+However, if I ask Claude to rephrase something it stumbles on self-doubt. 
+
+>  Claude: The Gateway replacement argues for the sweep and against the tag. After the Gateway goes, completion is waiting for 
+the machine's address, recording that       
+address wherever the replacement routes, and probing. EC2 already reports the address on the instance. No tag records 
+that address. RestApiIdTag is the one     
+piece of completion state a replacement deletes. That deletion is a second reason to keep the recovery path off the 
+tag. The sweep's question survives the      
+replacement unchanged. That question asks whether this duck line is reachable.
+
+>  Me: It's really hard for me to read the strange language you used in this response. Show me an ascii table of the steps 
+and what each step waits for in your proposal.
+
+>  Claude: You are right. My argument against the step-watcher was wrong. I said a step-watcher needs a durable record per step. A step-watcher does not. EC2 reports the  
+machine's state and address, the Gateway reports the resource, and a probe reports reachability. Every step's completion is already visible in the world.
+                          
+But it did finally show me a table.
+
+It's really not ready to write words for unsympathetic readers, but I've had a lot of success with Claude Code reading my 
+directives, creating code, and keeping documents that describe that code up-to-date. Twice in my career we actually had
+projects where documenting what we did was more important than finishing sooner. For my current project Claude Code 
+keeps the docs up to date. The docs effectively provide a replacement for the oral history I've had to extract in the 
+past. They also make Claude Code work more efficiently and consistently. It is paying off.
+
+ 
 
 
 
