@@ -1,6 +1,8 @@
 ---
 layout: post
-title: Three Good Centaur Things
+title: Three Big Things LLM AI is Good For
+description: "Mostly I like being a centaur. Generative AI types faster than I do, reads and writes in ways people 
+might understand, and gives me access to some novice-level skills."
 comments: True
 tags:
   - post
