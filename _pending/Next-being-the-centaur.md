@@ -10,26 +10,26 @@ tags:
 
 One of my kids has been proofreading these blog entries before I publish them. She commented, "You don't seem to like 
 using the AI very much," after proofing a second entry about how to work around problems. It's the second of five or 
-six I plan to write on the same theme. Also, I've shared a lot of disparaging anecdotes about AI in discussions on-line 
+six I plan to write on the same theme. I've also shared a lot of disparaging anecdotes about AI in discussions on-line 
 and in person. However, mostly I like being a centaur. Time for me to write something positive.
 
 Generative AI helps me in three ways:
 
-* It writes code much faster than I type
-* The LLM aspect allows it to read, infer abstract associations, and write in ways people understand
-* It provides novice-level skills for everything described on the internet
+* It writes code much faster than I type.
+* The LLM aspect allows it to read, infer abstract associations, and write in ways people understand.
+* It provides novice-level skills for everything described on the internet.
 
 ## Generative AI Types Very Fast
 
 I can type really fast.
 
 In high school on an IBM Selectric mashing ink onto actual paper I won a typing race with a whopping 161 
-words-per-minute - no mistakes. At hands-up the buffer in the Selectric fed that staccato banging golf ball until 
+words per minute - no mistakes. At hands-up, the buffer in the Selectric fed that staccato banging golf ball until 
 everyone in the room was staring at it. I was never able to repeat that feat, but I could consistently clock about 
 120 wpm by the end of the semester. Touch typing is pretty deep in my hippocampus; I'm not aware of typing beyond 
 feeling when I have used a key that's not yet polished completely smooth. The Q has deeper texture than the well-worn P.
 
-When I'm composing I'm a lot slower, maybe 30 wpm if my internal dialog is confident. The effort of thinking eclipses
+I'm a lot slower when I'm composing - maybe 30 wpm if my internal dialogue is confident. The effort of thinking eclipses
 any work to get thoughts through the keyboard.
 
 My code editor has excellent autocomplete that takes advantage of Scala's strong structures, but I don't use it as 
@@ -49,7 +49,8 @@ magnitude faster than I do. A token is about what it takes to read, ponder, or w
 while you watch the token meter tick up.
 
 Investing in being an effective AI centaur pays an immediate dividend. We're looking at the 
-[John Henry fable](https://www.youtube.com/watch?v=BZGxZbOB1Eo) repeating before our eyes.
+[John Henry fable](https://www.youtube.com/watch?v=BZGxZbOB1Eo) repeating before our eyes. (I'm not going to type so 
+fast that my heart explodes.)
 
 I spend my time pondering, refining my directives for the AI, then reviewing its output 
 ([Don't Let the Back End of the Centaur Commit to Git]({{ '/2026/09/The-Top-Of-The-Centaur-Commits/' | url }})). I'll 
@@ -84,8 +85,8 @@ every day. I haven't figured out how to explain prepositions yet. The guidelines
 more strange.
 
 When Claude is working it is having a deep conversation within its own context, but it is bad at understanding my 
-context. It's sort of like a conversation with 4-year-olds who assume you know all but the one huge fact they want to 
-tell you.
+context. It's sort of like a conversation with 4-year-olds who assume you know everything except the one 
+huge fact they want to tell you.
 
 > A person meets a broken fix on the first run because their own icon never appears.
 
